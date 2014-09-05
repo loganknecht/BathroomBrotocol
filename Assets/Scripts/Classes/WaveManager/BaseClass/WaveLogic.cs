@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class WaveLogic : MonoBehaviour, WaveLogicContract {
-  public Queue waveStatesQueue;
-  public GameObject currentWaveStateGameObject;
+  public Queue waveStatesQueue = new Queue();
+  public GameObject currentWaveStateGameObject = null;
 
   public bool waveLogicFinished = false;
 
@@ -56,9 +56,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
   }
 
   public virtual void PerformLevelFinishCheck() {
-    if(BroGenerator.Instance.HasGeneratorFinished()
-       && BroManager.Instance.allBros.Count == 0
-       && waveLogicFinished) {
+    if(waveLogicFinished) {
       LevelManager.Instance.TriggerFinishedLevel();
     }
   }
@@ -79,5 +77,35 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     }
 
     return !foundBathroomObjectThatIsNotBroken;
+  }
+
+  public GameObject CreateWaveState(string gameObjectName, WaveState.WaveStateStartLogic startLogic, WaveState.WaveStateLogic performingLogic, WaveState.WaveStateFinishLogic endLogic) {
+    GameObject newWaveStateGameObject = ((new GameObject(gameObjectName)).AddComponent<WaveState>()).gameObject;
+    newWaveStateGameObject.GetComponent<WaveState>().ConfigureLogic(startLogic, performingLogic, endLogic);
+    newWaveStateGameObject.transform.parent = this.gameObject.transform;
+
+    return newWaveStateGameObject;
+  }
+
+  public void InitializeWaveStates(params GameObject[] waveStates) {
+    waveStatesQueue = new Queue();
+
+    foreach(GameObject waveState in waveStates) {
+      waveStatesQueue.Enqueue(waveState);
+    }
+    if(waveStatesQueue.Count != 0) {
+      currentWaveStateGameObject = (GameObject)waveStatesQueue.Dequeue();
+    }
+  }
+
+  public void PerformWaveStateStartedTrigger() {
+    currentWaveStateGameObject.GetComponent<WaveState>().hasBeenTriggered = true;
+    currentWaveStateGameObject.GetComponent<WaveState>().isPlaying = true;
+  }
+  public void PerformWaveStatePlayingFinishedTrigger() {
+    currentWaveStateGameObject.GetComponent<WaveState>().triggerFinishLogic = true;
+  }
+  public void PerformWaveStateHasFinishedTrigger() {
+    currentWaveStateGameObject.GetComponent<WaveState>().hasFinished = true;
   }
 }

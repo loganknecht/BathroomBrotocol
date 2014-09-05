@@ -1,4 +1,3 @@
-bathroombrotocol
+# Bathroom Brotocol
 ================
-
-Bathroom brotocol, bro
+This is the repository that houses the game Bathroom Brotocol

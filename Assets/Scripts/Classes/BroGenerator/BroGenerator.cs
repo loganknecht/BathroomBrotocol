@@ -78,6 +78,8 @@ public class BroGenerator : MonoBehaviour {
 	}
 
   public void SetDistributionLogic(DistributionObject[] distributionObjects) {
+    broGenerationTimer = 0;
+
     // Debug.Log("Setting distribution logic");
     distributionPoints = new List<GameObject>();
     foreach(BroDistributionObject broDistributionObject in distributionObjects) {
@@ -129,7 +131,7 @@ public class BroGenerator : MonoBehaviour {
     // }
   }
 
-  public bool HasGeneratorFinished() {
+  public bool HasFinishedGenerating() {
     bool foundDistributionPointThatWasNotDistributed = false;
     foreach(GameObject distributionPointGameObject in distributionPoints) {
       if(!distributionPointGameObject.GetComponent<DistributionPoint>().hasBeenDistributed) {

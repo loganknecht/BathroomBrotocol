@@ -10,23 +10,17 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
-    GameObject startAnimationGameObject = ((new GameObject("Start Animation Game Object")).AddComponent<WaveState>()).gameObject;
-    startAnimationGameObject.GetComponent<WaveState>().ConfigureLogic(TriggerStartAnimation, PerformStartAnimationLogic, FinishStartAnimation);
-    startAnimationGameObject.transform.parent = this.gameObject.transform.parent.transform;
+    GameObject startAnimationGameObject = CreateWaveState("Start Animation Game Object",
+                                                          TriggerStartAnimation,
+                                                          PerformStartAnimation,
+                                                          FinishStartAnimation);
 
-    GameObject firstWaveGameObject = ((new GameObject("First Wave Game Object")).AddComponent<WaveState>()).gameObject;
-    firstWaveGameObject.GetComponent<WaveState>().ConfigureLogic(TriggerFirstWaveStart, PerformFirstWaveLogic, FinishFirstWave);
-    firstWaveGameObject.transform.parent = this.gameObject.transform.parent.transform;
+    GameObject firstWaveGameObject = CreateWaveState("First Wave Game Object",
+                                                     TriggerFirstWave,
+                                                     PerformFirstWave,
+                                                     FinishFirstWave);
 
-    waveStatesQueue = new Queue();
-    waveStatesQueue.Enqueue(startAnimationGameObject);
-    waveStatesQueue.Enqueue(firstWaveGameObject);
-
-    if(waveStatesQueue.Count != 0) {
-      currentWaveStateGameObject = (GameObject)waveStatesQueue.Dequeue();
-    }
-
-
+    InitializeWaveStates(startAnimationGameObject, firstWaveGameObject);
   }
 
   // Update is called once per frame
@@ -63,7 +57,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     textQueue.Enqueue("Bro!");
     TextboxManager.Instance.SetTextboxTextSet(textQueue);
   }
-  public void PerformStartAnimationLogic() {
+  public void PerformStartAnimation() {
     // Debug.Log("performing start animation");
     if(TextboxManager.Instance.hasFinishedTextBoxText) {
       PerformWaveStatePlayingFinishedTrigger();
@@ -77,14 +71,14 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     PerformWaveStateHasFinishedTrigger();
   }
 
-  public void TriggerFirstWaveStart() {
+  public void TriggerFirstWave() {
     PerformWaveStateStartedTrigger();
 
     Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
     // public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
-    BroDistributionObject firstWave = new BroDistributionObject(0, 20, 10, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    BroDistributionObject firstWave = new BroDistributionObject(0, 10, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
     firstWave.SetFightCheckType(BroDistribution.AllBros, false);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
@@ -95,23 +89,21 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                                              firstWave,
                                                                             });
   }
-  public void PerformFirstWaveLogic() {
-    PerformWaveStatePlayingFinishedTrigger();
+  public void PerformFirstWave() {
+    if(BroGenerator.Instance.HasFinishedGenerating()
+       && BroManager.Instance.NoBrosInRestroom) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
   }
   public void FinishFirstWave() {
+    waveLogicFinished = true;
     PerformWaveStateHasFinishedTrigger();
   }
 
-  public void PerformWaveStateStartedTrigger() {
-    currentWaveStateGameObject.GetComponent<WaveState>().hasBeenTriggered = true;
-    currentWaveStateGameObject.GetComponent<WaveState>().isPlaying = true;
+  public void TriggerSecondWave() {
   }
-  public void PerformWaveStatePlayingFinishedTrigger() {
-    currentWaveStateGameObject.GetComponent<WaveState>().triggerFinishLogic = true;
+  public void PerformSecondWave() {
   }
-  public void PerformWaveStateHasFinishedTrigger() {
-    currentWaveStateGameObject.GetComponent<WaveState>().hasFinished = true;
+  public void FinishSecondWave() {
   }
-
-
 }

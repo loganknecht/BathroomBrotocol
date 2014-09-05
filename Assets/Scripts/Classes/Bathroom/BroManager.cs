@@ -4,16 +4,26 @@ using System.Collections.Generic;
 
 public class BroManager : MonoBehaviour {
 
+  public bool NoBrosInRestroom {
+    get {
+      if(allBros.Count == 0) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+  }
 	public List<GameObject> allBros = new List<GameObject>();
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile BroManager _instance;
 	private static object _lock = new object();
-	
+
 	//Stops the lock being created ahead of time if it's not necessary
 	static BroManager() {
 	}
-	
+
 	public static BroManager Instance {
 		get {
 			if(_instance == null) {
@@ -27,7 +37,7 @@ public class BroManager : MonoBehaviour {
 			return _instance;
 		}
 	}
-	
+
 	private BroManager() {
 	}
 
@@ -44,7 +54,7 @@ public class BroManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		SetAllBrosIsSelected(true);
