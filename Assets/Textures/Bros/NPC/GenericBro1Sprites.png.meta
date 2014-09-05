@@ -1,0 +1,855 @@
+fileFormatVersion: 2
+guid: f8f1f842a861cb8498f0e403734ebfca
+TextureImporter:
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spritePixelsToUnits: 32
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: GenericBro1Sprites_0
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_1
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 231
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_2
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_3
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_4
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 231
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_5
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_6
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_7
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 231
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_8
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_9
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_10
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 231
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_11
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 231
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_13
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 198
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_14
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_15
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_16
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 198
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_17
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_18
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_19
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 198
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_20
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_21
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_22
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 198
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_23
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 198
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_24
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_25
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 165
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_26
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_27
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_28
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 165
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_29
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_30
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_31
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 165
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_32
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_33
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_34
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 165
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_35
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 165
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_36
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_37
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 132
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_38
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_39
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_40
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 132
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_41
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_42
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_43
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 132
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_44
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_45
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_46
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 132
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_47
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 132
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_48
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_49
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 99
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_50
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_51
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_52
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 99
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_53
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_54
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_55
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 99
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_56
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_57
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_58
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_59
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 99
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_60
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 66
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_61
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 66
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_62
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 66
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_63
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 66
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_64
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 66
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_65
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 66
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_66
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 66
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_67
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 66
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_68
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 66
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_69
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 66
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_70
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 66
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_71
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 66
+        width: 26
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_72
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 33
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_73
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 33
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_74
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 33
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_75
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 33
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_76
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 33
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_77
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 33
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_78
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 33
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_79
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 33
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_80
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 33
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_81
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_82
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 0
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_83
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 0
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_84
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 0
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_85
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 0
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_86
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 0
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_87
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 0
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_88
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 0
+        width: 31
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: GenericBro1Sprites_89
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 0
+        width: 30
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+  spritePackingTag: 
+  userData: 

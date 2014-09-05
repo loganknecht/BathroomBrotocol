@@ -1,0 +1,27 @@
+--------------------------------------------------------------------------------
+Ideas
+--------------------------------------------------------------------------------
+ - Brobono work. In order to raise your standing in the world you have to do brobono (probono) work. This means you go to an impovershed neighborhood or country and manage the bathroom and clean it up for a level
+	- This is a level between the static levels and will be randomly generated
+ - Extra bro fight logic
+	- If interacts with another bro, the bro that isn't in a fight will push it in a direction..... or something
+	- If interacts with a janitor he should disarm them in a certain way that looks cool or something
+		- maybe like a zen shield for a certain type of janitor
+		- maybe a flash of light and it'll show him holding them apart on each side of them, by their heads
+		- fuck I don't know
+ - When marketting I want to make multiple trailers that play to the tropes of cinema trailers and use it to advertise my game in different ways
+	- Make a default set of actual ads
+ - When a bro sent to a bathroom object with another bro in it, make them have a fight and them stomp out
+ - If a bro arrives at a broken bathroom object he will try to randomly break a bathroom object in a fit of rage
+	- You will lose points for not being able to let the bro relieve himself
+	- You will need to bounce him out, whether it's through a bouncer character or ability.
+		- I would prefer using a bouncer, perhaps an icon you tap to summon him and then tap the bro being an issue
+			- Gain extra points for a successful bounce
+			- Possible to lose points by bouncing the wrong bro
+ - Generate bros in bunches sometimes so the player will have to deal with multiples at once
+ - Handicap bros (handicap stalls etc)
+ - Maybe as an alternate game you can play a lane change from the top down view where you are coordinating how bros enter different bathrooms
+	- Idea is bros come in as a large swatch and you have to point them to the right queues to move thorugh or something
+ - Make it so the bro colliders will trigger iwth other bros on the way to their location and if it does have it trigger an animation for a shoulder check (or something)
+	- Make it so there's a percentage chance of a fight breaking out (pretty small), so that the play will have to stop it
+		- To stop it maybe tap a whistle icon on the left and tap them. Or just tap a couple times so it 

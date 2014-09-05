@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Bathroom Brotocol
+-------------------------------------------------------------------------------
+
+Overall Gameplay:
+Controlling the interaction for bathroom goers
+
+Goal:
+Stop the bathroom from overflowing and/or maintain the environment so that other patrons can succeed.
+
+Fail State:
+ - All urinals and stalls are un-usable
+ - Patrons have filled the waiting line
+ 

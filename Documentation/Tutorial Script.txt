@@ -1,0 +1,25 @@
+--------------------------------------------------------------------------------
+Tutorial Script
+--------------------------------------------------------------------------------
+ - Tutorial Level... real basic, just explain the rules....
+	- First part is explaining what the player is looking at
+	- Second part is explaining queues
+	- Third part is having a bro come in and explaining the interaction
+	- Fourth is selecting the location and sending the bro there
+	- Fifth is having the bro arrive and explain how scoring works
+	- Sixth will explain bros going to sink queues, and exiting
+ 
+
+--------------------------------------------------------------------------------
+General Discussion 
+--------------------------------------------------------------------------------
+My thinking in this is that the player should be advised by some bro of some sort.
+
+Thinking maybe Fonzi or someone really fucking cool but still pretty bro. Not sure of a good idea.
+
+There will be multiple tutorial levels created. Initially there will be a basic tutorial that will emphasize an explanation on the basics of bathroom brotocol. In this tutorial you will get a brief demonstration of gameplay and scoring. Nothing more. Once over you will be brought back to the menu.
+
+The menu will let you choose between two tutorials at the moment: basic or advanced.
+
+Advanced will cover the finer nuances of the game play and scoring.
+

@@ -1,0 +1,4 @@
+--------------------------------------------------------------------------------
+	Slob Bro
+--------------------------------------------------------------------------------
+- Minor bug in the slob bro where the bro can have extra points scored on it if the player uses a bathroom object that is for the correct relief type. This is because the score logic is adding in the stalls and urinals correctly peed in. The perfect score calculation doesn't account for those in the same way. Minor calculation bug... sorta :|

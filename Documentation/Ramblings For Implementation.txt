@@ -1,0 +1,13 @@
+entrance queue and bros... both need to be able to pass through bros and hold bros in it
+
+easiest solution... have a boolean flag for the bro that says skipEntranceQueue and a reference to the entrance queue he is in for the "InAQueue" logic that will be used for when recalculating the path
+The recalculation on for the path will determine the closest tile that the bro is in and then proceed to calculate the rest of the entrance queue positions based off of that.
+For skipLineQueue, if true it will wait until the bro is at that entrance, and then when at the first tile it willchange state from InAQueue to moving to target object, and target a random bathroom object.
+
+
+alternative would be to make two entrances queues, one that pushes bros through, and one that allows bros to stand in it. Not a fan of this solution because it doesn't let you have both.
+
+--------------------------------------------------------------------------------
+
+Bros that enter and target a bathroom object
+ - GenericBro (Also picks random object after relief)

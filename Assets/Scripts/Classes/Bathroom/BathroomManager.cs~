@@ -1,0 +1,1015 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+public class BathroomManager : MonoBehaviour {
+	
+	public GameObject allBrosGameObject = null;
+	
+	public GameObject tileMapGameObject = null;
+	BathroomTileMap tileMapReference = null;
+	
+	public GameObject entranceQueueGameObject = null;
+	LineQueue entranceQueueReference = null;
+	
+	public GameObject sinkQueueGameObject = null;
+	LineQueue sinkQueueReference = null;
+	
+	public bool entranceQueueBroGenerationEnabled = false;
+	public float entranceQueueBroGenerationTimer = 0;
+	public float entranceQueueBroGenerationInterval = 1;
+	
+	public List<GameObject> allBros = new List<GameObject>();
+	
+	public GameObject currentlySelectedBroGameObject = null;
+	public GameObject currentlySelectedJanitorGameObject = null;
+	public GameObject currentlySelectedBathroomObject = null;
+	
+	public bool triggerLevelGeneration = false;
+	public bool initializationStarted = false;
+	public bool initializedTileMap = false;
+	public bool initializedLineQueues = false;
+	public bool initializedBathroomObjects = false;
+	
+	public bool janitorSummoned = false;
+	public GameObject janitorGameObject = null;
+	public Janitor janitorReference = null;
+
+	public GameObject scoreManagerObject = null;
+	public ScoreManager scoreManagerReference = null;
+
+	public void Awake() {
+		allBrosGameObject = new GameObject("All Bros");
+		allBrosGameObject.transform.position = Vector3.zero;
+		
+		tileMapReference = tileMapGameObject.GetComponent<BathroomTileMap>();
+		
+		entranceQueueReference = entranceQueueGameObject.GetComponent<LineQueue>();
+		sinkQueueReference = sinkQueueGameObject.GetComponent<LineQueue>();
+
+		//Stupid redundant declaration that lets you attach your own score manager or self composes it so you don't have to fuss with that shit, cause eff that
+		if(scoreManagerObject == null) {
+			scoreManagerObject = new GameObject("ScoreManager");
+			if(scoreManagerObject.GetComponent<ScoreManager>() == null) {
+				scoreManagerReference = (scoreManagerObject.AddComponent<ScoreManager>()).GetComponent<ScoreManager>();
+			}
+			else {
+				scoreManagerReference = scoreManagerObject.GetComponent<ScoreManager>();
+			}
+		}
+		else {
+			scoreManagerReference = scoreManagerObject.GetComponent<ScoreManager>();
+		}
+	}
+	
+	public void Start() {
+		triggerLevelGeneration = true;
+	}
+	
+	public void Update() {
+		if(triggerLevelGeneration) {
+			PerformLevelGeneration();
+		}
+		else {
+			if(entranceQueueReference != null) {
+				if(entranceQueueBroGenerationEnabled) {
+					entranceQueueBroGenerationTimer += Time.deltaTime;
+					if(entranceQueueBroGenerationTimer > entranceQueueBroGenerationInterval) {
+						GenerateRandomBroGameObjectInEntranceQueue();
+						entranceQueueBroGenerationTimer = 0;
+					}
+				}
+			}
+
+			//SELECTION LOGIC GOES HERE
+			PerformBroSelectionLogic();
+			PerformJanitorSelectionLogic();
+			
+			if(currentlySelectedBroGameObject != null
+			   || currentlySelectedJanitorGameObject != null) {
+				PerformBathroomObjectSelectionLogic();
+			}
+			else {
+				foreach(GameObject gameObj in tileMapReference.GetAllBathroomObjectsFromAllTiles()) {
+					gameObj.GetComponent<Selectable>().isSelected = false;
+				}
+				currentlySelectedBathroomObject = null;
+			}
+
+			PerformSelectedBroAndSelectedBathroomObjectLogic();
+			PerformSelectedJanitorAndSelectedBathroomObjectLogic();
+			//END OF SELECTION LOGIC
+
+			//This needs to go befor occupation logic check so that it can be guaranteed to see a certain value (Not really sure about this anymore but fuggit follow the advice from past you)
+			PerformBroArrivalLogic();
+			PerformBroOccupationLogic();
+			PerformBathroomObjectBroOccupationFightCheck();
+			PerformBroStandOffLogic();
+			PerformBroFightLogic();
+
+			PerformJanitorSummonLogic();
+			PerformJanitorArrivaLogic();
+			PerformJanitorRepairLogic();
+			
+			//INPUT STARTS HERE-------------------------------------------------------------
+			if(Input.GetKeyDown(KeyCode.A)) {
+				GenerateRandomBroGameObjectInEntranceQueue();
+			}
+			if(Input.GetKeyDown(KeyCode.S)) {
+				entranceQueueReference.ReconfigureLineObjecsInLineQueueTiles();
+			}
+			//INPUT ENDS HERE-------------------------------------------------------------
+
+			//ScoreManager Logic goes here
+//			if(scoreManagerReference != null) {
+//				GameObject randomBathroomTileObject = tileMapReference.SelectRandomBathroomTileObject();
+//				//Debug.Log("Name: " + randomBathroomTileObject.name);
+//				scoreManagerReference.PerformBrotocolComplianceBonusPointCheckForBathroomTile(randomBathroomTileObject, tileMapReference);
+//			}
+		}
+	}
+	
+	public void OnGUI() {
+		//http://docs.unity3d.com/Documentation/ScriptReference/GUIStyle-wordWrap.html
+		GUI.skin.button.wordWrap = true;
+		
+		if(janitorSummoned) {
+			GUI.color = new Color(0, 255, 0);
+		}
+		else {
+			GUI.color = new Color(255, 0, 0);
+		}
+		if(GUI.Button(new Rect(0, 0, 100, 50), ("Janitor Summoned: " + janitorSummoned))) {
+			janitorSummoned = !janitorSummoned;
+		}
+
+		GUI.color = new Color(255, 255, 255, 255);
+		//Displays current score
+		GUI.Label(new Rect (0, 60, 150, 20), "Current Score: " + scoreManagerReference.currentScore.ToString());
+	}
+	
+	//-----------------------------------------------------------------------------------
+	// Bro Logic
+	//-----------------------------------------------------------------------------------
+	public void PerformBroStandOffLogic() {
+		foreach(GameObject broObject in allBros) {
+			Bro broReference = broObject.GetComponent<Bro>();
+			if(broReference.currentState == BroState.StandOff) {
+				broReference.currentState = BroState.Fighting;
+			}
+		}
+	}
+	
+	public void PerformBroFightLogic() {
+		foreach(GameObject broObject in allBros) {
+			Bro broReference = broObject.GetComponent<Bro>();
+			if(broReference.currentState == BroState.Fighting) {
+				//broReference.SetTargetObjectAndTargetPosition(
+				List<GameObject> bathroomExits = tileMapReference.GetAllBathroomObjectsFromAllTilesByType(BathroomObjectType.Exit);
+				int selectedExit = Random.Range(0, bathroomExits.Count - 1);
+				//broReference.SetTargetObjectAndTargetPosition(bathroomExits[selectedExit], bathroomExits[selectedExit].transform.position);
+				broReference.targetObject = bathroomExits[selectedExit];
+				broReference.movementNodes.Add(bathroomExits[selectedExit].transform.position);
+
+				broReference.currentState = BroState.Moving;
+			}
+		}
+	}
+	
+	public void PerformBroSelectionLogic() {
+		bool broSelected = false;
+		foreach(GameObject gameObj in allBros) {
+			Bro broReference = gameObj.GetComponent<Bro>();
+			
+			//			Debug.Log("BroReference is: " + broReference);
+			//			Debug.Log("Bro Selectable Reference is: " + broReference.selectableReference);
+			
+			if(currentlySelectedBroGameObject == null) {
+				if(broReference.selectableReference != null) {
+					//sets the current bro selected object to the object selected
+					if(broReference.selectableReference.isSelected) {
+						currentlySelectedBroGameObject = gameObj;
+						broSelected = true;
+					}
+				}
+			}
+			else {
+				if(broReference.selectableReference != null) {
+					if(gameObj.GetInstanceID() == currentlySelectedBroGameObject.GetInstanceID()) {
+						if(!broReference.selectableReference.isSelected) {
+							currentlySelectedBroGameObject = null;
+							broReference.highlightSelectableObjectReference.ResetHighlightObjectAndSelectedState();
+						}
+						else {
+							broSelected = true;
+						}
+					}
+					else {
+						broReference.highlightSelectableObjectReference.ResetHighlightObjectAndSelectedState();
+					}
+				}
+			}
+		}
+		
+		if(!broSelected) {
+			currentlySelectedBroGameObject = null;
+		}
+	}
+	
+	//Not too thrilled with the implementation of the the bathroom object selection logic, but it appears to work....
+	public void PerformBathroomObjectSelectionLogic() {
+		bool bathroomObjectSelected = false;
+		foreach(GameObject gameObj in tileMapReference.GetAllBathroomTilesWithBathroomObjects(tileMapReference.GetBorderTilesInTileMap())) {
+			BathroomObject bathroomObjectReference = gameObj.GetComponent<BathroomTile>().objectInTile.GetComponent<BathroomObject>();
+			
+			if(bathroomObjectReference != null) {
+				if(currentlySelectedBathroomObject == null) {
+					//sets the current bro selected object to the object selected
+					if(bathroomObjectReference.selectableReference != null) {
+						if(bathroomObjectReference.selectableReference.isSelected) {
+							//Debug.Log(gameObj.GetComponent<BathroomTile>().objectInTile.name + " was selected");
+							currentlySelectedBathroomObject = gameObj.GetComponent<BathroomTile>().objectInTile;
+							bathroomObjectSelected = true;
+						}
+					}
+				}
+				else {
+					if(gameObj.GetComponent<BathroomTile>().objectInTile.GetInstanceID() == currentlySelectedBathroomObject.GetInstanceID()) {
+						if(bathroomObjectReference.selectableReference.isSelected) {
+							bathroomObjectSelected = true;
+						}
+					}
+					else {
+						bathroomObjectReference.selectableReference.isSelected = false;
+					}
+				}
+			}
+		}
+		
+		if(!bathroomObjectSelected) {
+			currentlySelectedBathroomObject = null;
+		}
+	}
+	
+	public void PerformSelectedBroAndSelectedBathroomObjectLogic() {
+		if(currentlySelectedBroGameObject != null
+		   && currentlySelectedBathroomObject != null) {
+			if(currentlySelectedBathroomObject.GetComponent<BathroomObject>() != null
+			   && currentlySelectedBathroomObject.GetComponent<BathroomObject>().currentState != BathroomObjectState.Broken) {
+				if(currentlySelectedBathroomObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Stall
+				   || currentlySelectedBathroomObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Urinal) {
+					
+					if(!currentlySelectedBroGameObject.GetComponent<Bro>().hasRelievedSelf) {
+						if(entranceQueueReference.queueObjects.Contains(currentlySelectedBroGameObject)) {
+							entranceQueueReference.queueObjects.Remove(currentlySelectedBroGameObject);
+						}
+						//currentlySelectedBroGameObject.GetComponent<Bro>().SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, currentlySelectedBathroomObject.transform.position);
+						currentlySelectedBroGameObject.GetComponent<Bro>().targetObject = currentlySelectedBathroomObject;
+						currentlySelectedBroGameObject.GetComponent<Bro>().movementNodes.Add(currentlySelectedBathroomObject.transform.position);
+
+						currentlySelectedBroGameObject.GetComponent<Bro>().highlightSelectableObjectReference.ResetHighlightObjectAndSelectedState();
+						currentlySelectedBroGameObject = null;
+						currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+						currentlySelectedBathroomObject = null;
+					}
+				}
+				else if(currentlySelectedBathroomObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Sink) {
+					if(currentlySelectedBroGameObject.GetComponent<Bro>().hasRelievedSelf
+					   && !currentlySelectedBroGameObject.GetComponent<Bro>().hasWashedHands) {
+						if(sinkQueueReference.queueObjects.Contains(currentlySelectedBroGameObject)) {
+							sinkQueueReference.queueObjects.Remove(currentlySelectedBroGameObject);
+						}
+						//currentlySelectedBroGameObject.GetComponent<Bro>().SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, currentlySelectedBathroomObject.transform.position);
+						currentlySelectedBroGameObject.GetComponent<Bro>().targetObject = currentlySelectedBathroomObject;
+						currentlySelectedBroGameObject.GetComponent<Bro>().movementNodes.Add(currentlySelectedBathroomObject.transform.position);
+
+						currentlySelectedBroGameObject.GetComponent<Bro>().highlightSelectableObjectReference.ResetHighlightObjectAndSelectedState();
+						currentlySelectedBroGameObject = null;
+						currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+						currentlySelectedBathroomObject = null;
+					}
+				}
+				else {
+					currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+					currentlySelectedBathroomObject = null;
+				}
+			}
+			else {
+				currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+				currentlySelectedBathroomObject = null;
+			}
+		}
+	}
+	
+	public void PerformBathroomObjectBroOccupationFightCheck() {
+		foreach(GameObject bathroomTile in tileMapReference.GetAllBathroomTilesWithBathroomObjects(tileMapReference.GetBorderTilesInTileMap())) {
+			
+			BathroomTile bathroomTileReference = bathroomTile.GetComponent<BathroomTile>();
+			BathroomObject bathroomObjectReference = bathroomTile.GetComponent<BathroomTile>().objectInTile.GetComponent<BathroomObject>();
+			
+			if(bathroomObjectReference.objectsOccupyingBathroomObject.Count > 1) {
+				//Debug.Log("More than one object in the tile! Oh shit!");
+				//Debug.Log("bathroom object type: " + bathroomObjectReference.bathroomObjectType.ToString());
+				
+				if(bathroomObjectReference.bathroomObjectType == BathroomObjectType.Sink
+				   || bathroomObjectReference.bathroomObjectType == BathroomObjectType.Stall
+				   || bathroomObjectReference.bathroomObjectType == BathroomObjectType.Urinal) {
+					//Debug.Log("More than one object in the tile! Oh shit!");
+					BathroomWall wallTileIsOn = tileMapReference.GetTileWall(bathroomTileReference.tileX, bathroomTileReference.tileY);
+					int xTileToPutBroOn = 0;
+					int yTileToPutBroOn = 0;
+					
+					//this is done in the context of the tile map grid created, not in world units
+					switch(wallTileIsOn) {
+					case(BathroomWall.None):
+						break;
+					case(BathroomWall.TopLeft):
+						xTileToPutBroOn = bathroomTileReference.tileX + 1;
+						yTileToPutBroOn = bathroomTileReference.tileY + 1;
+						break;
+					case(BathroomWall.Top):
+						xTileToPutBroOn = bathroomTileReference.tileX;
+						yTileToPutBroOn = bathroomTileReference.tileY + 1;
+						break;
+					case(BathroomWall.TopRight):
+						xTileToPutBroOn = bathroomTileReference.tileX - 1;
+						yTileToPutBroOn = bathroomTileReference.tileY + 1;
+						break;
+					case(BathroomWall.Left):
+						xTileToPutBroOn = bathroomTileReference.tileX + 1;
+						yTileToPutBroOn = bathroomTileReference.tileY;
+						break;
+					case(BathroomWall.Right):
+						xTileToPutBroOn = bathroomTileReference.tileX - 1;
+						yTileToPutBroOn = bathroomTileReference.tileY;
+						break;
+					case(BathroomWall.BottomLeft):
+						xTileToPutBroOn = bathroomTileReference.tileX + 1;
+						yTileToPutBroOn = bathroomTileReference.tileY - 1;
+						break;
+					case(BathroomWall.Bottom):
+						xTileToPutBroOn = bathroomTileReference.tileX;
+						yTileToPutBroOn = bathroomTileReference.tileY - 1;
+						break;
+					case(BathroomWall.BottomRight):
+						xTileToPutBroOn = bathroomTileReference.tileX - 1;
+						yTileToPutBroOn = bathroomTileReference.tileY - 1;
+						break;
+					default:
+						break;
+					}
+					//					Debug.Log(wallTileIsOn);
+					//					Debug.Log("Bathroom Object Tile X: " + bathroomTileReference.tileX + ", Bathroom Object Tile Y: " + bathroomTileReference.tileY);
+					//					Debug.Log("New Tile X: " + xTileToPutBroOn + ", New Tile Y: " + yTileToPutBroOn);
+					
+					foreach(GameObject bro in bathroomObjectReference.objectsOccupyingBathroomObject) {
+						Vector3 newBrosPosition = new Vector3(tileMapReference.tiles[yTileToPutBroOn, xTileToPutBroOn].transform.position.x,
+						                                      tileMapReference.tiles[yTileToPutBroOn, xTileToPutBroOn].transform.position.y,
+						                                      bro.transform.position.z);
+						
+						bro.transform.position = newBrosPosition;
+						
+						Bro broReference = bro.GetComponent<Bro>();
+						broReference.currentState = BroState.StandOff;
+						//broReference.SetTargetObjectAndTargetPosition(null, newBrosPosition);
+						broReference.targetObject = null;
+						broReference.movementNodes.Add(newBrosPosition);
+					}
+					bathroomObjectReference.objectsOccupyingBathroomObject.Clear();
+					bathroomObjectReference.currentState = BathroomObjectState.Broken;
+				}
+			}
+		}
+	}
+
+	public void PerformBroArrivalLogic() {
+		foreach(GameObject gameObj in allBros) {
+			Bro broRef = gameObj.GetComponent<Bro>();
+			if(broRef != null) {
+				
+				if(broRef.targetObject != null
+				   && broRef.targetObject.GetComponent<BathroomObject>() != null) {
+					//This pulls out the reference to the bathroom tile containing the bathroom object because there is not reference accessible to that
+					GameObject bathroomTileObjectContainingBathroomObject = null;
+					BathroomObject bathObjRef = null;
+					foreach(GameObject tile in tileMapReference.tiles) {
+						if(tile.GetComponent<BathroomTile>().objectInTile.GetInstanceID() == broRef.targetObject.GetInstanceID()) {
+							bathroomTileObjectContainingBathroomObject = tile;
+							bathObjRef = bathroomTileObjectContainingBathroomObject.GetComponent<BathroomTile>().objectInTile.GetComponent<BathroomObject>();
+							//Debug.Log("Name: " + bathroomTileObjectContainingBathroomObject.name);
+						}
+					}
+
+					//BathroomObject bathObjRef = broRef.targetObject.GetComponent<BathroomObject>();
+					
+					if(bathObjRef != null) {
+						//Debug.Log("Name: " + bathroomTileObjectContainingBathroomObject.name);
+						//Debug.Log("Bathroom object is not null");
+						if(broRef.transform.position.x == bathObjRef.transform.position.x
+						   && broRef.transform.position.y == bathObjRef.transform.position.y) {
+							//Debug.Log("Arrived");
+							//This implies the bro has just arrived
+							if(broRef.occupationTimer == 0) {
+								//Debug.Log("occupation timer is 0");
+								switch(bathObjRef.bathroomObjectType) {
+									case(BathroomObjectType.None):
+									break;
+									case(BathroomObjectType.Entrance):
+										//Debug.Log("Arrived at entrance");
+									break;
+									case(BathroomObjectType.Exit):
+										//Debug.Log("Arrived at exit");
+									break;
+									case(BathroomObjectType.Sink):
+										//Debug.Log("Arrived at sink");
+										scoreManagerReference.TriggerScore(ScoreType.Instant, bathObjRef.scoreValue);
+										scoreManagerReference.PerformBrotocolComplianceBonusPointCheckForBathroomTile(bathroomTileObjectContainingBathroomObject, tileMapReference);
+									break;
+									case(BathroomObjectType.Stall):
+										//Debug.Log("Arrived at stall");
+										scoreManagerReference.TriggerScore(ScoreType.Instant, bathObjRef.scoreValue);
+										scoreManagerReference.PerformBrotocolComplianceBonusPointCheckForBathroomTile(bathroomTileObjectContainingBathroomObject, tileMapReference);
+									break;
+									case(BathroomObjectType.Urinal):
+										//Debug.Log("Arrived at urinal");
+										scoreManagerReference.TriggerScore(ScoreType.Instant, bathObjRef.scoreValue);
+										scoreManagerReference.PerformBrotocolComplianceBonusPointCheckForBathroomTile(bathroomTileObjectContainingBathroomObject, tileMapReference);
+									break;
+									default:
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void PerformBroOccupationLogic() {
+		List<GameObject> brosToRemoveAndDestroy = new List<GameObject>();
+		//This performs the occupation timer maxing out logic
+		foreach(GameObject gameObj in allBros) {
+			Bro broRef = gameObj.GetComponent<Bro>();
+			if(broRef != null) {
+				
+				if(broRef.targetObject != null) {
+					BathroomObject bathObjRef = broRef.targetObject.GetComponent<BathroomObject>();
+					
+					if(bathObjRef != null) {
+						
+						if(broRef.transform.position.x == bathObjRef.transform.position.x
+						   && broRef.transform.position.y == bathObjRef.transform.position.y) {
+							
+							if(broRef.occupationTimer > bathObjRef.occupationDuration) {
+								//Debug.Log("Bro completed occupation of: " + gameObj.name);
+								
+								//OBJECT LOGIC ACTUALLY STARTS HERE
+								if(bathObjRef.bathroomObjectType == BathroomObjectType.Stall 
+								   ||	bathObjRef.bathroomObjectType == BathroomObjectType.Urinal) {
+									if(!broRef.hasRelievedSelf) {
+										broRef.hasRelievedSelf = true;
+										
+										//broRef.SetTargetObjectAndTargetPosition(sinkQueueGameObject, sinkQueueReference.queueTileObjects[sinkQueueReference.queueTileObjects.Count-1].transform.position);
+										broRef.targetObject = sinkQueueGameObject;
+										broRef.movementNodes.Add(sinkQueueReference.queueTileObjects[sinkQueueReference.queueTileObjects.Count-1].transform.position);
+										broRef.collider2D.enabled = true;
+										sinkQueueReference.AddGameObjectToLineQueue(gameObj);
+
+										bathObjRef.objectsOccupyingBathroomObject.Remove(gameObj);
+									}
+								}
+								else if(bathObjRef.bathroomObjectType == BathroomObjectType.Sink) {
+									if(!broRef.hasWashedHands) {
+										broRef.hasWashedHands = true;
+										
+										List<GameObject> exitTilesToChooseFrom = tileMapReference.GetAllBathroomObjectsFromAllTilesByType(BathroomObjectType.Exit);
+										//Debug.Log("Exit tiles to choose from size: " + exitTilesToChooseFrom.Count);
+										int exitChosen = Random.Range(0, exitTilesToChooseFrom.Count - 1);
+										//Debug.Log("Exit chosen: " + exitChosen);
+										//Debug.Log(exitTilesToChooseFrom[exitChosen]);
+										//broRef.SetTargetObjectAndTargetPosition(exitTilesToChooseFrom[exitChosen], exitTilesToChooseFrom[exitChosen].transform.position);
+										broRef.targetObject = exitTilesToChooseFrom[exitChosen];
+										broRef.targetPosition = exitTilesToChooseFrom[exitChosen].transform.position;
+										
+										//sinkQueueReference.AddGameObjectToLineQueue(gameObj);
+										
+										bathObjRef.objectsOccupyingBathroomObject.Remove(gameObj);
+									}
+								}
+								else if(bathObjRef.bathroomObjectType == BathroomObjectType.Exit) {
+									//Debug.Log("exit tile purge");
+									//BROS HAVE EXITED
+									brosToRemoveAndDestroy.Add(gameObj);
+									bathObjRef.objectsOccupyingBathroomObject.Remove(gameObj);
+								}
+								scoreManagerReference.TriggerScore(ScoreType.Instant, bathObjRef.scoreValue);
+							}
+							else {
+								if(!bathObjRef.objectsOccupyingBathroomObject.Contains(gameObj)) {
+									//Debug.Log("Adding Object");
+									bathObjRef.objectsOccupyingBathroomObject.Add(gameObj);
+								}
+								else {
+									//disables the collider because the bro resides in the object, but the timer is still going
+									broRef.collider2D.enabled = false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		//ends the timer logic for occupation timer
+		//Removes the bros from the all bros list, removing their reference in memory
+		foreach(GameObject bro in brosToRemoveAndDestroy) {
+			allBros.Remove(bro);
+			Destroy(bro);
+		}
+	}
+	
+	//-----------------------------------------------------------------------------------
+	// Janitor Logic
+	//-----------------------------------------------------------------------------------
+	public void PerformJanitorSummonLogic() { 
+		if(janitorSummoned) {
+			if(janitorGameObject == null) {
+				janitorGameObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Janitor/JanitorPlaceHolder1") as GameObject);
+				janitorGameObject.transform.position = new Vector3(entranceQueueReference.queueTileObjects[entranceQueueReference.queueTileObjects.Count-1].transform.position.x,
+				                                                   entranceQueueReference.queueTileObjects[entranceQueueReference.queueTileObjects.Count-1].transform.position.y,
+				                                                   janitorGameObject.transform.position.z);
+				janitorReference = janitorGameObject.GetComponent<Janitor>();
+				//janitorReference.SetTargetObjectAndTargetPosition(null, entranceQueueReference.queueTileObjects[0].transform.position);
+				janitorReference.targetObject = null;
+				janitorReference.movementNodes.Add(entranceQueueReference.queueTileObjects[0].transform.position);
+			}
+		}
+		else {
+			if(janitorReference != null) {
+				if(janitorReference.currentState != JanitorState.Exiting) {
+					List<GameObject> exitTiles = tileMapReference.GetAllBathroomObjectsFromAllTilesByType(BathroomObjectType.Exit);
+					int exitSelected = Random.Range(0, exitTiles.Count - 1);
+					
+					janitorReference.currentState = JanitorState.Exiting;
+					//janitorReference.SetTargetObjectAndTargetPosition(exitTiles[exitSelected], exitTiles[exitSelected].transform.position);
+					janitorReference.targetObject = exitTiles[exitSelected];
+					janitorReference.movementNodes.Add(exitTiles[exitSelected].transform.position);
+				}
+			}
+		}
+	}
+	
+	public void PerformJanitorSelectionLogic() {
+		if(janitorReference != null) {
+			if(janitorReference.selectableReference.isSelected) {
+				currentlySelectedJanitorGameObject = janitorGameObject;
+			}
+			else {
+				janitorReference.highlightSelectableObjectReference.ResetHighlightObjectAndSelectedState();
+				currentlySelectedJanitorGameObject = null;
+			}
+		}
+	}
+	
+	
+	public void PerformSelectedJanitorAndSelectedBathroomObjectLogic() {
+		if(currentlySelectedJanitorGameObject != null
+		   && currentlySelectedBathroomObject != null) {
+			if(currentlySelectedBathroomObject.GetComponent<BathroomObject>() != null) {
+				if(currentlySelectedBathroomObject.GetComponent<BathroomObject>().currentState == BathroomObjectState.Broken) {
+					//currentlySelectedJanitorGameObject.GetComponent<Janitor>().SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, currentlySelectedBathroomObject.transform.position);
+					currentlySelectedJanitorGameObject.GetComponent<Janitor>().targetObject = currentlySelectedBathroomObject;
+					currentlySelectedJanitorGameObject.GetComponent<Janitor>().movementNodes.Add(currentlySelectedBathroomObject.transform.position);
+					
+					currentlySelectedJanitorGameObject.GetComponent<Janitor>().highlightSelectableObjectReference.ResetHighlightObjectAndSelectedState();
+					currentlySelectedJanitorGameObject = null;
+					
+					currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+					currentlySelectedBathroomObject = null;
+				}
+				else {
+					currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+					currentlySelectedBathroomObject = null;
+				}
+			}
+		}
+	}
+	
+	public void PerformJanitorArrivaLogic() {
+		if(janitorReference != null) {
+
+			if(janitorReference.gameObject.transform.position.x == janitorReference.targetPosition.x
+			   && janitorReference.gameObject.transform.position.y == janitorReference.targetPosition.y) {
+
+				if(janitorReference.targetObject != null) {
+
+					if(janitorReference.targetObject.GetComponent<BathroomObject>() != null) {
+
+						if(janitorReference.targetObject.GetComponent<BathroomObject>().currentState == BathroomObjectState.Broken) {
+							if(janitorReference.targetObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Sink
+							   || janitorReference.targetObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Stall
+							   || janitorReference.targetObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Urinal) {
+								if(janitorReference.currentState != JanitorState.Repairing) {
+									//Debug.Log("repairing");
+									janitorReference.currentState = JanitorState.Repairing;
+									janitorReference.repairTimer = 0;
+								}
+							}
+						}
+						//bathroom object is not broken
+						else {
+							//if exit
+							if(janitorReference.targetObject.GetComponent<BathroomObject>().bathroomObjectType == BathroomObjectType.Exit) {
+								if(janitorSummoned) {
+									janitorReference.currentState = JanitorState.Roaming;
+									//janitorReference.SetTargetObjectAndTargetPosition(null, janitorReference.targetPosition);
+									janitorReference.targetObject = null;
+									janitorReference.movementNodes.Add(janitorReference.targetPosition);
+								}
+								else {
+									Destroy(janitorGameObject);
+									janitorReference = null;
+								}
+							}
+						}
+					}
+				}
+				else {
+					if(janitorReference.currentState == JanitorState.Roaming) {
+						GameObject bathroomTileObject = tileMapReference.SelectRandomBathroomTileObject();
+						BathroomTile bathroomTileReference = bathroomTileObject.GetComponent<BathroomTile>();
+						
+						if(bathroomTileReference != null) {
+							//janitorReference.SetTargetObjectAndTargetPosition(null, bathroomTileObject.transform.position);
+							janitorReference.targetObject = null;
+							janitorReference.movementNodes.Add(bathroomTileObject.transform.position);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void PerformJanitorRepairLogic() {
+		if(janitorReference != null) {
+			if(janitorReference.currentState == JanitorState.Repairing) {
+				janitorReference.repairTimer += Time.deltaTime;
+				if(janitorReference.repairTimer > janitorReference.targetObject.GetComponent<BathroomObject>().repairDuration){
+					//Debug.Log("roaming");
+					janitorReference.targetObject.GetComponent<BathroomObject>().currentState = BathroomObjectState.Idle;
+					janitorReference.currentState = JanitorState.Roaming;
+					janitorReference.SetTargetObjectAndTargetPosition(null, janitorReference.targetPosition);
+				}
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------------------
+	//ALL GENERATION LOGIC GOES BELOW HERE
+	//---------------------------------------------------------------------------------------------
+	void PerformLevelGeneration() {
+		//Triggers the start of the process for level generation and resets all objects in use
+		if(!initializationStarted) {
+			initializationStarted = true;
+			initializedTileMap = false;
+			initializedLineQueues = false;
+			initializedBathroomObjects = false;
+			
+			tileMapReference.triggerTileMapGeneration = true;
+			
+			//This will destroy all bros and reset it back to nothing
+			List<GameObject> brosToRemove = new List<GameObject>();
+			foreach(GameObject bro in allBros) {
+				Destroy(bro);
+				brosToRemove.Add(bro);
+				//bro = null;
+			}
+			foreach(GameObject gameObj in brosToRemove) {
+				allBros.Remove(gameObj);
+			}
+			//End of bro destruction code
+		}
+		else {
+			//Tile map
+			if(!initializedTileMap) {
+				bool detectedNullInTiles = false;
+				
+				if(tileMapReference.tiles != null) {
+					//Debug.Log("tiles is declared");
+					foreach(GameObject gameObj in tileMapReference.tiles) {
+						if(gameObj == null ) {
+							detectedNullInTiles = true;
+						}
+					}
+					
+					if(tileMapReference.tiles.Length > 0
+					   && !detectedNullInTiles) {
+						initializedTileMap = true;
+						TriggerStraightLineQueueInRandomTileMapBorderLocationGeneration(tileMapReference, entranceQueueReference);
+						
+						int sinkQueueStartTileX = (int)tileMapReference.tilesWide/2;
+						int sinkQueueStartTileY = (int)tileMapReference.tilesWide/4;
+						
+						//Debug.Log(sinkQueueStartTileX);
+						
+						int tilesWideHalf = (int)tileMapReference.tilesWide/2;
+						int tilesWideQuarter = (int)tileMapReference.tilesWide/4;
+						
+						int tilesHighHalf = Mathf.RoundToInt(tileMapReference.tilesHigh/2);
+						int tilesHighQuarter = Mathf.RoundToInt(tileMapReference.tilesHigh/4);
+						
+						if(tileMapReference.tilesWide % 2 == 0) {
+							sinkQueueStartTileX = (tilesWideHalf - tilesWideQuarter);
+							sinkQueueReference.queueTilesWide = (tilesWideQuarter * 2);
+						}
+						else {
+							sinkQueueStartTileX -= tilesWideQuarter;
+							sinkQueueReference.queueTilesWide = (tilesWideHalf);
+						}
+						
+						if(tileMapReference.tilesHigh % 2 == 0) {
+							sinkQueueStartTileY = (tilesHighHalf - tilesHighQuarter);
+							sinkQueueReference.queueTilesHigh = (tilesHighQuarter*2);
+						}
+						else {
+							sinkQueueStartTileY = (tilesHighHalf - tilesHighQuarter);
+							sinkQueueReference.queueTilesHigh = (tilesHighHalf);
+						}
+						
+						sinkQueueReference.startXPosition = tileMapReference.tiles[sinkQueueStartTileY, sinkQueueStartTileX].transform.position.x;
+						sinkQueueReference.startYPosition = tileMapReference.tiles[sinkQueueStartTileY, sinkQueueStartTileX].transform.position.y;
+						
+						sinkQueueReference.TriggerQueueGeneration();
+					}
+				}
+			}
+			//------------------------------------------------
+			
+			//Line Queues
+			if(initializedTileMap
+			   && !initializedLineQueues) {
+				bool detectedNullInEntranceQueueTiles = false;
+				bool detectedNullInSinkQueueTiles = false;
+				
+				//entrance queue
+				if(entranceQueueGameObject != null) {
+					foreach(GameObject gameObj in entranceQueueReference.queueTileObjects) {
+						if(gameObj == null ) {
+							detectedNullInEntranceQueueTiles = true;
+						}
+					}
+				}
+				
+				//sink queue
+				if(sinkQueueGameObject != null) {
+					foreach(GameObject gameObj in sinkQueueReference.queueTileObjects) {
+						if(gameObj == null ) {
+							detectedNullInSinkQueueTiles = true;
+						}
+					}
+				}
+				
+				if(entranceQueueReference.queueTileObjects.Count > 0
+				   && sinkQueueReference.queueTileObjects.Count > 0
+				   && !detectedNullInEntranceQueueTiles
+				   && !detectedNullInSinkQueueTiles) {
+					initializedLineQueues = true;
+				}
+			}
+			//------------------------------------------------
+			
+			
+			//confirming generation completed
+			if(initializedTileMap
+			   && initializedLineQueues) {
+				
+				//Generates the exit tile
+				foreach(GameObject gameObj in tileMapReference.tiles) {
+					//Debug.Log("derp derp");
+					if(gameObj.GetComponent<BathroomTile>() != null) {
+						if(gameObj.GetComponent<BathroomTile>().objectInTile != null) {
+							//Debug.Log("Tile name: " + gameObj.name);
+							//Debug.Log("Bathroom Object Name: " + gameObj.GetComponent<BathroomTile>().objectInTile.name);
+							if(gameObj.GetComponent<BathroomTile>().bathroomObjectType == BathroomObjectType.Entrance) {
+								//Debug.Log("Generating exit");
+								GenerateBathroomExitNextToBathroomEntrance(gameObj.GetComponent<BathroomTile>().tileX, gameObj.GetComponent<BathroomTile>().tileY);
+							}
+						}
+					}
+				}
+				// end of exit tile logic
+				
+				triggerLevelGeneration = false;
+				initializationStarted = false;
+				GenerateBathroomObjectTypeOnBorderTilesRandomly(5, BathroomObjectType.Sink);
+				GenerateBathroomObjectTypeOnBorderTilesRandomly(5, BathroomObjectType.Stall);
+				GenerateBathroomObjectTypeOnBorderTilesRandomly(5, BathroomObjectType.Urinal);
+				//Debug.Log("initialization completed");
+			}
+			//------------------------------------------------
+		}
+	}
+	
+	public void GenerateBathroomExitNextToBathroomEntrance(int entranceTileX, int entranceTileY) {
+		//bool canPlaceExitNextToEntrance = false;
+		//Debug.Log("Entrance wall: " + GetTileWall(entranceTileX, entranceTileY).ToString());
+		
+		GameObject exitTile = GenerateBathroomObject(BathroomObjectType.Exit);
+		GameObject tileSelectedForExit = null;
+		
+		switch(tileMapReference.GetTileWall(entranceTileX, entranceTileY)) {
+		case(BathroomWall.None):
+			//something broke
+			Debug.Log("Something broke, the GenerateBathroomExitNextToBathroomEntrance method in the BathroomTileMap class broke when called, found BathroomWall.None");
+			break;
+		case(BathroomWall.TopLeft):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY, entranceTileX + 1];
+			break;
+		case(BathroomWall.Top):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY, entranceTileX + 1];
+			break;
+		case(BathroomWall.TopRight):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY + 1, entranceTileX];
+			break;
+		case(BathroomWall.Left):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY - 1, entranceTileX];
+			break;
+		case(BathroomWall.Right):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY + 1, entranceTileX];
+			break;
+		case(BathroomWall.BottomLeft):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY - 1, entranceTileX];
+			break;
+		case(BathroomWall.Bottom):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY, entranceTileX - 1];
+			break;
+		case(BathroomWall.BottomRight):
+			tileSelectedForExit = tileMapReference.tiles[entranceTileY, entranceTileX - 1];
+			break;
+		default:
+			Debug.Log("Something broke, the GenerateBathroomExitNextToBathroomEntrance method in the BathroomTileMap class broke when called.");
+			break;
+		}
+		exitTile.transform.position = new Vector3(tileSelectedForExit.transform.position.x,
+		                                          tileSelectedForExit.transform.position.y,
+		                                          exitTile.transform.position.z);
+		
+		exitTile.transform.parent = tileSelectedForExit.transform;
+		
+		tileSelectedForExit.GetComponent<BathroomTile>().objectInTile = exitTile;
+		tileSelectedForExit.GetComponent<BathroomTile>().bathroomObjectType = BathroomObjectType.Exit;
+	}
+	
+	public void TriggerStraightLineQueueInRandomTileMapBorderLocationGeneration(BathroomTileMap tileMapReference, LineQueue lineQueueGeneratingTiles) {
+		Vector2 entranceTileLocation = RandomGenerator.Instance.SelectRandomTileFromRandomWall(tileMapReference.tilesWide-1, tileMapReference.tilesHigh-1);
+		
+		//Debug.Log(entranceTileLocation);
+		BathroomWall tileWall = tileMapReference.GetTileWall((int)entranceTileLocation.x,(int)entranceTileLocation.y);
+		
+		//Debug.Log(tileWall.ToString());
+		int xOffsetModifier = 1;
+		int yOffsetModifier = 1;
+		int tilesWide = 1;
+		int tilesHigh = 1;
+		
+		switch(tileWall) {
+		case(BathroomWall.None):
+			xOffsetModifier = 0;
+			yOffsetModifier = 0;
+			tilesWide = 0;
+			tilesHigh = 0;
+			break;
+		case(BathroomWall.TopLeft):
+			xOffsetModifier = 0;
+			yOffsetModifier = 1;
+			tilesWide = 1;
+			tilesHigh = 5;
+			break;
+		case(BathroomWall.Top):
+			xOffsetModifier = 0;
+			yOffsetModifier = 1;
+			tilesWide = 1;
+			tilesHigh = 5;
+			break;
+		case(BathroomWall.TopRight):
+			xOffsetModifier = 1;
+			yOffsetModifier = 0;
+			tilesWide = 5;
+			tilesHigh = 1;
+			break;
+		case(BathroomWall.Left):
+			xOffsetModifier = -1;
+			yOffsetModifier = 0;
+			tilesWide = 5;
+			tilesHigh = 1;
+			//Debug.Log("Left Wall");
+			break;
+		case(BathroomWall.Right):
+			xOffsetModifier = 1;
+			yOffsetModifier = 0;
+			tilesWide = 5;
+			tilesHigh = 1;
+			break;
+		case(BathroomWall.BottomLeft):
+			xOffsetModifier = -1;
+			yOffsetModifier = 0;
+			tilesWide = 5;
+			tilesHigh = 1;
+			break;
+		case(BathroomWall.BottomRight):
+			xOffsetModifier = 0;
+			yOffsetModifier = -1;
+			tilesWide = 1;
+			tilesHigh = 5;
+			break;
+		case(BathroomWall.Bottom):
+			xOffsetModifier = 0;
+			yOffsetModifier = -1;
+			tilesWide = 1;
+			tilesHigh = 5;
+			break;
+		default:
+			xOffsetModifier = 1;
+			yOffsetModifier = 1;
+			break;
+		}
+		//Debug.Log("Entrance on " + tileWall.ToString());
+		
+		lineQueueGeneratingTiles.startXPosition = tileMapReference.tiles[(int)entranceTileLocation.y, (int)entranceTileLocation.x].transform.position.x;
+		lineQueueGeneratingTiles.startYPosition = tileMapReference.tiles[(int)entranceTileLocation.y, (int)entranceTileLocation.x].transform.position.y;
+		lineQueueGeneratingTiles.queueTilesWide = tilesWide; 
+		lineQueueGeneratingTiles.queueTilesHigh = tilesHigh;
+		lineQueueGeneratingTiles.xTileOffsetModifier = xOffsetModifier;
+		lineQueueGeneratingTiles.yTileOffsetModifier = yOffsetModifier;
+		lineQueueGeneratingTiles.triggerQueueGeneration = true;
+		
+		tileMapReference.tiles[(int)entranceTileLocation.y, (int)entranceTileLocation.x].GetComponent<BathroomTile>().SetBathroomObjectInTile(entranceQueueGameObject, BathroomObjectType.Entrance);
+	}
+	
+	public void GenerateRandomBroGameObjectInEntranceQueue() {
+		GameObject newBroGameObject = null;
+		//Debug.Log("queueTileObjects Size: " + entranceQueueReference.queueTileObjects.Count);
+		newBroGameObject = RandomGenerator.Instance.GenerateBroGameObject(RandomGenerator.Instance.SelectRandomBroType(), entranceQueueReference.queueTileObjects[entranceQueueReference.queueTileObjects.Count-1].transform.position);
+		entranceQueueReference.AddGameObjectToLineQueue(newBroGameObject);
+		allBros.Add(newBroGameObject);
+		newBroGameObject.transform.parent = allBrosGameObject.transform;
+	}
+	
+	public void GenerateBathroomObjectTypeOnBorderTilesRandomly(int numberOfObjectsToGenerate, BathroomObjectType typeOfBathroomObjectToGenerate) {
+		//Debug.Log("Generating");
+		int currentNumberGenerated = 0;
+		
+		while(currentNumberGenerated < numberOfObjectsToGenerate) {
+			
+			List<GameObject> bathroomTilesWithNoBathroomObject = tileMapReference.GetAllBathroomTilesWithoutBathroomObjects(tileMapReference.GetBorderTilesInTileMap());
+			if(bathroomTilesWithNoBathroomObject.Count != 0) {
+				int indexOfObjectSelected = Random.Range(0, bathroomTilesWithNoBathroomObject.Count);
+				
+				GameObject newBathroomObject = GenerateBathroomObject(typeOfBathroomObjectToGenerate);
+				
+				newBathroomObject.transform.position = new Vector3(bathroomTilesWithNoBathroomObject[indexOfObjectSelected].transform.position.x,
+				                                                   bathroomTilesWithNoBathroomObject[indexOfObjectSelected].transform.position.y,
+				                                                   newBathroomObject.transform.position.z);
+				newBathroomObject.transform.parent = bathroomTilesWithNoBathroomObject[indexOfObjectSelected].transform;
+				bathroomTilesWithNoBathroomObject[indexOfObjectSelected].GetComponent<BathroomTile>().SetBathroomObjectInTile(newBathroomObject, typeOfBathroomObjectToGenerate);
+				
+				//				Debug.Log(bathroomTilesWithNoBathroomObject[indexOfObjectSelected].GetComponent<BathroomTile>().bathroomObjectType.ToString() + " was assigned to " + bathroomTilesWithNoBathroomObject[indexOfObjectSelected].name);
+				//				Debug.Log("--------------");
+				
+				currentNumberGenerated++;
+			}
+			else {
+				currentNumberGenerated = numberOfObjectsToGenerate;
+			}
+		}
+	}
+	
+	public GameObject GenerateBathroomObject(BathroomObjectType typeOfBathroomObjectToGenerate) {
+		GameObject newBathroomObject = null;
+		
+		switch(typeOfBathroomObjectToGenerate) {
+		case BathroomObjectType.None:
+			break;
+		case BathroomObjectType.Entrance:
+			break;
+		case BathroomObjectType.Exit:
+			newBathroomObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Bathroom/BathroomObjects/Exit") as GameObject);
+			break;
+		case BathroomObjectType.Sink:
+			newBathroomObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Bathroom/BathroomObjects/Sink") as GameObject);
+			break;
+		case BathroomObjectType.Stall:
+			newBathroomObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Bathroom/BathroomObjects/Stall") as GameObject);
+			break;
+		case BathroomObjectType.Urinal:
+			newBathroomObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Bathroom/BathroomObjects/Urinal") as GameObject);
+			break;
+		default:
+			Debug.Log("Bummer, something went wrong in the method: \"GenerateBathroomObjectTypeOnBorderTilesRandomly()\"");
+			break;
+		}
+		
+		return newBathroomObject;
+	}
+}

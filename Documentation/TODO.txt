@@ -1,0 +1,283 @@
+--------------------------------------------------------------------------------
+IN PROGRESS
+--------------------------------------------------------------------------------
+ - Finish fixing the bro generator to allow custom generation types for the bro generations specified
+ - Finish first test level
+
+--------------------------------------------------------------------------------
+TODO: Bathroom Brotocol 
+--------------------------------------------------------------------------------
+ - Make GameManager for tracking the state of the player's accomplishments
+ - Create hook ins for animations for unlocking levels
+ - Create bro rush mode
+ - Create north canyon level
+ - Connect all the levels with place holder information
+ - Focus for play testing is making the changes that need to be done to balance the feel out. Once the changes are implemented create several test levels and used them to identify the right flow
+ - Create bro swarm
+	- Bro swarm generates in numbers of 2 - N
+	- Bro swarm has main bro
+	- All bros will crowd around the main bro in an arbitrary radius that should be modified
+	- Main bro will shuffle just like other bros, but will tend toward one point
+	- All bros in a queue will swarm within 1 tile of the main bro
+	- All bros go to a random tile and disperse to random objects once arriving at the tile
+	- Bro swarm in a queue
+	- Chatty bros are generated in pairs
+	- Chatty bro/gym bro needs to be placed next together.
+	- Chatty bros/gym bros always have the same relief type.
+		- Relief type can be pee or poop
+	- You don't get the points for brotocol until the second chatty bro/gym bro is assigned. 
+	- If one chatty bro arrives at an object to wash their hands before the other chatty bro has relieved themself, then all points are lost for brotocol
+	- If both bros are on the same relief type, and they're next to each other, then brotocol is allowed
+----------------------------------------
+CHANGES THAT NEED TO BE MADE BEFORE PLAY TESTING CAN OCCUR
+ - TimeWaster bro isn't working again... need to fix it.
+ - Slob bro needs to be balanced. Right now the player basically loses a hundred points every time the bro enters because the slob bro forces a bathroom object to be broken. Doesn't seem fair to the player... Balance it to still be a detriment, but not affect the player negatively, but instead creating a more difficult environment to work in
+ - Fix cutting bro to be more balanced. Currently he goes in and performs all the actions for the player making it so they're guaranteed the maximum points. This creates no challenge for the player and doesn't feel very good for playing. Either change it to easily lose points for the player, or modify its bathroom interaction
+	- Maybe make it so that the player loses points if they cut a queue that has bros in it, but if the queue is empty they 
+ - Redo sinks, stalls, and urinals to track for each bro that breaks them.... -__-; EEEVVVVEERRRRYYYYYYTHHHIIINNNGGGG!!!!!
+ - Change timewaster bro to go to a random bathroom object after a random duration and destroy it to give the player impetus to tap him in order to bounce him
+ - For bro probabilities create a way to indicate that you want all bros generated to be the type of the first bro selected from the bro probability list
+
+ //-----------------------------------
+ Things I wanna do, but probably won't for awhile
+ //-----------------------------------.
+ - Modify path calculator to add buffers to the path calulcations so that bros don't traverse through the center of the tiles, but rather random points within the tiles calculated
+ - Create Pinch, zoom, and move camera features (Something to support navigating the camera around
+ - Configure levels descriptions to show objectives
+ - Create pathing options so different routes can be taken
+ - Mock up bro fist cinematic when switching to score counter
+ 
+--------------------------------------------------------------------------------
+Finished
+--------------------------------------------------------------------------------
+ - Fix the Janitor.... again
+ - Create Different sets of test logic for the test level
+ - Create test puzzle mode (This was a bad idea)
+ - Create rotation mechanic for the camera
+ - Separate bro logic so that they can skip a line queue, target random bathroom object on entrance, or roam on entrance. All separately
+ - Create test level with stalls and urinals configured such that that they're inside the restrom and centered
+--------------------------------------------------------------------------------
+- Add cool down for when bro stand offs are stopped so that fights don't occur right away
+ - Bros should be able to skip the line queue entirely, or be able to add themselves into the line queue, this should be handled by both the line queue and the bro himself in his 'InAQueue' logic
+ - Bros should be able to be set to a random bathroom object, or roaming after they've occupied a bathroom object
+ - Fix drunk bro so they leave with the options to wash their hands, but they don't have to have their hands washed
+ - Implement cutting bro that will skip the entire line and target a bathroom object randomly (Done)
+ - Create farts dropped by farting bro that get added to bathroom tile blocker
+	- Farts disappear and remove themelves from the bathroom tile blockers list	
+ - Segment scoring logic to be specific brotocol checks with respect to each of the bros possible brotocol rules...
+	- This means for generic bros there would be a brotocol check for no bros next to them and this would be incremeneted in the score manager
+	- This means for generic bros there would be a brotocol check for the correct relief type in the bathroom object
+ - Configure OnArrival brotocol check for all the bros
+	- BluetoothBro (Done)
+	- ChattyBro (Done)
+	- CuttingBro (Done)
+	- DrunkBro (Done)
+	- FartingBro (Done)
+	- GenericBro (Done)
+	- Hobro
+	- RichBro (Done)
+	- ShyBro (Done)
+	- SlobBro (Done)
+	- TimeWasterBro (Done)
+ - Convert stack used for the textbox manager into a queue instead
+ - Implement time-waster bro (This bro will go to the restroom to waste time and stand around. He needs to be allowed 5 seconds of reprieve and then needs to be sent out of the restroom. He enters the restroom and walks to locations and stands, texts, whatevers, then moves to another location.)
+ - Implement cutting-bro, where he comes in and targets a random bathroom object of his choice to use.
+ - For bro distribution enable boolean or something to indicate that the bros should be generated uniformally
+ - Fix Janitor to clean up vomit
+	- Fix selection manager to be able to account for bathroom tile blockers
+ - Start implementing other custom bros. Make as many as possible for testing the game
+ - Create base logic and manager for bathroom tile blockers
+	- Add vomit to bathroom tile blockers
+	
+ //-----------------------------------
+ // Bros Implemented
+ //-----------------------------------
+ - Generic
+ - Chatty (No brotocol)
+ - Bluetooth (No brotocol)
+ - Farting (No brotocol)
+ - Drunk (No brotocol)
+ - Cutting Bro (No brotocol)
+ - Time waster bro (No brotocol)
+ - Shy Bro (No brotocol)
+ - Rich Bro (No brotocol)
+ - SlobBro (No brotocol)
+ 
+ //-----------------------------------
+ // Bros To Implement
+ //-----------------------------------
+ - Handicap Bro?
+ - Impatient Bro
+ - Hobro
+ 
+--------------------------------------------------------------------------------
+ - Finish Drunk Bro implementation
+ - Fix stand off start position
+ - Create end of level game change
+ - Create level one
+ - Implement different bro scripts (Done)
+ - Fix other bros to generate correctly with correct scripts (Done)
+ - Standoff bro logic for stopping fights
+ 
+--------------------------------------------------------------------------------
+REFACTOR NOTES
+--------------------------------------------------------------------------------
+Static class for calculating calculating AStar path with the open nodes and closed nodes passed in
+Create the ability to alter path choices selection next nodes
+Create a way to toggle diagonal calculations
+Always return a path but if bro reaches target destination and isn't at a bathroom object he'll start roaming
+Create TileBlocker manager to track the bathroom objects as well
+
+- Entrance queues are being kept
+	- There will be multiple entrance queues
+	- If an entrance queue fills up the bro at the front of the queue will be pushed into the bathroom and will start wandering until he is dealt with
+- All bros will roam, their relief type determines what kind of stall they need to use
+- No more sink queues, bros will wander with the relief type shown that they need to wash their hands
+- Bathroom Manager will be a single reference so that it can be accessed from all scripts
+- BathroomTiles no longer contain a bathroom object, they are separately contained and the bathroom objects will store what tile they are located in
+- Bathroom tiles will be treated like a cartesion plan where 0,0 is in the bottom left for the sake of easy convention reminder
+- Bro manager
+	- Will be a top level game object to store bros in as well as provide a point of reference for interacting with bros
+- Bathroom Tile Map
+- Bathroom Object Manager
+	- Will be a top level game object to store bathroom objects in
+- Entrance Queue Manager
+- Bathroom tile blockers manager
+- No self generating levels yet
+
+--------------------------------------------------------------------------------
+REFACTOR TODO
+--------------------------------------------------------------------------------
+ - Create Pause Button (Done)
+ - Create Summon Button (Done)
+ - Fix Janitor/Bro roaming pathing. Something is wrong, not sure what, but will occasionally path through bathroom object (Done)
+--------------------------------------------------------------------------------
+- Fix sinks to break for both urine and poop, changing state accordingly (Done)
+ - Fix urinals to break for bros who have relieved themselves already (Done)
+ - Fix stalls to break for bros who have relieved themselves already (Done)
+ - Update speech bubble to reflect washing hands (Done)
+ - Fix selection so bros don't go to broken bathroom objects (Done)
+ - Re-implement fighting bros (Done)
+--------------------------------------------------------------------------------
+ - Single line queue (Done)
+ - Multiple line queue (Done)
+ - Generating bros randomly in line queues (Done - bros need to be re-added for this to be complete)
+ - Generating in targetted line queues (Done)
+ - Hookup bro selection (Done)
+ - Implement Bathroom Objects (Done)
+ - Implement Bro pathing (Done)
+	- Cannot path to random tiles unless Roaming (Done)
+	- Can path to bathroom objects (Done)
+	- If blocked on path to location begin roaming
+ - Implement A* pathing (Done)
+	- Account for bathroom tile blockers list (Done)
+ - Implement Bro roaming (Done)
+ - Implement sink step (Done)
+ - Implement exit step (Done)
+	
+--------------------------------------------------------------------------------
+ - Implement multiple entrance queues (Done)
+ - Consider changing linequeues to support reconfigurations that aren't linear. This just means that bros won't be ordered in the sink queue tiles that are from the first tile to the last tile. Instead they'll roam to any line queue tile available
+ - Start creating actual game configuration for playing it
+ - Configure UI component that will go from green for passing, red for failing, to reflect your ratio of your current score/possible score
+ - Implement FartingBro
+	- Should fart two tiles out directly and and one tile diagonally
+	- if bro exists on arrival will trigger bro to leave the restroom
+	- he prohibits stall use for adjacent stalls when occupying
+ - Redo score logic so that each bro handles its own score logic
+ 
+ - Change bro class to extend to the other bro classes instead of relying on the type being specified (Done)
+-------------------------------------------------------------------------------- 
+ - Consider changing the score manager object to a singleton for easier referencing (Done)
+ - Implement max score tracker for scoring logic (Done)
+-------------------------------------------------------------------------------- 
+ - Time to revisit score logic
+	- Completely refactor the code (Done)
+	- Configure code to do specific checks for brotocol bonuses listed in game design document
+		- BasicReliefCheck (Done)
+		- StallConserver (Done)
+		- DrunkBroNoVomit (Done)
+		- ChattyBroNextToChattyBro (Done)
+		- BluetoothBroAlone (Done)	
+--------------------------------------------------------------------------------
+ - Implement new bros
+	- Drunk Bro (Done)
+	- Handicap Bro (Wait until everything else is implemented, then implment handicap bro and handicap stall)
+	- Chatty Bro (Done)
+	- Bluetooth Bro (Done)
+	- Farting Bro (Done)
+--------------------------------------------------------------------------------
+ - Configure bros to path randomly inside the bathroom when blocked by vomit or something else (Not Done)
+	- (Reason) Bros will just be stuff if they can't path, better at the moment
+ - Implement drunk bro relief logic for puking and exiting (Done)
+ - Configure janitors to clean up bathroom blockers (Done)
+ - Bathroom blockers are just overlays onto the tile map (Done)
+	- Make vomit be an extended part of an object called bathroom blockers (Done)
+	- These will be tracked in a list (Done)
+	- This list will be used for generating the list of closed nodes when generating bro a star path (Done)
+ - Implement Drunk Bro(Done)
+	- Implement random pathing (Done)
+	- Implement throw up and exit (Done)
+--------------------------------------------------------------------------------	
+ - Refactor code so bro logic is compartmentalized and consistent on logic basic (Done, should be ready to be extended)
+ - Fix that weird walking animation bug where it'll make them stand for a second when they arrive at their location (Done, was a side effect of the animation sate diagram, retooled it and it's fixed.)
+--------------------------------------------------------------------------------
+ - Tutorial Level... real basic, just explain the rules....
+	- First part is explaining what the player is looking at
+	- Second part is explaining queues
+	- Third part is having a bro come in and explaining the interaction
+	- Fourth is selecting the location and sending the bro there
+	- Fifth is having the bro arrive and explain how scoring works
+	- Sixth will explain bros going to sink queues, and exiting
+--------------------------------------------------------------------------------
+ - Make it so you can create levels manually and so that you can create levels procedurally (Done)
+	- Make bros work with manual level (Done)
+	- Make janitors work with manual levels (Done)
+--------------------------------------------------------------------------------
+ - Implement appropriate base level brotocol logic score modifier (Done sort of :|)
+--------------------------------------------------------------------------------
+	- Afterwards create basic brotocol applied notifier and get it to trigger every time it's applied
+		- If possible try to make it so a generalized string is called and in turn I can probably use an enum to get it handled easy
+ - Fix queue logic so bros agitate accordingly
+ - Fixing Standoff logic so animations reflect what should at least sort of occur
+-------------------------------------------------------------------------------- 
+  - Bros who have to poop will poop in urinals
+	- Urinal state become broken by poop
+  - Create fight logic so bros turn into an object containing them called FightingBros (Done)
+	- Should contain both of the bros and randomly traverse the bathroom in a puff of cloud (Done)
+	- If interacts with another bro, the bro that isn't in a fight will push it in a direction..... or something
+	- If interacts with a janitor he should disarm them in a certain way that looks cool or something
+		- maybe like a zen shield for a certain type of janitor
+		- maybe a flash of light and it'll show him holding them apart on each side of them, by their heads
+		- fuck I don't know
+	- If interacts with bathroom object destroy it (Done)
+-------------------------------------------------------------------------------- 
+ - Score System (Done)
+ - Brotocol Followed Score Bonus Calculation (Done) Created the logic needed to get to the point that is needed but without more refined rules there's not point in moving forward. Need to create brotocol rules in order to implement that logic
+ - A* Pathing (Done)
+--------------------------------------------------------------------------------
+ - Destroy Bathroom Objects (Done)
+ - Repair man (Done)
+	- Generate Repairman (Done)
+		- Basic random pathing to tiles inside the bathroom that aren't the sink, aren't the entrance, and arent the borders
+		- Selectable to initiate object selection
+	- (Possible player motivation)If a repairman is out this will cause players to lose 10% of all points gained. This is to incentivize the player popping the janitor in and out and to hide him.
+ - Repair Bathroom Objects (Done)
+--------------------------------------------------------------------------------
+- LineQueue for BathroomSinks (Done)
+- Context sensitive selection. Bro cannot go back to toilet after using it. Bro cannot go back to sink after finishing, must leave. (Done)
+- Making a bro stand in front of a sink
+- Multiple Sinks (Done)
+- Destroying Urinals/Stalls/Sinks if more than one Bro is in it
+	- Bros leave the bathroom after a fight (who wants to pee or take a poop with all that adrenaline in them anyway?)
+	- Score subtracts points on failure
+- Score System
+- Fix collider enabled for when bro is selected in queue (Done)
+
+--------------------------------------------------------------------------------
+ - Have BathroomTileMap use BathroomTiles instead of TileMap tiles (Done)
+ - Configure BathroomTileMap tiles to have a bathroom object in tile value (Done)
+	- Null means nothing in there (Done)
+	- Create bathroom object class (Done)
+ - BathroomObjects Generating (Done)
+ - EntranceQueue with bros generating (Done)

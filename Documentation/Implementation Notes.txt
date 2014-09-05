@@ -1,0 +1,6 @@
+--------------------------------------------------------------------------------
+TileMap
+--------------------------------------------------------------------------------
+- The tile map is implemented using a linked list with tiles that store their x and y location.
+	- This is done because Unity won't allow a multidimensional array to be serialized for the inspector, which makes it almost impossible to use the scene editor for manually creating tile maps
+	- This is ok because tile maps won't need to be accessed, and will be used purely to create the background

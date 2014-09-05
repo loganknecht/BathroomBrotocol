@@ -1,0 +1,12 @@
+--------------------------------------------------------------------------------
+Literal Bathroom Brotocol Rules
+--------------------------------------------------------------------------------
+
+ - Peace and Quiet: If there isn't a bro adjacent to the bro placed in the bathroom object
+ - Chatty Cathy: Place two talkative bros next to each other
+	- Chatterbox-car Train: consider doing another check down the line to see if there's a chat train (name it something clever)
+ - Quarantined: Additional bonus for making a cell phone bro relieve themself with no one around so they aren't annoyed
+ - Mellow Yellow: A bro that came in needing to pee was sent to the urinal instead of wasting time on a stall
+ - Brown Town: A bro that came in needing to poop was sent to the stall area instead of having him poop in a urinal
+ - This Guy Is A Jerk!: One of the few negative brotocol rules, lose points when a bro takes a handicap stall, and there's a handicap bro in the room
+ 
