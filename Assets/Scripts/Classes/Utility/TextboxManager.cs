@@ -20,7 +20,7 @@ public class TextboxManager : MonoBehaviour {
   public TextboxButtonPressLogic textboxButtonLogicToPerform = null;
   public TextboxTextFinishedLogic textboxTextFinishedLogicToPerform = null;
 
-  public bool hasFinishedTextBoxText = false;
+  public bool finishedTextboxText = false;
   //----------------------------------------------------------------------------
 
   //Probably doesn't need to be a singleton
@@ -66,7 +66,7 @@ public class TextboxManager : MonoBehaviour {
     textboxText = textboxTextObject.GetComponent<UILabel>();
 
     textboxButtonLogicToPerform = new TextboxButtonPressLogic(MoveToNextTextboxText);
-    textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(DefaultTextFinishedLogicToPerform);
+    SetTextboxFinishedLogicToDefault();
 	}
 
 	// Update is called once per frame
@@ -78,17 +78,30 @@ public class TextboxManager : MonoBehaviour {
   }
 
   public void PerformTextboxTextFinished() {
+    finishedTextboxText = true;
     textboxTextFinishedLogicToPerform();
   }
 
   public void DefaultTextFinishedLogicToPerform() {
-    hasFinishedTextBoxText = true;
   }
 
   public void SetNewTextBoxLogic(TextboxButtonPressLogic newLogic) {
     textboxButtonLogicToPerform = newLogic;
   }
+  public void SetTextboxFinishedLogic(TextboxTextFinishedLogic newTextboxTextFinishedLogic) {
+    textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(newTextboxTextFinishedLogic);
+  }
+  public void SetTextboxFinishedLogicToDefault() {
+    textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(DefaultTextFinishedLogicToPerform);
+  }
 
+  public bool HasFinishedTextboxTextSet() {
+    return finishedTextboxText;
+  }
+
+  //----------------------------------------------------------------------------
+  // GUI STUFF GOES DOWN HERE
+  //----------------------------------------------------------------------------
   public void Hide() {
     TweenExecutor.TweenObjectAlpha(this.gameObject, 1, 0, 0, 1, UITweener.Method.Linear, null);
     // textboxPanel.alpha = 0;
@@ -115,6 +128,7 @@ public class TextboxManager : MonoBehaviour {
   }
 
   public void SetTextboxTextSet(Queue newTextboxTextSet) {
+    finishedTextboxText = false;
     textboxTextSet = newTextboxTextSet;
     PopNextTextboxText();
   }

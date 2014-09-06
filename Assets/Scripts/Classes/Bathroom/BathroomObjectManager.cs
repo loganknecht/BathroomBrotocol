@@ -143,4 +143,29 @@ public class BathroomObjectManager : MonoBehaviour {
       return bathroomObjectsOfSpecifiedType[selectedBathroomObject];
     }
   }
+  public float GetPercentageOfBathroomObjectTypeBroken(params BathroomObjectType[] bathroomObjectTypes) {
+    float totalObjectsFound = 0f;
+    float totalObjectsFoundBroken = 0f;
+    foreach(GameObject bathroomObject in allBathroomObjects) {
+      BathroomObject bathObjRef = bathroomObject.GetComponent<BathroomObject>();
+
+      foreach(BathroomObjectType bathroomObjectType in bathroomObjectTypes) {
+        if(bathObjRef.type == bathroomObjectType) {
+          totalObjectsFound++;
+          if(bathObjRef.state == BathroomObjectState.Broken
+             || bathObjRef.state == BathroomObjectState.BrokenByPee
+             || bathObjRef.state == BathroomObjectState.BrokenByPoop) {
+            totalObjectsFoundBroken++;
+          }
+        }
+      }
+    }
+
+    if(totalObjectsFoundBroken == 0) {
+      return 0;
+    }
+    else {
+      return totalObjectsFoundBroken/totalObjectsFound;
+    }
+  }
 }

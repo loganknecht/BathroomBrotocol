@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -10,7 +10,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
-    GameObject startAnimationGameObject = CreateWaveState("Start Animation Game Object",
+    GameObject startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
                                                           TriggerStartAnimation,
                                                           PerformStartAnimation,
                                                           FinishStartAnimation);
@@ -20,7 +20,28 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                      PerformFirstWave,
                                                      FinishFirstWave);
 
-    InitializeWaveStates(startAnimationGameObject, firstWaveGameObject);
+    GameObject encouragementAnimationWaveGameObject = CreateWaveState("EncouragementAnimation Wave Game Object",
+                                                     TriggerEncouragementAnimationWave,
+                                                     PerformEncouragementAnimationWave,
+                                                     FinishEncouragementAnimationWave);
+
+    GameObject secondWaveGameObject = CreateWaveState("Second Wave Game Object",
+                                                 TriggerSecondWave,
+                                                 PerformSecondWave,
+                                                 FinishSecondWave);
+
+    GameObject endOfLevelAnimationWaveGameObject = CreateWaveState("EndOfLevelAnimation Wave Game Object",
+                                                                   TriggerEndOfLevelAnimationWave,
+                                                                   PerformEndOfLevelAnimationWave,
+                                                                   FinishEndOfLevelAnimationWave);
+
+    InitializeWaveStates(
+                         // startAnimationWaveGameObject,
+                         // firstWaveGameObject,
+                         // encouragementAnimationWaveGameObject,
+                         // secondWaveGameObject,
+                         endOfLevelAnimationWaveGameObject
+                         );
   }
 
   // Update is called once per frame
@@ -59,7 +80,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   }
   public void PerformStartAnimation() {
     // Debug.Log("performing start animation");
-    if(TextboxManager.Instance.hasFinishedTextBoxText) {
+    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
@@ -78,7 +99,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
     // public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
-    BroDistributionObject firstWave = new BroDistributionObject(0, 10, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    // BroDistributionObject firstWave = new BroDistributionObject(0, 10, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
     firstWave.SetFightCheckType(BroDistribution.AllBros, false);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
@@ -96,14 +118,88 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
   }
   public void FinishFirstWave() {
-    waveLogicFinished = true;
+    PerformWaveStateHasFinishedTrigger();
+  }
+
+  public void TriggerEncouragementAnimationWave() {
+    PerformWaveStateStartedTrigger();
+
+    LevelManager.Instance.ShowJanitorOverlay();
+    TextboxManager.Instance.Show();
+
+    float percentageOfBathroomLeft = ((1 - BathroomObjectManager.Instance.GetPercentageOfBathroomObjectTypeBroken()) * 10);
+    Queue textQueue = new Queue();
+    textQueue.Enqueue("Not bad, not bad...");
+    textQueue.Enqueue("Looks like you have... about... " + percentageOfBathroomLeft + "% of the bathroom remaining...");
+    textQueue.Enqueue("Again, not bad... but you know... you could do better. One of the things you need to understand is that in this role, as Bathroom Bro Czar, you can't expect to be able to repair your restroom while you work.");
+    textQueue.Enqueue("What I'm trying to say is that once an object in the bathroom is broken you can't repair it. Them's the breaks.");
+    textQueue.Enqueue("We'll send a clean up and repair crew in after we do our job, but that's just how it goes.");
+    textQueue.Enqueue("Alright enough talking, get back to impressing me! If you can manage this restroom without losing all the objects in this restroom, then we'll talk about moving you forward.");
+    TextboxManager.Instance.SetTextboxTextSet(textQueue);
+  }
+  public void PerformEncouragementAnimationWave() {
+    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+  }
+  public void FinishEncouragementAnimationWave() {
     PerformWaveStateHasFinishedTrigger();
   }
 
   public void TriggerSecondWave() {
+    PerformWaveStateStartedTrigger();
+
+    LevelManager.Instance.HideJanitorOverlay();
+    TextboxManager.Instance.Hide();
+
+    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+    Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+
+    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
+    firstWave.SetFightCheckType(BroDistribution.AllBros, false);
+    firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+    // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+
+    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                             firstWave,
+                                                                            });
   }
   public void PerformSecondWave() {
+    if(BroGenerator.Instance.HasFinishedGenerating()
+       && BroManager.Instance.NoBrosInRestroom) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
   }
   public void FinishSecondWave() {
+    PerformWaveStateHasFinishedTrigger();
+  }
+
+  public void TriggerEndOfLevelAnimationWave() {
+    PerformWaveStateStartedTrigger();
+
+    LevelManager.Instance.ShowJanitorOverlay();
+    TextboxManager.Instance.Show();
+
+    Queue textQueue = new Queue();
+    textQueue.Enqueue("Alright, alright, alright. It looks like you have a knack for this.");
+    textQueue.Enqueue("Guess you're going to the next round. Come back for the next round of try-outs. We'll see if you still have what it takes.");
+    textQueue.Enqueue("Now get out of here!");
+    TextboxManager.Instance.SetTextboxTextSet(textQueue);
+    TextboxManager.Instance.SetTextboxFinishedLogic(PerformFinalEndOfLevelAnimationActions);
+  }
+  public void PerformEndOfLevelAnimationWave() {
+    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+  }
+  public void FinishEndOfLevelAnimationWave() {
+    waveLogicFinished = true;
+    PerformWaveStateHasFinishedTrigger();
+  }
+  public void PerformFinalEndOfLevelAnimationActions() {
+    LevelManager.Instance.HideJanitorOverlay();
+    TextboxManager.Instance.Hide();
   }
 }
