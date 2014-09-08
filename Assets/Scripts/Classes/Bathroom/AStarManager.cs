@@ -47,6 +47,7 @@ public class AStarManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    ConfigurePermantleyClosedNodes();
 	}
 
 	// Update is called once per frame
@@ -60,6 +61,14 @@ public class AStarManager : MonoBehaviour {
     }
 	}
 
+  public void ConfigurePermantleyClosedNodes() {
+    List<GameObject> untraversableTiles = BathroomTileMap.Instance.GetAllUntraversableTiles();
+    foreach(GameObject untraversableTile in untraversableTiles) {
+      if(!permanentClosedNodes.Contains(untraversableTile)) {
+        permanentClosedNodes.Add(untraversableTile);
+      }
+    }
+  }
 //-----------------------------
 	public List<Vector2> CalculateAStarPath(List<GameObject> openNodes, List<GameObject> closedNodes, BathroomTile startBathroomTile, BathroomTile endBathroomTile) {
     // Debug.Log("Start tile X: " + startBathroomTile.tileX + " Y: " + startBathroomTile.tileY);

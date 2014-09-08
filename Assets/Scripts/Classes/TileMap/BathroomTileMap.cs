@@ -75,6 +75,19 @@ public class BathroomTileMap : TileMap {
 		return tiles[selectedTile];
 	}
 
+  public List<GameObject> GetAllUntraversableTiles() {
+    List<GameObject> allUntraversableTiles = new List<GameObject>();
+
+    foreach(GameObject gameObj in tiles) {
+      BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
+      if(bathTileRef.isUntraversable) {
+        allUntraversableTiles.Add(gameObj);
+      }
+    }
+
+    return allUntraversableTiles;
+  }
+
   public bool CheckIfTileContainsBroInBathroomObject(int tileX, int tileY) {
 
     foreach(GameObject bathroomObjGameObj in BathroomObjectManager.Instance.allBathroomObjects) {

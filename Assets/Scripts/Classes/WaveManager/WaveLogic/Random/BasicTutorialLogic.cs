@@ -208,9 +208,8 @@ public class BasicTutorialLogic : WaveLogic, WaveLogicContract {
       LevelManager.Instance.HideJanitorButton();
       TextboxManager.Instance.Hide();
 
-      FadeManager.Instance.fadeFinishLogic = new FadeManager.FadeFinishEvent(TriggerSceneChange);
-      StartCoroutine(FadeManager.Instance.PerformFullScreenFade(Color.clear, Color.white, 1, false));
-      // PerformFullScreenFade(Color startFadeColor, Color endFadeColor, float fadeDuration, bool destroyFullScreenTextureAtFinish) {
+      FadeManager.Instance.SetFadeFinishLogic(TriggerSceneChange);
+      FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
     }
   }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TryOutsDayOne : WaveLogic, WaveLogicContract {
+public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
   public override void Awake() {
     base.Awake();
@@ -10,15 +10,10 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
-    foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
-      BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
-      bathObjRef.destroyObjectIfMoreThanTwoOccupants = false;
-    }
-
     GameObject startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
-                                                          TriggerStartAnimation,
-                                                          PerformStartAnimation,
-                                                          FinishStartAnimation);
+                                                              TriggerStartAnimation,
+                                                              PerformStartAnimation,
+                                                              FinishStartAnimation);
 
     GameObject firstWaveGameObject = CreateWaveState("First Wave Game Object",
                                                      TriggerFirstWave,
@@ -26,14 +21,14 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                      FinishFirstWave);
 
     GameObject encouragementAnimationWaveGameObject = CreateWaveState("EncouragementAnimation Wave Game Object",
-                                                     TriggerEncouragementAnimationWave,
-                                                     PerformEncouragementAnimationWave,
-                                                     FinishEncouragementAnimationWave);
+                                                                     TriggerEncouragementAnimationWave,
+                                                                     PerformEncouragementAnimationWave,
+                                                                     FinishEncouragementAnimationWave);
 
     GameObject secondWaveGameObject = CreateWaveState("Second Wave Game Object",
-                                                 TriggerSecondWave,
-                                                 PerformSecondWave,
-                                                 FinishSecondWave);
+                                                       TriggerSecondWave,
+                                                       PerformSecondWave,
+                                                       FinishSecondWave);
 
     GameObject endOfLevelAnimationWaveGameObject = CreateWaveState("EndOfLevelAnimation Wave Game Object",
                                                                    TriggerEndOfLevelAnimationWave,
@@ -41,10 +36,10 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                                    FinishEndOfLevelAnimationWave);
 
     InitializeWaveStates(
-                         startAnimationWaveGameObject,
-                         firstWaveGameObject,
-                         encouragementAnimationWaveGameObject,
-                         secondWaveGameObject,
+                         // startAnimationWaveGameObject,
+                         // firstWaveGameObject,
+                         // encouragementAnimationWaveGameObject,
+                         // secondWaveGameObject,
                          endOfLevelAnimationWaveGameObject
                          );
   }
@@ -71,15 +66,15 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     TweenExecutor.TweenObjectPosition(TextboxManager.Instance.gameObject, TextboxManager.Instance.gameObject.transform.localPosition.x, -600, TextboxManager.Instance.gameObject.transform.localPosition.x, -300, 1, 2, UITweener.Method.BounceIn, null);
 
     Queue textQueue = new Queue();
-    textQueue.Enqueue("Hey there chief! It looks like you're here to try-out out for the prestigious role of 'Bathroom Bro Czar'.");
-    textQueue.Enqueue("Alright, alright, let's calm your pecs down. I can see you're excited. Yes, it is true. We are looking for a couple of bros to bring on for his broness' cabinet.");
-    textQueue.Enqueue("More specifically, we're looking to bring on a specific a specific bro to replace me, the Head Bathroom Bro Czar.");
-    textQueue.Enqueue("I know. You're impressed. Well keep the clapping down to a minimum. We got some weeding out of the weaker candidates to do, and spoilers you may be one of them.");
-    textQueue.Enqueue("Here's the thing. The first day of try-outs is to weed out those who don't even know how to manage a restroom. I call these guys the schlubs. Are you a schlub? I don't know... You look like a pretty big schlub to me.");
-    textQueue.Enqueue("Prove me wrong. I'm sending in bros into this restroom and you need to send them to the correct location otherwise they're going to destroy the whole restroom...");
-    textQueue.Enqueue("If you manage to survive this exercise then you move on to the next try-outs.");
-    textQueue.Enqueue("Ready... Set...");
-    textQueue.Enqueue("Bro!");
+    textQueue.Enqueue("Oh hey, look this guy is back. Hooray. I can take a big sigh of relief knowing that you're here to show me you're the best candidate for the job.");
+    textQueue.Enqueue("Yes. Yes that was sarcasm.");
+    textQueue.Enqueue("Now shut up and listen, 'cause yesterday's try out was easy mode. Why? Well for two reasons.");
+    textQueue.Enqueue("First, those bros were being polite, they didn't try to relieve themselves in any inappropriate spots. That was on purpose.");
+    textQueue.Enqueue("That was intentional. However, from here on out, all bros will be trying to relieve themselves in any bathroom object they choose.");
+    textQueue.Enqueue("How does that affect you? Well if a bro relieves himself in the inappropriate location, then that bathroom object will be... for lack of a better word unusable.");
+    textQueue.Enqueue("If you lose all of the bathroom objects in the restroom, then well.. you've failed your role, and the try-out.");
+    textQueue.Enqueue("No stress though. You got this. You're \"Mr. Big Tough Guy\"");
+    textQueue.Enqueue("Alright, are you ready for this?");
     TextboxManager.Instance.SetTextboxTextSet(textQueue);
   }
   public void PerformStartAnimation() {
@@ -109,7 +104,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     firstWave.SetFightCheckType(BroDistribution.AllBros, false);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
@@ -166,14 +160,12 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     firstWave.SetFightCheckType(BroDistribution.AllBros, false);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroDistributionObject secondWave = new BroDistributionObject(10, 15, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     secondWave.SetFightCheckType(BroDistribution.AllBros, false);
     secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    secondWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
     secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {

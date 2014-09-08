@@ -183,10 +183,10 @@ public class LevelManager : MonoBehaviour {
     }
   }
 
-  public void TriggerLevelChange() {
+  public void TriggerLevelChange(string sceneToChangeTo) {
     if(!levelChangeTriggered) {
-      FadeManager.Instance.fadeFinishLogic = new FadeManager.FadeFinishEvent(ChangeLevelToScoreMenu);
-      StartCoroutine(FadeManager.Instance.PerformFullScreenFade(Color.clear, Color.white, 1, false));
+      FadeManager.Instance.SetFadeFinishLogic(ChangeLevelToScoreMenu);
+      FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
 
       HideUI();
 

@@ -7,8 +7,8 @@ public class FadeManager : MonoBehaviour {
 //	GUI.backgroundColor Global tinting color for all background elements rendered by the GUI.
 //	GUI.contentColor Tinting color for all text rendered by the GUI.
 
-  public delegate void FadeFinishEvent();
-  public FadeFinishEvent fadeFinishLogic = null;
+  public delegate void FadeFinishLogic();
+  public FadeFinishLogic fadeFinishLogic = null;
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile FadeManager _instance;
@@ -43,6 +43,13 @@ public class FadeManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	}
+
+  public void SetFadeFinishLogic(FadeFinishLogic newFadeFinishLogic) {
+    fadeFinishLogic = new FadeFinishLogic(newFadeFinishLogic);
+  }
+  public void PerformFade(Color startFadeColor, Color endFadeColor, float fadeDuration, bool destroyFullScreenTextureAtFinish) {
+    StartCoroutine(PerformFullScreenFade(startFadeColor, endFadeColor, fadeDuration, destroyFullScreenTextureAtFinish));
+  }
 
 	public IEnumerator PerformFullScreenFade(Color startFadeColor, Color endFadeColor, float fadeDuration, bool destroyFullScreenTextureAtFinish) {
 		Texture2D texture2D = new Texture2D(1,1);

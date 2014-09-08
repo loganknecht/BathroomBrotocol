@@ -17,6 +17,7 @@ using System.Collections.Generic;
 // firstWave.SetFightCheckType(BroDistribution.AllBros, false);
 // firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
 // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+// firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
 // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
 // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] { firstWave }, DistributionType.Uniform);

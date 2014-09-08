@@ -28,6 +28,9 @@ public class BroDistributionObject : DistributionObject {
   public BathroomObjectType defaultLineSkipBathroomObject = BathroomObjectType.None;
   public BathroomObjectType[] defaultBathroomObjectsToChooseFromOnLineQueueSkip = new BathroomObjectType[]{ BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal };
 
+  public BroDistribution broDistributionStartRoamingOnArrivalAtBathroomObjectInUse = BroDistribution.AllBros;
+  public bool defaultBroStartRoamingOnArrivalAtBathroomObjectInUse = true;
+
   public BroDistribution broDistributionChooseObjectOnRelief = BroDistribution.AllBros;
   public bool defaultBroChooseObjectOnRelief = true;
   public BathroomObjectType defaultOnReliefBathroomObject = BathroomObjectType.None;
@@ -95,6 +98,7 @@ public class BroDistributionObject : DistributionObject {
       ConfigureBroToGenerateFightCheckType(broToGenerate);
       ConfigureBroToGenerateLineQueueSkipType(broToGenerate);
       ConfigureBroToGenerateChooseObjectOnLineSkip(broToGenerate);
+      ConfigureBroToGenerateStartRoamingOnArrivalAtBathroomObjectInUse(broToGenerate);
       ConfigureBroToGenerateChooseObjectOnRelief(broToGenerate);
 
       GameObject newDistributionPoint = new GameObject("BroDistributionPoint");
@@ -197,6 +201,29 @@ public class BroDistributionObject : DistributionObject {
     return broToGenerate;
   }
 
+//---------
+  public GameObject ConfigureBroToGenerateStartRoamingOnArrivalAtBathroomObjectInUse(GameObject broToGenerate) {
+    Bro broRef = broToGenerate.GetComponent<Bro>();
+    switch(broDistributionStartRoamingOnArrivalAtBathroomObjectInUse) {
+      case(BroDistribution.NoBros):
+        // do nothing
+      break;
+      case(BroDistribution.AllBros):
+        broRef.startRoamingOnArrivalAtBathroomObjectInUse = defaultBroStartRoamingOnArrivalAtBathroomObjectInUse;
+      break;
+      case(BroDistribution.RandomBros):
+        defaultBroStartRoamingOnArrivalAtBathroomObjectInUse = (UnityEngine.Random.Range(0, 1) == 0) ? false : true;
+        broRef.startRoamingOnArrivalAtBathroomObjectInUse = defaultBroStartRoamingOnArrivalAtBathroomObjectInUse;
+      break;
+      default:
+        Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
+      break;
+    }
+
+    return broToGenerate;
+  }
+//----------
+
   public GameObject ConfigureBroToGenerateChooseObjectOnRelief(GameObject broToGenerate) {
     Bro broRef = broToGenerate.GetComponent<Bro>();
     switch(broDistributionChooseObjectOnRelief) {
@@ -241,6 +268,12 @@ public class BroDistributionObject : DistributionObject {
     broDistributionChooseObjectOnLineSkip = newBroDistributionChooseObjectOnLineSkip;
     defaultBroChooseObjectOnLineSkip = newBroChooseObjectOnLineSkip;
     //TO DO SET TYPES OF OBJECTS THAT CAN BE CHOSEN FROM
+    return this;
+  }
+
+  public BroDistributionObject SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse, bool newBroStartRoamingOnArrivalAtBathroomObjectInUse) {
+    broDistributionStartRoamingOnArrivalAtBathroomObjectInUse = newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse;
+    defaultBroStartRoamingOnArrivalAtBathroomObjectInUse = newBroStartRoamingOnArrivalAtBathroomObjectInUse;
     return this;
   }
 

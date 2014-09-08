@@ -5,6 +5,7 @@ public class BathroomTile : Tile {
 	public BathroomTile parentAStarNode = null;
 	public float gValue = 0f;
 	public float heuristicValue = 0f;
+  public bool isUntraversable = false;
 
 	public override void Awake() {
 		base.Awake();
@@ -14,7 +15,7 @@ public class BathroomTile : Tile {
 	public override void Start () {
 		base.Start();
 	}
-	
+
 	// Update is called once per frame
 	public override void Update () {
 		base.Update();

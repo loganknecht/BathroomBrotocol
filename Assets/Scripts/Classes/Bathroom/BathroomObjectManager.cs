@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class BathroomObjectManager : MonoBehaviour {
 
 	public List<GameObject> allBathroomObjects = new List<GameObject>();
+  public List<GameObject> topLevelBathroomObjectContainers = new List<GameObject>();
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile BathroomObjectManager _instance;
@@ -43,12 +44,23 @@ public class BathroomObjectManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    AddAllBathroomContainerChildren();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		ResetAllBathroomObjectsIsSelected(true);
 	}
+
+  public void AddAllBathroomContainerChildren() {
+     foreach(GameObject topLevelBathroomObjectContainer in topLevelBathroomObjectContainers) {
+      foreach(Transform child in topLevelBathroomObjectContainer.transform) {
+        if(!allBathroomObjects.Contains(child.gameObject)) {
+          allBathroomObjects.Add(child.gameObject);
+        }
+      }
+    }
+  }
 
 	public void AddBathroomObject(GameObject broToAdd) {
 		allBathroomObjects.Add(broToAdd);

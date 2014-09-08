@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class ScoreMenuManager : MonoBehaviour {
 
   public GameObject uiRootGameObject = null;
+  public string sceneToChangeTo = "";
+  public bool continueButtonPressed = false;
 
   //BEGINNING OF SINGLETON CODE CONFIGURATION
   private static volatile ScoreMenuManager _instance;
@@ -19,8 +21,8 @@ public class ScoreMenuManager : MonoBehaviour {
       if(_instance == null) {
         lock(_lock) {
           if (_instance == null) {
-            GameObject careerMenuManagerGameObject = new GameObject("CareerMenuManagerGameObject");
-            _instance = (careerMenuManagerGameObject.AddComponent<ScoreMenuManager>()).GetComponent<ScoreMenuManager>();
+            GameObject scoreMenuManagerGameObject = new GameObject("ScoreMenuManagerGameObject");
+            _instance = (scoreMenuManagerGameObject.AddComponent<ScoreMenuManager>()).GetComponent<ScoreMenuManager>();
           }
         }
       }
@@ -59,12 +61,16 @@ public class ScoreMenuManager : MonoBehaviour {
   }
 
   public void PerformContinueButtonPress() {
-    FadeManager.Instance.fadeFinishLogic = new FadeManager.FadeFinishEvent(TriggerSceneChange);
-    StartCoroutine(FadeManager.Instance.PerformFullScreenFade(Color.clear, Color.white, 1, false));
+    if(!continueButtonPressed) {
+      continueButtonPressed = true;
 
-    HideUI();
+      FadeManager.Instance.SetFadeFinishLogic(TriggerSceneChange);
+      FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
+
+      HideUI();
+    }
   }
   public void TriggerSceneChange() {
-    Application.LoadLevel("CareerMenu");
+    Application.LoadLevel(sceneToChangeTo);
   }
 }

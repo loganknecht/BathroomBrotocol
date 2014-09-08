@@ -22,8 +22,9 @@ public class CareerMenuNode : MonoBehaviour {
 
   public void PerformLevelChange() {
     CareerMenuManager.Instance.HideUI();
-    FadeManager.Instance.fadeFinishLogic = new FadeManager.FadeFinishEvent(TriggerSceneChange);
-    StartCoroutine(FadeManager.Instance.PerformFullScreenFade(Color.clear, Color.white, 1, false));
+
+    FadeManager.Instance.SetFadeFinishLogic(TriggerSceneChange);
+    FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
   }
 
   void TriggerSceneChange() {

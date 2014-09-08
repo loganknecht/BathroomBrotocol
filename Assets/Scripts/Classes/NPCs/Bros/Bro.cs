@@ -13,6 +13,7 @@ public class Bro : TargetPathingNPC {
   public bool skipLineQueue = false;
 	public bool hasRelievedSelf = false;
   public bool chooseRandomBathroomObjectOnSkipLineQueue = false;
+  public bool startRoamingOnArrivalAtBathroomObjectInUse = false;
   public bool chooseRandomBathroomObjectAfterRelieved = false;
 	public bool hasWashedHands = false;
 	public bool canBeCheckedToFightAgainst = true;
@@ -180,25 +181,30 @@ public class Bro : TargetPathingNPC {
 
   				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-          PerformOnArrivalBrotocolScoreCheck();
+          if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+            && startRoamingOnArrivalAtBathroomObjectInUse) {
+            state = BroState.Roaming;
+          }
+          else {
+            PerformOnArrivalBrotocolScoreCheck();
 
-  				//Adds bro to occupation list
-  				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
-             // wtf, why is this here?
-             // && bathObjRef.type != BathroomObjectType.Sink) {
-  					bathObjRef.objectsOccupyingBathroomObject.Add(this.gameObject);
-  				}
+    				//Adds bro to occupation list
+    				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
+               // wtf, why is this here?
+    					bathObjRef.objectsOccupyingBathroomObject.Add(this.gameObject);
+    				}
 
-  				selectableReference.canBeSelected = false;
-  				selectableReference.ResetHighlightObjectAndSelectedState();
-  				speechBubbleReference.displaySpeechBubble = false;
+    				selectableReference.canBeSelected = false;
+    				selectableReference.ResetHighlightObjectAndSelectedState();
+    				speechBubbleReference.displaySpeechBubble = false;
 
-  				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-  				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-  					SelectionManager.Instance.currentlySelectedBroGameObject = null;
-  				}
+    				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+    				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+    					SelectionManager.Instance.currentlySelectedBroGameObject = null;
+    				}
 
-  				state = BroState.OccupyingObject;
+    				state = BroState.OccupyingObject;
+          }
         }
 			}
 			else {
