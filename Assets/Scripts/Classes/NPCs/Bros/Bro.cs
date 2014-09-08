@@ -51,18 +51,20 @@ public class Bro : TargetPathingNPC {
 		if(!isPaused) {
 			base.Update();
 			PerformSpeechBubbleLogic();
-
-      if(resetFightLogic) {
-        fightCooldownTimer += Time.deltaTime;
-        if(fightCooldownTimer > fightCooldownTimerMax) {
-          fightCooldownTimer = 0;
-          resetFightLogic = false;
-          canBeCheckedToFightAgainst = true;
-        }
-      }
+      PerformFightTimerLogic();
 		}
 	}
 
+  public virtual void PerformFightTimerLogic() {
+    if(resetFightLogic) {
+      fightCooldownTimer += Time.deltaTime;
+      if(fightCooldownTimer > fightCooldownTimerMax) {
+        fightCooldownTimer = 0;
+        resetFightLogic = false;
+        canBeCheckedToFightAgainst = true;
+      }
+    }
+  }
   public virtual void ResetFightLogic() {
     resetFightLogic = true;
     fightCooldownTimer = 0;
@@ -95,9 +97,9 @@ public class Bro : TargetPathingNPC {
 			   && (other.gameObject.GetComponent<Bro>().state == BroState.MovingToTargetObject || other.gameObject.GetComponent<Bro>().state == BroState.Roaming)
          && other.gameObject.GetComponent<Bro>().hasWashedHands != true
 			   && other.gameObject.GetComponent<Bro>().canBeCheckedToFightAgainst == true) {
-				//Debug.Log("Moving check occurred with: " + other.gameObject.name);
+				Debug.Log("Moving check occurred with: " + other.gameObject.name);
 				float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
-				// Debug.Log("Float returned for fight check: " + checkToSeeIfFightOccurs);
+				Debug.Log("Float returned for fight check: " + checkToSeeIfFightOccurs);
 				if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
 					if(state != BroState.Fighting) {
 						broFightingWith = other.gameObject;

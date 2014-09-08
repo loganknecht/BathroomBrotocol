@@ -159,7 +159,7 @@ public class StandoffBros : MonoBehaviour {
     broOne.GetComponent<Bro>().state = BroState.Roaming;
     broOne.GetComponent<Bro>().standOffBroGameObject = null;
     broOne.GetComponent<Bro>().broFightingWith = null;
-    broOne.GetComponent<Bro>().canBeCheckedToFightAgainst = true;
+    // broOne.GetComponent<Bro>().canBeCheckedToFightAgainst = true;
     broOne.GetComponent<Bro>().speechBubbleReference.displaySpeechBubble = true;
     broOne.GetComponent<HighlightSelectable>().enabled = true;
     broOne.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
@@ -169,7 +169,7 @@ public class StandoffBros : MonoBehaviour {
     broTwo.GetComponent<Bro>().state = BroState.Roaming;
     broTwo.GetComponent<Bro>().standOffBroGameObject = null;
     broTwo.GetComponent<Bro>().broFightingWith = null;
-    broTwo.GetComponent<Bro>().canBeCheckedToFightAgainst = true;
+    // broTwo.GetComponent<Bro>().canBeCheckedToFightAgainst = true;
     broTwo.GetComponent<Bro>().speechBubbleReference.displaySpeechBubble = true;
     broTwo.GetComponent<HighlightSelectable>().enabled = true;
     broTwo.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();

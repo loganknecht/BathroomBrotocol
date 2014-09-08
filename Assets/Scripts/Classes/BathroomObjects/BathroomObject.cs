@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class BathroomObject : MonoBehaviour {
 	public BathroomObjectType type = BathroomObjectType.None;
 	public BathroomObjectState state = BathroomObjectState.None;
+  public bool destroyObjectIfMoreThanTwoOccupants = true;
 
 	Animator animatorReference = null;
 	BathroomFacing bathroomFacingReference;
@@ -28,11 +29,14 @@ public class BathroomObject : MonoBehaviour {
 	}
 
 	public virtual void Update() {
+    this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
+
 		if(animatorReference != null) {
 			UpdateBathroomObjectAnimator();
 		}
 
     if(objectsOccupyingBathroomObject.Count >= 2
+       && destroyObjectIfMoreThanTwoOccupants
        && type != BathroomObjectType.Exit) {
       GameObject firstBroFound = null;
       GameObject secondBroFound = null;

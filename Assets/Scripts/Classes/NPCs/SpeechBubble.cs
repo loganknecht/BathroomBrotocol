@@ -12,7 +12,7 @@ public class SpeechBubble : MonoBehaviour {
 	public void Start () {
 		animatorReference = this.gameObject.GetComponent<Animator>();
 	}
-	
+
 	// Update is called once per frame
 	public void Update () {
 		UpdateAnimator();

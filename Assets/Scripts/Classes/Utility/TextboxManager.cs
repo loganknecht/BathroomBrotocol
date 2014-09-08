@@ -20,6 +20,7 @@ public class TextboxManager : MonoBehaviour {
   public TextboxButtonPressLogic textboxButtonLogicToPerform = null;
   public TextboxTextFinishedLogic textboxTextFinishedLogicToPerform = null;
 
+  public bool textboxFinishLogicTriggered = false;
   public bool finishedTextboxText = false;
   //----------------------------------------------------------------------------
 
@@ -79,7 +80,10 @@ public class TextboxManager : MonoBehaviour {
 
   public void PerformTextboxTextFinished() {
     finishedTextboxText = true;
-    textboxTextFinishedLogicToPerform();
+    if(!textboxFinishLogicTriggered) {
+      textboxFinishLogicTriggered = true;
+      textboxTextFinishedLogicToPerform();
+    }
   }
 
   public void DefaultTextFinishedLogicToPerform() {
@@ -128,6 +132,7 @@ public class TextboxManager : MonoBehaviour {
   }
 
   public void SetTextboxTextSet(Queue newTextboxTextSet) {
+    textboxFinishLogicTriggered = false;
     finishedTextboxText = false;
     textboxTextSet = newTextboxTextSet;
     PopNextTextboxText();

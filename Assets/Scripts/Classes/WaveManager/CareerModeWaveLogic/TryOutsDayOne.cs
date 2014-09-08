@@ -10,6 +10,11 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
+    foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
+      BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
+      bathObjRef.destroyObjectIfMoreThanTwoOccupants = false;
+    }
+
     GameObject startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
                                                           TriggerStartAnimation,
                                                           PerformStartAnimation,
@@ -36,10 +41,10 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                                    FinishEndOfLevelAnimationWave);
 
     InitializeWaveStates(
-                         // startAnimationWaveGameObject,
-                         // firstWaveGameObject,
-                         // encouragementAnimationWaveGameObject,
-                         // secondWaveGameObject,
+                         startAnimationWaveGameObject,
+                         firstWaveGameObject,
+                         encouragementAnimationWaveGameObject,
+                         secondWaveGameObject,
                          endOfLevelAnimationWaveGameObject
                          );
   }
@@ -55,7 +60,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
-    StartCoroutine(FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false));
+    FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
 
     WaveManager.Instance.isPaused = true;
     TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -445, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -145, 1, 2, UITweener.Method.BounceIn, null);
@@ -100,12 +105,12 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     // public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
     // BroDistributionObject firstWave = new BroDistributionObject(0, 10, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
     firstWave.SetFightCheckType(BroDistribution.AllBros, false);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+    firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                              firstWave,
@@ -127,7 +132,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     LevelManager.Instance.ShowJanitorOverlay();
     TextboxManager.Instance.Show();
 
-    float percentageOfBathroomLeft = ((1 - BathroomObjectManager.Instance.GetPercentageOfBathroomObjectTypeBroken()) * 10);
+    float percentageBroken = BathroomObjectManager.Instance.GetPercentageOfBathroomObjectTypeBroken(BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    float percentageOfBathroomLeft = System.Convert.ToInt32((1 - percentageBroken) * 100);
     Queue textQueue = new Queue();
     textQueue.Enqueue("Not bad, not bad...");
     textQueue.Enqueue("Looks like you have... about... " + percentageOfBathroomLeft + "% of the bathroom remaining...");
@@ -155,15 +161,22 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
     firstWave.SetFightCheckType(BroDistribution.AllBros, false);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+    firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+
+    BroDistributionObject secondWave = new BroDistributionObject(10, 15, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    secondWave.SetFightCheckType(BroDistribution.AllBros, false);
+    secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+    secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                              firstWave,
+                                                                             secondWave,
                                                                             });
   }
   public void PerformSecondWave() {

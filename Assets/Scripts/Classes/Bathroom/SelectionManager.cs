@@ -96,9 +96,7 @@ public class SelectionManager : MonoBehaviour {
   				broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
   				broRef.selectableReference.isSelected = false;
   				broRef.selectableReference.ResetHighlightObjectAndSelectedState();
-          if(broRef.state == BroState.InAQueue) {
-            broRef.canBeCheckedToFightAgainst = true;
-          }
+
   				broRef.state = BroState.MovingToTargetObject;
   				EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(currentlySelectedBroGameObject);
 
