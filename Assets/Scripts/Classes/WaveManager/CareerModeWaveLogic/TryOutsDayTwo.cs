@@ -15,32 +15,25 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                               PerformStartAnimation,
                                                               FinishStartAnimation);
 
-    GameObject firstWaveGameObject = CreateWaveState("First Wave Game Object",
-                                                     TriggerFirstWave,
-                                                     PerformFirstWave,
-                                                     FinishFirstWave);
+    GameObject broEnoughConfirmationWaveGameObject = CreateWaveState("BroEnoughConfirmation Game Object",
+                                                                      TriggerBroEnoughConfirmation,
+                                                                      PerformBroEnoughConfirmation,
+                                                                      FinishBroEnoughConfirmation);
 
-    GameObject encouragementAnimationWaveGameObject = CreateWaveState("EncouragementAnimation Wave Game Object",
-                                                                     TriggerEncouragementAnimationWave,
-                                                                     PerformEncouragementAnimationWave,
-                                                                     FinishEncouragementAnimationWave);
+    GameObject broEnoughResponseWaveGameObject = CreateWaveState("BroEnoughResponse Game Object",
+                                                                  TriggerBroEnoughResponse,
+                                                                  PerformBroEnoughResponse,
+                                                                  FinishBroEnoughResponse);
 
     GameObject secondWaveGameObject = CreateWaveState("Second Wave Game Object",
-                                                       TriggerSecondWave,
-                                                       PerformSecondWave,
-                                                       FinishSecondWave);
-
-    GameObject endOfLevelAnimationWaveGameObject = CreateWaveState("EndOfLevelAnimation Wave Game Object",
-                                                                   TriggerEndOfLevelAnimationWave,
-                                                                   PerformEndOfLevelAnimationWave,
-                                                                   FinishEndOfLevelAnimationWave);
-
+                                                      TriggerSecondWave,
+                                                      PerformSecondWave,
+                                                      FinishSecondWave);
     InitializeWaveStates(
-                         // startAnimationWaveGameObject,
-                         // firstWaveGameObject,
-                         // encouragementAnimationWaveGameObject,
-                         // secondWaveGameObject,
-                         endOfLevelAnimationWaveGameObject
+                         startAnimationWaveGameObject,
+                         broEnoughConfirmationWaveGameObject,
+                         broEnoughResponseWaveGameObject,
+                         secondWaveGameObject
                          );
   }
 
@@ -48,12 +41,11 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
   public override void Update () {
     base.Update();
   }
-
+  //----------------------------------------------------------------------------
   public void TriggerStartAnimation() {
     // Debug.Log("triggering start animation");
-    PerformWaveStateStartedTrigger();
 
-    SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
+    // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
     FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
 
@@ -85,128 +77,73 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
   }
   public void FinishStartAnimation() {
     // Debug.Log("finishing start animation");
-    TextboxManager.Instance.Hide();
-    LevelManager.Instance.HideJanitorOverlay();
+    // TextboxManager.Instance.Hide();
+    // LevelManager.Instance.HideJanitorOverlay();
 
-    PerformWaveStateHasFinishedTrigger();
   }
+  //----------------------------------------------------------------------------
+  public void TriggerBroEnoughConfirmation() {
 
-  public void TriggerFirstWave() {
-    PerformWaveStateStartedTrigger();
-
-    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-    Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
-
-    // public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
-    // BroDistributionObject firstWave = new BroDistributionObject(0, 10, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
-    firstWave.SetFightCheckType(BroDistribution.AllBros, false);
-    firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
-
-    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                             firstWave,
-                                                                            });
+    ConfirmationBoxManager.Instance.Show();
+    ConfirmationBoxManager.Instance.Reset();
   }
-  public void PerformFirstWave() {
-    if(BroGenerator.Instance.HasFinishedGenerating()
-       && BroManager.Instance.NoBrosInRestroom) {
+  public void PerformBroEnoughConfirmation() {
+    if(ConfirmationBoxManager.Instance.hasSelectedAnswer) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
-  public void FinishFirstWave() {
-    PerformWaveStateHasFinishedTrigger();
+  public void FinishBroEnoughConfirmation() {
   }
+  //----------------------------------------------------------------------------
+  public void TriggerBroEnoughResponse() {
 
-  public void TriggerEncouragementAnimationWave() {
-    PerformWaveStateStartedTrigger();
+    Queue startText = new Queue();
+    if(ConfirmationBoxManager.Instance.selectedYes) {
+      startText.Enqueue("Oh look at you. You really are Mr. Tough Guy. Alright then. Let's do this.");
+    }
+    else if(ConfirmationBoxManager.Instance.selectedNo) {
+      startText.Enqueue("C'mon brah! Get it together! You're already here! Don't you want to be someone?!");
+    }
+    startText.Enqueue("I wanna see you manage this bathroom and make sure that you have AT LEAST one bathroom object remaining. If you can manage that, then you get to move on to the next round of try-outs.");
+    TextboxManager.Instance.SetTextboxTextSet(startText);
 
-    LevelManager.Instance.ShowJanitorOverlay();
-    TextboxManager.Instance.Show();
-
-    float percentageBroken = BathroomObjectManager.Instance.GetPercentageOfBathroomObjectTypeBroken(BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    float percentageOfBathroomLeft = System.Convert.ToInt32((1 - percentageBroken) * 100);
-    Queue textQueue = new Queue();
-    textQueue.Enqueue("Not bad, not bad...");
-    textQueue.Enqueue("Looks like you have... about... " + percentageOfBathroomLeft + "% of the bathroom remaining...");
-    textQueue.Enqueue("Again, not bad... but you know... you could do better. One of the things you need to understand is that in this role, as Bathroom Bro Czar, you can't expect to be able to repair your restroom while you work.");
-    textQueue.Enqueue("What I'm trying to say is that once an object in the bathroom is broken you can't repair it. Them's the breaks.");
-    textQueue.Enqueue("We'll send a clean up and repair crew in after we do our job, but that's just how it goes.");
-    textQueue.Enqueue("Alright enough talking, get back to impressing me! If you can manage this restroom without losing all the objects in this restroom, then we'll talk about moving you forward.");
-    TextboxManager.Instance.SetTextboxTextSet(textQueue);
+    ConfirmationBoxManager.Instance.Hide();
   }
-  public void PerformEncouragementAnimationWave() {
+  public void PerformBroEnoughResponse() {
+
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+      LevelManager.Instance.HideJanitorOverlay();
+      TextboxManager.Instance.Hide();
+
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
-  public void FinishEncouragementAnimationWave() {
-    PerformWaveStateHasFinishedTrigger();
+  public void FinishBroEnoughResponse() {
   }
-
+  //----------------------------------------------------------------------------
   public void TriggerSecondWave() {
-    PerformWaveStateStartedTrigger();
 
-    LevelManager.Instance.HideJanitorOverlay();
-    TextboxManager.Instance.Hide();
+  Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+  Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
+                                                                                     { 1, .5f } };
 
-    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-    Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+  BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+  firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+  firstWave.SetFightCheckType(BroDistribution.AllBros, true);
+  firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+  firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+  firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
+  firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
-    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
-    firstWave.SetFightCheckType(BroDistribution.AllBros, false);
-    firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
-
-    BroDistributionObject secondWave = new BroDistributionObject(10, 15, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    secondWave.SetFightCheckType(BroDistribution.AllBros, false);
-    secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
-
-    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                             firstWave,
-                                                                             secondWave,
-                                                                            });
+  BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                           firstWave,
+                                                                          });
   }
   public void PerformSecondWave() {
-    if(BroGenerator.Instance.HasFinishedGenerating()
-       && BroManager.Instance.NoBrosInRestroom) {
+    if(BroManager.Instance.NoBrosInRestroom()) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
   public void FinishSecondWave() {
-    PerformWaveStateHasFinishedTrigger();
-  }
-
-  public void TriggerEndOfLevelAnimationWave() {
-    PerformWaveStateStartedTrigger();
-
-    LevelManager.Instance.ShowJanitorOverlay();
-    TextboxManager.Instance.Show();
-
-    Queue textQueue = new Queue();
-    textQueue.Enqueue("Alright, alright, alright. It looks like you have a knack for this.");
-    textQueue.Enqueue("Guess you're going to the next round. Come back for the next round of try-outs. We'll see if you still have what it takes.");
-    textQueue.Enqueue("Now get out of here!");
-    TextboxManager.Instance.SetTextboxTextSet(textQueue);
-    TextboxManager.Instance.SetTextboxFinishedLogic(PerformFinalEndOfLevelAnimationActions);
-  }
-  public void PerformEndOfLevelAnimationWave() {
-    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
-      PerformWaveStatePlayingFinishedTrigger();
-    }
-  }
-  public void FinishEndOfLevelAnimationWave() {
-    waveLogicFinished = true;
-    PerformWaveStateHasFinishedTrigger();
-  }
-  public void PerformFinalEndOfLevelAnimationActions() {
-    LevelManager.Instance.HideJanitorOverlay();
-    TextboxManager.Instance.Hide();
   }
 }

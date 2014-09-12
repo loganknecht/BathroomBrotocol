@@ -137,13 +137,6 @@ public class LevelManager : MonoBehaviour {
   public void PerformScoreSceneTransition() {
   }
 
-  public void StartJanitorOverlaySlideInFromBottom() {
-    // public static void TweenObjectPosition(GameObject objectToTween, float startX, float startY, float endX, float endY, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
-    // public static void TweenObjectAlpha(GameObject objectToTween, float startOpacity, float endOpacity, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
-    // TweenExecutor.TweenObjectPosition(janitorOverlayGameObject, janitorOverlayPosition.x, -500, janitorOverlayPosition.x, janitorOverlayPosition.y, 0, 1, UITweener.Method.Linear, null);
-    // TweenExecutor.TweenObjectAlpha(janitorOverlayGameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
-  }
-
   public void UpdateScoreComponents() {
     if(currentScoreLabel != null
        && currentScoreLabel.GetComponent<UILabel>()  != null) {

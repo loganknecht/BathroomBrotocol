@@ -29,8 +29,6 @@ public class BathroomObject : MonoBehaviour {
 	}
 
 	public virtual void Update() {
-    this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(transform.position.y * 100f) * -1;
-
 		if(animatorReference != null) {
 			UpdateBathroomObjectAnimator();
 		}

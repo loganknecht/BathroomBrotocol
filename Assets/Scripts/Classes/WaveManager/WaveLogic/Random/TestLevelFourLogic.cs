@@ -27,8 +27,6 @@ public class TestLevelFourLogic : WaveLogic, WaveLogicContract {
 
     LevelManager.Instance.HideJanitorButton();
     LevelManager.Instance.HidePauseButton();
-    LevelManager.Instance.StartJanitorOverlaySlideInFromBottom();
-    TextboxManager.Instance.StartSlideInFromBottom();
     TextboxManager.Instance.textboxTextFinishedLogicToPerform = StartAnimationFinished;
     StartAnimationFinished();
     waveLogicFinished = true;

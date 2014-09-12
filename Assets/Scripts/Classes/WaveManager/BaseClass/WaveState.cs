@@ -14,6 +14,10 @@ public class WaveState : MonoBehaviour {
   public WaveStateLogic waveStateLogic = null;
   public WaveStateFinishLogic waveStateFinishLogic = null;
 
+  public WaveStateStartLogic playerWaveStateStartLogic = null;
+  public WaveStateLogic playerWaveStateLogic = null;
+  public WaveStateFinishLogic playerWaveStateFinishLogic = null;
+
   public void Awake() {
   }
 
@@ -23,41 +27,51 @@ public class WaveState : MonoBehaviour {
     triggerFinishLogic = false;
     hasFinished = false;
 
-    // waveStateStartLogic = new WaveStateStartLogic(WaveStateStartedLogic);
-    // waveStateLogic = new WaveStateLogic(WaveStatePerformingLogic);
-    // waveStateFinishLogic = new WaveStateFinishLogic(WaveStateFinishedLogic);
+    waveStateStartLogic = new WaveStateStartLogic(DefaultWaveStateStartedLogic);
+    waveStateLogic = new WaveStateLogic(DefaultWaveStatePlayingLogic);
+    waveStateFinishLogic = new WaveStateFinishLogic(DefaultWaveStateFinishedLogic);
   }
 
   public void ConfigureLogic(WaveStateStartLogic startLogic, WaveStateLogic performingLogic, WaveStateFinishLogic endLogic) {
     if(startLogic != null) {
-      waveStateStartLogic = new WaveStateStartLogic(startLogic);
+      playerWaveStateStartLogic = new WaveStateStartLogic(startLogic);
     }
     else {
-      waveStateStartLogic = new WaveStateStartLogic(WaveStateStartedLogic);
+      playerWaveStateStartLogic = new WaveStateStartLogic(WaveStateStartedLogic);
     }
 
     if(performingLogic != null) {
-      waveStateLogic = new WaveStateLogic(performingLogic);
+      playerWaveStateLogic = new WaveStateLogic(performingLogic);
     }
     else {
-      waveStateLogic = new WaveStateLogic(WaveStatePerformingLogic);
+      playerWaveStateLogic = new WaveStateLogic(WaveStatePlayingLogic);
     }
 
     if(endLogic != null) {
-      waveStateFinishLogic = new WaveStateFinishLogic(endLogic);
+      playerWaveStateFinishLogic = new WaveStateFinishLogic(endLogic);
     }
     else {
-      waveStateFinishLogic = new WaveStateFinishLogic(WaveStateFinishedLogic);
+      playerWaveStateFinishLogic = new WaveStateFinishLogic(WaveStateFinishedLogic);
     }
+  }
+
+  public void DefaultWaveStateStartedLogic() {
+    PerformWaveStateStartTrigger();
+    playerWaveStateStartLogic();
+  }
+  public void DefaultWaveStatePlayingLogic() {
+    playerWaveStateLogic();
+  }
+  public void DefaultWaveStateFinishedLogic() {
+    PerformWaveStateHasFinishedTrigger();
+    playerWaveStateFinishLogic();
   }
 
   public void WaveStateStartedLogic() {
     Debug.Log("PERFORMING DEFAULT WAVE STATE STARTED LOGIC, PLEASE FIX THIS ISSUE.");
-    hasBeenTriggered = true;
-    isPlaying = true;
   }
 
-  public void WaveStatePerformingLogic() {
+  public void WaveStatePlayingLogic() {
     Debug.Log("PERFORMING DEFAULT WAVE STATE LOGIC, PLEASE FIX THIS ISSUE.");
     triggerFinishLogic = true;
   }
@@ -65,8 +79,17 @@ public class WaveState : MonoBehaviour {
   public void WaveStateFinishedLogic() {
     if(triggerFinishLogic) {
       Debug.Log("PERFORMING DEFAULT WAVE STATE FINISHED LOGIC, PLEASE FIX THIS ISSUE.");
-      isPlaying = false;
-      hasFinished = true;
     }
+  }
+
+   public void PerformWaveStateStartTrigger() {
+    hasBeenTriggered = true;
+    isPlaying = true;
+  }
+  public void PerformWaveStatePlayingFinishedTrigger() {
+    triggerFinishLogic = true;
+  }
+  public void PerformWaveStateHasFinishedTrigger() {
+    hasFinished = true;
   }
 }

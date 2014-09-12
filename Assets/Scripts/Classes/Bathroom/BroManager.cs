@@ -4,16 +4,6 @@ using System.Collections.Generic;
 
 public class BroManager : MonoBehaviour {
 
-  public bool NoBrosInRestroom {
-    get {
-      if(allBros.Count == 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-  }
 	public List<GameObject> allBros = new List<GameObject>();
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
@@ -59,6 +49,15 @@ public class BroManager : MonoBehaviour {
 	void Update () {
 		SetAllBrosIsSelected(true);
 	}
+
+  public bool NoBrosInRestroom() {
+    if(allBros.Count == 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
 	public void AddBro(GameObject broToAdd) {
 		allBros.Add(broToAdd);

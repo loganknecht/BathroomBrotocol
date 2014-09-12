@@ -98,9 +98,7 @@ public class Bro : TargetPathingNPC {
 			   && (other.gameObject.GetComponent<Bro>().state == BroState.MovingToTargetObject || other.gameObject.GetComponent<Bro>().state == BroState.Roaming)
          && other.gameObject.GetComponent<Bro>().hasWashedHands != true
 			   && other.gameObject.GetComponent<Bro>().canBeCheckedToFightAgainst == true) {
-				Debug.Log("Moving check occurred with: " + other.gameObject.name);
 				float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
-				Debug.Log("Float returned for fight check: " + checkToSeeIfFightOccurs);
 				if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
 					if(state != BroState.Fighting) {
 						broFightingWith = other.gameObject;

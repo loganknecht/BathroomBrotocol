@@ -118,7 +118,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   }
   public void PerformFirstWave() {
     if(BroGenerator.Instance.HasFinishedGenerating()
-       && BroManager.Instance.NoBrosInRestroom) {
+       && BroManager.Instance.NoBrosInRestroom()) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
@@ -183,7 +183,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   }
   public void PerformSecondWave() {
     if(BroGenerator.Instance.HasFinishedGenerating()
-       && BroManager.Instance.NoBrosInRestroom) {
+       && BroManager.Instance.NoBrosInRestroom()) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }

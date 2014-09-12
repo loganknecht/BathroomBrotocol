@@ -5,22 +5,21 @@ using System.Collections.Generic;
 
 // TODO FEATURES
 // Think about bolting on features where you can give the distributionobject a boolean that when true says to generate only the first type of bro created.
-// Think about adding feature where bros are distributed uniformally?, but in such a way that it's applied to the distribution type uniformally?
 
 // Example Usage:
+// public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
+
 // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
 // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-// public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
 // BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-// firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
+// firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
 // firstWave.SetFightCheckType(BroDistribution.AllBros, false);
 // firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
 // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
 // firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
 // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
-// BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] { firstWave }, DistributionType.Uniform);
 // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                          // firstWave,
                                                                         // });
@@ -113,6 +112,9 @@ public class BroGenerator : MonoBehaviour {
     // EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(broTypeToDistribute, selectedEntrance);
     broToDistribute.SetActive(true);
     // Bro broRef = broToDistribute.GetComponent<Bro>();
+    Vector3 lineQueueBeingAddedToLastTilePosition =  EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects[EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects.Count-1].transform.position;
+    // Vector3 lineQueueBeingAddedToLastTilePosition =  EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects.Last().transform.position;
+    broToDistribute.transform.position = new Vector3(lineQueueBeingAddedToLastTilePosition.x, lineQueueBeingAddedToLastTilePosition.y, broToDistribute.transform.position.z);
     EntranceQueueManager.Instance.AddBroToEntranceQueue(broToDistribute, selectedEntrance);
   }
 

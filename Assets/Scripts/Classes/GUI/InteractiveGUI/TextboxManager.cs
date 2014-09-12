@@ -131,19 +131,12 @@ public class TextboxManager : MonoBehaviour {
     }
   }
 
-  public void SetTextboxTextSet(Queue newTextboxTextSet) {
+  public void SetTextboxTextSet(Queue newTextboxTextSet, bool popFirstNodeOfSet = true) {
     textboxFinishLogicTriggered = false;
     finishedTextboxText = false;
     textboxTextSet = newTextboxTextSet;
-    PopNextTextboxText();
-  }
-
-  public void StartSlideInFromBottom() {
-    // public static void TweenObjectPosition(GameObject objectToTween, float startX, float startY, float endX, float endY, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
-    // public static void TweenObjectAlpha(GameObject objectToTween, float startOpacity, float endOpacity, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
-    // Debug.Log("end y: " + textboxPanelPosition);
-
-    // TweenExecutor.TweenObjectPosition(textboxPanel.gameObject, textboxPanelPosition.x, -500, textboxPanelPosition.x, textboxPanelPosition.y, 0, 1, UITweener.Method.Linear, null);
-    // TweenExecutor.TweenObjectAlpha(textboxPanel.gameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
+    if(popFirstNodeOfSet) {
+      PopNextTextboxText();
+    }
   }
 }
