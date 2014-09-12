@@ -180,6 +180,7 @@ public class Bro : TargetPathingNPC {
   				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
           if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
             && startRoamingOnArrivalAtBathroomObjectInUse) {
             state = BroState.Roaming;
           }

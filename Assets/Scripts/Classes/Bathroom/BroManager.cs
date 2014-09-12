@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class BroManager : MonoBehaviour {
 
 	public List<GameObject> allBros = new List<GameObject>();
+  public List<GameObject> allFightingBros = new List<GameObject>();
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile BroManager _instance;
@@ -70,6 +71,18 @@ public class BroManager : MonoBehaviour {
 			Destroy(broToRemove);
 		}
 	}
+
+  public void AddFightingBro(GameObject fightingBroToAdd) {
+    allFightingBros.Add(fightingBroToAdd);
+    fightingBroToAdd.transform.parent = this.gameObject.transform;
+  }
+
+  public void RemoveFightingBro(GameObject fightingBroToRemove, bool destroyFightingBro) {
+    allFightingBros.Remove(fightingBroToRemove);
+    if(destroyFightingBro) {
+      Destroy(fightingBroToRemove);
+    }
+  }
 
 	public void SetAllBrosIsSelected(bool ignoreCurrentlySelectedBro) {
 		foreach(GameObject broObject in allBros) {

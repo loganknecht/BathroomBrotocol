@@ -207,6 +207,9 @@ public class StandoffBros : MonoBehaviour {
                                                                                   startTile,
                                                                                   targetTile));
 
+    BroManager.Instance.AddFightingBro(newFightingBros);
+    RotateLogic.SetAxisAndSignBasedOnDirection(newFightingBros, Camera.main.GetComponent<RotateCamera>().directionBeingLookedAt);
+
     Destroy(this.gameObject);
     PerformBroFightScore();
   }

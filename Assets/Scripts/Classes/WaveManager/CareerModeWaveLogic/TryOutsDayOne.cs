@@ -10,6 +10,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
+    base.Start();
+
     foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
       BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
       bathObjRef.destroyObjectIfMoreThanTwoOccupants = false;

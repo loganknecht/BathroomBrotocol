@@ -11,6 +11,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
 	}
 
 	public virtual void Start() {
+    Camera.main.GetComponent<RotateCamera>().RotateBathroomToMatchCamera();
 	}
 
 	public virtual void Update() {

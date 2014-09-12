@@ -10,6 +10,8 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
+    base.Start();
+
     GameObject startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
                                                               TriggerStartAnimation,
                                                               PerformStartAnimation,
@@ -30,9 +32,9 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                       PerformSecondWave,
                                                       FinishSecondWave);
     InitializeWaveStates(
-                         startAnimationWaveGameObject,
-                         broEnoughConfirmationWaveGameObject,
-                         broEnoughResponseWaveGameObject,
+                         // startAnimationWaveGameObject,
+                         // broEnoughConfirmationWaveGameObject,
+                         // broEnoughResponseWaveGameObject,
                          secondWaveGameObject
                          );
   }

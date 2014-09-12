@@ -100,7 +100,8 @@ public class BroDistributionObject : DistributionObject {
       ConfigureBroToGenerateChooseObjectOnLineSkip(broToGenerate);
       ConfigureBroToGenerateStartRoamingOnArrivalAtBathroomObjectInUse(broToGenerate);
       ConfigureBroToGenerateChooseObjectOnRelief(broToGenerate);
-      RotateLogic.SetAxisAndSignBasedOnDirection(broToGenerate, Camera.main.GetComponent<RotateCamera>().directionBeingLookedAt);
+
+      Camera.main.GetComponent<RotateCamera>().RotateBroGameObject(broToGenerate);
 
       GameObject newDistributionPoint = new GameObject("BroDistributionPoint");
       newDistributionPoint.transform.parent = BroGenerator.Instance.transform;

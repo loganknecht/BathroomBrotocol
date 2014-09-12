@@ -8,24 +8,24 @@ public static class RotateLogic {
     if(gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>() != null) {
       switch(directionBeingLookedAt) {
         case(DirectionBeingLookedAt.Top):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Negative);
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
         break;
         case(DirectionBeingLookedAt.Right):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Negative);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Negative);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
         break;
         case(DirectionBeingLookedAt.Bottom):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Negative);
         break;
         case(DirectionBeingLookedAt.Left):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Negative);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Negative);
         break;
       }
     }
@@ -93,10 +93,11 @@ public class RotateCamera : MonoBehaviour {
     RotateBathroomTileBlockerObjects();
     RotateBathroomObjects();
     RotateBroGameObjects();
+    RotateFightingBroGameObjects();
   }
 
   //THIS IS NOT WORKING CORRECTLY, NEED TO FIX IT BUT BACKGROUND DOESN'T DO CORRECT ROTATION BECAUSE THE BACKGROUND APPEARS REVERSED
-  void RotateBackground() {
+  public void RotateBackground() {
     Vector3 newBackgroundRotation = Vector3.zero;
 
     newBackgroundRotation = new Vector3(this.gameObject.transform.eulerAngles.x, this.gameObject.transform.eulerAngles.y, this.gameObject.transform.eulerAngles.z);
@@ -107,13 +108,13 @@ public class RotateCamera : MonoBehaviour {
     // LevelManager.Instance.backgroundImage.transform.eulerAngles = this.gameObject.transform.eulerAngles;
   }
 
-  void RotateTileMapTiles() {
+  public void RotateTileMapTiles() {
     foreach(GameObject bathroomTileGameObject in BathroomTileMap.Instance.tiles) {
       bathroomTileGameObject.transform.rotation = Quaternion.Euler(new Vector3(bathroomTileGameObject.transform.rotation.x, bathroomTileGameObject.transform.rotation.y, this.gameObject.transform.rotation.z));
     }
   }
 
-  void RotateBathroomTileBlockerObjects() {
+  public void RotateBathroomTileBlockerObjects() {
     foreach(GameObject bathroomTileBlockerGameObject in BathroomTileBlockerManager.Instance.bathroomTileBlockers) {
       BathroomTileBlocker bathroomTileBlocker = bathroomTileBlockerGameObject.GetComponent<BathroomTileBlocker>();
       if(bathroomTileBlocker != null) {
@@ -127,7 +128,7 @@ public class RotateCamera : MonoBehaviour {
     }
   }
 
-  void RotateBathroomObjects() {
+  public void RotateBathroomObjects() {
     foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
       if(bathroomObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
         bathroomObject.transform.rotation = Quaternion.Euler(new Vector3(bathroomObject.transform.rotation.x, bathroomObject.transform.rotation.y, this.gameObject.transform.rotation.z));
@@ -140,11 +141,27 @@ public class RotateCamera : MonoBehaviour {
     }
   }
 
-  void RotateBroGameObjects() {
+  public void RotateBroGameObjects() {
     foreach(GameObject broGameObject in BroManager.Instance.allBros) {
-      broGameObject.transform.eulerAngles = this.gameObject.transform.eulerAngles;
+      RotateBroGameObject(broGameObject);
+    }
+  }
+  public void RotateBroGameObject(GameObject broGameObjectToRotate) {
+    broGameObjectToRotate.transform.eulerAngles = this.gameObject.transform.eulerAngles;
 
-      RotateLogic.SetAxisAndSignBasedOnDirection(broGameObject, directionBeingLookedAt);
+
+    RotateLogic.SetAxisAndSignBasedOnDirection(broGameObjectToRotate, directionBeingLookedAt);
+    RotateLogic.SetAxisAndSignBasedOnDirection(broGameObjectToRotate.GetComponent<Bro>().selectableReference.highlightObject, directionBeingLookedAt);
+    foreach(Transform childTransform in broGameObjectToRotate.GetComponent<Bro>().speechBubbleReference.gameObject.transform) {
+      RotateLogic.SetAxisAndSignBasedOnDirection(childTransform.gameObject , directionBeingLookedAt);
+    }
+  }
+
+  public void RotateFightingBroGameObjects() {
+    foreach(GameObject fightingBroGameObject in BroManager.Instance.allFightingBros) {
+      fightingBroGameObject.transform.eulerAngles = this.gameObject.transform.eulerAngles;
+
+      RotateLogic.SetAxisAndSignBasedOnDirection(fightingBroGameObject, directionBeingLookedAt);
     }
   }
 

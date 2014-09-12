@@ -92,7 +92,8 @@ public class FightingBros : TargetPathingNPC {
                                                                                   targetTile);
         broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);
       }
-      Destroy(this.gameObject);
+      BroManager.Instance.RemoveFightingBro(this.gameObject, true);
+      // Destroy(this.gameObject);
     }
   }
 }
