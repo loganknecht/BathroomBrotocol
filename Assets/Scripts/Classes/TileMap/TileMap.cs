@@ -11,12 +11,21 @@ public class TileMap : MonoBehaviour {
 	public float singleTileHeight = -1;
 
 	public List<GameObject> tiles;
+  public List<GameObject> topLevelTileContainers;
 
 	// Use this for initialization
 	public virtual void Start () {
 		if(tiles == null) {
 			tiles = new List<GameObject>();
 		}
+    if(topLevelTileContainers == null) {
+      topLevelTileContainers = new List<GameObject>();
+    }
+    foreach(GameObject topLevelTileContainer in topLevelTileContainers) {
+      foreach(Transform childTransform in topLevelTileContainer.transform) {
+        tiles.Add(childTransform.gameObject);
+      }
+    }
 	}
 
 	// Update is called once per frame

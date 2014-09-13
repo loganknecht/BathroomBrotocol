@@ -60,22 +60,22 @@ public class WaveManager : MonoBehaviour {
 		}
 
 		if(Input.GetKeyDown(KeyCode.Q)) {
-			EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 0);
+			// EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 0);
 		}
 		if(Input.GetKeyDown(KeyCode.W)) {
-			EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 1);
+			// EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 1);
 		}
 		if(Input.GetKeyDown(KeyCode.E)) {
-			EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 2);
+			// EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 2);
 		}
 		if(Input.GetKeyDown(KeyCode.R)) {
-			EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 3);
+			// EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 3);
 		}
 		if(Input.GetKeyDown(KeyCode.T)) {
       // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.BluetoothBro);
       // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.ChattyBro);
       // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.CuttingBro);
-      EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.DrunkBro);
+      // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.DrunkBro);
       // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.FartingBro);
       // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.GenericBro);
       // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.RichBro);

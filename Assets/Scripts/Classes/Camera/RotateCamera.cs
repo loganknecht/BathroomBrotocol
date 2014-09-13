@@ -20,12 +20,12 @@ public static class RotateLogic {
         case(DirectionBeingLookedAt.Bottom):
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Negative);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
         break;
         case(DirectionBeingLookedAt.Left):
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
           gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Negative);
+          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
         break;
       }
     }

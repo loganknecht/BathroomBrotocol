@@ -16,7 +16,6 @@ public class Bro : TargetPathingNPC {
   public bool startRoamingOnArrivalAtBathroomObjectInUse = false;
   public bool chooseRandomBathroomObjectAfterRelieved = false;
 	public bool hasWashedHands = false;
-	public bool canBeCheckedToFightAgainst = true;
 
   public GameObject standOffBroGameObject = null;
 	public GameObject broFightingWith = null;
@@ -62,14 +61,13 @@ public class Bro : TargetPathingNPC {
       if(fightCooldownTimer > fightCooldownTimerMax) {
         fightCooldownTimer = 0;
         resetFightLogic = false;
-        canBeCheckedToFightAgainst = true;
       }
     }
   }
   public virtual void ResetFightLogic() {
     resetFightLogic = true;
     fightCooldownTimer = 0;
-    canBeCheckedToFightAgainst = false;
+    probabilityOfFightOnCollisionWithBro = 0f;
   }
 
   //	public void OnCollisionEnter(Collision collision) {
@@ -94,10 +92,10 @@ public class Bro : TargetPathingNPC {
 			//------------------------------------------------------------
 			if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
          && hasWashedHands != true
-			   && canBeCheckedToFightAgainst == true
+			   && probabilityOfFightOnCollisionWithBro > 0
 			   && (other.gameObject.GetComponent<Bro>().state == BroState.MovingToTargetObject || other.gameObject.GetComponent<Bro>().state == BroState.Roaming)
          && other.gameObject.GetComponent<Bro>().hasWashedHands != true
-			   && other.gameObject.GetComponent<Bro>().canBeCheckedToFightAgainst == true) {
+			   && other.gameObject.GetComponent<Bro>().probabilityOfFightOnCollisionWithBro > 0) {
 				float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
 				if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
 					if(state != BroState.Fighting) {
@@ -297,7 +295,7 @@ public class Bro : TargetPathingNPC {
     }
     else {
       collider.enabled = false;
-      canBeCheckedToFightAgainst = false;
+      probabilityOfFightOnCollisionWithBro = 0f;
 
       bathObjRef.state = BathroomObjectState.Broken;
       bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);

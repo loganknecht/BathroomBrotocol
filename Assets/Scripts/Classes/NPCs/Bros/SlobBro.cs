@@ -85,7 +85,7 @@ public class SlobBro : Bro {
 
       bathObjRef.state = BathroomObjectState.Broken;
       ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
-      canBeCheckedToFightAgainst = false;
+      probabilityOfFightOnCollisionWithBro = 0f;
     }
   }
   public override void PerformUrinalOccupationFinishedLogic() {

@@ -94,21 +94,17 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     // Debug.Log("finishing start animation");
     TextboxManager.Instance.Hide();
     LevelManager.Instance.HideJanitorOverlay();
-
-    PerformWaveStateHasFinishedTrigger();
   }
 
   public void TriggerFirstWave() {
-    PerformWaveStateStartedTrigger();
-
     Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
     // public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
     // BroDistributionObject firstWave = new BroDistributionObject(0, 10, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    BroDistributionObject firstWave = new BroDistributionObject(0, 3, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
-    firstWave.SetFightCheckType(BroDistribution.AllBros, false);
+    firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
@@ -125,12 +121,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
   }
   public void FinishFirstWave() {
-    PerformWaveStateHasFinishedTrigger();
   }
 
   public void TriggerEncouragementAnimationWave() {
-    PerformWaveStateStartedTrigger();
-
     LevelManager.Instance.ShowJanitorOverlay();
     TextboxManager.Instance.Show();
 
@@ -151,12 +144,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
   }
   public void FinishEncouragementAnimationWave() {
-    PerformWaveStateHasFinishedTrigger();
   }
 
   public void TriggerSecondWave() {
-    PerformWaveStateStartedTrigger();
-
     LevelManager.Instance.HideJanitorOverlay();
     TextboxManager.Instance.Hide();
 
@@ -165,14 +155,14 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     // firstWave.SetReliefType(BroDistribution.AllBros, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
-    firstWave.SetFightCheckType(BroDistribution.AllBros, false);
+    firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroDistributionObject secondWave = new BroDistributionObject(10, 15, 5, DistributionType.QuadraticEaseOut, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    secondWave.SetFightCheckType(BroDistribution.AllBros, false);
+    secondWave.SetFightProbability(BroDistribution.AllBros, 0f);
     secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     secondWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
@@ -190,7 +180,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
   }
   public void FinishSecondWave() {
-    PerformWaveStateHasFinishedTrigger();
   }
 
   public void TriggerEndOfLevelAnimationWave() {

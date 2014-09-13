@@ -90,7 +90,7 @@ public class ShyBro : Bro {
               || targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Sink)) {
           // Debug.Log("in urinal");
           collider.enabled = true;
-          canBeCheckedToFightAgainst = false;
+          probabilityOfFightOnCollisionWithBro = 0f;
           selectableReference.canBeSelected = true;
         }
         else {

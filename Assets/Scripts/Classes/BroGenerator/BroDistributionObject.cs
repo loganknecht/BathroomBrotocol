@@ -17,8 +17,8 @@ public class BroDistributionObject : DistributionObject {
   public ReliefRequired defaultReliefRequired = ReliefRequired.None;
   public ReliefRequired[] defaultReliefRequiredToChooseFrom = new ReliefRequired[]{ ReliefRequired.Pee, ReliefRequired.Poop };
 
-  public BroDistribution broDistributionFightCheckType = BroDistribution.AllBros;
-  public bool defaultBroFightCheck = true;
+  public BroDistribution broDistributionFightProbability = BroDistribution.AllBros;
+  public float defaultBroFightProbability = 1;
 
   public BroDistribution broDistributionLineQueueSkipType = BroDistribution.AllBros;
   public bool defaultBroLineQueueSkip = true;
@@ -142,16 +142,16 @@ public class BroDistributionObject : DistributionObject {
 
   public GameObject ConfigureBroToGenerateFightCheckType(GameObject broToGenerate) {
     Bro broRef = broToGenerate.GetComponent<Bro>();
-    switch(broDistributionFightCheckType) {
+    switch(broDistributionFightProbability) {
       case(BroDistribution.NoBros):
-        broRef.canBeCheckedToFightAgainst = false;
+        broRef.probabilityOfFightOnCollisionWithBro = 0f;
       break;
       case(BroDistribution.AllBros):
-        broRef.canBeCheckedToFightAgainst = defaultBroFightCheck;
+        broRef.probabilityOfFightOnCollisionWithBro = defaultBroFightProbability;
       break;
       case(BroDistribution.RandomBros):
-        defaultBroFightCheck = (UnityEngine.Random.Range(0, 1) == 0) ? false : true;
-        broRef.canBeCheckedToFightAgainst = defaultBroFightCheck;
+        defaultBroFightProbability = UnityEngine.Random.Range(0f, 1f);
+        broRef.probabilityOfFightOnCollisionWithBro = defaultBroFightProbability;
       break;
       default:
         Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
@@ -254,9 +254,9 @@ public class BroDistributionObject : DistributionObject {
     return this;
   }
 
-  public BroDistributionObject SetFightCheckType(BroDistribution newBroDistributionFightCheckType, bool newDefaultBroFightCheck) {
-    broDistributionFightCheckType = newBroDistributionFightCheckType;
-    defaultBroFightCheck = newDefaultBroFightCheck;
+  public BroDistributionObject SetFightProbability(BroDistribution newBroDistributionFightCheckType, float newDefaultBroFightProbability) {
+    broDistributionFightProbability = newBroDistributionFightCheckType;
+    defaultBroFightProbability = newDefaultBroFightProbability;
     return this;
   }
 

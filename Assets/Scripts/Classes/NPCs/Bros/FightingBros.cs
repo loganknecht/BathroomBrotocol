@@ -74,7 +74,7 @@ public class FightingBros : TargetPathingNPC {
     if(currentNumberOfTaps >= numberOfTapsNeededToBreakUp) {
       foreach(GameObject gameObj in brosFighting) {
         Bro broReference = gameObj.GetComponent<Bro>();
-        broReference.canBeCheckedToFightAgainst = false;
+        broReference.probabilityOfFightOnCollisionWithBro = 0f;
         broReference.state = BroState.MovingToTargetObject;
         gameObj.transform.position = this.gameObject.transform.position;
         gameObj.renderer.enabled = true;

@@ -32,9 +32,9 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                       PerformSecondWave,
                                                       FinishSecondWave);
     InitializeWaveStates(
-                         // startAnimationWaveGameObject,
-                         // broEnoughConfirmationWaveGameObject,
-                         // broEnoughResponseWaveGameObject,
+                         startAnimationWaveGameObject,
+                         broEnoughConfirmationWaveGameObject,
+                         broEnoughResponseWaveGameObject,
                          secondWaveGameObject
                          );
   }
@@ -131,7 +131,7 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
   BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
   firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-  firstWave.SetFightCheckType(BroDistribution.AllBros, true);
+  firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
   firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
   firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
   firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);

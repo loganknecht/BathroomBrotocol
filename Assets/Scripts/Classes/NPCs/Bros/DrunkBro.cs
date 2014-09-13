@@ -78,7 +78,7 @@ public class DrunkBro : Bro {
             hasRelievedSelf = true;
             reliefRequired = ReliefRequired.WashHands;
 
-            canBeCheckedToFightAgainst = false;
+            probabilityOfFightOnCollisionWithBro = 0f;
             bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
 
             collider.enabled = true;
@@ -109,7 +109,7 @@ public class DrunkBro : Bro {
             ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
           }
 
-          canBeCheckedToFightAgainst = false;
+          probabilityOfFightOnCollisionWithBro = 0f;
           bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
 
           collider.enabled = false;

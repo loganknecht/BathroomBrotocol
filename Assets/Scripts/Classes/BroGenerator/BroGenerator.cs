@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 // BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
 // firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-// firstWave.SetFightCheckType(BroDistribution.AllBros, false);
+// firstWave.SetFightProbability(BroDistribution.AllBros, UnityEngine.Random.Range(0f, 1f));
 // firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
 // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
 // firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);

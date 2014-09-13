@@ -30,11 +30,11 @@ public class ManagedSortingLayerScript : MonoBehaviour {
         // Debug.Log("calculating x axis sorting layer");
         // Debug.Log("X based: " + Mathf.RoundToInt(this.gameObject.transform.position.x * 100f));
         // Debug.Log("Y based: " + Mathf.RoundToInt(this.gameObject.transform.position.y * 100f));
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign) + (Mathf.RoundToInt(this.gameObject.transform.position.x * 100f)), layerOrderingSign);
+        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(this.gameObject.transform.position.x * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
       }
       else if(axisToBaseLayerCalculationOn == Axis.Y) {
         // Debug.Log("calculating y axis sorting layer");
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign) + (Mathf.RoundToInt(this.gameObject.transform.position.y * 100f)), layerOrderingSign);
+        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(this.gameObject.transform.position.y * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
       }
     }
     else {
@@ -43,10 +43,10 @@ public class ManagedSortingLayerScript : MonoBehaviour {
       sortingLayerOffsetSign = gamobjectToBaseSortingLayerOn.GetComponent<ManagedSortingLayerScript>().sortingLayerOffsetSign;
 
       if(axisToBaseLayerCalculationOn == Axis.X) {
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign) + (Mathf.RoundToInt(gamobjectToBaseSortingLayerOn.transform.position.x * 100f)), layerOrderingSign);
+        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(gamobjectToBaseSortingLayerOn.transform.position.x * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
       }
       else if(axisToBaseLayerCalculationOn == Axis.Y) {
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign) + (Mathf.RoundToInt(gamobjectToBaseSortingLayerOn.transform.position.y * 100f)), layerOrderingSign);
+        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(gamobjectToBaseSortingLayerOn.transform.position.y * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
       }
     }
 	}
