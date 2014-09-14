@@ -13,6 +13,9 @@ public class TileMap : MonoBehaviour {
 	public List<GameObject> tiles;
   public List<GameObject> topLevelTileContainers;
 
+  public virtual void Awake() {
+  }
+
 	// Use this for initialization
 	public virtual void Start () {
 		if(tiles == null) {

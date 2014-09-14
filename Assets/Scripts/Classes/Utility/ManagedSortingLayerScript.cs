@@ -1,23 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public enum Axis {
-  X,
-  Y
-}
-
-public enum Sign {
-  Positive,
-  Negative
-}
+using System.Collections.Generic;
 
 public class ManagedSortingLayerScript : MonoBehaviour {
 
-  public GameObject gamobjectToBaseSortingLayerOn = null;
+  public List<GameObject> gameObjectsToMatchSortingLayer = new List<GameObject>();
   public int sortingLayerOffset = 0;
-  public Axis axisToBaseLayerCalculationOn = Axis.Y;
-  public Sign layerOrderingSign = Sign.Negative;
-  public Sign sortingLayerOffsetSign = Sign.Negative;
+  public bool dontPerformOwnSorting = false;
 
 	// Use this for initialization
 	void Start () {
@@ -25,59 +14,48 @@ public class ManagedSortingLayerScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-    if(gamobjectToBaseSortingLayerOn == null) {
-      if(axisToBaseLayerCalculationOn == Axis.X) {
-        // Debug.Log("calculating x axis sorting layer");
-        // Debug.Log("X based: " + Mathf.RoundToInt(this.gameObject.transform.position.x * 100f));
-        // Debug.Log("Y based: " + Mathf.RoundToInt(this.gameObject.transform.position.y * 100f));
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(this.gameObject.transform.position.x * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
-      }
-      else if(axisToBaseLayerCalculationOn == Axis.Y) {
-        // Debug.Log("calculating y axis sorting layer");
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(this.gameObject.transform.position.y * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
-      }
-    }
-    else {
-      axisToBaseLayerCalculationOn = gamobjectToBaseSortingLayerOn.GetComponent<ManagedSortingLayerScript>().axisToBaseLayerCalculationOn;
-      layerOrderingSign = gamobjectToBaseSortingLayerOn.GetComponent<ManagedSortingLayerScript>().layerOrderingSign;
-      sortingLayerOffsetSign = gamobjectToBaseSortingLayerOn.GetComponent<ManagedSortingLayerScript>().sortingLayerOffsetSign;
+    if(!dontPerformOwnSorting) {
+      Vector3 cameraPosition = Camera.main.transform.position;
+      Vector3 currentPosition = Vector3.zero;
 
-      if(axisToBaseLayerCalculationOn == Axis.X) {
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(gamobjectToBaseSortingLayerOn.transform.position.x * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
-      }
-      else if(axisToBaseLayerCalculationOn == Axis.Y) {
-        this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = SetToCorrectSign(Mathf.RoundToInt(gamobjectToBaseSortingLayerOn.transform.position.y * 100f), layerOrderingSign) + SetToCorrectSign(sortingLayerOffset, sortingLayerOffsetSign);
+      // if(gameObjectToBaseSortingLayerOn != null) {
+      //   currentPosition = gameObjectToBaseSortingLayerOn.transform.position;
+      // }
+      // else {
+        currentPosition = this.gameObject.transform.position;
+      // }
+
+      float xDifference = currentPosition.x - cameraPosition.x;
+      // float xDifference = cameraPosition.x - currentPosition.x;
+
+      float yDifference = currentPosition.y - cameraPosition.y;
+      // float yDifference = cameraPosition.y - currentPosition.y;
+
+      float distanceFromCamera = Mathf.Sqrt((xDifference * xDifference) + (yDifference * yDifference));
+      int sortingLayerCalculation = Mathf.RoundToInt(distanceFromCamera * 100 * -1);
+
+      // bool showDebugLogic = false;
+      // if(this.gameObject.GetComponent<HighlightSelectable>() != null
+      //    || this.gameObject.GetComponent<GenericBro>() != null) {
+      // if(this.gameObject.name == "GenericBro1(Clone)"
+      //    || this.gameObject.name == "HighlightBackground") {
+      //   showDebugLogic =  true;
+      // }
+      // if(showDebugLogic) {
+      //   Debug.Log("---------------------------------");
+      //   Debug.Log("GameObject: " + this.gameObject.name);
+      //   Debug.Log("currentPosition: " + currentPosition);
+      //   Debug.Log("xDifference: " + xDifference);
+      //   Debug.Log("yDifference: " + yDifference);
+      //   Debug.Log("distanceFromCamera: " + distanceFromCamera);
+      //   Debug.Log("sortingLayerCalculation: " + sortingLayerCalculation);
+      // }
+
+      // Debug.Log(sortingLayerCalculation);
+      this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation  + sortingLayerOffset;
+      foreach(GameObject objectToUpdate in gameObjectsToMatchSortingLayer) {
+        objectToUpdate.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation + objectToUpdate.GetComponent<ManagedSortingLayerScript>().sortingLayerOffset;
       }
     }
 	}
-
-  public int SetToCorrectSign(int valueToCorrect, Sign signToSetTo) {
-    if(signToSetTo == Sign.Positive) {
-      if(valueToCorrect < 0) {
-        valueToCorrect = valueToCorrect*-1;
-      }
-    }
-    else if(signToSetTo == Sign.Negative) {
-      if(valueToCorrect > 0) {
-        valueToCorrect = valueToCorrect*-1;
-      }
-    }
-    else {
-      // do nothing
-    }
-
-    return valueToCorrect;
-  }
-
-  public void SetAxisToBaseCalculationOn(Axis newAxis) {
-    axisToBaseLayerCalculationOn = newAxis;
-  }
-
-  public void SetLayerOrderingSign(Sign newSign) {
-    layerOrderingSign = newSign;
-  }
-
-  public void SetSortingLayerOffsetSign(Sign newSign) {
-    sortingLayerOffsetSign = newSign;
-  }
 }

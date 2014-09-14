@@ -3,35 +3,6 @@ using System.Collections;
 
 // TO DO: FIX ROTATE LOGIC SCRIPT SO THAT WHEN IT ROTATES IT BASES THE CAMERA'S DIRECTION BEING LOOKED IT USES WORLD COORDINATES TO CALCULATE IT... OR SOMETHING
 
-public static class RotateLogic {
-  public static void SetAxisAndSignBasedOnDirection(GameObject gameObjectBeingManaged, DirectionBeingLookedAt directionBeingLookedAt) {
-    if(gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>() != null) {
-      switch(directionBeingLookedAt) {
-        case(DirectionBeingLookedAt.Top):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Negative);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
-        break;
-        case(DirectionBeingLookedAt.Right):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Negative);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
-        break;
-        case(DirectionBeingLookedAt.Bottom):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.Y);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
-        break;
-        case(DirectionBeingLookedAt.Left):
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetAxisToBaseCalculationOn(Axis.X);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetLayerOrderingSign(Sign.Positive);
-          gameObjectBeingManaged.GetComponent<ManagedSortingLayerScript>().SetSortingLayerOffsetSign(Sign.Positive);
-        break;
-      }
-    }
-  }
-}
-
 public class RotateCamera : MonoBehaviour {
   public GameObject objectToRotateAround = null;
   public float amountRotated = 0f;
@@ -137,7 +108,6 @@ public class RotateCamera : MonoBehaviour {
         bathroomObject.transform.eulerAngles = this.gameObject.transform.eulerAngles;
       }
 
-      RotateLogic.SetAxisAndSignBasedOnDirection(bathroomObject, directionBeingLookedAt);
     }
   }
 
@@ -148,22 +118,11 @@ public class RotateCamera : MonoBehaviour {
   }
   public void RotateBroGameObject(GameObject broGameObjectToRotate) {
     broGameObjectToRotate.transform.eulerAngles = this.gameObject.transform.eulerAngles;
-
-
-    RotateLogic.SetAxisAndSignBasedOnDirection(broGameObjectToRotate, directionBeingLookedAt);
-    RotateLogic.SetAxisAndSignBasedOnDirection(broGameObjectToRotate.GetComponent<Bro>().selectableReference.highlightObject, directionBeingLookedAt);
-    foreach(Transform childTransform in broGameObjectToRotate.GetComponent<Bro>().speechBubbleReference.gameObject.transform) {
-      RotateLogic.SetAxisAndSignBasedOnDirection(childTransform.gameObject , directionBeingLookedAt);
-    }
   }
 
   public void RotateFightingBroGameObjects() {
     foreach(GameObject fightingBroGameObject in BroManager.Instance.allFightingBros) {
       fightingBroGameObject.transform.eulerAngles = this.gameObject.transform.eulerAngles;
-
-      RotateLogic.SetAxisAndSignBasedOnDirection(fightingBroGameObject, directionBeingLookedAt);
     }
   }
-
-
 }

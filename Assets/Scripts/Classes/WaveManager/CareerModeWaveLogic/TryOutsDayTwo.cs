@@ -27,15 +27,15 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                                   PerformBroEnoughResponse,
                                                                   FinishBroEnoughResponse);
 
-    GameObject secondWaveGameObject = CreateWaveState("Second Wave Game Object",
-                                                      TriggerSecondWave,
-                                                      PerformSecondWave,
-                                                      FinishSecondWave);
+    GameObject firstWaveGameObject = CreateWaveState("First Wave Game Object",
+                                                      TriggerFirstWave,
+                                                      PerformFirstWave,
+                                                      FinishFirstWave);
     InitializeWaveStates(
-                         startAnimationWaveGameObject,
-                         broEnoughConfirmationWaveGameObject,
+                         // startAnimationWaveGameObject,
+                         // broEnoughConfirmationWaveGameObject,
                          broEnoughResponseWaveGameObject,
-                         secondWaveGameObject
+                         firstWaveGameObject
                          );
   }
 
@@ -123,29 +123,30 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
   public void FinishBroEnoughResponse() {
   }
   //----------------------------------------------------------------------------
-  public void TriggerSecondWave() {
+  public void TriggerFirstWave() {
+    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+    Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
+    // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 0f },
+                                                                                       // { 1, 1f } };
+                                                                                       { 1, .5f } };
 
-  Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-  Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
-                                                                                     { 1, .5f } };
+    BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+    firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
+    firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+    firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
+    firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
-  BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-  firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-  firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
-  firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-  firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-  firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
-  firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
-
-  BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                           firstWave,
-                                                                          });
+    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                             firstWave,
+                                                                            });
   }
-  public void PerformSecondWave() {
+  public void PerformFirstWave() {
     if(BroManager.Instance.NoBrosInRestroom()) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
-  public void FinishSecondWave() {
+  public void FinishFirstWave() {
   }
 }

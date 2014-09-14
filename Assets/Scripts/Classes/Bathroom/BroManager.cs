@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class BroManager : MonoBehaviour {
 
+  public List<GameObject> topLevelBroContainers = new List<GameObject>();
+
 	public List<GameObject> allBros = new List<GameObject>();
   public List<GameObject> allFightingBros = new List<GameObject>();
 
@@ -44,6 +46,11 @@ public class BroManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    foreach(GameObject topLevelBroContainer in topLevelBroContainers) {
+      foreach(Transform childTransform in topLevelBroContainer.transform) {
+        allBros.Add(childTransform.gameObject);
+      }
+    }
 	}
 
 	// Update is called once per frame
