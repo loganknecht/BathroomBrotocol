@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: a00e0a085d5cd574d8d8d945ca24bf9a
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: PlaceHolderFart
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

@@ -1,6 +1,49 @@
 fileFormatVersion: 2
 guid: eb2123847d9958541ad9ff61a17d5ab8
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: ExclamationPoint
+    21300002: DoubleQuote
+    21300004: AtSymbol
+    21300006: HeartSymbol
+    21300008: PercentageSymbol
+    21300010: LeftPointingArrowSymbol
+    21300012: Number0
+    21300014: Number1
+    21300016: Number2
+    21300018: Number3
+    21300020: Number4
+    21300022: Number5
+    21300024: Number6
+    21300026: Number7
+    21300028: Number8
+    21300030: Number9
+    21300032: LetterP
+    21300034: LetterO
+    21300036: LetterI
+    21300038: LetterN
+    21300040: LetterT
+    21300042: LetterS
+    21300044: LetterA
+    21300046: LetterB
+    21300048: LetterC
+    21300050: LetterD
+    21300052: LetterE
+    21300054: LetterF
+    21300056: LetterG
+    21300058: LetterH
+    21300060: LetterJ
+    21300062: LetterK
+    21300064: LetterL
+    21300066: LetterM
+    21300068: LetterQ
+    21300070: LetterR
+    21300072: LetterU
+    21300074: LetterV
+    21300076: LetterW
+    21300078: LetterX
+    21300080: LetterY
+    21300082: LetterZ
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -35,6 +78,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 20
   alphaIsTransparency: 1
   textureType: 8
@@ -50,6 +94,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: DoubleQuote
       rect:
         serializedVersion: 2
@@ -59,6 +104,7 @@ TextureImporter:
         height: 6
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: AtSymbol
       rect:
         serializedVersion: 2
@@ -68,6 +114,7 @@ TextureImporter:
         height: 14
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: HeartSymbol
       rect:
         serializedVersion: 2
@@ -77,6 +124,7 @@ TextureImporter:
         height: 10
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: PercentageSymbol
       rect:
         serializedVersion: 2
@@ -86,6 +134,7 @@ TextureImporter:
         height: 14
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LeftPointingArrowSymbol
       rect:
         serializedVersion: 2
@@ -95,6 +144,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number0
       rect:
         serializedVersion: 2
@@ -104,6 +154,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number1
       rect:
         serializedVersion: 2
@@ -113,6 +164,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number2
       rect:
         serializedVersion: 2
@@ -122,6 +174,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number3
       rect:
         serializedVersion: 2
@@ -131,6 +184,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number4
       rect:
         serializedVersion: 2
@@ -140,6 +194,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number5
       rect:
         serializedVersion: 2
@@ -149,6 +204,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number6
       rect:
         serializedVersion: 2
@@ -158,6 +214,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number7
       rect:
         serializedVersion: 2
@@ -167,6 +224,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number8
       rect:
         serializedVersion: 2
@@ -176,6 +234,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: Number9
       rect:
         serializedVersion: 2
@@ -185,6 +244,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterP
       rect:
         serializedVersion: 2
@@ -194,6 +254,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterO
       rect:
         serializedVersion: 2
@@ -203,6 +264,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterI
       rect:
         serializedVersion: 2
@@ -212,6 +274,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterN
       rect:
         serializedVersion: 2
@@ -221,6 +284,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterT
       rect:
         serializedVersion: 2
@@ -230,6 +294,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterS
       rect:
         serializedVersion: 2
@@ -239,6 +304,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterA
       rect:
         serializedVersion: 2
@@ -248,6 +314,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterB
       rect:
         serializedVersion: 2
@@ -257,6 +324,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterC
       rect:
         serializedVersion: 2
@@ -266,6 +334,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterD
       rect:
         serializedVersion: 2
@@ -275,6 +344,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterE
       rect:
         serializedVersion: 2
@@ -284,6 +354,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterF
       rect:
         serializedVersion: 2
@@ -293,6 +364,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterG
       rect:
         serializedVersion: 2
@@ -302,6 +374,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterH
       rect:
         serializedVersion: 2
@@ -311,6 +384,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterJ
       rect:
         serializedVersion: 2
@@ -320,6 +394,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterK
       rect:
         serializedVersion: 2
@@ -329,6 +404,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterL
       rect:
         serializedVersion: 2
@@ -338,6 +414,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterM
       rect:
         serializedVersion: 2
@@ -347,6 +424,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterQ
       rect:
         serializedVersion: 2
@@ -356,6 +434,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterR
       rect:
         serializedVersion: 2
@@ -365,6 +444,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterU
       rect:
         serializedVersion: 2
@@ -374,6 +454,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterV
       rect:
         serializedVersion: 2
@@ -383,6 +464,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterW
       rect:
         serializedVersion: 2
@@ -392,6 +474,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterX
       rect:
         serializedVersion: 2
@@ -401,6 +484,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterY
       rect:
         serializedVersion: 2
@@ -410,6 +494,7 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: LetterZ
       rect:
         serializedVersion: 2
@@ -419,5 +504,6 @@ TextureImporter:
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 

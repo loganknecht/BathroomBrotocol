@@ -11,6 +11,7 @@ public class RotateCamera : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     directionBeingLookedAt = DirectionBeingLookedAt.Top;
+    RotateBathroomToMatchCamera();
 	}
 
 	// Update is called once per frame
@@ -53,7 +54,6 @@ public class RotateCamera : MonoBehaviour {
       }
 
       transform.RotateAround(objectToRotateAround.transform.position, rotationVector, degreesToRotateBy);
-
       RotateBathroomToMatchCamera();
     }
   }

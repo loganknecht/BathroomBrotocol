@@ -1,6 +1,9 @@
 fileFormatVersion: 2
 guid: 079168317e29a1c41b86b419794b62b5
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: SinkIdle
+    21300002: SinkBroken
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -35,6 +38,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 150
   alphaIsTransparency: 1
   textureType: 8
@@ -50,6 +54,7 @@ TextureImporter:
         height: 240
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: SinkBroken
       rect:
         serializedVersion: 2
@@ -59,5 +64,6 @@ TextureImporter:
         height: 240
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 

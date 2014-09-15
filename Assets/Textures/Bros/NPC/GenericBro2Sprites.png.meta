@@ -1,6 +1,98 @@
 fileFormatVersion: 2
 guid: e0ec4739b31611b47988cad174d14b08
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: GenericBro2Sprites_0
+    21300002: GenericBro2Sprites_1
+    21300004: GenericBro2Sprites_2
+    21300006: GenericBro2Sprites_3
+    21300008: GenericBro2Sprites_4
+    21300010: GenericBro2Sprites_5
+    21300012: GenericBro2Sprites_6
+    21300014: GenericBro2Sprites_7
+    21300016: GenericBro2Sprites_8
+    21300018: GenericBro2Sprites_9
+    21300020: GenericBro2Sprites_10
+    21300022: GenericBro2Sprites_11
+    21300024: GenericBro2Sprites_12
+    21300026: GenericBro2Sprites_13
+    21300028: GenericBro2Sprites_14
+    21300030: GenericBro2Sprites_15
+    21300032: GenericBro2Sprites_16
+    21300034: GenericBro2Sprites_17
+    21300036: GenericBro2Sprites_18
+    21300038: GenericBro2Sprites_19
+    21300040: GenericBro2Sprites_20
+    21300042: GenericBro2Sprites_21
+    21300044: GenericBro2Sprites_22
+    21300046: GenericBro2Sprites_23
+    21300048: GenericBro2Sprites_24
+    21300050: GenericBro2Sprites_25
+    21300052: GenericBro2Sprites_26
+    21300054: GenericBro2Sprites_27
+    21300056: GenericBro2Sprites_28
+    21300058: GenericBro2Sprites_29
+    21300060: GenericBro2Sprites_30
+    21300062: GenericBro2Sprites_31
+    21300064: GenericBro2Sprites_32
+    21300066: GenericBro2Sprites_33
+    21300068: GenericBro2Sprites_34
+    21300070: GenericBro2Sprites_35
+    21300072: GenericBro2Sprites_36
+    21300074: GenericBro2Sprites_37
+    21300076: GenericBro2Sprites_38
+    21300078: GenericBro2Sprites_39
+    21300080: GenericBro2Sprites_40
+    21300082: GenericBro2Sprites_41
+    21300084: GenericBro2Sprites_42
+    21300086: GenericBro2Sprites_43
+    21300088: GenericBro2Sprites_44
+    21300090: GenericBro2Sprites_45
+    21300092: GenericBro2Sprites_46
+    21300094: GenericBro2Sprites_47
+    21300096: GenericBro2Sprites_48
+    21300098: GenericBro2Sprites_49
+    21300100: GenericBro2Sprites_50
+    21300102: GenericBro2Sprites_51
+    21300104: GenericBro2Sprites_52
+    21300106: GenericBro2Sprites_53
+    21300108: GenericBro2Sprites_54
+    21300110: GenericBro2Sprites_55
+    21300112: GenericBro2Sprites_56
+    21300114: GenericBro2Sprites_57
+    21300116: GenericBro2Sprites_58
+    21300118: GenericBro2Sprites_59
+    21300120: GenericBro2Sprites_60
+    21300122: GenericBro2Sprites_61
+    21300124: GenericBro2Sprites_62
+    21300126: GenericBro2Sprites_63
+    21300128: GenericBro2Sprites_64
+    21300130: GenericBro2Sprites_65
+    21300132: GenericBro2Sprites_66
+    21300134: GenericBro2Sprites_67
+    21300136: GenericBro2Sprites_68
+    21300138: GenericBro2Sprites_69
+    21300140: GenericBro2Sprites_70
+    21300142: GenericBro2Sprites_71
+    21300144: GenericBro2Sprites_72
+    21300146: GenericBro2Sprites_73
+    21300148: GenericBro2Sprites_74
+    21300150: GenericBro2Sprites_75
+    21300152: GenericBro2Sprites_76
+    21300154: GenericBro2Sprites_77
+    21300156: GenericBro2Sprites_78
+    21300158: GenericBro2Sprites_79
+    21300160: GenericBro2Sprites_80
+    21300162: GenericBro2Sprites_81
+    21300164: GenericBro2Sprites_82
+    21300166: GenericBro2Sprites_83
+    21300168: GenericBro2Sprites_84
+    21300170: GenericBro2Sprites_85
+    21300172: GenericBro2Sprites_86
+    21300174: GenericBro2Sprites_87
+    21300176: GenericBro2Sprites_88
+    21300178: GenericBro2Sprites_89
+    21300180: GenericBro2Sprites_90
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -35,6 +127,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 32
   alphaIsTransparency: 1
   textureType: 8
@@ -50,6 +143,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_1
       rect:
         serializedVersion: 2
@@ -59,6 +153,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_2
       rect:
         serializedVersion: 2
@@ -68,6 +163,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_3
       rect:
         serializedVersion: 2
@@ -77,6 +173,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_4
       rect:
         serializedVersion: 2
@@ -86,6 +183,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_5
       rect:
         serializedVersion: 2
@@ -95,6 +193,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_6
       rect:
         serializedVersion: 2
@@ -104,6 +203,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_7
       rect:
         serializedVersion: 2
@@ -113,6 +213,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_8
       rect:
         serializedVersion: 2
@@ -122,6 +223,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_9
       rect:
         serializedVersion: 2
@@ -131,6 +233,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_10
       rect:
         serializedVersion: 2
@@ -140,6 +243,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_11
       rect:
         serializedVersion: 2
@@ -149,6 +253,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_12
       rect:
         serializedVersion: 2
@@ -158,6 +263,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_13
       rect:
         serializedVersion: 2
@@ -167,6 +273,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_14
       rect:
         serializedVersion: 2
@@ -176,6 +283,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_15
       rect:
         serializedVersion: 2
@@ -185,6 +293,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_16
       rect:
         serializedVersion: 2
@@ -194,6 +303,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_17
       rect:
         serializedVersion: 2
@@ -203,6 +313,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_18
       rect:
         serializedVersion: 2
@@ -212,6 +323,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_19
       rect:
         serializedVersion: 2
@@ -221,6 +333,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_20
       rect:
         serializedVersion: 2
@@ -230,6 +343,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_21
       rect:
         serializedVersion: 2
@@ -239,6 +353,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_22
       rect:
         serializedVersion: 2
@@ -248,6 +363,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_23
       rect:
         serializedVersion: 2
@@ -257,6 +373,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_24
       rect:
         serializedVersion: 2
@@ -266,6 +383,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_25
       rect:
         serializedVersion: 2
@@ -275,6 +393,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_26
       rect:
         serializedVersion: 2
@@ -284,6 +403,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_27
       rect:
         serializedVersion: 2
@@ -293,6 +413,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_28
       rect:
         serializedVersion: 2
@@ -302,6 +423,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_29
       rect:
         serializedVersion: 2
@@ -311,6 +433,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_30
       rect:
         serializedVersion: 2
@@ -320,6 +443,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_31
       rect:
         serializedVersion: 2
@@ -329,6 +453,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_32
       rect:
         serializedVersion: 2
@@ -338,6 +463,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_33
       rect:
         serializedVersion: 2
@@ -347,6 +473,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_34
       rect:
         serializedVersion: 2
@@ -356,6 +483,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_35
       rect:
         serializedVersion: 2
@@ -365,6 +493,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_36
       rect:
         serializedVersion: 2
@@ -374,6 +503,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_37
       rect:
         serializedVersion: 2
@@ -383,6 +513,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_38
       rect:
         serializedVersion: 2
@@ -392,6 +523,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_39
       rect:
         serializedVersion: 2
@@ -401,6 +533,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_40
       rect:
         serializedVersion: 2
@@ -410,6 +543,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_41
       rect:
         serializedVersion: 2
@@ -419,6 +553,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_42
       rect:
         serializedVersion: 2
@@ -428,6 +563,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_43
       rect:
         serializedVersion: 2
@@ -437,6 +573,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_44
       rect:
         serializedVersion: 2
@@ -446,6 +583,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_45
       rect:
         serializedVersion: 2
@@ -455,6 +593,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_46
       rect:
         serializedVersion: 2
@@ -464,6 +603,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_47
       rect:
         serializedVersion: 2
@@ -473,6 +613,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_48
       rect:
         serializedVersion: 2
@@ -482,6 +623,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_49
       rect:
         serializedVersion: 2
@@ -491,6 +633,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_50
       rect:
         serializedVersion: 2
@@ -500,6 +643,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_51
       rect:
         serializedVersion: 2
@@ -509,6 +653,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_52
       rect:
         serializedVersion: 2
@@ -518,6 +663,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_53
       rect:
         serializedVersion: 2
@@ -527,6 +673,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_54
       rect:
         serializedVersion: 2
@@ -536,6 +683,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_55
       rect:
         serializedVersion: 2
@@ -545,6 +693,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_56
       rect:
         serializedVersion: 2
@@ -554,6 +703,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_57
       rect:
         serializedVersion: 2
@@ -563,6 +713,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_58
       rect:
         serializedVersion: 2
@@ -572,6 +723,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_59
       rect:
         serializedVersion: 2
@@ -581,6 +733,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_60
       rect:
         serializedVersion: 2
@@ -590,6 +743,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_61
       rect:
         serializedVersion: 2
@@ -599,6 +753,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_62
       rect:
         serializedVersion: 2
@@ -608,6 +763,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_63
       rect:
         serializedVersion: 2
@@ -617,6 +773,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_64
       rect:
         serializedVersion: 2
@@ -626,6 +783,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_65
       rect:
         serializedVersion: 2
@@ -635,6 +793,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_66
       rect:
         serializedVersion: 2
@@ -644,6 +803,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_67
       rect:
         serializedVersion: 2
@@ -653,6 +813,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_68
       rect:
         serializedVersion: 2
@@ -662,6 +823,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_69
       rect:
         serializedVersion: 2
@@ -671,6 +833,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_70
       rect:
         serializedVersion: 2
@@ -680,6 +843,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_71
       rect:
         serializedVersion: 2
@@ -689,6 +853,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_72
       rect:
         serializedVersion: 2
@@ -698,6 +863,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_73
       rect:
         serializedVersion: 2
@@ -707,6 +873,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_74
       rect:
         serializedVersion: 2
@@ -716,6 +883,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_75
       rect:
         serializedVersion: 2
@@ -725,6 +893,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_76
       rect:
         serializedVersion: 2
@@ -734,6 +903,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_77
       rect:
         serializedVersion: 2
@@ -743,6 +913,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_78
       rect:
         serializedVersion: 2
@@ -752,6 +923,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_79
       rect:
         serializedVersion: 2
@@ -761,6 +933,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_80
       rect:
         serializedVersion: 2
@@ -770,6 +943,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_81
       rect:
         serializedVersion: 2
@@ -779,6 +953,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_82
       rect:
         serializedVersion: 2
@@ -788,6 +963,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_83
       rect:
         serializedVersion: 2
@@ -797,6 +973,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_84
       rect:
         serializedVersion: 2
@@ -806,6 +983,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_85
       rect:
         serializedVersion: 2
@@ -815,6 +993,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_86
       rect:
         serializedVersion: 2
@@ -824,6 +1003,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_87
       rect:
         serializedVersion: 2
@@ -833,6 +1013,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_88
       rect:
         serializedVersion: 2
@@ -842,6 +1023,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_89
       rect:
         serializedVersion: 2
@@ -851,6 +1033,7 @@ TextureImporter:
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: GenericBro2Sprites_90
       rect:
         serializedVersion: 2
@@ -860,5 +1043,6 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 

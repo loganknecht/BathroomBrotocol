@@ -1,6 +1,99 @@
 fileFormatVersion: 2
 guid: 351a66cbe6cdc58449646dc869204730
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: OldManSprite_0
+    21300002: OldManSprite_1
+    21300004: OldManSprite_2
+    21300006: OldManSprite_3
+    21300008: OldManSprite_4
+    21300010: OldManSprite_5
+    21300012: OldManSprite_6
+    21300014: OldManSprite_7
+    21300016: OldManSprite_8
+    21300018: OldManSprite_9
+    21300020: OldManSprite_10
+    21300022: OldManSprite_11
+    21300024: OldManSprite_12
+    21300026: OldManSprite_13
+    21300028: OldManSprite_14
+    21300030: OldManSprite_15
+    21300032: OldManSprite_16
+    21300034: OldManSprite_17
+    21300036: OldManSprite_18
+    21300038: OldManSprite_19
+    21300040: OldManSprite_20
+    21300042: OldManSprite_21
+    21300044: OldManSprite_22
+    21300046: OldManSprite_23
+    21300048: OldManSprite_24
+    21300050: OldManSprite_25
+    21300052: OldManSprite_26
+    21300054: OldManSprite_27
+    21300056: OldManSprite_28
+    21300058: OldManSprite_29
+    21300060: OldManSprite_30
+    21300062: OldManSprite_31
+    21300064: OldManSprite_32
+    21300066: OldManSprite_33
+    21300068: OldManSprite_34
+    21300070: OldManSprite_35
+    21300072: OldManSprite_36
+    21300074: OldManSprite_37
+    21300076: OldManSprite_38
+    21300078: OldManSprite_39
+    21300080: OldManSprite_40
+    21300082: OldManSprite_41
+    21300084: OldManSprite_42
+    21300086: OldManSprite_43
+    21300088: OldManSprite_44
+    21300090: OldManSprite_45
+    21300092: OldManSprite_46
+    21300094: OldManSprite_47
+    21300096: OldManSprite_48
+    21300098: OldManSprite_49
+    21300100: OldManSprite_50
+    21300102: OldManSprite_51
+    21300104: OldManSprite_52
+    21300106: OldManSprite_53
+    21300108: OldManSprite_54
+    21300110: OldManSprite_55
+    21300112: OldManSprite_56
+    21300114: OldManSprite_57
+    21300116: OldManSprite_58
+    21300118: OldManSprite_59
+    21300120: OldManSprite_60
+    21300122: OldManSprite_61
+    21300124: OldManSprite_62
+    21300126: OldManSprite_63
+    21300128: OldManSprite_64
+    21300130: OldManSprite_65
+    21300132: OldManSprite_66
+    21300134: OldManSprite_67
+    21300136: OldManSprite_68
+    21300138: OldManSprite_69
+    21300140: OldManSprite_70
+    21300142: OldManSprite_71
+    21300144: OldManSprite_72
+    21300146: OldManSprite_73
+    21300148: OldManSprite_74
+    21300150: OldManSprite_75
+    21300152: OldManSprite_76
+    21300154: OldManSprite_77
+    21300156: OldManSprite_78
+    21300158: OldManSprite_79
+    21300160: OldManSprite_80
+    21300162: OldManSprite_81
+    21300164: OldManSprite_82
+    21300166: OldManSprite_83
+    21300168: OldManSprite_84
+    21300170: OldManSprite_85
+    21300172: OldManSprite_86
+    21300174: OldManSprite_87
+    21300176: OldManSprite_88
+    21300178: OldManSprite_89
+    21300180: OldManSprite_90
+    21300182: OldManSprite_91
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -35,6 +128,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 32
   alphaIsTransparency: 1
   textureType: 8
@@ -50,6 +144,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_1
       rect:
         serializedVersion: 2
@@ -59,6 +154,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_2
       rect:
         serializedVersion: 2
@@ -68,6 +164,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_3
       rect:
         serializedVersion: 2
@@ -77,6 +174,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_4
       rect:
         serializedVersion: 2
@@ -86,6 +184,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_5
       rect:
         serializedVersion: 2
@@ -95,6 +194,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_6
       rect:
         serializedVersion: 2
@@ -104,6 +204,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_7
       rect:
         serializedVersion: 2
@@ -113,6 +214,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_8
       rect:
         serializedVersion: 2
@@ -122,6 +224,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_9
       rect:
         serializedVersion: 2
@@ -131,6 +234,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_10
       rect:
         serializedVersion: 2
@@ -140,6 +244,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_11
       rect:
         serializedVersion: 2
@@ -149,6 +254,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_12
       rect:
         serializedVersion: 2
@@ -158,6 +264,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_13
       rect:
         serializedVersion: 2
@@ -167,6 +274,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_14
       rect:
         serializedVersion: 2
@@ -176,6 +284,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_15
       rect:
         serializedVersion: 2
@@ -185,6 +294,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_16
       rect:
         serializedVersion: 2
@@ -194,6 +304,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_17
       rect:
         serializedVersion: 2
@@ -203,6 +314,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_18
       rect:
         serializedVersion: 2
@@ -212,6 +324,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_19
       rect:
         serializedVersion: 2
@@ -221,6 +334,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_20
       rect:
         serializedVersion: 2
@@ -230,6 +344,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_21
       rect:
         serializedVersion: 2
@@ -239,6 +354,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_22
       rect:
         serializedVersion: 2
@@ -248,6 +364,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_23
       rect:
         serializedVersion: 2
@@ -257,6 +374,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_24
       rect:
         serializedVersion: 2
@@ -266,6 +384,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_25
       rect:
         serializedVersion: 2
@@ -275,6 +394,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_26
       rect:
         serializedVersion: 2
@@ -284,6 +404,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_27
       rect:
         serializedVersion: 2
@@ -293,6 +414,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_28
       rect:
         serializedVersion: 2
@@ -302,6 +424,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_29
       rect:
         serializedVersion: 2
@@ -311,6 +434,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_30
       rect:
         serializedVersion: 2
@@ -320,6 +444,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_31
       rect:
         serializedVersion: 2
@@ -329,6 +454,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_32
       rect:
         serializedVersion: 2
@@ -338,6 +464,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_33
       rect:
         serializedVersion: 2
@@ -347,6 +474,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_34
       rect:
         serializedVersion: 2
@@ -356,6 +484,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_35
       rect:
         serializedVersion: 2
@@ -365,6 +494,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_36
       rect:
         serializedVersion: 2
@@ -374,6 +504,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_37
       rect:
         serializedVersion: 2
@@ -383,6 +514,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_38
       rect:
         serializedVersion: 2
@@ -392,6 +524,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_39
       rect:
         serializedVersion: 2
@@ -401,6 +534,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_40
       rect:
         serializedVersion: 2
@@ -410,6 +544,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_41
       rect:
         serializedVersion: 2
@@ -419,6 +554,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_42
       rect:
         serializedVersion: 2
@@ -428,6 +564,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_43
       rect:
         serializedVersion: 2
@@ -437,6 +574,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_44
       rect:
         serializedVersion: 2
@@ -446,6 +584,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_45
       rect:
         serializedVersion: 2
@@ -455,6 +594,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_46
       rect:
         serializedVersion: 2
@@ -464,6 +604,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_47
       rect:
         serializedVersion: 2
@@ -473,6 +614,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_48
       rect:
         serializedVersion: 2
@@ -482,6 +624,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_49
       rect:
         serializedVersion: 2
@@ -491,6 +634,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_50
       rect:
         serializedVersion: 2
@@ -500,6 +644,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_51
       rect:
         serializedVersion: 2
@@ -509,6 +654,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_52
       rect:
         serializedVersion: 2
@@ -518,6 +664,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_53
       rect:
         serializedVersion: 2
@@ -527,6 +674,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_54
       rect:
         serializedVersion: 2
@@ -536,6 +684,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_55
       rect:
         serializedVersion: 2
@@ -545,6 +694,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_56
       rect:
         serializedVersion: 2
@@ -554,6 +704,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_57
       rect:
         serializedVersion: 2
@@ -563,6 +714,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_58
       rect:
         serializedVersion: 2
@@ -572,6 +724,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_59
       rect:
         serializedVersion: 2
@@ -581,6 +734,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_60
       rect:
         serializedVersion: 2
@@ -590,6 +744,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_61
       rect:
         serializedVersion: 2
@@ -599,6 +754,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_62
       rect:
         serializedVersion: 2
@@ -608,6 +764,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_63
       rect:
         serializedVersion: 2
@@ -617,6 +774,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_64
       rect:
         serializedVersion: 2
@@ -626,6 +784,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_65
       rect:
         serializedVersion: 2
@@ -635,6 +794,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_66
       rect:
         serializedVersion: 2
@@ -644,6 +804,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_67
       rect:
         serializedVersion: 2
@@ -653,6 +814,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_68
       rect:
         serializedVersion: 2
@@ -662,6 +824,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_69
       rect:
         serializedVersion: 2
@@ -671,6 +834,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_70
       rect:
         serializedVersion: 2
@@ -680,6 +844,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_71
       rect:
         serializedVersion: 2
@@ -689,6 +854,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_72
       rect:
         serializedVersion: 2
@@ -698,6 +864,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_73
       rect:
         serializedVersion: 2
@@ -707,6 +874,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_74
       rect:
         serializedVersion: 2
@@ -716,6 +884,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_75
       rect:
         serializedVersion: 2
@@ -725,6 +894,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_76
       rect:
         serializedVersion: 2
@@ -734,6 +904,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_77
       rect:
         serializedVersion: 2
@@ -743,6 +914,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_78
       rect:
         serializedVersion: 2
@@ -752,6 +924,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_79
       rect:
         serializedVersion: 2
@@ -761,6 +934,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_80
       rect:
         serializedVersion: 2
@@ -770,6 +944,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_81
       rect:
         serializedVersion: 2
@@ -779,6 +954,7 @@ TextureImporter:
         height: 31
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_82
       rect:
         serializedVersion: 2
@@ -788,6 +964,7 @@ TextureImporter:
         height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_83
       rect:
         serializedVersion: 2
@@ -797,6 +974,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_84
       rect:
         serializedVersion: 2
@@ -806,6 +984,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_85
       rect:
         serializedVersion: 2
@@ -815,6 +994,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_86
       rect:
         serializedVersion: 2
@@ -824,6 +1004,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_87
       rect:
         serializedVersion: 2
@@ -833,6 +1014,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_88
       rect:
         serializedVersion: 2
@@ -842,6 +1024,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_89
       rect:
         serializedVersion: 2
@@ -851,6 +1034,7 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_90
       rect:
         serializedVersion: 2
@@ -860,6 +1044,7 @@ TextureImporter:
         height: 30
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: OldManSprite_91
       rect:
         serializedVersion: 2
@@ -869,5 +1054,6 @@ TextureImporter:
         height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
