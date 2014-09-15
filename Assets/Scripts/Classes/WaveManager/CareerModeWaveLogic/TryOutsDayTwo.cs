@@ -126,8 +126,6 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
   public void TriggerFirstWave() {
     Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
-    // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 0f },
-                                                                                       // { 1, 1f } };
                                                                                        { 1, .5f } };
 
     BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);

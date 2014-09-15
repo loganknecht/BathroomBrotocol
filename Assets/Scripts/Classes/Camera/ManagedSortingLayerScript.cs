@@ -18,12 +18,7 @@ public class ManagedSortingLayerScript : MonoBehaviour {
       Vector3 cameraPosition = Camera.main.transform.position;
       Vector3 currentPosition = Vector3.zero;
 
-      // if(gameObjectToBaseSortingLayerOn != null) {
-      //   currentPosition = gameObjectToBaseSortingLayerOn.transform.position;
-      // }
-      // else {
-        currentPosition = this.gameObject.transform.position;
-      // }
+      currentPosition = this.gameObject.transform.position;
 
       float xDifference = currentPosition.x - cameraPosition.x;
       // float xDifference = cameraPosition.x - currentPosition.x;
@@ -32,6 +27,7 @@ public class ManagedSortingLayerScript : MonoBehaviour {
       // float yDifference = cameraPosition.y - currentPosition.y;
 
       float distanceFromCamera = Mathf.Sqrt((xDifference * xDifference) + (yDifference * yDifference));
+
       int sortingLayerCalculation = Mathf.RoundToInt(distanceFromCamera * 100 * -1);
 
       // bool showDebugLogic = false;
@@ -52,6 +48,7 @@ public class ManagedSortingLayerScript : MonoBehaviour {
       // }
 
       // Debug.Log(sortingLayerCalculation);
+
       this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation  + sortingLayerOffset;
       foreach(GameObject objectToUpdate in gameObjectsToMatchSortingLayer) {
         objectToUpdate.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation + objectToUpdate.GetComponent<ManagedSortingLayerScript>().sortingLayerOffset;
