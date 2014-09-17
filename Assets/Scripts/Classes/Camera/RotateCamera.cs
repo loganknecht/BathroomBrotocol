@@ -32,7 +32,7 @@ public class RotateCamera : MonoBehaviour {
     RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
   }
 
-  void RotateBySpecifiedDegreesAroundObject(Vector3 rotationVector, float degreesToRotateBy) {
+  public void RotateBySpecifiedDegreesAroundObject(Vector3 rotationVector, float degreesToRotateBy) {
     if(objectToRotateAround != null) {
       amountRotated += degreesToRotateBy;
       amountRotated = amountRotated%360;

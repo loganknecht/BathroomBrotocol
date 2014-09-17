@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PinchZoom : MonoBehaviour
 {
+  public Camera cameraReference;
+
 	public float zoomStepSize= 0.2f;
 
   // zoom-in and zoom-out limits
@@ -48,7 +50,7 @@ public class PinchZoom : MonoBehaviour
     // cameraStepSize.y = 0;
     cameraStepSize.z = 0;
     // may need to play around between local and world position
-    camera.transform.localPosition += cameraStepSize;
+    cameraReference.transform.localPosition += cameraStepSize;
 
     FixCameraToBeInBounds();
     PerformDoubleTapResetLogic();
@@ -80,7 +82,7 @@ public class PinchZoom : MonoBehaviour
 
   public Vector3 FixCameraStepSizeToBeInBounds(Vector3 cameraStepSize) {
     Vector3 modifiedCameraStepSize = new Vector3(cameraStepSize.x, cameraStepSize.y, cameraStepSize.z);
-    Vector3 currentPosition = camera.transform.localPosition;
+    Vector3 currentPosition = cameraReference.gameObject.transform.localPosition;
 
     float cameraLeftBound = (cameraAnchor.x - minAnchorXOffset);
     float cameraRightBound = (cameraAnchor.x + maxAnchorXOffset);
@@ -108,7 +110,7 @@ public class PinchZoom : MonoBehaviour
   }
 
   public void FixCameraToBeInBounds() {
-    Vector3 currentPosition = camera.transform.localPosition;
+    Vector3 currentPosition = cameraReference.transform.localPosition;
 
     float cameraLeftBound = (cameraAnchor.x - minAnchorXOffset);
     float cameraRightBound = (cameraAnchor.x + maxAnchorXOffset);
@@ -129,7 +131,7 @@ public class PinchZoom : MonoBehaviour
       currentPosition.y = cameraTopBound;
     }
 
-    camera.transform.localPosition = currentPosition;
+    cameraReference.transform.localPosition = currentPosition;
   }
 
   private void PerformDoubleTapResetLogic() {
@@ -146,12 +148,12 @@ public class PinchZoom : MonoBehaviour
   private void PerformScrollWheelLogic() {
     // pc scrollWheel to zoom in and out.
     if(Input.GetAxis("Mouse ScrollWheel") > 0
-       && camera.orthographicSize > minZoom) {
-      camera.orthographicSize -= zoomStepSize;
+       && cameraReference.orthographicSize > minZoom) {
+      cameraReference.orthographicSize -= zoomStepSize;
     }
     else if(Input.GetAxis("Mouse ScrollWheel") < 0
-            && camera.orthographicSize < maxZoom) {
-      camera.orthographicSize += zoomStepSize;
+            && cameraReference.orthographicSize < maxZoom) {
+      cameraReference.orthographicSize += zoomStepSize;
     }
   }
 
@@ -174,29 +176,29 @@ public class PinchZoom : MonoBehaviour
 
 			// device Zoom out
 			if(touchDelta < 0) {
-				if(camera.orthographicSize < maxZoom) {
-					camera.orthographicSize = camera.orthographicSize + zoomStepSize;
+				if(cameraReference.orthographicSize < maxZoom) {
+					cameraReference.orthographicSize = cameraReference.orthographicSize + zoomStepSize;
 				}
 			}
 
 			//device Zoom in
 			else if(touchDelta > 0) {
-				if(camera.orthographicSize > minZoom) {
-					camera.orthographicSize = camera.orthographicSize - zoomStepSize;
+				if(cameraReference.orthographicSize > minZoom) {
+					cameraReference.orthographicSize = cameraReference.orthographicSize - zoomStepSize;
 				}
 			}
 
 			//mouse zoom out
 			if (Input.GetAxis("Mouse ScrollWheel") < 0) {
-				if(camera.orthographicSize < maxZoom) {
-					camera.orthographicSize = camera.orthographicSize + zoomStepSize;
+				if(cameraReference.orthographicSize < maxZoom) {
+					cameraReference.orthographicSize = cameraReference.orthographicSize + zoomStepSize;
 				}
 			}
 
 			//mouse zoom in
 			if (Input.GetAxis("Mouse ScrollWheel") > 0) {
-				if(camera.orthographicSize > minZoom) {
-					camera.orthographicSize = camera.orthographicSize + zoomStepSize;
+				if(cameraReference.orthographicSize > minZoom) {
+					cameraReference.orthographicSize = cameraReference.orthographicSize + zoomStepSize;
 				}
 			}
 
