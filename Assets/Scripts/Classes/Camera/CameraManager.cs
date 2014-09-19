@@ -55,15 +55,25 @@ public class CameraManager : MonoBehaviour {
 
   public void RotateLeft() {
     // Vector3 previousOffsetPosition = pinchZoomReference.gameObject.transform.position;
-    pinchZoomReference.gameObject.transform.position = Vector3.zero;
+    // pinchZoomReference.gameObject.transform.position = Vector3.zero;
+    // pinchZoomReference.ResetToAnchor();
+    pinchZoomReference.cameraReference.gameObject.transform.position = pinchZoomReference.cameraAnchor;
     rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, 90f);
+    pinchZoomReference.cameraAnchor = pinchZoomReference.cameraReference.gameObject.transform.position;
+    // pinchZoomReference.cameraAnchor = pinchZoomReference.cameraReference.gameObject.transform.localPosition;
+    // Debug.Log("ROTATED LEFT, NEW CAMERA ANCHOR:\n" + pinchZoomReference.cameraAnchor);
     // pinchZoomReference.gameObject.transform.position = previousOffsetPosition;
   }
 
   public void RotateRight() {
     // Vector3 previousOffsetPosition = pinchZoomReference.gameObject.transform.position;
-    pinchZoomReference.gameObject.transform.position = Vector3.zero;
+    // pinchZoomReference.gameObject.transform.position = Vector3.zero;
+    // pinchZoomReference.ResetToAnchor();
+    pinchZoomReference.cameraReference.gameObject.transform.position = pinchZoomReference.cameraAnchor;
     rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
+    pinchZoomReference.cameraAnchor = pinchZoomReference.cameraReference.gameObject.transform.position;
+    // pinchZoomReference.cameraAnchor = pinchZoomReference.cameraReference.gameObject.transform.localPosition;
+    // Debug.Log("ROTATED RIGHT, NEW CAMERA ANCHOR:\n" + pinchZoomReference.cameraAnchor);
     // pinchZoomReference.gameObject.transform.position = previousOffsetPosition;
   }
 }
