@@ -27,7 +27,10 @@ public class PinchZoom : MonoBehaviour
   public float maxAnchorYOffset = 5f;
 
 	void Start () {
-		cameraAnchor = this.gameObject.transform.localPosition;
+		// cameraAnchor = this.gameObject.transform.localPosition;
+    cameraAnchor = cameraReference.gameObject.transform.localPosition;
+    // cameraAnchor = Vector3.zero;
+    // Debug.Log("Camera Anchor Set To:\n" + cameraAnchor);
 
 		isPointerPressed = false;
 	}
@@ -46,8 +49,6 @@ public class PinchZoom : MonoBehaviour
     Vector3 cameraStepSize = CalculateCameraStepSize();
     // Debug.Log(cameraStepSize);
     cameraStepSize = FixCameraStepSizeToBeInBounds(cameraStepSize);
-    // cameraStepSize.x = 0;
-    // cameraStepSize.y = 0;
     cameraStepSize.z = 0;
     // may need to play around between local and world position
     cameraReference.transform.localPosition += cameraStepSize;
@@ -82,10 +83,10 @@ public class PinchZoom : MonoBehaviour
 
   // I don't think this works at all....
   public Vector3 FixCameraStepSizeToBeInBounds(Vector3 cameraStepSize) {
-    Debug.Log("------------------------------------");
-    Debug.Log("starting step size:\n" + cameraStepSize);
+    // Debug.Log("------------------------------------");
+    // Debug.Log("starting step size:\n" + cameraStepSize);
     Vector3 modifiedCameraStepSize = new Vector3(cameraStepSize.x, cameraStepSize.y, cameraStepSize.z);
-    Vector3 currentPosition = cameraReference.gameObject.transform.position;
+    Vector3 currentPosition = cameraReference.gameObject.transform.localPosition;
 
     float cameraLeftBound = (cameraAnchor.x - minAnchorXOffset);
     float cameraRightBound = (cameraAnchor.x + maxAnchorXOffset);
@@ -95,30 +96,30 @@ public class PinchZoom : MonoBehaviour
     float nextXPosition = (currentPosition.x + cameraStepSize.x);
     float nextYPosition = (currentPosition.y + cameraStepSize.y);
 
-    Debug.Log("cameraLeftBound: " + cameraLeftBound);
-    Debug.Log("cameraRightBound: " + cameraRightBound);
-    Debug.Log("cameraBottomBound: " + cameraBottomBound);
-    Debug.Log("cameraTopBound: " + cameraTopBound);
+    // Debug.Log("cameraLeftBound: " + cameraLeftBound);
+    // Debug.Log("cameraRightBound: " + cameraRightBound);
+    // Debug.Log("cameraBottomBound: " + cameraBottomBound);
+    // Debug.Log("cameraTopBound: " + cameraTopBound);
 
-    Debug.Log("nextXPosition: " + nextXPosition);
-    Debug.Log("nextYPosition: " + nextYPosition);
+    // Debug.Log("nextXPosition: " + nextXPosition);
+    // Debug.Log("nextYPosition: " + nextYPosition);
 
     if(nextXPosition < cameraLeftBound) {
-      Debug.Log("Less than left bound");
-    //   modifiedCameraStepSize.x = cameraLeftBound - currentPosition.x;
+      // Debug.Log("Less than left bound");
+      modifiedCameraStepSize.x = cameraLeftBound - currentPosition.x;
     }
     else if(nextXPosition > cameraRightBound) {
-      Debug.Log("Greater than right bound");
-    //   modifiedCameraStepSize.x = cameraRightBound - currentPosition.x;
+      // Debug.Log("Greater than right bound");
+      modifiedCameraStepSize.x = cameraRightBound - currentPosition.x;
     }
 
     if(nextYPosition < cameraBottomBound) {
-      Debug.Log("Less than bottom bound");
-    //   modifiedCameraStepSize.y = cameraBottomBound - currentPosition.y;
+      // Debug.Log("Less than bottom bound");
+      modifiedCameraStepSize.y = cameraBottomBound - currentPosition.y;
     }
     else if(nextYPosition > cameraTopBound) {
-      Debug.Log("Greater than top bound");
-    //   modifiedCameraStepSize.y = cameraTopBound - currentPosition.y;
+      // Debug.Log("Greater than top bound");
+      modifiedCameraStepSize.y = cameraTopBound - currentPosition.y;
     }
 
     // Debug.Log("ending step size:\n" + modifiedCameraStepSize);
