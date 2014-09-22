@@ -34,7 +34,7 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
     InitializeWaveStates(
                          // startAnimationWaveGameObject,
                          // broEnoughConfirmationWaveGameObject,
-                         broEnoughResponseWaveGameObject,
+                         // broEnoughResponseWaveGameObject,
                          firstWaveGameObject
                          );
   }
@@ -130,7 +130,7 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
     BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
+    firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
@@ -146,5 +146,40 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
     }
   }
   public void FinishFirstWave() {
+  }
+  //----------------------------------------------------------------------------
+  public void TriggerFightExplanation() {
+  }
+  public void PerformFightExplanation() {
+    if(BroManager.Instance.NoBrosInRestroom()) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+  }
+  public void FinishFightExplanation() {
+  }
+  //----------------------------------------------------------------------------
+  public void TriggerSecondWave() {
+    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+    Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
+                                                                                       { 1, .5f } };
+
+    BroDistributionObject secondWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+    secondWave.SetFightProbability(BroDistribution.AllBros, 1f);
+    secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+    secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    secondWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
+    secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+
+    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                             secondWave,
+                                                                            });
+  }
+  public void PerformSecondWave() {
+    if(BroManager.Instance.NoBrosInRestroom()) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+  }
+  public void FinishSecondWave() {
   }
 }

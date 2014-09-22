@@ -42,7 +42,6 @@ CHANGES THAT NEED TO BE MADE BEFORE PLAY TESTING CAN OCCUR
  Things I wanna do, but probably won't for awhile
  //-----------------------------------.
  - Modify path calculator to add buffers to the path calulcations so that bros don't traverse through the center of the tiles, but rather random points within the tiles calculated
- - Create Pinch, zoom, and move camera features (Something to support navigating the camera around
  - Configure levels descriptions to show objectives
  - Create pathing options so different routes can be taken
  - Mock up bro fist cinematic when switching to score counter
@@ -50,6 +49,7 @@ CHANGES THAT NEED TO BE MADE BEFORE PLAY TESTING CAN OCCUR
 --------------------------------------------------------------------------------
 Finished
 --------------------------------------------------------------------------------
+ - Create Pinch, zoom, and move camera features (Something to support navigating the camera around
  - Fix the Janitor.... again
  - Create Different sets of test logic for the test level
  - Create test puzzle mode (This was a bad idea)
