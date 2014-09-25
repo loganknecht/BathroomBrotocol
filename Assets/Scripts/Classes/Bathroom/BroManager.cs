@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class BroManager : MonoBehaviour {
 
-  public List<GameObject> topLevelBroContainers = new List<GameObject>();
+  	public List<GameObject> topLevelBroContainers = new List<GameObject>();
 
 	public List<GameObject> allBros = new List<GameObject>();
-  public List<GameObject> allFightingBros = new List<GameObject>();
+	public List<GameObject> allStandoffBros = new List<GameObject>();
+  	public List<GameObject> allFightingBros = new List<GameObject>();
+
+  	public bool isPaused = false;
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile BroManager _instance;
@@ -46,32 +49,74 @@ public class BroManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    foreach(GameObject topLevelBroContainer in topLevelBroContainers) {
-      foreach(Transform childTransform in topLevelBroContainer.transform) {
-        allBros.Add(childTransform.gameObject);
-      }
-    }
+	    foreach(GameObject topLevelBroContainer in topLevelBroContainers) {
+	      foreach(Transform childTransform in topLevelBroContainer.transform) {
+	        allBros.Add(childTransform.gameObject);
+	      }
+	    }
 	}
 
 	// Update is called once per frame
 	void Update () {
-		SetAllBrosIsSelected(true);
+		if(!isPaused) {
+			ResetAllBrosIsSelectedState(true);
+		}
 	}
 
-  public bool NoBrosInRestroom() {
-    if(allBros.Count == 0) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
+	public void Pause() {
+		TogglePause(true);
+	}
+
+	public void Unpause() {
+		TogglePause(false);
+	}
+
+	void TogglePause(bool newPauseState) {
+		isPaused = newPauseState;
+		foreach(GameObject broGameObject in allBros) {
+			broGameObject.GetComponent<Bro>().isPaused = newPauseState;
+		}
+
+		foreach(GameObject standoffBroGameObject in allStandoffBros) {
+			standoffBroGameObject.GetComponent<StandoffBros>().isPaused = newPauseState;
+		}
+
+		foreach(GameObject fightingBroGameObject in allFightingBros) {
+			fightingBroGameObject.GetComponent<FightingBros>().isPaused = newPauseState;
+		}
+	}
+
+	public bool NoBrosInRestroom() {
+		if(allBros.Count == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public bool NoStandoffBrosInRestroom() {
+		if(allStandoffBros.Count == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public bool NoFightingBrosInRestroom() {
+		if(allFightingBros.Count == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	public void AddBro(GameObject broToAdd) {
 		allBros.Add(broToAdd);
 		broToAdd.transform.parent = this.gameObject.transform;
 	}
-
 	public void RemoveBro(GameObject broToRemove, bool destroyBro) {
 		allBros.Remove(broToRemove);
 		if(destroyBro) {
@@ -79,19 +124,29 @@ public class BroManager : MonoBehaviour {
 		}
 	}
 
-  public void AddFightingBro(GameObject fightingBroToAdd) {
-    allFightingBros.Add(fightingBroToAdd);
-    fightingBroToAdd.transform.parent = this.gameObject.transform;
-  }
+	public void AddStandOffBros(GameObject standoffBroToAdd) {
+		allStandoffBros.Add(standoffBroToAdd);
+		standoffBroToAdd.transform.parent = this.gameObject.transform;
+	}
+	public void RemoveStandoffBro(GameObject standoffBroToRemove, bool destroyStandOffBro) {
+		allStandoffBros.Remove(standoffBroToRemove);
+		if(destroyStandOffBro) {
+		  Destroy(standoffBroToRemove);
+		}
+	}
 
-  public void RemoveFightingBro(GameObject fightingBroToRemove, bool destroyFightingBro) {
-    allFightingBros.Remove(fightingBroToRemove);
-    if(destroyFightingBro) {
-      Destroy(fightingBroToRemove);
-    }
-  }
+	public void AddFightingBro(GameObject fightingBroToAdd) {
+		allFightingBros.Add(fightingBroToAdd);
+		fightingBroToAdd.transform.parent = this.gameObject.transform;
+	}
+	public void RemoveFightingBro(GameObject fightingBroToRemove, bool destroyFightingBro) {
+		allFightingBros.Remove(fightingBroToRemove);
+		if(destroyFightingBro) {
+		  Destroy(fightingBroToRemove);
+		}
+	}
 
-	public void SetAllBrosIsSelected(bool ignoreCurrentlySelectedBro) {
+	public void ResetAllBrosIsSelectedState(bool ignoreCurrentlySelectedBro) {
 		foreach(GameObject broObject in allBros) {
 			if(ignoreCurrentlySelectedBro
 			   && SelectionManager.Instance.currentlySelectedBroGameObject != null){

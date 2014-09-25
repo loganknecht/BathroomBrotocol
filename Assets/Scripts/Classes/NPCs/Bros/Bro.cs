@@ -448,6 +448,8 @@ public class Bro : TargetPathingNPC {
         standOffBroGameObject  = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/StandoffBros") as GameObject);
         broFightingWith.GetComponent<Bro>().standOffBroGameObject = standOffBroGameObject;
         standOffBroGameObject.GetComponent<StandoffBros>().StandoffBrosInit(this.gameObject, broFightingWith, standoffAnchor);
+
+        BroManager.Instance.AddStandOffBros(standOffBroGameObject);
       }
 		}
 	}

@@ -4,7 +4,7 @@ using System.Collections;
 public class LevelManager : MonoBehaviour {
 	public GameObject uiRootGameObject = null;
   //-------------
-	public string nextState = "";
+	public string sceneToChangeTo = "";
   //-------------
   public GameObject backgroundImage = null;
   //-------------
@@ -134,9 +134,6 @@ public class LevelManager : MonoBehaviour {
     TweenExecutor.TweenObjectAlpha(levelFailedPanel, 0, 1, 0, 1, UITweener.Method.Linear, null);
   }
 
-  public void PerformScoreSceneTransition() {
-  }
-
   public void UpdateScoreComponents() {
     if(currentScoreLabel != null
        && currentScoreLabel.GetComponent<UILabel>()  != null) {
@@ -176,9 +173,14 @@ public class LevelManager : MonoBehaviour {
     }
   }
 
-  public void TriggerLevelChange(string sceneToChangeTo) {
+  public void TriggerLevelChangeToScoreMenu() {
+    TriggerLevelChange("ScoreMenu");
+  }
+
+  void TriggerLevelChange(string newSceneToChangeTo) {
     if(!levelChangeTriggered) {
-      FadeManager.Instance.SetFadeFinishLogic(ChangeLevelToScoreMenu);
+      sceneToChangeTo = newSceneToChangeTo;
+      FadeManager.Instance.SetFadeFinishLogic(ChangeToScene);
       FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
 
       HideUI();
@@ -188,7 +190,7 @@ public class LevelManager : MonoBehaviour {
     }
   }
 
-  public void ChangeLevelToScoreMenu() {
-    Application.LoadLevel("ScoreMenu");
+  public void ChangeToScene() {
+    Application.LoadLevel(sceneToChangeTo);
   }
 }

@@ -3,6 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
+  public GameObject startAnimationWaveGameObject;
+  public GameObject broEnoughConfirmationWaveGameObject;
+  public GameObject broEnoughResponseWaveGameObject;
+  public GameObject firstWaveGameObject;
+  public GameObject secondWaveGameObject;
+
+  public GameObject broFightingExplanation;
+  public GameObject broFightingExplanationConfirmationGameObject;
+  public bool broFightingExplanationOccurred = false;
 
   public override void Awake() {
     base.Awake();
@@ -12,30 +21,46 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
   public override void Start () {
     base.Start();
 
-    GameObject startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
-                                                              TriggerStartAnimation,
-                                                              PerformStartAnimation,
-                                                              FinishStartAnimation);
+    startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
+                                                                TriggerStartAnimation,
+                                                                PerformStartAnimation,
+                                                                FinishStartAnimation);
 
-    GameObject broEnoughConfirmationWaveGameObject = CreateWaveState("BroEnoughConfirmation Game Object",
-                                                                      TriggerBroEnoughConfirmation,
-                                                                      PerformBroEnoughConfirmation,
-                                                                      FinishBroEnoughConfirmation);
+    broEnoughConfirmationWaveGameObject = CreateWaveState("BroEnoughConfirmation Game Object",
+                                                                        TriggerBroEnoughConfirmation,
+                                                                        PerformBroEnoughConfirmation,
+                                                                        FinishBroEnoughConfirmation);
 
-    GameObject broEnoughResponseWaveGameObject = CreateWaveState("BroEnoughResponse Game Object",
-                                                                  TriggerBroEnoughResponse,
-                                                                  PerformBroEnoughResponse,
-                                                                  FinishBroEnoughResponse);
+    broEnoughResponseWaveGameObject = CreateWaveState("BroEnoughResponse Game Object",
+                                                                    TriggerBroEnoughResponse,
+                                                                    PerformBroEnoughResponse,
+                                                                    FinishBroEnoughResponse);
 
-    GameObject firstWaveGameObject = CreateWaveState("First Wave Game Object",
+    firstWaveGameObject = CreateWaveState("FirstWave Game Object",
                                                       TriggerFirstWave,
                                                       PerformFirstWave,
                                                       FinishFirstWave);
+
+    secondWaveGameObject = CreateWaveState("SecondWave Game Object",
+                                                      TriggerSecondWave,
+                                                      PerformSecondWave,
+                                                      FinishSecondWave);
+
+    broFightingExplanation = CreateWaveState("BroFightingExplanation Game Object",
+                                              TriggerBroFightingExplanation,
+                                              PerformBroFightingExplanation,
+                                              FinishBroFightingExplanation);
+
+    broFightingExplanationConfirmationGameObject = CreateWaveState("BroFightingExplanationConfirmation Game Object",
+                                              TriggerBroFightingExplanationConfirmation,
+                                              PerformBroFightingExplanationConfirmation,
+                                              FinishBroFightingExplanationConfirmation);
     InitializeWaveStates(
-                         // startAnimationWaveGameObject,
-                         // broEnoughConfirmationWaveGameObject,
-                         // broEnoughResponseWaveGameObject,
-                         firstWaveGameObject
+                         startAnimationWaveGameObject,
+                         broEnoughConfirmationWaveGameObject,
+                         broEnoughResponseWaveGameObject,
+                         firstWaveGameObject,
+                         secondWaveGameObject
                          );
   }
 
@@ -72,16 +97,11 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
     TextboxManager.Instance.SetTextboxTextSet(textQueue);
   }
   public void PerformStartAnimation() {
-    // Debug.Log("performing start animation");
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
       PerformWaveStatePlayingFinishedTrigger();
     }
   }
   public void FinishStartAnimation() {
-    // Debug.Log("finishing start animation");
-    // TextboxManager.Instance.Hide();
-    // LevelManager.Instance.HideJanitorOverlay();
-
   }
   //----------------------------------------------------------------------------
   public void TriggerBroEnoughConfirmation() {
@@ -141,21 +161,17 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                                             });
   }
   public void PerformFirstWave() {
-    if(BroManager.Instance.NoBrosInRestroom()) {
+    if(BroGenerator.Instance.HasFinishedGenerating()
+       && BroManager.Instance.NoBrosInRestroom()) {
       PerformWaveStatePlayingFinishedTrigger();
+    }
+    else if(!BroManager.Instance.NoFightingBrosInRestroom()
+            && !broFightingExplanationOccurred) {
+      PerformWaveStateThenReturn(broFightingExplanation);
+      broFightingExplanationOccurred = true;
     }
   }
   public void FinishFirstWave() {
-  }
-  //----------------------------------------------------------------------------
-  public void TriggerFightExplanation() {
-  }
-  public void PerformFightExplanation() {
-    if(BroManager.Instance.NoBrosInRestroom()) {
-      PerformWaveStatePlayingFinishedTrigger();
-    }
-  }
-  public void FinishFightExplanation() {
   }
   //----------------------------------------------------------------------------
   public void TriggerSecondWave() {
@@ -163,23 +179,77 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
                                                                                        { 1, .5f } };
 
-    BroDistributionObject secondWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    secondWave.SetFightProbability(BroDistribution.AllBros, 1f);
-    secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    secondWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
-    secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+    BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+    firstBroSet.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+    firstBroSet.SetFightProbability(BroDistribution.AllBros, 1f);
+    firstBroSet.SetLineQueueSkipType(BroDistribution.AllBros, true);
+    firstBroSet.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+    firstBroSet.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
+    firstBroSet.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                             secondWave,
+                                                                             firstBroSet,
                                                                             });
   }
   public void PerformSecondWave() {
-    if(BroManager.Instance.NoBrosInRestroom()) {
+    if(BroGenerator.Instance.HasFinishedGenerating()
+       && BroManager.Instance.NoBrosInRestroom()) {
       PerformWaveStatePlayingFinishedTrigger();
+      waveLogicFinished = true;
+    }
+    else if(!BroManager.Instance.NoFightingBrosInRestroom()
+            && !broFightingExplanationOccurred) {
+      PerformWaveStateThenReturn(broFightingExplanation);
+      broFightingExplanationOccurred = true;
     }
   }
   public void FinishSecondWave() {
   }
-}
+  //----------------------------------------------------------------------------
+  public void TriggerBroFightingExplanation() {
+    BroManager.Instance.Pause();
+    LevelManager.Instance.ShowJanitorOverlay();
+    TextboxManager.Instance.Show();
+
+    Queue textQueue = new Queue();
+    textQueue.Enqueue("Whoa, whoa, whoa, whoa, whoa! Looks like you got a bro fight in full swing here!");
+    textQueue.Enqueue("Now I'm not sure if you understand how this happens, so I'm going to go ahead and explain it just in case you need a little refresher.");
+    textQueue.Enqueue("The bathroom is a pretty dangerous place, period. Sometimes bros will run into eachother, and when that happens tempers flare and a brodown occurs.");
+    textQueue.Enqueue("This is why you're here. When a brodown occurs you need to tap the bros that are fighting in order to tell them to knock it off!");
+    textQueue.Enqueue("If you fail to stop a brodown turning into a full blown fight, well... then you've got bigger issues to look out for.");
+    textQueue.Enqueue("First and foremost, when a bro fight breaks out, anything in the bathroom is fair game. This means if a bro fight touches a bathroom object, then it goes kaput.");
+    textQueue.Enqueue("Obviously you can see why this is an issue. Because of this you're going to want to bounce all bro fights in the restroom on account that it's not good for you.");
+    textQueue.Enqueue("To bounce the bros fighting, just tap them enough times to split them up, and they'll leave the restroom on their own.");
+    textQueue.Enqueue("Now hurry up and handle those fighting bros!");
+    TextboxManager.Instance.SetTextboxTextSet(textQueue);
+  }
+  public void PerformBroFightingExplanation() {
+    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+      EnqueueWaveStateAtFront(broFightingExplanationConfirmationGameObject);
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+  }
+  public void FinishBroFightingExplanation() {
+    LevelManager.Instance.HideJanitorOverlay();
+    TextboxManager.Instance.Hide();
+  }
+  //----------------------------------------------------------------------------
+  public void TriggerBroFightingExplanationConfirmation() {
+    ConfirmationBoxManager.Instance.SetText("Did you get all that, or do you need me to explain it again?");
+    ConfirmationBoxManager.Instance.Reset();
+    ConfirmationBoxManager.Instance.Show();
+  }
+  public void PerformBroFightingExplanationConfirmation() {
+    if(ConfirmationBoxManager.Instance.selectedYes) {
+      EnqueueWaveStateAtFront(broFightingExplanation);
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+    else if(ConfirmationBoxManager.Instance.selectedNo) {
+      PerformWaveStatePlayingFinishedTrigger();
+    }
+  }
+  public void FinishBroFightingExplanationConfirmation() {
+    BroManager.Instance.Unpause();
+    ConfirmationBoxManager.Instance.Hide();
+  }
+} 

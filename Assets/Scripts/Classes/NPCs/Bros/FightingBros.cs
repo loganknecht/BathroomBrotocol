@@ -6,6 +6,7 @@ public class FightingBros : TargetPathingNPC {
   public List<GameObject> brosFighting = new List<GameObject>();
   public int currentNumberOfTaps = 0;
   public int numberOfTapsNeededToBreakUp = 0;
+  public bool isPaused = false;
 
   // Use this for initialization
   public override void Start () {
@@ -16,8 +17,10 @@ public class FightingBros : TargetPathingNPC {
 
   // Update is called once per frame
  public override void Update () {
-   // base.Update();
-   PerformLogic();
+  if(!isPaused) {
+    // base.Update();
+    PerformLogic();
+  }
  }
 
   public void OnMouseDown() {

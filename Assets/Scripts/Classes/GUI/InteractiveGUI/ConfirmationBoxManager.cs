@@ -65,6 +65,10 @@ public class ConfirmationBoxManager : MonoBehaviour {
     TweenExecutor.TweenObjectAlpha(this.gameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
   }
 
+  public void SetText(string newConfirmationBoxText) {
+    text.GetComponent<UILabel>().text = newConfirmationBoxText;
+  }
+
   public void Reset() {
     hasSelectedAnswer = false;
     selectedNo = false;

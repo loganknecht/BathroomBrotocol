@@ -19,9 +19,6 @@ public class WaveState : MonoBehaviour {
   public WaveStateFinishLogic playerWaveStateFinishLogic = null;
 
   public void Awake() {
-  }
-
-  public void Start() {
     hasBeenTriggered = false;
     isPlaying = false;
     triggerFinishLogic = false;
@@ -30,6 +27,9 @@ public class WaveState : MonoBehaviour {
     waveStateStartLogic = new WaveStateStartLogic(DefaultWaveStateStartedLogic);
     waveStateLogic = new WaveStateLogic(DefaultWaveStatePlayingLogic);
     waveStateFinishLogic = new WaveStateFinishLogic(DefaultWaveStateFinishedLogic);
+  }
+
+  public void Start() {
   }
 
   public void ConfigureLogic(WaveStateStartLogic startLogic, WaveStateLogic performingLogic, WaveStateFinishLogic endLogic) {
@@ -53,6 +53,13 @@ public class WaveState : MonoBehaviour {
     else {
       playerWaveStateFinishLogic = new WaveStateFinishLogic(WaveStateFinishedLogic);
     }
+  }
+
+  public void Reset() {
+    hasBeenTriggered = false;
+    isPlaying = false;
+    triggerFinishLogic = false;
+    hasFinished = false;
   }
 
   public void DefaultWaveStateStartedLogic() {

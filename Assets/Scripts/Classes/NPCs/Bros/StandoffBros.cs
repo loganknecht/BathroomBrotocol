@@ -9,6 +9,7 @@ public class StandoffBros : MonoBehaviour {
 
   public Vector2 standoffAnchor = Vector2.zero;
 
+  public bool isPaused = false;
   public bool isContracting = false;
   public bool isExpanding = false;
 
@@ -40,12 +41,14 @@ public class StandoffBros : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-    PerformStandoffBroLogic();
-    if(numberOfTapsNeededToStop <= 0) {
-      PlayerStoppedFight();
-    }
-    if(numberOfContractionsBeforeAFight <= 0) {
-      PlayerDidNotStopFight();
+    if(!isPaused) {
+      PerformStandoffBroLogic();
+      if(numberOfTapsNeededToStop <= 0) {
+        PlayerStoppedFight();
+      }
+      if(numberOfContractionsBeforeAFight <= 0) {
+        PlayerDidNotStopFight();
+      }
     }
 	}
 
@@ -176,7 +179,7 @@ public class StandoffBros : MonoBehaviour {
     broTwo.GetComponent<Bro>().ResetFightLogic();
 
     // this.Destroy();
-    Destroy(this.gameObject);
+    BroManager.Instance.RemoveStandoffBro(this.gameObject, true);
   }
 
   public void PlayerDidNotStopFight() {
@@ -208,8 +211,7 @@ public class StandoffBros : MonoBehaviour {
                                                                                   targetTile));
 
     BroManager.Instance.AddFightingBro(newFightingBros);
-
-    Destroy(this.gameObject);
+    BroManager.Instance.RemoveStandoffBro(this.gameObject, true);
     PerformBroFightScore();
   }
 

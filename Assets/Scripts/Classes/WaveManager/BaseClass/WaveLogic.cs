@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WaveLogic : MonoBehaviour, WaveLogicContract {
-  public Queue waveStatesQueue = new Queue();
+  public LinkedList<GameObject> waveStatesQueue = new LinkedList<GameObject>();
   public GameObject currentWaveStateGameObject = null;
 
   public bool waveLogicFinished = false;
@@ -40,7 +41,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
 
       if(currentWaveStateRef.hasFinished) {
         if(waveStatesQueue.Count > 0) {
-          currentWaveStateGameObject = (GameObject)waveStatesQueue.Dequeue();
+          currentWaveStateGameObject = (GameObject)DequeueWaveState();
         }
         else {
           currentWaveStateGameObject = null;
@@ -88,14 +89,39 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
   }
 
   public void InitializeWaveStates(params GameObject[] waveStates) {
-    waveStatesQueue = new Queue();
+    waveStatesQueue = new LinkedList<GameObject>();
 
     foreach(GameObject waveState in waveStates) {
-      waveStatesQueue.Enqueue(waveState);
+      EnqueueWaveState(waveState);
     }
     if(waveStatesQueue.Count != 0) {
-      currentWaveStateGameObject = (GameObject)waveStatesQueue.Dequeue();
+      currentWaveStateGameObject = (GameObject)DequeueWaveState();
     }
+  }
+
+  public void PerformWaveStateThenReturn(GameObject waveStateToJumpTo) {
+    waveStatesQueue.AddFirst(currentWaveStateGameObject);
+    currentWaveStateGameObject = waveStateToJumpTo;
+  }
+
+  public void EnqueueWaveState(GameObject waveStateGameObjectToEnqueue) {
+    waveStatesQueue.AddLast(waveStateGameObjectToEnqueue);
+  }
+  public void EnqueueWaveStateAtFront(GameObject waveStateGameObjectToEnqueue) {
+    waveStatesQueue.AddFirst(waveStateGameObjectToEnqueue);
+  }
+
+  public GameObject DequeueWaveState() {
+    GameObject waveStateDequeued = waveStatesQueue.First.Value;
+    waveStatesQueue.RemoveFirst();
+    return waveStateDequeued;
+  }
+
+  public void AddWaveStateToFrontOfQueue(GameObject waveStateGameObjectToAdd) {
+    waveStatesQueue.AddFirst(waveStateGameObjectToAdd);
+  }
+  public void AddWaveStateToEndOfQueue(GameObject waveStateGameObjectToAdd) {
+    waveStatesQueue.AddLast(waveStateGameObjectToAdd);
   }
 
   public void PerformWaveStateStartedTrigger() {
