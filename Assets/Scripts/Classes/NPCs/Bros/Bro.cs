@@ -55,6 +55,17 @@ public class Bro : TargetPathingNPC {
 		}
 	}
 
+  public virtual bool IsExiting() {
+    if(targetObject != null
+      && targetObject.GetComponent<BathroomObject>() != null
+      && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   public virtual void PerformFightTimerLogic() {
     if(resetFightLogic) {
       fightCooldownTimer += Time.deltaTime;
@@ -67,7 +78,6 @@ public class Bro : TargetPathingNPC {
   public virtual void ResetFightLogic() {
     resetFightLogic = true;
     fightCooldownTimer = 0;
-    probabilityOfFightOnCollisionWithBro = 0f;
   }
 
   //	public void OnCollisionEnter(Collision collision) {
@@ -76,7 +86,7 @@ public class Bro : TargetPathingNPC {
 	public virtual void OnMouseDown() {
     // Debug.Log("clicked");
     SelectionManager.Instance.SelectBro(this.gameObject);
-    if(state == BroState.StandOff) {
+    if(state == BroState.Standoff) {
       if(standOffBroGameObject != null) {
         standOffBroGameObject.GetComponent<StandoffBros>().IncrementTapsFromPlayer();
       }
@@ -84,30 +94,31 @@ public class Bro : TargetPathingNPC {
 	}
 
 	public void OnTriggerEnter(Collider other) {
-		// Debug.Log("Trigger occurred with: " + other.gameObject.name);
-		if(other.gameObject.GetComponent<Bro>() != null) {
-			//CONSIDER CHANGING THIS TO A BROAD GENERALIZATION OF:
-			//if(state == Other.gameObject.GetComponent<Bro>().state
-			//I feel that may be a better filter to try, will feel it out.
+		Debug.Log("Trigger occurred with: " + other.gameObject.name);
+    Bro otherBroRef = other.gameObject.GetComponent<Bro>();
+		if(otherBroRef != null) {
 			//------------------------------------------------------------
 			if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
-         && hasWashedHands != true
+         && !IsExiting()
+         && !resetFightLogic
 			   && probabilityOfFightOnCollisionWithBro > 0
-			   && (other.gameObject.GetComponent<Bro>().state == BroState.MovingToTargetObject || other.gameObject.GetComponent<Bro>().state == BroState.Roaming)
-         && other.gameObject.GetComponent<Bro>().hasWashedHands != true
-			   && other.gameObject.GetComponent<Bro>().probabilityOfFightOnCollisionWithBro > 0) {
+			   && (otherBroRef.state == BroState.MovingToTargetObject || otherBroRef.state == BroState.Roaming)
+         && !otherBroRef.IsExiting()
+         && !otherBroRef.resetFightLogic
+			   && otherBroRef.probabilityOfFightOnCollisionWithBro > 0) {
+
 				float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
 				if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
 					if(state != BroState.Fighting) {
 						broFightingWith = other.gameObject;
-						state = BroState.StandOff;
+						state = BroState.Standoff;
 						speechBubbleReference.displaySpeechBubble = false;
 						movementNodes.Clear();
 
-						other.GetComponent<Bro>().movementNodes.Clear();
-						other.GetComponent<Bro>().broFightingWith = this.gameObject;
-						other.GetComponent<Bro>().speechBubbleReference.displaySpeechBubble = false;
-						other.GetComponent<Bro>().state = BroState.StandOff;
+						otherBroRef.movementNodes.Clear();
+						otherBroRef.broFightingWith = this.gameObject;
+						otherBroRef.speechBubbleReference.displaySpeechBubble = false;
+						otherBroRef.state = BroState.Standoff;
 					}
 				}
 			}
@@ -124,7 +135,7 @@ public class Bro : TargetPathingNPC {
 			animatorReference.SetBool(BroState.OccupyingObject.ToString(), false);
 			animatorReference.SetBool(BroState.Roaming.ToString(), false);
 			animatorReference.SetBool(BroState.Standing.ToString(), false);
-			animatorReference.SetBool(BroState.StandOff.ToString(), false);
+			animatorReference.SetBool(BroState.Standoff.ToString(), false);
 
 			animatorReference.SetBool(state.ToString(), true);
 
@@ -158,7 +169,7 @@ public class Bro : TargetPathingNPC {
 			case(BroState.Standing):
 				PerformStandingLogic();
 			break;
-			case(BroState.StandOff):
+			case(BroState.Standoff):
 				PerformStandOffLogic();
 			break;
 			default:
@@ -295,7 +306,6 @@ public class Bro : TargetPathingNPC {
     }
     else {
       collider.enabled = false;
-      probabilityOfFightOnCollisionWithBro = 0f;
 
       bathObjRef.state = BathroomObjectState.Broken;
       bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
@@ -436,7 +446,7 @@ public class Bro : TargetPathingNPC {
 
 	public virtual void PerformStandOffLogic() {
 		//GameObject newFightingBros = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject);
-		if(state == BroState.StandOff) {
+		if(state == BroState.Standoff) {
       if(standOffBroGameObject == null) {
         this.gameObject.collider.enabled = false;
         broFightingWith.collider.enabled = false;

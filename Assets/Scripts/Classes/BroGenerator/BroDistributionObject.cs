@@ -91,6 +91,8 @@ public class BroDistributionObject : DistributionObject {
       int selectedEntrance = CalculateProbabilityValue<int>(entranceQueueProbabilities);
 
       GameObject broToGenerate = Factory.Instance.GenerateBroGameObject(CalculateProbabilityValue<BroType>(broProbabilities));
+      Bro broRefToGenerate = broToGenerate.GetComponent<Bro>();
+
       broToGenerate.transform.parent = BroManager.Instance.transform;
       broToGenerate.SetActive(false);
 
@@ -100,6 +102,9 @@ public class BroDistributionObject : DistributionObject {
       ConfigureBroToGenerateChooseObjectOnLineSkip(broToGenerate);
       ConfigureBroToGenerateStartRoamingOnArrivalAtBathroomObjectInUse(broToGenerate);
       ConfigureBroToGenerateChooseObjectOnRelief(broToGenerate);
+      if(broRefToGenerate.type == BroType.DrunkBro) {
+        broRefToGenerate.speechBubbleReference.displaySpeechBubble = false;
+      }
 
       CameraManager.Instance.rotateCameraReference.RotateBroGameObject(broToGenerate);
 

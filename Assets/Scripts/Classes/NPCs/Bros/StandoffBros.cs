@@ -158,25 +158,37 @@ public class StandoffBros : MonoBehaviour {
   }
 
   public void PlayerStoppedFight() {
+    Bro broOneReferece = broOne.GetComponent<Bro>();
     broOne.collider.enabled = true;
-    broOne.GetComponent<Bro>().state = BroState.Roaming;
-    broOne.GetComponent<Bro>().standOffBroGameObject = null;
-    broOne.GetComponent<Bro>().broFightingWith = null;
-    // broOne.GetComponent<Bro>().canBeCheckedToFightAgainst = true;
-    broOne.GetComponent<Bro>().speechBubbleReference.displaySpeechBubble = true;
+    broOneReferece.state = BroState.Roaming;
+    broOneReferece.standOffBroGameObject = null;
+    broOneReferece.broFightingWith = null;
+    // broOneReferece.canBeCheckedToFightAgainst = true;
     broOne.GetComponent<HighlightSelectable>().enabled = true;
     broOne.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
-    broOne.GetComponent<Bro>().ResetFightLogic();
+    broOneReferece.ResetFightLogic();
+    if(broOneReferece.type == BroType.DrunkBro) {
+      broOneReferece.speechBubbleReference.displaySpeechBubble = false;
+    }
+    else {
+      broOneReferece.speechBubbleReference.displaySpeechBubble = true;
+    }
 
+    Bro broTwoReferece = broTwo.GetComponent<Bro>();
     broTwo.collider.enabled = true;
-    broTwo.GetComponent<Bro>().state = BroState.Roaming;
-    broTwo.GetComponent<Bro>().standOffBroGameObject = null;
-    broTwo.GetComponent<Bro>().broFightingWith = null;
-    // broTwo.GetComponent<Bro>().canBeCheckedToFightAgainst = true;
-    broTwo.GetComponent<Bro>().speechBubbleReference.displaySpeechBubble = true;
+    broTwoReferece.state = BroState.Roaming;
+    broTwoReferece.standOffBroGameObject = null;
+    broTwoReferece.broFightingWith = null;
+    // broTwoReferece.canBeCheckedToFightAgainst = true;
     broTwo.GetComponent<HighlightSelectable>().enabled = true;
     broTwo.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
-    broTwo.GetComponent<Bro>().ResetFightLogic();
+    broTwoReferece.ResetFightLogic();
+    if(broTwoReferece.type == BroType.DrunkBro) {
+      broTwoReferece.speechBubbleReference.displaySpeechBubble = false;
+    }
+    else {
+      broTwoReferece.speechBubbleReference.displaySpeechBubble = true;
+    }
 
     // this.Destroy();
     BroManager.Instance.RemoveStandoffBro(this.gameObject, true);

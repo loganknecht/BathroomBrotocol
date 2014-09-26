@@ -9,5 +9,5 @@ public enum BroState {
 	OccupyingObject,
 	Roaming,
 	Standing,
-	StandOff
+	Standoff
 }

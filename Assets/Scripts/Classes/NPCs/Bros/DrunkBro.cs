@@ -22,6 +22,8 @@ public class DrunkBro : Bro {
   public void PerformVomitTimerLogic() {
     if(!hasRelievedSelf) {
       if(state != BroState.InAQueue
+         && state != BroState.Standoff
+         && state != BroState.Fighting
          && state != BroState.OccupyingObject) {
         vomitTimer += Time.deltaTime;
       }
@@ -78,7 +80,6 @@ public class DrunkBro : Bro {
             hasRelievedSelf = true;
             reliefRequired = ReliefRequired.WashHands;
 
-            probabilityOfFightOnCollisionWithBro = 0f;
             bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
 
             collider.enabled = true;
@@ -109,7 +110,6 @@ public class DrunkBro : Bro {
             ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
           }
 
-          probabilityOfFightOnCollisionWithBro = 0f;
           bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
 
           collider.enabled = false;
