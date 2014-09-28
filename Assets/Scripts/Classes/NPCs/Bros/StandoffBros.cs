@@ -52,6 +52,13 @@ public class StandoffBros : MonoBehaviour {
     }
 	}
 
+  public void Pause() {
+    isPaused = true;
+  } 
+  public void Unpause() {
+    isPaused = false;
+  } 
+
   public void StandoffBrosInit(GameObject newBroOne, GameObject newBroTwo, Vector2 newStandoffAnchor) {
     // Debug.Log("new bro one z: " + newBroOne.transform.position.z);
     // Debug.Log("new bro two z: " + newBroTwo.transform.position.z);

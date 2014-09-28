@@ -175,13 +175,13 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   }
   //----------------------------------------------------------------------------
   public void TriggerSecondWave() {
-    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.ShyBro, 1f } };
+    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
     Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
                                                                                        { 1, .5f } };
 
     BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     firstBroSet.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstBroSet.SetFightProbability(BroDistribution.AllBros, 1f);
+    firstBroSet.SetFightProbability(BroDistribution.AllBros, 0f);
     firstBroSet.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstBroSet.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstBroSet.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);

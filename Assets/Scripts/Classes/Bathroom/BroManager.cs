@@ -64,25 +64,30 @@ public class BroManager : MonoBehaviour {
 	}
 
 	public void Pause() {
-		TogglePause(true);
-	}
-
-	public void Unpause() {
-		TogglePause(false);
-	}
-
-	void TogglePause(bool newPauseState) {
-		isPaused = newPauseState;
 		foreach(GameObject broGameObject in allBros) {
-			broGameObject.GetComponent<Bro>().isPaused = newPauseState;
+			broGameObject.GetComponent<Bro>().Pause();
 		}
 
 		foreach(GameObject standoffBroGameObject in allStandoffBros) {
-			standoffBroGameObject.GetComponent<StandoffBros>().isPaused = newPauseState;
+			standoffBroGameObject.GetComponent<StandoffBros>().Pause();
 		}
 
 		foreach(GameObject fightingBroGameObject in allFightingBros) {
-			fightingBroGameObject.GetComponent<FightingBros>().isPaused = newPauseState;
+			fightingBroGameObject.GetComponent<FightingBros>().Pause();
+		}
+	}
+
+	public void Unpause() {
+		foreach(GameObject broGameObject in allBros) {
+			broGameObject.GetComponent<Bro>().Unpause();
+		}
+
+		foreach(GameObject standoffBroGameObject in allStandoffBros) {
+			standoffBroGameObject.GetComponent<StandoffBros>().Unpause();
+		}
+
+		foreach(GameObject fightingBroGameObject in allFightingBros) {
+			fightingBroGameObject.GetComponent<FightingBros>().Unpause();
 		}
 	}
 

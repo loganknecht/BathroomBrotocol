@@ -22,6 +22,12 @@ public class FightingBros : TargetPathingNPC {
     PerformLogic();
   }
  }
+  public void Pause() {
+    isPaused = true;
+  } 
+  public void Unpause() {
+    isPaused = false;
+  } 
 
   public void OnMouseDown() {
     currentNumberOfTaps++;

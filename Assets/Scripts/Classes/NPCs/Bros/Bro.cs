@@ -55,6 +55,19 @@ public class Bro : TargetPathingNPC {
 		}
 	}
 
+  public virtual void Pause() {
+    isPaused = true;
+    if(this.gameObject.GetComponent<FartGenerator>() != null) {
+      this.gameObject.GetComponent<FartGenerator>().isPaused = true;
+    }
+  }
+  public virtual void Unpause() {
+    isPaused = false;
+    if(this.gameObject.GetComponent<FartGenerator>() != null) {
+      this.gameObject.GetComponent<FartGenerator>().isPaused = false;
+    }
+  }
+
   public virtual bool IsExiting() {
     if(targetObject != null
       && targetObject.GetComponent<BathroomObject>() != null
