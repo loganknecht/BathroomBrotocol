@@ -142,6 +142,10 @@ public class BroDistributionObject : DistributionObject {
       break;
     }
 
+    if(broRef.type == BroType.ShyBro) {
+      broRef.reliefRequired = ReliefRequired.Pee;
+    }
+
     return broToGenerate;
   }
 

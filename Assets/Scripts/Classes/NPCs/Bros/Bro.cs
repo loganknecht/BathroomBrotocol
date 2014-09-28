@@ -94,7 +94,7 @@ public class Bro : TargetPathingNPC {
 	}
 
 	public void OnTriggerEnter(Collider other) {
-		Debug.Log("Trigger occurred with: " + other.gameObject.name);
+		// Debug.Log("Trigger occurred with: " + other.gameObject.name);
     Bro otherBroRef = other.gameObject.GetComponent<Bro>();
 		if(otherBroRef != null) {
 			//------------------------------------------------------------

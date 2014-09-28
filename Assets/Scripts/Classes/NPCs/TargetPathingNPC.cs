@@ -15,7 +15,6 @@ public class TargetPathingNPC : MonoBehaviour {
 
 	public float targetPositionXLockBuffer = 0.05f;
 	public float targetPositionYLockBuffer = 0.05f;
-  public bool performMovementLogic = true;
 
 	//Vector2 currentMovementNode = Vector2.zero;
 	public List<Vector2> movementNodes = new List<Vector2>();
@@ -87,7 +86,6 @@ public class TargetPathingNPC : MonoBehaviour {
 	}
 
 	public virtual void PerformMovementLogic() {
-    if(performMovementLogic) {
   		//This is the logic for the bro moving to their destination
   		Vector2 newPositionOffset = CalculateNextPositionOffset();
   		newPositionOffset = (newPositionOffset*Time.deltaTime);
@@ -101,7 +99,6 @@ public class TargetPathingNPC : MonoBehaviour {
   			PopMovementNode();
   		}
   		transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
-    }
 	}
 
 	public virtual void PopMovementNode() {
