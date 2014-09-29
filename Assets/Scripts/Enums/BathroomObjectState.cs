@@ -5,5 +5,6 @@
   BrokenByPee,
   BrokenByPoop,
   BeingRepaired,
-  InUse
+  InUse,
+  OutOfOrder
 }
