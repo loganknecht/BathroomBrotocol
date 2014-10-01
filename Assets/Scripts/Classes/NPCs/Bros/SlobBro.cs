@@ -52,26 +52,25 @@ public class SlobBro : Bro {
   // }
   public override void PerformStallOccupationFinishedLogic() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    if(!hasRelievedSelf) {
+    if(!hasRelievedSelf
+       && bathObjRef.state != BathroomObjectState.OutOfOrder) {
       hasRelievedSelf = true;
       PerformRelievedScore();
 
       if(reliefRequired == ReliefRequired.Pee) {
-        bathObjRef.state = BathroomObjectState.BrokenByPee;
+        bathObjRef.TriggerOutOfOrderState();
         ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPeedIn);
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
       }
       else if(reliefRequired == ReliefRequired.Poop) {
-        bathObjRef.state = BathroomObjectState.BrokenByPoop;
+        bathObjRef.TriggerOutOfOrderState();
         ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPoopedIn);
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
       }
 
       collider.enabled = true;
 
       // state = BroState.Roaming;
       SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-      bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
+      bathObjRef.RemoveBro(this.gameObject);
 
       selectableReference.canBeSelected = true;
       speechBubbleReference.displaySpeechBubble = true;
@@ -90,7 +89,8 @@ public class SlobBro : Bro {
   }
   public override void PerformUrinalOccupationFinishedLogic() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    if(!hasRelievedSelf) {
+    if(!hasRelievedSelf
+       && bathObjRef.state != BathroomObjectState.OutOfOrder) {
       hasRelievedSelf = true;
       PerformRelievedScore();
 
@@ -99,12 +99,11 @@ public class SlobBro : Bro {
 
       // state = BroState.Roaming;
       SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-      bathObjRef.objectsOccupyingBathroomObject.Remove(this.gameObject);
+      bathObjRef.RemoveBro(this.gameObject);
 
       if(reliefRequired == ReliefRequired.Pee) {
-        bathObjRef.state = BathroomObjectState.BrokenByPee;
+        bathObjRef.TriggerOutOfOrderState();
         ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPeedIn);
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
       }
       else if(reliefRequired == ReliefRequired.Poop) {
         bathObjRef.state = BathroomObjectState.BrokenByPoop;
@@ -132,6 +131,7 @@ public class SlobBro : Bro {
 
       collider.enabled = true;
       // state = BroState.Roaming;
+      bathObjRef.RemoveBro(this.gameObject);
       SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
       if(reliefRequired == ReliefRequired.Pee) {
@@ -152,11 +152,22 @@ public class SlobBro : Bro {
     }
     else if(hasRelievedSelf
             && !hasWashedHands) {
+      if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
+        bathObjRef.state = BathroomObjectState.Broken;
+      }
+      else {
+        bathObjRef.TriggerOutOfOrderState();
+      }
+
       hasWashedHands = true;
       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkHandsWashedIn);
       PerformWashedHandsScore();
 
+      bathObjRef.RemoveBro(this.gameObject);
       SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    }
+    else {
+      Debug.Log("SLOB BRO USED A SINK WHEN HE HAD WEIRD VALUES.");
     }
   }
   public override void PerformExitOccupationLogic() {

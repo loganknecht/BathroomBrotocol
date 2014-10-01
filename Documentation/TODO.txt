@@ -1,12 +1,13 @@
 --------------------------------------------------------------------------------
-IN PROGRESS
---------------------------------------------------------------------------------
- - Finish fixing the bro generator to allow custom generation types for the bro generations specified
- - Finish first test level
-
---------------------------------------------------------------------------------
 TODO: Bathroom Brotocol 
 --------------------------------------------------------------------------------
+CHANGES THAT NEED TO BE MADE BEFORE PLAY TESTING CAN OCCUR
+ - TimeWaster bro isn't working again... need to fix it.
+	 - Change timewaster bro to go to a random bathroom object after a random duration and destroy it to give the player impetus to tap him in order to bounce him
+ - Slob bro needs to be balanced. Right now the player basically loses a hundred points every time the bro enters because the slob bro forces a bathroom object to be broken. Doesn't seem fair to the player... Balance it to still be a detriment, but not affect the player negatively, but instead creating a more difficult environment to work in
+ - Fix cutting bro to be more balanced. Currently he goes in and performs all the actions for the player making it so they're guaranteed the maximum points. This creates no challenge for the player and doesn't feel very good for playing. Either change it to easily lose points for the player, or modify its bathroom interaction
+	- Maybe make it so that the player loses points if they cut a queue that has bros in it, but if the queue is empty they 
+ - Finish fixing the bro generator to allow custom generation types for the bro generations specified(What? What does this mean?)
  - Make GameManager for tracking the state of the player's accomplishments
  - Create hook ins for animations for unlocking levels
  - Create bro rush mode
@@ -28,15 +29,6 @@ TODO: Bathroom Brotocol
 	- You don't get the points for brotocol until the second chatty bro/gym bro is assigned. 
 	- If one chatty bro arrives at an object to wash their hands before the other chatty bro has relieved themself, then all points are lost for brotocol
 	- If both bros are on the same relief type, and they're next to each other, then brotocol is allowed
-----------------------------------------
-CHANGES THAT NEED TO BE MADE BEFORE PLAY TESTING CAN OCCUR
- - TimeWaster bro isn't working again... need to fix it.
- - Slob bro needs to be balanced. Right now the player basically loses a hundred points every time the bro enters because the slob bro forces a bathroom object to be broken. Doesn't seem fair to the player... Balance it to still be a detriment, but not affect the player negatively, but instead creating a more difficult environment to work in
- - Fix cutting bro to be more balanced. Currently he goes in and performs all the actions for the player making it so they're guaranteed the maximum points. This creates no challenge for the player and doesn't feel very good for playing. Either change it to easily lose points for the player, or modify its bathroom interaction
-	- Maybe make it so that the player loses points if they cut a queue that has bros in it, but if the queue is empty they 
- - Redo sinks, stalls, and urinals to track for each bro that breaks them.... -__-; EEEVVVVEERRRRYYYYYYTHHHIIINNNGGGG!!!!!
- - Change timewaster bro to go to a random bathroom object after a random duration and destroy it to give the player impetus to tap him in order to bounce him
- - For bro probabilities create a way to indicate that you want all bros generated to be the type of the first bro selected from the bro probability list
 
  //-----------------------------------
  Things I wanna do, but probably won't for awhile
@@ -49,6 +41,7 @@ CHANGES THAT NEED TO BE MADE BEFORE PLAY TESTING CAN OCCUR
 --------------------------------------------------------------------------------
 Finished
 --------------------------------------------------------------------------------
+ - Finish first test level
  - Create Pinch, zoom, and move camera features (Something to support navigating the camera around
  - Fix the Janitor.... again
  - Create Different sets of test logic for the test level

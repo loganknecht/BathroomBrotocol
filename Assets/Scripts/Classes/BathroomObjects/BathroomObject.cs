@@ -98,6 +98,12 @@ public class BathroomObject : MonoBehaviour {
 
   public void PerformOutOfOrderCheck() {
     if(timesUsed >= timesUsedNeededForOutOfOrder) {
+      TriggerOutOfOrderState();
+    }
+  }
+
+  public void TriggerOutOfOrderState() {
+    if(markOutOfOrderWhenOverUsed) {
       numberOfTaps = 0;
       state = BathroomObjectState.OutOfOrder;
     }
