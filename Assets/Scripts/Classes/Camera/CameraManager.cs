@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent (typeof (RotateCamera))]
-[RequireComponent (typeof (PinchZoom))]
 public class CameraManager : MonoBehaviour {
+
+  public GameObject mainCamera = null;
+  public GameObject guiCamera = null;
 
   public RotateCamera rotateCameraReference;
   public PinchZoom pinchZoomReference;
@@ -42,15 +43,19 @@ public class CameraManager : MonoBehaviour {
     //another call to it, so that you don't need to worry if it exists or not.
     _instance = this;
 
-    pinchZoomReference = this.gameObject.GetComponent<PinchZoom>();
-    rotateCameraReference = this.gameObject.GetComponent<RotateCamera>();
+    pinchZoomReference = mainCamera.GetComponent<PinchZoom>();
+    rotateCameraReference = mainCamera.GetComponent<RotateCamera>();
   }
   //END OF SINGLETON CODE CONFIGURATION
 
-
 	// Update is called once per frame
 	void Update () {
-
+    // if(Input.GetKeyDown(KeyCode.Space)) {
+      // StartSmallCameraShake();
+      // StartMediumCameraShake();
+      // StartLargeCameraShake();
+      // mainCamera.GetComponent<CameraShake>().SetOnCameraShakeFinish();
+    // }
 	}
 
   public void RotateLeft() {
@@ -65,5 +70,20 @@ public class CameraManager : MonoBehaviour {
     pinchZoomReference.cameraReference.gameObject.transform.localPosition = pinchZoomReference.cameraAnchor;
     rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
     pinchZoomReference.cameraReference.gameObject.transform.localPosition = cameraOffset;
+  }
+
+  public void StartSmallCameraShake() {
+    mainCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 0.1f, 0.1f);
+    guiCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 1f, 1f);
+  }
+
+  public void StartMediumCameraShake() {
+    mainCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 0.2f, 0.2f);
+    guiCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 10f, 10f);
+  }
+
+  public void StartLargeCameraShake() {
+    mainCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 0.3f, 0.3f);
+    guiCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 20f, 20f);
   }
 }

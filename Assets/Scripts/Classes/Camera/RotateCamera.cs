@@ -4,6 +4,7 @@ using System.Collections;
 // TO DO: FIX ROTATE LOGIC SCRIPT SO THAT WHEN IT ROTATES IT BASES THE CAMERA'S DIRECTION BEING LOOKED IT USES WORLD COORDINATES TO CALCULATE IT... OR SOMETHING
 
 public class RotateCamera : MonoBehaviour {
+  public GameObject cameraGameObject = null;
   public GameObject objectToRotateAround = null;
   public float amountRotated = 0f;
   public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
@@ -53,7 +54,8 @@ public class RotateCamera : MonoBehaviour {
         directionBeingLookedAt = DirectionBeingLookedAt.Right;
       }
 
-      transform.RotateAround(objectToRotateAround.transform.position, rotationVector, degreesToRotateBy);
+      // transform.RotateAround(objectToRotateAround.transform.position, rotationVector, degreesToRotateBy);
+      cameraGameObject.transform.RotateAround(objectToRotateAround.transform.position, rotationVector, degreesToRotateBy);
       RotateBathroomToMatchCamera();
     }
   }

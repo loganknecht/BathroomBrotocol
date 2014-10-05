@@ -19,6 +19,8 @@ public class TestLevel : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
+    waveLogicFinished = true;
+    
     base.Start();
 
     startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
@@ -60,7 +62,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
                          // broEnoughConfirmationWaveGameObject,
                          // broEnoughResponseWaveGameObject,
                          // firstWaveGameObject,
-                         secondWaveGameObject
+                         // secondWaveGameObject
                          );
   }
 
