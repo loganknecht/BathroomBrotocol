@@ -110,7 +110,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
-    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+  BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                              firstWave,
                                                                             });
   }
