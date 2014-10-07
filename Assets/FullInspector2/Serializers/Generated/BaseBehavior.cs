@@ -2,5 +2,5 @@
 //          selection wizard. It will be overwritten if you change your selected serializers.
 
 namespace FullInspector {
-    public abstract class BaseBehavior : BaseBehavior<FullInspector.JsonNetSerializer> {}
+    public abstract class BaseBehavior : BaseBehavior<FullInspector.FullSerializerSerializer> {}
 }

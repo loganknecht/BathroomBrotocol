@@ -21,12 +21,7 @@ public class BroFistAnimation : MonoBehaviour {
 	void Update () {
 	}
 
-    // public void PerformBroFistAnimation() {
-    //     TweenExecutor.TweenObjectPosition(leftBroFist, leftBroFistStartXPostion, leftBroFist.transform.position.y, leftBroFistFinalXPostion, leftBroFist.transform.position.y, 0, broFistDuration, UITweener.Method.Linear, new EventDelegate(OnBroFistAnimationFinishChangeToScoreScreen));
-    //     TweenExecutor.TweenObjectPosition(rightBroFist, rightBroFistStartXPostion, rightBroFist.transform.position.y, rightBroFistFinalXPostion, rightBroFist.transform.position.y, 0, broFistDuration, UITweener.Method.Linear, new EventDelegate(OnBroFistAnimationFinishChangeToScoreScreen));
-    // }
-
-    public void PerformBroFistAnimation(EventDelegate.Callback onFinishCallback) {
+    void PerformBroFistAnimation(EventDelegate.Callback onFinishCallback) {
         if(!isPerformingAnimation) {
             isPerformingAnimation = true;
             // only perform on finish callback for left bro fist, it doesn't matter which, you just don't want to do it twice

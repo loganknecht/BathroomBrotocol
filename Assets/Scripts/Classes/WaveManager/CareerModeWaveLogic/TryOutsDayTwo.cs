@@ -72,7 +72,7 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
   public void TriggerStartAnimation() {
     // Debug.Log("triggering start animation");
 
-    // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
+    SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
     FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
 
