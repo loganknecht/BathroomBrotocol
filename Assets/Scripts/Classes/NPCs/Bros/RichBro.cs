@@ -29,10 +29,10 @@ public class RichBro : Bro {
           // increment bro alone bonus
           ScoreManager.Instance.IncrementScoreTracker(ScoreType.RichBroBrotocolNoAdjacentBro);
         }
-        if(!CheckIfJanitorIsCurrentlySummoned()) {
+        // if(!CheckIfJanitorIsCurrentlySummoned()) {
           // increment no janitor summoned bonus
-          ScoreManager.Instance.IncrementScoreTracker(ScoreType.RichBroBrotocolNoJanitorSummoned);
-        }
+          // ScoreManager.Instance.IncrementScoreTracker(ScoreType.RichBroBrotocolNoJanitorSummoned);
+        // }
       }
     }
   }

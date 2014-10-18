@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SelfDestructingSprite : MonoBehaviour {
 
-	public SpriteType spriteType = SpriteType.None;
+	public SpriteEffectType spriteEffectType = SpriteEffectType.None;
 	Animator animatorReference = null;
 	public float numberOfSecondsToWaitUntilDestroyed = 0f;
 
@@ -20,10 +20,10 @@ public class SelfDestructingSprite : MonoBehaviour {
 	}
 
 	void UpdateAnimator() {
-		animatorReference.SetBool(SpriteType.None.ToString(), false);
-		animatorReference.SetBool(SpriteType.BrotocolAchieved.ToString(), false);
+		animatorReference.SetBool(SpriteEffectType.None.ToString(), false);
+		animatorReference.SetBool(SpriteEffectType.BrotocolAchieved.ToString(), false);
 
-		animatorReference.SetBool(spriteType.ToString(), true);
+		animatorReference.SetBool(spriteEffectType.ToString(), true);
 	}
 
 	IEnumerator PerformSelfDestructLogic() {

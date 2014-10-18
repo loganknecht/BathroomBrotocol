@@ -17,6 +17,8 @@ public class FartingBro : Bro {
 
   //This is being checked on arrival before switching to occupying an object
   public override void PerformOnArrivalBrotocolScoreCheck() {
+    bool brotocolWasSatisfied = false;
+
     // As long as the target object is not null and it's not a bathroom exit
     if(targetObject != null
         && targetObject.GetComponent<BathroomObject>() != null
@@ -26,12 +28,18 @@ public class FartingBro : Bro {
         if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
           // increment correct relief type
           ScoreManager.Instance.IncrementScoreTracker(ScoreType.FartingBroBrotocolCorrectReliefTypeForTargetObject);
+          brotocolWasSatisfied = true;
         }
         if(!CheckIfBroInAdjacentBathroomObjects()) {
           // increment bro alone bonus
           ScoreManager.Instance.IncrementScoreTracker(ScoreType.FartingBroBrotocolNoAdjacentBro);
+          brotocolWasSatisfied = true;
         }
       }
+    }
+
+    if(brotocolWasSatisfied) {
+        SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
     }
   }
 

@@ -30,7 +30,9 @@ public class FightingBros : TargetPathingNPC {
   } 
 
   public void OnMouseDown() {
-    currentNumberOfTaps++;
+    if(!isPaused) {
+      currentNumberOfTaps++;
+    }
   }
 
   public override void PerformLogic() {

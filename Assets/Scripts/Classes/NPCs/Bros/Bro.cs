@@ -671,10 +671,6 @@ public class Bro : TargetPathingNPC {
     return false;
   }
 
-  public virtual bool CheckIfJanitorIsCurrentlySummoned() {
-    return JanitorManager.Instance.IsJanitorSummoned();
-  }
-
   public virtual bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
     Debug.Log("WARNING YOU HAVE CALLED THE BASE BRO METHOD 'CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry' BUT THE BASE BRO CLASS DOES NOT SUPPORT THIS METHOD AND IS MEANT TO BE EXTENDED");
     return false;
