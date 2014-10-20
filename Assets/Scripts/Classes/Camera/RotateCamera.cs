@@ -61,7 +61,7 @@ public class RotateCamera : MonoBehaviour {
   }
 
   public void RotateBathroomToMatchCamera() {
-    RotateBackground();
+    // RotateBackground();
     RotateTileMapTiles();
     RotateBathroomTileBlockerObjects();
     RotateBathroomObjects();
@@ -71,14 +71,9 @@ public class RotateCamera : MonoBehaviour {
 
   //THIS IS NOT WORKING CORRECTLY, NEED TO FIX IT BUT BACKGROUND DOESN'T DO CORRECT ROTATION BECAUSE THE BACKGROUND APPEARS REVERSED
   public void RotateBackground() {
-    Vector3 newBackgroundRotation = Vector3.zero;
-
-    newBackgroundRotation = new Vector3(this.gameObject.transform.eulerAngles.x, this.gameObject.transform.eulerAngles.y, this.gameObject.transform.eulerAngles.z);
-
-    LevelManager.Instance.backgroundImage.transform.eulerAngles = newBackgroundRotation;
-
-    // THIS WORKS
-    // LevelManager.Instance.backgroundImage.transform.eulerAngles = this.gameObject.transform.eulerAngles;
+    // Vector3 newBackgroundRotation = Vector3.zero;
+    // newBackgroundRotation = new Vector3(cameraGameObject.transform.eulerAngles.x, cameraGameObject.transform.eulerAngles.y, cameraGameObject.transform.eulerAngles.z);
+    // LevelManager.Instance.backgroundImage.transform.eulerAngles = newBackgroundRotation;
   }
 
   public void RotateTileMapTiles() {

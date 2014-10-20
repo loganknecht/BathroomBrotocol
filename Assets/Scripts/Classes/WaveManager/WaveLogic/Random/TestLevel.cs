@@ -20,8 +20,6 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   // Use this for initialization
   public override void Start () {
     base.Start();
-    
-    SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
     startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
                                                                 TriggerStartAnimation,
