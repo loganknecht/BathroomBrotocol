@@ -4,10 +4,14 @@ using System.Collections.Generic;
 
 public class EntranceQueueManager : MonoBehaviour {
 
-  public bool brosWillSkipLineQueue = false;
-  public bool brosSelectRandomTargetObjectOnEntrance = false;
-  public bool brosSelectRandomTargetObjectAfterRelief = false;
-	public List<GameObject> lineQueues = new List<GameObject>();
+    public bool brosWillSkipLineQueue = false;
+    public bool brosSelectRandomTargetObjectOnEntrance = false;
+    public bool brosSelectRandomTargetObjectAfterRelief = false;
+    public bool isPaused = false;
+
+    public GameObject entranceAudioObject = null;
+
+    public List<GameObject> lineQueues = new List<GameObject>();
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile EntranceQueueManager _instance;
@@ -51,13 +55,39 @@ public class EntranceQueueManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.B)) {
-			foreach(GameObject lineQueueObject in lineQueues) {
-				lineQueueObject.GetComponent<LineQueue>().ReconfigureBrosInLineQueueTiles(true);
-			}
-		}
+        if(!isPaused) {
+    		if(Input.GetKeyDown(KeyCode.B)) {
+    			foreach(GameObject lineQueueObject in lineQueues) {
+    				lineQueueObject.GetComponent<LineQueue>().ReconfigureBrosInLineQueueTiles(true);
+    			}
+    		}
+            if(entranceAudioObject != null
+               && entranceAudioObject.GetComponent<AudioSource>().isPlaying == false) {
+                entranceAudioObject = null;
+            }
+
+            PerformDebugButtonPressLogic();
+        }
 	}
 
+    public void PerformDebugButtonPressLogic() {
+        if(Input.GetKeyDown(KeyCode.Q)) {
+            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+
+            BroDistributionObject firstWave = new BroDistributionObject(0, 0, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+            firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+            firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
+            firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+            firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, true);
+            firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
+            firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, true);
+
+            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                                     firstWave,
+                                                                                    }); 
+        }
+    }
   public GameObject SelectRandomLineQueue() {
     if(lineQueues.Count == 0) {
       return null;
@@ -77,6 +107,10 @@ public class EntranceQueueManager : MonoBehaviour {
     lineQueueSelected.AddGameObjectToLineQueue(broToAdd);
 
     broReference.PerformEnteredScore();
+
+    if(entranceAudioObject == null) {
+        entranceAudioObject = SoundManager.Instance.Play(AudioType.EntranceQueueDoorOpenClubMusic);
+    }
 
     return broToAdd;
   }

@@ -86,7 +86,9 @@ public class BroDistributionObject : DistributionObject {
         break;
       }
       selectedPointOverInterval = selectedPointOverInterval * (endTime - startTime);
-      selectedPointOverInterval = ApplyDistributionTypeToValue(selectedPointOverInterval, distributionType);
+      if(selectedPointOverInterval != 0) {
+        selectedPointOverInterval = ApplyDistributionTypeToValue(selectedPointOverInterval, distributionType);
+      }
 
       int selectedEntrance = CalculateProbabilityValue<int>(entranceQueueProbabilities);
 

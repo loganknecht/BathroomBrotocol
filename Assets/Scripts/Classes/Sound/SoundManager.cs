@@ -59,18 +59,23 @@ public class SoundManager : MonoBehaviour {
 
   // Update is called once per frame
   void Update () {
-    List<GameObject> audioObjectsThatFinishedPlaying = new List<GameObject>();
-    foreach(GameObject gameObj in audioObjectsInUse) {
-      if(!isPaused) {
-        if(!gameObj.GetComponent<AudioSource>().isPlaying) {
-          audioObjectsThatFinishedPlaying.Add(gameObj);
+    if(!isPaused) {
+      List<GameObject> audioObjectsThatFinishedPlaying = new List<GameObject>();
+      foreach(GameObject gameObj in audioObjectsInUse) {
+          if(gameObj.GetComponent<AudioSourceManager>().hasFinished) {
+            audioObjectsThatFinishedPlaying.Add(gameObj);
+          }
+      }
+      foreach(GameObject gameObj in audioObjectsThatFinishedPlaying) {
+        audioObjectsInUse.Remove(gameObj);
+        if(!audioObjectsAvailable.Contains(gameObj)) {
+          audioObjectsAvailable.Add(gameObj);
         }
       }
     }
-    foreach(GameObject gameObj in audioObjectsThatFinishedPlaying) {
-      audioObjectsInUse.Remove(gameObj);
-      audioObjectsAvailable.Add(gameObj);
-    }
+  }
+
+  public void PerformAudioObjectRecyleCheck() {
   }
 
   public void TogglePause(bool newPauseState, AudioType pauseMusicToPlay = AudioType.None) {
@@ -79,7 +84,7 @@ public class SoundManager : MonoBehaviour {
     // iterate over each object for sound and toggle to new is paused state
     if(isPaused) {
       foreach(GameObject gameObj in audioObjectsInUse) {
-        gameObj.GetComponent<AudioSource>().Pause();
+        gameObj.GetComponent<AudioSourceManager>().Pause();
       }
       originalAudioObject = audioObjectForMusic;
       if(audioObjectForMusic != null) {
@@ -89,9 +94,9 @@ public class SoundManager : MonoBehaviour {
     }
     else {
       foreach(GameObject gameObj in audioObjectsInUse) {
-        gameObj.GetComponent<AudioSource>().Play();
+        gameObj.GetComponent<AudioSourceManager>().Play();
       }
-      audioObjectForMusic.GetComponent<AudioSource>().Stop();
+      audioObjectForMusic.GetComponent<AudioSourceManager>().Stop();
       audioObjectsInUse.Remove(audioObjectForMusic);
       audioObjectsAvailable.Add(audioObjectForMusic);
 
@@ -109,6 +114,8 @@ public class SoundManager : MonoBehaviour {
     soundDictionary[AudioType.None] = "path/to/file/from/root level";
 
     soundDictionary[AudioType.CosmicSpaceHeadSurfing] = "Sound/Music/Random/Cosmic Spacehead OST - Surfing";
+
+    soundDictionary[AudioType.EntranceQueueDoorOpenClubMusic] = "Sound/Effects/Bathroom/EntranceQueue/DoorOpenClubMusic";
 
     soundDictionary[AudioType.Fart1] = "Sound/Effects/Bathroom/Farts/135716__robmoth__fart";
     soundDictionary[AudioType.Fart2] = "Sound/Effects/Bathroom/Farts/241000__dsisstudios__short-fart-01";
@@ -131,29 +138,36 @@ public class SoundManager : MonoBehaviour {
 
   public GameObject Play(AudioType audioToPlay, bool loop = false, float delay = 0) {
     GameObject audioGameObject = null;
-    AudioSource audioSourceReference = null;
+    // AudioSource audioSourceReference = null;
+    AudioSourceManager audioSourceManager = null;
 
     if(!disableSoundCalls) {
       if(audioObjectsAvailable.Count == 0) {
-        audioGameObject = new GameObject(audioToPlay.ToString());
-        audioSourceReference  = audioGameObject.AddComponent<AudioSource>().GetComponent<AudioSource>();
+        audioGameObject = new GameObject("SoundObject");
+        audioGameObject.transform.parent = this.gameObject.transform;
+        audioGameObject.AddComponent<AudioSource>();
+        audioGameObject.AddComponent<AudioSourceManager>();
         audioObjectsInUse.Add(audioGameObject);
       }
       else {
         audioGameObject = audioObjectsAvailable[0];
-        audioSourceReference  = audioGameObject.GetComponent<AudioSource>();
         audioObjectsAvailable.Remove(audioGameObject);
         audioObjectsInUse.Add(audioGameObject);
-        audioGameObject.name = (audioToPlay.ToString());
       }
 
-      audioGameObject.transform.parent = this.gameObject.transform;
-      audioSourceReference.clip = (AudioClip)Resources.Load(soundDictionary[audioToPlay], typeof(AudioClip));
+      // audioSourceReference  = audioGameObject.GetComponent<AudioSource>();
+      // audioSourceReference.clip = (AudioClip)Resources.Load(soundDictionary[audioToPlay], typeof(AudioClip));
 
-      audioSourceReference.loop = loop;
-      audioSourceReference.PlayDelayed(delay);
+      // audioSourceReference.loop = loop;
+      // audioSourceReference.PlayDelayed(delay);
 
+      audioSourceManager = audioGameObject.GetComponent<AudioSourceManager>();
+      audioSourceManager.audioSourceReference = audioGameObject.GetComponent<AudioSource>();
+      audioSourceManager.SetClip((AudioClip)Resources.Load(soundDictionary[audioToPlay], typeof(AudioClip)));
+      audioSourceManager.SetLoop(loop);
+      audioSourceManager.PlayDelayed(delay);
     }
+
     return audioGameObject;
   }
 

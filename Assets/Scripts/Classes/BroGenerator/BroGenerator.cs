@@ -81,6 +81,9 @@ public class BroGenerator : MonoBehaviour {
     broGenerationTimer = 0;
 
     // Debug.Log("Setting distribution logic");
+    foreach(GameObject gameObj in distributionPoints) {
+      Destroy(gameObj);
+    }
     distributionPoints = new List<GameObject>();
     foreach(BroDistributionObject broDistributionObject in distributionObjects) {
 

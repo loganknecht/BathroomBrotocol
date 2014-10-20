@@ -1,6 +1,7 @@
 ﻿public enum AudioType {
   None,
   CosmicSpaceHeadSurfing,
+  EntranceQueueDoorOpenClubMusic,
   Fart1,
   Fart2,
   Fart3,
