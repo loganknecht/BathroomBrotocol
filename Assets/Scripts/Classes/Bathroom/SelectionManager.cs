@@ -53,13 +53,10 @@ public class SelectionManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
     //Actual selection logic
-    PerformCurrentJanitorSelectionAndCurrentBathroomObjectSelectionLogic();
 		PerformCurrentBroSelectionAndCurrentBathroomObjectSelectionLogic();
-    PerformCurrentJanitorSelectionAndCurrentBathroomTileBlockerSelectionLogic();
 
     //Resets for next update
     PerformCurrentlySelectedBroReset();
-    PerformCurrentlySelectedJanitorReset();
     PerformCurrentlySelectedBathroomObjectReset();
     PerformCurrentlySelectedBathroomTileBlockerReset();
 	}
@@ -114,76 +111,6 @@ public class SelectionManager : MonoBehaviour {
 		}
 	}
 
-
-  public void PerformCurrentJanitorSelectionAndCurrentBathroomObjectSelectionLogic() {
-    if((currentlySelectedJanitorGameObject != null && currentlySelectedJanitorGameObject.GetComponent<Janitor>() != null)
-       && (currentlySelectedBathroomObject != null && currentlySelectedBathroomObject.GetComponent<BathroomObject>() != null)
-       && currentlySelectedJanitorGameObject.GetComponent<Janitor>().state != JanitorState.Entering
-       && currentlySelectedJanitorGameObject.GetComponent<Janitor>().state != JanitorState.Exiting) {
-
-      BathroomObject bathObjRef = currentlySelectedBathroomObject.GetComponent<BathroomObject>();
-      if(bathObjRef.state == BathroomObjectState.Broken
-         || bathObjRef.state == BathroomObjectState.BrokenByPee
-         || bathObjRef.state == BathroomObjectState.BrokenByPoop) {
-        List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                               new List<GameObject>(),
-                                                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedJanitorGameObject.transform.position.x, currentlySelectedJanitorGameObject.transform.position.y, true).GetComponent<BathroomTile>(),
-                                                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBathroomObject.transform.position.x, currentlySelectedBathroomObject.transform.position.y, true).GetComponent<BathroomTile>());
-
-        Janitor janitorRef = currentlySelectedJanitorGameObject.GetComponent<Janitor>();
-        janitorRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
-        janitorRef.selectableReference.isSelected = false;
-        janitorRef.selectableReference.ResetHighlightObjectAndSelectedState();
-        janitorRef.state = JanitorState.MovingToTargetObject;
-        // EntranceQueueManager.Instance.RemoveBroFromEntanceQueues(currentlySelectedJanitorGameObject);
-        // Debug.Log("Target object set");
-        currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
-      }
-      else {
-        // Debug.Log("Target object NOT set");
-        bathObjRef.selectableReference.isSelected = false;
-        currentlySelectedBathroomObject = null;
-      }
-    }
-  }
-  public void PerformCurrentJanitorSelectionAndCurrentBathroomTileBlockerSelectionLogic() {
-    if((currentlySelectedJanitorGameObject != null && currentlySelectedJanitorGameObject.GetComponent<Janitor>() != null)
-       && (currentlySelectedBathroomTileBlocker != null && currentlySelectedBathroomTileBlocker.GetComponent<BathroomTileBlocker>() != null)
-       && currentlySelectedJanitorGameObject.GetComponent<Janitor>().state != JanitorState.Entering
-       && currentlySelectedJanitorGameObject.GetComponent<Janitor>().state != JanitorState.Exiting) {
-
-      // BathroomTileBlocker bathroomTileBlockerReference = currentlySelectedBathroomTileBlocker.GetComponent<BathroomTileBlocker>();
-      List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                             new List<GameObject>(),
-                                                                             BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedJanitorGameObject.transform.position.x, currentlySelectedJanitorGameObject.transform.position.y, true).GetComponent<BathroomTile>(),
-                                                                             BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBathroomTileBlocker.transform.position.x, currentlySelectedBathroomTileBlocker.transform.position.y, true).GetComponent<BathroomTile>());
-
-      Janitor janitorRef = currentlySelectedJanitorGameObject.GetComponent<Janitor>();
-      janitorRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomTileBlocker, movementNodes);
-      janitorRef.selectableReference.isSelected = false;
-      janitorRef.selectableReference.ResetHighlightObjectAndSelectedState();
-      janitorRef.state = JanitorState.MovingToTargetObject;
-
-      currentlySelectedBathroomTileBlocker.GetComponent<BathroomTileBlocker>().selectableReference.isSelected = false;
-      currentlySelectedBathroomTileBlocker = null;
-    }
-    else {
-      if(currentlySelectedBathroomTileBlocker != null) {
-        currentlySelectedBathroomTileBlocker.GetComponent<BathroomTileBlocker>().selectableReference.isSelected = false;
-        currentlySelectedBathroomTileBlocker = null;
-      }
-    }
-  }
-
-  //Resets Janitor reference to null if not selected
-  public void PerformCurrentlySelectedJanitorReset() {
-    if(currentlySelectedJanitorGameObject != null
-       && currentlySelectedJanitorGameObject.GetComponent<Janitor>() != null
-       && currentlySelectedJanitorGameObject.GetComponent<Janitor>().selectableReference.isSelected == false) {
-      currentlySelectedJanitorGameObject = null;
-    }
-  }
-
 	//Resets bro reference to null if not selected
 	public void PerformCurrentlySelectedBroReset() {
 		if(currentlySelectedBroGameObject != null
@@ -223,15 +150,5 @@ public class SelectionManager : MonoBehaviour {
   public void SelectBro(GameObject broToSelect) {
     // Debug.Log(broToSelect.name + " was selected.");
     SelectionManager.Instance.currentlySelectedBroGameObject = broToSelect;
-    if(currentlySelectedJanitorGameObject != null) {
-      currentlySelectedJanitorGameObject.GetComponent<Janitor>().selectableReference.isSelected = false;
-    }
-  }
-
-  public void SelectJanitor(GameObject janitorToSelect) {
-    SelectionManager.Instance.currentlySelectedJanitorGameObject = janitorToSelect;
-    if(currentlySelectedBroGameObject != null) {
-      currentlySelectedBroGameObject.GetComponent<Bro>().selectableReference.isSelected = false;
-    }
   }
 }

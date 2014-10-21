@@ -5,7 +5,7 @@ public class BathroomTile : Tile {
 	public BathroomTile parentAStarNode = null;
 	public float gValue = 0f;
 	public float heuristicValue = 0f;
-  public bool isUntraversable = false;
+  	public bool isUntraversable = false;
 
 	public override void Awake() {
 		base.Awake();

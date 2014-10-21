@@ -56,7 +56,7 @@ public class BathroomTileMap : TileMap {
 		bool foundRandomTile = false;
 		while(!foundRandomTile) {
       foundRandomTile = true;
-      int selectedTile = Random.Range(0, tiles.Count);
+      int selectedTile = Random.Range(0, tileCount);
       foundBathroomTile = tiles[selectedTile];
 			foreach(GameObject closedNode in AStarManager.Instance.GetListCopyOfAllClosedNodes()) {
 				//if tile in closed nodes list reset and try again

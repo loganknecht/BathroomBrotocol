@@ -77,8 +77,11 @@ public class RotateCamera : MonoBehaviour {
   }
 
   public void RotateTileMapTiles() {
-    foreach(GameObject bathroomTileGameObject in BathroomTileMap.Instance.tiles) {
-      bathroomTileGameObject.transform.rotation = Quaternion.Euler(new Vector3(bathroomTileGameObject.transform.rotation.x, bathroomTileGameObject.transform.rotation.y, this.gameObject.transform.rotation.z));
+    // foreach(GameObject bathroomTileGameObject in BathroomTileMap.Instance.tiles) {
+    foreach(GameObject[] row in BathroomTileMap.Instance.tiles) {
+      foreach(GameObject tile in row) {
+        // tile.transform.rotation = Quaternion.Euler(new Vector3(bathroomTileGameObject.transform.rotation.x, bathroomTileGameObject.transform.rotation.y, this.gameObject.transform.rotation.z));
+      }
     }
   }
 

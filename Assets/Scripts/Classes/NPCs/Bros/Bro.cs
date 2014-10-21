@@ -191,47 +191,47 @@ public class Bro : TargetPathingNPC {
 	}
 
 	public virtual void PerformArrivalLogic() {
-		if(IsAtTargetPosition()) {
-			if(targetObject != null
-			   && targetObject.GetComponent<BathroomObject>() != null) {
-        BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
-        BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
+		// if(IsAtTargetPosition()) {
+		// 	if(targetObject != null
+		// 	   && targetObject.GetComponent<BathroomObject>() != null) {
+  //       BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
+  //       BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
 
-        if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
+  //       if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
 
-  				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+  // 				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-          if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
-            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-            && startRoamingOnArrivalAtBathroomObjectInUse) {
-            state = BroState.Roaming;
-          }
-          else {
-            PerformOnArrivalBrotocolScoreCheck();
+  //         if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+  //           && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+  //           && startRoamingOnArrivalAtBathroomObjectInUse) {
+  //           state = BroState.Roaming;
+  //         }
+  //         else {
+  //           PerformOnArrivalBrotocolScoreCheck();
 
-    				//Adds bro to occupation list
-    				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
-               // wtf, why is this here?
-    					bathObjRef.AddBro(this.gameObject);
-    				}
+  //   				//Adds bro to occupation list
+  //   				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
+  //              // wtf, why is this here?
+  //   					bathObjRef.AddBro(this.gameObject);
+  //   				}
 
-    				selectableReference.canBeSelected = false;
-    				selectableReference.ResetHighlightObjectAndSelectedState();
-    				speechBubbleReference.displaySpeechBubble = false;
+  //   				selectableReference.canBeSelected = false;
+  //   				selectableReference.ResetHighlightObjectAndSelectedState();
+  //   				speechBubbleReference.displaySpeechBubble = false;
 
-    				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-    				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-    					SelectionManager.Instance.currentlySelectedBroGameObject = null;
-    				}
+  //   				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+  //   				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+  //   					SelectionManager.Instance.currentlySelectedBroGameObject = null;
+  //   				}
 
-    				state = BroState.OccupyingObject;
-          }
-        }
-			}
-			else {
-				state = BroState.Roaming;
-			}
-		}
+  //   				state = BroState.OccupyingObject;
+  //         }
+  //       }
+		// 	}
+		// 	else {
+		// 		state = BroState.Roaming;
+		// 	}
+		// }
 	}
 	public virtual void PerformFightingLogic() {
 	}
@@ -625,45 +625,46 @@ public class Bro : TargetPathingNPC {
   // Returns true if any of the eight tiles around the bro has a bathroom object,
   // and if that bathroom object has a bro in it
  	public virtual bool CheckIfBroInAdjacentBathroomObjects() {
- 		bool broIsInAjdacentTile = false;
+ 		// bool broIsInAjdacentTile = false;
 
- 		BathroomTile currentTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
- 																			                                                   this.gameObject.transform.position.y,
- 																									                                       true).GetComponent<BathroomTile>();
+ 		// BathroomTile currentTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
+ 		// 																	                                                   this.gameObject.transform.position.y,
+ 		// 																							                                       true).GetComponent<BathroomTile>();
 
-    bool isBroOnTopLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY + 1);
-    bool isBroOnTopSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY + 1);
-    bool isBroOnTopRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY + 1);
+   //  bool isBroOnTopLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY + 1);
+   //  bool isBroOnTopSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY + 1);
+   //  bool isBroOnTopRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY + 1);
 
-    bool isBroOnLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY);
-    bool isBroOnRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY);
+   //  bool isBroOnLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY);
+   //  bool isBroOnRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY);
 
-    bool isBroOnBottomLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY - 1);
-    bool isBroOnBottomSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY - 1);
-    bool isBroOnBottomRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY - 1);
-    // Debug.Log("------------------------");
-    // Debug.Log("On Top Left: " + isBroOnTopLeftSide);
-    // Debug.Log("On Top: " + isBroOnTopSide);
-    // Debug.Log("On Top Right: " + isBroOnTopRightSide);
-    // Debug.Log("On Left: " + isBroOnLeftSide);
-    // Debug.Log("On Right: " + isBroOnRightSide);
-    // Debug.Log("On Bottom Left: " + isBroOnBottomLeftSide);
-    // Debug.Log("On Bottom: " + isBroOnBottomSide);
-    // Debug.Log("On Bottom Right: " + isBroOnBottomRightSide);
+   //  bool isBroOnBottomLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY - 1);
+   //  bool isBroOnBottomSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY - 1);
+   //  bool isBroOnBottomRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY - 1);
+   //  // Debug.Log("------------------------");
+   //  // Debug.Log("On Top Left: " + isBroOnTopLeftSide);
+   //  // Debug.Log("On Top: " + isBroOnTopSide);
+   //  // Debug.Log("On Top Right: " + isBroOnTopRightSide);
+   //  // Debug.Log("On Left: " + isBroOnLeftSide);
+   //  // Debug.Log("On Right: " + isBroOnRightSide);
+   //  // Debug.Log("On Bottom Left: " + isBroOnBottomLeftSide);
+   //  // Debug.Log("On Bottom: " + isBroOnBottomSide);
+   //  // Debug.Log("On Bottom Right: " + isBroOnBottomRightSide);
 
-    if(isBroOnTopLeftSide
-      || isBroOnTopSide
-      || isBroOnTopRightSide
-      || isBroOnLeftSide
-      || isBroOnRightSide
-      || isBroOnBottomLeftSide
-      || isBroOnBottomSide
-      || isBroOnBottomRightSide) {
-      // Debug.Log("Bro adjacent");
-      broIsInAjdacentTile = true;
-    }
+   //  if(isBroOnTopLeftSide
+   //    || isBroOnTopSide
+   //    || isBroOnTopRightSide
+   //    || isBroOnLeftSide
+   //    || isBroOnRightSide
+   //    || isBroOnBottomLeftSide
+   //    || isBroOnBottomSide
+   //    || isBroOnBottomRightSide) {
+   //    // Debug.Log("Bro adjacent");
+   //    broIsInAjdacentTile = true;
+   //  }
 
- 		return broIsInAjdacentTile;
+ 		// return broIsInAjdacentTile;
+    return false;
  	}
 
   public virtual bool CheckIfRelievedSelfBeforeTimeOut() {
