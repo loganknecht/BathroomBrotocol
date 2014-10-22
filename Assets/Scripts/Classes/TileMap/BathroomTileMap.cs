@@ -37,7 +37,7 @@ public class BathroomTileMap : TileMap {
 		//another call to it, so that you don't need to worry if it exists or not.
 		_instance = this;
 
-    base.Start();
+        base.Awake();
 	}
 	//END OF SINGLETON CODE CONFIGURATION
 
