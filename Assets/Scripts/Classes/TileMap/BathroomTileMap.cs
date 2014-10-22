@@ -52,64 +52,67 @@ public class BathroomTileMap : TileMap {
 	}
 
 	public GameObject SelectRandomOpenTile() {
-    GameObject foundBathroomTile = null;
+        GameObject foundBathroomTile = null;
 		bool foundRandomTile = false;
-		while(!foundRandomTile) {
-      foundRandomTile = true;
-      int selectedTile = Random.Range(0, tileCount);
-      foundBathroomTile = tiles[selectedTile];
-			foreach(GameObject closedNode in AStarManager.Instance.GetListCopyOfAllClosedNodes()) {
-				//if tile in closed nodes list reset and try again
-				if(foundBathroomTile != null
-           && closedNode.GetComponent<BathroomTile>().tileX == foundBathroomTile.GetComponent<BathroomTile>().tileX
-				   && closedNode.GetComponent<BathroomTile>().tileY == foundBathroomTile.GetComponent<BathroomTile>().tileY) {
-					foundRandomTile = false;
-          foundBathroomTile = null;
-				}
-			}
-		}
-    // Debug.Log(foundBathroomTile);
-    return foundBathroomTile;
+		// while(!foundRandomTile) {
+  //           foundRandomTile = true;
+  //           int selectedTile = Random.Range(0, tileCount);
+  //           foundBathroomTile = tiles[selectedTile];
+		// 	foreach(GameObject closedNode in AStarManager.Instance.GetListCopyOfAllClosedNodes()) {
+		// 		//if tile in closed nodes list reset and try again
+		// 		if(foundBathroomTile != null
+  //          && closedNode.GetComponent<BathroomTile>().tileX == foundBathroomTile.GetComponent<BathroomTile>().tileX
+		// 		   && closedNode.GetComponent<BathroomTile>().tileY == foundBathroomTile.GetComponent<BathroomTile>().tileY) {
+		// 			foundRandomTile = false;
+  //         foundBathroomTile = null;
+		// 		}
+		// 	}
+		// }
+        // Debug.Log(foundBathroomTile);
+        return foundBathroomTile;
 	}
 
 	public GameObject SelectRandomTile() {
-		int selectedTile = Random.Range(0, tiles.Count);
-		return tiles[selectedTile];
+		// int selectedTile = Random.Range(0, tiles.Count);
+		// return tiles[selectedTile];
+        return null;
 	}
 
   public List<GameObject> GetAllUntraversableTiles() {
-    List<GameObject> allUntraversableTiles = new List<GameObject>();
+    // List<GameObject> allUntraversableTiles = new List<GameObject>();
 
-    foreach(GameObject gameObj in tiles) {
-      BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
-      if(bathTileRef.isUntraversable) {
-        allUntraversableTiles.Add(gameObj);
-      }
-    }
+    // foreach(GameObject gameObj in tiles) {
+    //   BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
+    //   if(bathTileRef.isUntraversable) {
+    //     allUntraversableTiles.Add(gameObj);
+    //   }
+    // }
 
-    return allUntraversableTiles;
+    // return allUntraversableTiles;
+    
+    return null;
   }
 
   public bool CheckIfTileContainsBroInBathroomObject(int tileX, int tileY) {
 
-    foreach(GameObject bathroomObjGameObj in BathroomObjectManager.Instance.allBathroomObjects) {
+    // foreach(GameObject bathroomObjGameObj in BathroomObjectManager.Instance.allBathroomObjects) {
 
-      if(bathroomObjGameObj.GetComponent<BathroomObject>().objectsOccupyingBathroomObject.Count > 0) {
-        GameObject bathroomObjectTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObjGameObj.transform.position.x, bathroomObjGameObj.transform.position.y, false);
-        BathroomTile bathroomObjTile = null;
+    //   if(bathroomObjGameObj.GetComponent<BathroomObject>().objectsOccupyingBathroomObject.Count > 0) {
+    //     GameObject bathroomObjectTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObjGameObj.transform.position.x, bathroomObjGameObj.transform.position.y, false);
+    //     BathroomTile bathroomObjTile = null;
 
-        if(bathroomObjectTileGameObject != null
-           && bathroomObjectTileGameObject.GetComponent<BathroomTile>() != null) {
-          bathroomObjTile = bathroomObjectTileGameObject.GetComponent<BathroomTile>();
-          if(tileX == bathroomObjTile.tileX
-            && tileY == bathroomObjTile.tileY) {
-            // Debug.Log("Tile X: " + tileX + " Y: " + tileY);
+    //     if(bathroomObjectTileGameObject != null
+    //        && bathroomObjectTileGameObject.GetComponent<BathroomTile>() != null) {
+    //       bathroomObjTile = bathroomObjectTileGameObject.GetComponent<BathroomTile>();
+    //       if(tileX == bathroomObjTile.tileX
+    //         && tileY == bathroomObjTile.tileY) {
+    //         // Debug.Log("Tile X: " + tileX + " Y: " + tileY);
 
-            return true;
-          }
-        }
-      }
-    }
+    //         return true;
+    //       }
+    //     }
+    //   }
+    // }
 
     return false;
   }

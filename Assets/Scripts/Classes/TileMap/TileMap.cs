@@ -11,6 +11,7 @@ public class TileMap : BaseBehavior {
 	public float singleTileHeight = -1;
 
 	public GameObject[][] tiles;
+    public List<GameObject> rowContainers;
     public int tilesWide = 0;
     public int tilesHigh = 0;
     public int tileCount = 0;
@@ -24,13 +25,14 @@ public class TileMap : BaseBehavior {
 			tiles = new GameObject[][]{};
 		}
 
-        // if(rows != null) {
-        //     foreach(GameObject topLevelTileContainer in rows) {
-        //       foreach(Transform childTransform in topLevelTileContainer.transform) {
-        //         tiles.Add(childTransform.gameObject);
-        //       }
-        //     }
-        // }
+        if(rowContainers != null && tiles != null) {
+            Debug.LogError("The tiles list must be empty if you are using the convenience collection rowContainers, or vice-versa.");
+            // foreach(GameObject topLevelTileContainer in rows) {
+            //   foreach(Transform childTransform in topLevelTileContainer.transform) {
+            //     tiles.Add(childTransform.gameObject);
+            //   }
+            // }
+        }
 
         tilesHigh = tiles.Length;
         tilesWide = tiles[0].Length;
