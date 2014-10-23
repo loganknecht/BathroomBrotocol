@@ -43,8 +43,8 @@ public class CameraManager : MonoBehaviour {
     //another call to it, so that you don't need to worry if it exists or not.
     _instance = this;
 
-    pinchZoomReference = mainCamera.GetComponent<PinchZoom>();
-    rotateCameraReference = mainCamera.GetComponent<RotateCamera>();
+    pinchZoomReference = this.gameObject.GetComponent<PinchZoom>();
+    rotateCameraReference = this.gameObject.GetComponent<RotateCamera>();
   }
   //END OF SINGLETON CODE CONFIGURATION
 

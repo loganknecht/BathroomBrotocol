@@ -19,6 +19,8 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
   // Use this for initialization
   public override void Start () {
+    SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
+    
     base.Start();
 
     startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
@@ -79,7 +81,6 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
     WaveManager.Instance.isPaused = true;
     TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -445, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -145, 1, 2, UITweener.Method.BounceIn, null);
 
-    LevelManager.Instance.janitorButton.GetComponent<UISprite>().alpha = 0;
     LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
 
     TweenExecutor.TweenObjectPosition(TextboxManager.Instance.gameObject, TextboxManager.Instance.gameObject.transform.localPosition.x, -600, TextboxManager.Instance.gameObject.transform.localPosition.x, -300, 1, 2, UITweener.Method.BounceIn, null);

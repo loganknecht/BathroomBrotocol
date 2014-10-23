@@ -51,7 +51,7 @@ public class UISavedOption : MonoBehaviour
 
 		if (mCheck != null)
 		{
-			mCheck.value = (PlayerPrefs.GetInt(key, 1) != 0);
+			mCheck.value = (PlayerPrefs.GetInt(key, mCheck.startsActive ? 1 : 0) != 0);
 		}
 		else
 		{
@@ -96,11 +96,11 @@ public class UISavedOption : MonoBehaviour
 	/// Save the selection.
 	/// </summary>
 
-	void SaveSelection () { PlayerPrefs.SetString(key, UIPopupList.current.value); }
+	public void SaveSelection () { PlayerPrefs.SetString(key, UIPopupList.current.value); }
 
 	/// <summary>
 	/// Save the state.
 	/// </summary>
 
-	void SaveState () { PlayerPrefs.SetInt(key, UIToggle.current.value ? 1 : 0); }
+	public void SaveState () { PlayerPrefs.SetInt(key, UIToggle.current.value ? 1 : 0); }
 }
