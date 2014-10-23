@@ -11,18 +11,18 @@ public class TileMap : BaseBehavior {
 
 	public float singleTileWidth = -1;
 	public float singleTileHeight = -1;
-
-	public GameObject[][] tiles;
-    public List<GameObject> rowContainers;
     public int tilesWide = 0;
     public int tilesHigh = 0;
     public int tileCount = 0;
 
-    public virtual void Awake() {
+	public GameObject[][] tiles;
+    public List<GameObject> rowContainers;
+
+    protected override void Awake() {
     }
 
 	// Use this for initialization
-	public virtual void Start () {
+	protected virtual void Start () {
         ConfigureTileMap();
 	}
 
@@ -106,7 +106,11 @@ public class TileMap : BaseBehavior {
 		return null;
 	}
 
-	public GameObject GetTileGameObjectByWorldPosition(float xPosition, float yPosition, bool ifNotInTilesReturnClosestTile) {
+	public GameObject GetTileGameObjectByWorldPosition(float xPosition, float yPosition, bool returnClosestTile) {
+        GameObject closestTile = null;
+        float closestTileXDistance = 0f;
+        float closestTileYDistance = 0f;
+
 		foreach(GameObject[] row in tiles) {
             foreach(GameObject tile in row) {
     			float leftBound = tile.transform.position.x - singleTileWidth/2;
@@ -121,37 +125,32 @@ public class TileMap : BaseBehavior {
     			   && topBound > yPosition) {
     				return tile;
                 }
+
+                if(returnClosestTile) {
+                    float currentClosestTileCheckXDistance = Mathf.Abs(xPosition - tile.transform.position.x);
+                    float currentClosestTileCheckYDistance = Mathf.Abs(yPosition - tile.transform.position.y);
+                    if(closestTile == null) {
+                        closestTile = tile;
+                        closestTileXDistance = currentClosestTileCheckXDistance;
+                        closestTileYDistance = currentClosestTileCheckYDistance;
+                    }
+                    else {
+                        if(currentClosestTileCheckXDistance <= closestTileXDistance
+                           && currentClosestTileCheckYDistance <= closestTileYDistance) {
+                            closestTile = tile;
+                            closestTileXDistance = currentClosestTileCheckXDistance;
+                            closestTileYDistance = currentClosestTileCheckYDistance;
+                        }
+                    }
+                }
             }
 		}
 
-		// if(ifNotInTilesReturnClosestTile) {
-		// 	GameObject bathroomTileClosestToXandYPosition = null;
-
-		// 	foreach(GameObject tile in tiles) {
-		// 		if(bathroomTileClosestToXandYPosition == null) {
-		// 			bathroomTileClosestToXandYPosition = tile;
-		// 		}
-		// 		else {
-		// 			bool xCloser = false;
-		// 			bool yCloser = false;
-
-		// 			if(Mathf.Abs(xPosition - tile.transform.position.x) < Mathf.Abs(xPosition - bathroomTileClosestToXandYPosition.transform.position.x)) {
-		// 				xCloser = true;
-		// 			}
-
-		// 			if(Mathf.Abs(yPosition - tile.transform.position.y) < Mathf.Abs(yPosition - bathroomTileClosestToXandYPosition.transform.position.y)) {
-		// 				yCloser = true;
-		// 			}
-
-		// 			if(xCloser || yCloser) {
-		// 				bathroomTileClosestToXandYPosition = tile;
-		// 			}
-		// 		}
-		// 	}
-
-		// 	return bathroomTileClosestToXandYPosition;
-		// }
-
-		return null;
+        if(returnClosestTile) {
+            return closestTile;
+        }
+        else {
+            return null;
+        }
 	}
 }

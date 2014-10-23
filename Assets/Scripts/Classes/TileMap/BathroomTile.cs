@@ -6,6 +6,7 @@ public class BathroomTile : Tile {
 	public float gValue = 0f;
 	public float heuristicValue = 0f;
   	public bool isUntraversable = false;
+  	public GameObject bathroomObjectInTile = null;
 
 	public override void Awake() {
 		base.Awake();

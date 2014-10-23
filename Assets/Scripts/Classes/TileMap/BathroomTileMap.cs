@@ -29,7 +29,7 @@ public class BathroomTileMap : TileMap {
 	private BathroomTileMap() {
 	}
 
-	public override void Awake() {
+	protected override void Awake() {
 		//There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
 		//the script, which is assumedly attached to some GameObject. This in turn allows the instance
 		//to be assigned when a game object is given this script in the scene view.
@@ -42,7 +42,7 @@ public class BathroomTileMap : TileMap {
 	//END OF SINGLETON CODE CONFIGURATION
 
 	// Use this for initialization
-	public override  void Start () {
+	protected override void Start () {
 		base.Start();
 	}
 
@@ -53,29 +53,27 @@ public class BathroomTileMap : TileMap {
 
 	public GameObject SelectRandomOpenTile() {
         GameObject foundBathroomTile = null;
-		bool foundRandomTile = false;
-		// while(!foundRandomTile) {
-  //           foundRandomTile = true;
-  //           int selectedTile = Random.Range(0, tileCount);
-  //           foundBathroomTile = tiles[selectedTile];
-		// 	foreach(GameObject closedNode in AStarManager.Instance.GetListCopyOfAllClosedNodes()) {
-		// 		//if tile in closed nodes list reset and try again
-		// 		if(foundBathroomTile != null
-  //          && closedNode.GetComponent<BathroomTile>().tileX == foundBathroomTile.GetComponent<BathroomTile>().tileX
-		// 		   && closedNode.GetComponent<BathroomTile>().tileY == foundBathroomTile.GetComponent<BathroomTile>().tileY) {
-		// 			foundRandomTile = false;
-  //         foundBathroomTile = null;
-		// 		}
-		// 	}
-		// }
-        // Debug.Log(foundBathroomTile);
+		bool foundOpenTile = false;
+		while(!foundOpenTile) {
+            foundOpenTile = true;
+            int selectedXIndex = Random.Range(0, tilesWide);
+            int selectedYIndex = Random.Range(0, tilesHigh);
+            foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
+			foreach(GameObject closedNode in AStarManager.Instance.closedNodes) {
+				//if tile in closed nodes list reset and try again
+                if(closedNode == foundBathroomTile) {
+					foundOpenTile = false;
+                    foundBathroomTile = null;
+				}
+			}
+		}
         return foundBathroomTile;
 	}
 
 	public GameObject SelectRandomTile() {
-		// int selectedTile = Random.Range(0, tiles.Count);
-		// return tiles[selectedTile];
-        return null;
+        int selectedXIndex = Random.Range(0, tilesWide);
+        int selectedYIndex = Random.Range(0, tilesHigh);
+        return tiles[selectedYIndex][selectedXIndex];
 	}
 
   public List<GameObject> GetAllUntraversableTiles() {

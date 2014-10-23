@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 public class AStarManager : MonoBehaviour {
 
-  //These should be considered the de facto closed nodes. Reason being is that additional nodes can be added as closed nodes, but these should be considered permanently closed nodes for the sake of having this covered.... it sounded right in my head
-	public List<GameObject> permanentClosedNodes = new List<GameObject>();
+    //These should be considered the de facto closed nodes. Reason being is that additional nodes can be added as closed nodes, but these should be considered permanently closed nodes for the sake of having this covered.... it sounded right in my head
+	public List<GameObject> closedNodes = new List<GameObject>();
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile AStarManager _instance;
 	private static object _lock = new object();
 
-  public bool debugShowLastPathCalculated = false;
-  public List<GameObject> debugLastPathNodes = new List<GameObject>();
+    public bool debugShowLastPathCalculated = false;
+    public List<GameObject> debugLastPathNodes = new List<GameObject>();
 
 	//Stops the lock being created ahead of time if it's not necessary
 	static AStarManager() {
@@ -64,8 +64,8 @@ public class AStarManager : MonoBehaviour {
   public void ConfigurePermantleyClosedNodes() {
     // List<GameObject> untraversableTiles = BathroomTileMap.Instance.GetAllUntraversableTiles();
     // foreach(GameObject untraversableTile in untraversableTiles) {
-    //   if(!permanentClosedNodes.Contains(untraversableTile)) {
-    //     permanentClosedNodes.Add(untraversableTile);
+    //   if(!closedNodes.Contains(untraversableTile)) {
+    //     closedNodes.Add(untraversableTile);
     //   }
     // }
   }
@@ -77,7 +77,7 @@ public class AStarManager : MonoBehaviour {
 // 			gameObj.GetComponent<BathroomTile>().ResetAStarValues();
 // 		}
 
-// 		foreach(GameObject permClosedNode in AStarManager.Instance.permanentClosedNodes) {
+// 		foreach(GameObject permClosedNode in AStarManager.Instance.closedNodes) {
 //       GameObject referenceCopy = permClosedNode;
 // 			closedNodes.Add(referenceCopy);
 // 			//Debug.Log("Added permanently closed node: " + permClosedNode);
@@ -455,7 +455,7 @@ public class AStarManager : MonoBehaviour {
     //Closed nodes are actually the reference to the bathroom tile game object
     public List<GameObject> GetListCopyOfAStarClosedNodes() {
     	// List<GameObject> copyOfPermanentNodes = new List<GameObject>();
-    	// foreach(GameObject gameObj in permanentClosedNodes) {
+    	// foreach(GameObject gameObj in closedNodes) {
     	// 	copyOfPermanentNodes.Add(gameObj);
     	// }
 
@@ -467,7 +467,7 @@ public class AStarManager : MonoBehaviour {
     public List<GameObject> GetListCopyOfAllClosedNodes() {
         // // Debug.Log("Added tile blocker tiles");
         // List<GameObject> copyOfPermanentNodes = new List<GameObject>();
-        // foreach(GameObject gameObj in permanentClosedNodes) {
+        // foreach(GameObject gameObj in closedNodes) {
         //   copyOfPermanentNodes.Add(gameObj);
         // }
 

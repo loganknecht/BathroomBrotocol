@@ -81,7 +81,7 @@ public class TimeWasterBro : Bro {
         bool foundEmptyTile = false;
         GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
         while(!foundEmptyTile) {
-          if(AStarManager.Instance.permanentClosedNodes.Contains(randomBathroomTile)) {
+          if(AStarManager.Instance.closedNodes.Contains(randomBathroomTile)) {
             randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
           }
           else {
