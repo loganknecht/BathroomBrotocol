@@ -62,7 +62,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     // Debug.Log("triggering start animation");
     PerformWaveStateStartedTrigger();
 
-    SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
+    // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
     FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
 
