@@ -70,7 +70,7 @@ public class AStarManager : MonoBehaviour {
     // }
   }
 //-----------------------------
-	public List<Vector2> CalculateAStarPath(List<GameObject> openNodes, List<GameObject> closedNodes, BathroomTile startBathroomTile, BathroomTile endBathroomTile) {
+	public List<GameObject> CalculateAStarPath(List<GameObject> openNodes, List<GameObject> closedNodes, BathroomTile startBathroomTile, BathroomTile endBathroomTile) {
 //     // Debug.Log("Start tile X: " + startBathroomTile.tileX + " Y: " + startBathroomTile.tileY);
 //     // Debug.Log("End tile X: " + endBathroomTile.tileX + " Y: " + endBathroomTile.tileY);
 // 		foreach(GameObject gameObj in BathroomTileMap.Instance.tiles) {

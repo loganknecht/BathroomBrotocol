@@ -98,16 +98,16 @@ public int GetLineQueueTileGameObjectIsIn(GameObject gameObjectToCheck) {
     return startTile;
   }
 
-  public List<Vector2> GetLineMovementNodesBasedOnStartIndex(int startQueueTileIndex) {
+  public List<GameObject> GetLineMovementNodesBasedOnStartIndex(int startQueueTileIndex) {
     if(startQueueTileIndex < 0) {
-      return new List<Vector2>();
+      return new List<GameObject>();
     }
     else if(startQueueTileIndex > queueTileObjects.Count) {
-      return new List<Vector2>();
+      return new List<GameObject>();
     }
     else {
-      List<Vector2> newMovementNodes = GetQueueMovementNodes();
-      List<Vector2> movementNodesToReturn = new List<Vector2>();
+      List<GameObject> newMovementNodes = GetQueueMovementNodes();
+      List<GameObject> movementNodesToReturn = new List<GameObject>();
 
       int i = 0;
       while(i < startQueueTileIndex) {
@@ -120,40 +120,40 @@ public int GetLineQueueTileGameObjectIsIn(GameObject gameObjectToCheck) {
     }
   }
 
-  public List<Vector2> GetLineMovementNodesAccountForObjectsInLine() {
+  public List<GameObject> GetLineMovementNodesAccountForObjectsInLine() {
     int currentTile = (queueObjects.Count/maximumObjectsPerTile);
-    List<Vector2> newMovementNodes = new List<Vector2>();
-
-    Vector2 newTargetPosition = new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y);
-    newTargetPosition.x += Random.Range(queueTileMinXRadiusForStanding, queueTileMaxXRadiusForStanding);
-    newTargetPosition.y += Random.Range(queueTileMinYRadiusForStanding, queueTileMaxYRadiusForStanding);
-
-    newMovementNodes.Add(newTargetPosition);
-    while(currentTile < queueTileObjects.Count) {
-      newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
-      currentTile++;
-    }
-
-    newMovementNodes.Reverse();
-
-    return newMovementNodes;
-  }
-
-  public List<Vector2> GetQueueMovementNodes() {
-    int currentTile = 0;
-    List<Vector2> newMovementNodes = new List<Vector2>();
+    List<GameObject> newMovementNodes = new List<GameObject>();
 
     // Vector2 newTargetPosition = new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y);
     // newTargetPosition.x += Random.Range(queueTileMinXRadiusForStanding, queueTileMaxXRadiusForStanding);
     // newTargetPosition.y += Random.Range(queueTileMinYRadiusForStanding, queueTileMaxYRadiusForStanding);
 
     // newMovementNodes.Add(newTargetPosition);
-    while(currentTile < queueTileObjects.Count) {
-      newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
-      currentTile++;
-    }
+    // while(currentTile < queueTileObjects.Count) {
+    //   newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
+    //   currentTile++;
+    // }
 
-    newMovementNodes.Reverse();
+    // newMovementNodes.Reverse();
+
+    return newMovementNodes;
+  }
+
+  public List<GameObject> GetQueueMovementNodes() {
+    int currentTile = 0;
+    List<GameObject> newMovementNodes = new List<GameObject>();
+
+    // Vector2 newTargetPosition = new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y);
+    // newTargetPosition.x += Random.Range(queueTileMinXRadiusForStanding, queueTileMaxXRadiusForStanding);
+    // newTargetPosition.y += Random.Range(queueTileMinYRadiusForStanding, queueTileMaxYRadiusForStanding);
+
+    // newMovementNodes.Add(newTargetPosition);
+    // while(currentTile < queueTileObjects.Count) {
+    //   newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
+    //   currentTile++;
+    // }
+
+    // newMovementNodes.Reverse();
 
     return newMovementNodes;
   }

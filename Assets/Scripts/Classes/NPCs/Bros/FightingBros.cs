@@ -97,7 +97,7 @@ public class FightingBros : TargetPathingNPC {
         // Exit exitSelected = ExitManager.Instance.SelectRandomExit().GetComponent<Exit>();
         BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
         BathroomTile targetTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelected.transform.position.x, exitSelected.transform.position.y, true).GetComponent<BathroomTile>();
-        List<Vector2> newMovementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
+        List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
                                                                                   AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
                                                                                   startTile,
                                                                                   targetTile);

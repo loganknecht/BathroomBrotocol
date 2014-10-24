@@ -65,9 +65,14 @@ public class BathroomTileMap : TileMap {
 					foundOpenTile = false;
                     foundBathroomTile = null;
 				}
+
+                if(foundOpenTile) {
+                    return foundBathroomTile;
+                }
 			}
 		}
-        return foundBathroomTile;
+
+        return null;
 	}
 
 	public GameObject SelectRandomTile() {

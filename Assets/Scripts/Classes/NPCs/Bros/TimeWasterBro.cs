@@ -30,17 +30,17 @@ public class TimeWasterBro : Bro {
 
   // This is overriden so that the bro can have selectable logic enabled after the first movement
   // Tappable logic is enabled by setting hasEntered to true.
-  public override void PopMovementNode() {
-    if(movementNodes.Count > 0) {
-      targetPosition = new Vector3(movementNodes[0].x, movementNodes[0].y, this.transform.position.z);
-      movementNodes.RemoveAt(0);
-      // Added to enable tappable logic
-      if(movementNodes.Count <= 0
-         && !hasEntered) {
-        hasEntered = true;
-      }
-    }
-  }
+  // public override void PopMovementNode() {
+  //   if(movementNodes.Count > 0) {
+  //     targetPosition = new Vector3(movementNodes[0].x, movementNodes[0].y, this.transform.position.z);
+  //     movementNodes.RemoveAt(0);
+  //     // Added to enable tappable logic
+  //     if(movementNodes.Count <= 0
+  //        && !hasEntered) {
+  //       hasEntered = true;
+  //     }
+  //   }
+  // }
 
   public override void OnMouseDown() {
     // Don't call the base because selection manager doesn't need to select this
@@ -64,7 +64,7 @@ public class TimeWasterBro : Bro {
       if(exitSelectedGameObject != null) {
         BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false).GetComponent<BathroomTile>();
         BathroomTile exitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelectedGameObject.transform.position.x, exitSelectedGameObject.transform.position.y, false).GetComponent<BathroomTile>();
-        List<Vector2> bathroomEntranceToGameObjectMovementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
+        List<GameObject> bathroomEntranceToGameObjectMovementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
                                                                                                            AStarManager.Instance.GetListCopyOfAllClosedNodes(),
                                                                                                            broTile,
                                                                                                            exitTile);
@@ -92,7 +92,7 @@ public class TimeWasterBro : Bro {
         // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
 
         BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-        List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
+        List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
                                                                                new List<GameObject>(),
                                                                                startTile,
                                                                                randomBathroomTile.GetComponent<BathroomTile>());
