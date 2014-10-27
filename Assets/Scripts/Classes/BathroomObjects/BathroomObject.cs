@@ -24,6 +24,8 @@ public class BathroomObject : MonoBehaviour {
   public int numberOfTaps = 0;
   public int numberOfTapsNeededToRestoreToOrder = 5;
 
+  // This gets set in the bathroom tile manager singleton
+  public GameObject bathroomTileIn = null;
 	public List<GameObject> objectsOccupyingBathroomObject = new List<GameObject>();
 
 	public virtual void Start() {

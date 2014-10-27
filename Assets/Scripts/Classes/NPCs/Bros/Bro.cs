@@ -41,7 +41,7 @@ public class Bro : TargetPathingNPC {
 	public override void Start () {
 		base.Start();
 
-    this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
+    // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
 
 		selectableReference.canBeSelected = true;
 	}
@@ -542,8 +542,8 @@ public class Bro : TargetPathingNPC {
 
   public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, params BathroomObjectType[] bathroomObjectTypesToTarget) {
     BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
-                                                                                       this.gameObject.transform.position.y,
-                                                                                       true).GetComponent<BathroomTile>();
+                                                                                     this.gameObject.transform.position.y,
+                                                                                     true).GetComponent<BathroomTile>();
 
     // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
     // int selectedObject = Random.Range(0, objects.Count);
@@ -557,9 +557,11 @@ public class Bro : TargetPathingNPC {
     }
 
     if(randomObject) {
-      BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
-                                                                                              randomObject.transform.position.y,
-                                                                                              true).GetComponent<BathroomTile>();
+      // BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
+      //                                                                                           randomObject.transform.position.y,
+      //                                                                                           true).GetComponent<BathroomTile>();
+      BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
+
       //Debug.Log("setting exit tile");
       List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
                                                                                 new List<GameObject>(),

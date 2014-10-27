@@ -45,6 +45,23 @@ public class BathroomObjectManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     AddAllBathroomContainerChildren();
+    // Debug.Log("lol starting");
+
+    // BathroomTile[] allBathroomObjects = Resources.FindObjectsOfTypeAll(typeof(BathroomTile)) as BathroomTile[]; 
+    // // GameObject[] allBathroomGameObjects = Resources.FindObjectsOfTypeAll(typeof(GameObject)) as GameObject[];
+
+    // if(allBathroomObjects == null) {
+    //   Debug.Log("null game objects");
+    // }
+
+    // Debug.Log(allBathroomObjects.Length);
+
+    // Debug.Log("lol post starting");
+
+    // foreach(BathroomTile bathroomObject in allBathroomObjects) {
+    // // foreach(GameObject bathroomGameObject in allBathroomGameObjects) {
+    //   Debug.Log(bathroomObject.name);
+    // }
 	}
 
 	// Update is called once per frame

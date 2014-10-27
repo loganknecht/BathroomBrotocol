@@ -44,12 +44,29 @@ public class BathroomTileMap : TileMap {
 	// Use this for initialization
 	protected override void Start () {
 		base.Start();
-	}
+        ConfigureBathroomObjectsWithTileTheyreIn();
+    }
 
 	// Update is called once per frame
 	public override void Update () {
 		base.Update();
 	}
+
+    public void ConfigureBathroomObjectsWithTileTheyreIn() {
+        BathroomObject[] allBathroomObjects = Resources.FindObjectsOfTypeAll(typeof(BathroomObject)) as BathroomObject[]; 
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tileGameObject in row) {
+                // Debug.Log("In tile of: " + tileGameObject.name);
+                foreach(BathroomObject bathroomObject in allBathroomObjects) {
+                    GameObject bathroomTileContainingBathroomObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, bathroomObject.transform.position.y, false);
+                    if(bathroomTileContainingBathroomObject == tileGameObject) {
+                        // Debug.Log("Found bathroom object " + bathroomObject.name + " in bathroom tile " + bathroomTileContainingBathroomObject.name);
+                        bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileContainingBathroomObject;
+                    }
+                }
+            }
+        }
+    }
 
 	public GameObject SelectRandomOpenTile() {
         GameObject foundBathroomTile = null;

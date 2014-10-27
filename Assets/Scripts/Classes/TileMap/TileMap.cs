@@ -26,6 +26,10 @@ public class TileMap : BaseBehavior {
         ConfigureTileMap();
 	}
 
+    // Update is called once per frame
+    public virtual void Update () {
+    }
+
     public void ConfigureTileMap() {
         if((rowContainers == null || rowContainers.Count == 0) && (tiles == null || tiles.Length == 0)) {
             Debug.LogError("The the rowContainers list and tiles array has not been initialized or is empty, please fix this otherwise nothing will work!");
@@ -72,8 +76,6 @@ public class TileMap : BaseBehavior {
                 if(rowWidthsHaveSameLength) {
                     // So freaking stupid using jagged arrays instead of a freaking multi dimensional array, I hate you Unity!!!
                     int tileArrayHeight = rowContainers.Count;
-                    Debug.Log(tileArrayHeight);
-                    Debug.Log(rowWidth);
                     tiles = new GameObject[tileArrayHeight][];
                     for(int i = 0; i < tileArrayHeight; i++) {
                         tiles[i] = new GameObject[rowWidth];
@@ -86,7 +88,7 @@ public class TileMap : BaseBehavior {
 
                             int x = childTransform.gameObject.GetComponent<Tile>().tileX;
                             int y = childTransform.gameObject.GetComponent<Tile>().tileY;
-                            Debug.Log("x: " + x + " y: " + y);
+                            // Debug.Log("x: " + x + " y: " + y);
                             tiles[y][x] = childTransform.gameObject;
                         }
                     }
@@ -94,10 +96,6 @@ public class TileMap : BaseBehavior {
             }
         }
     }
-
-	// Update is called once per frame
-	public virtual void Update () {
-	}
 
 	public GameObject GetTileByXandY(int tileX, int tileY) {
         if(tiles != null) {

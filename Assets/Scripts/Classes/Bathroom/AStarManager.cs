@@ -296,7 +296,8 @@ public class AStarManager : MonoBehaviour {
 // 			//return bathroomTilePositionsForPath;
 // 			return new List<Vector2>();
 // 		}
-        return null;
+        // return null;
+        return new List<GameObject>();
 	}
 
 	public void PerformAStarCalculation(BathroomTile currentNode, int endTileX, int endTileY, List<GameObject> openNodes, List<GameObject> closedNodes, int xTileOffsetToPerformCalculationOn, int yTileOffsetToPerformCalculationOn) {

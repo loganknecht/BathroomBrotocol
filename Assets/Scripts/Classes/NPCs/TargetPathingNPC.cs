@@ -16,10 +16,11 @@ public class TargetPathingNPC : MonoBehaviour {
 	public float targetPositionXLockBuffer = 0.05f;
 	public float targetPositionYLockBuffer = 0.05f;
 
-	public List<GameObject> movementNodes = new List<GameObject>();
+	public List<GameObject> movementNodes = null; 
 
-  public virtual void Awake() {
-  }
+	public virtual void Awake() {
+		movementNodes = new List<GameObject>();
+	}
 
 	// Use this for initialization
 	public virtual void Start () {
@@ -29,6 +30,9 @@ public class TargetPathingNPC : MonoBehaviour {
 
 	// Update is called once per frame
 	public virtual void Update () {
+		if(movementNodes == null) {
+			Debug.Log("lol lol movement nodes be null.");
+		}
 		PerformLogic();
 		UpdateAnimator();
 	}
@@ -101,6 +105,7 @@ public class TargetPathingNPC : MonoBehaviour {
   			//Debug.Log("object at position");
   			PopMovementNode();
   		}
+
   		transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
 	}
 
@@ -111,7 +116,11 @@ public class TargetPathingNPC : MonoBehaviour {
 			targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
 			//Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
 			movementNodes.RemoveAt(0);
-			Destroy(nextNode);
+			// Destroy(nextNode);
+			// Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+			if(movementNodes == null) {
+				Debug.Log("movemeNodes is null");
+			}
 		}
 	}
 

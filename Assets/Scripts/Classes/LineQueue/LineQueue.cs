@@ -40,7 +40,6 @@ public class LineQueue : MonoBehaviour {
 				if(!shuffleTimerIsStatic) {
 					shuffleTimerLimit = Random.Range(shuffleTimerMin, shuffleTimerMax);
 				}
-
 			}
 		}
 	}
@@ -56,7 +55,7 @@ public class LineQueue : MonoBehaviour {
 		//if not full calculate the position the bro would be in and move him to that location
     if(gameObjectToAdd.GetComponent<Bro>().skipLineQueue) {
       // Don't even add bro to the line for tracking, just use it as a reference point
-      // queueObjects.Add(gameObjectToAdd);
+      queueObjects.Add(gameObjectToAdd);
       gameObjectToAdd.GetComponent<Bro>().SetTargetObjectAndTargetPosition(null, GetQueueMovementNodes());
     }
     else {
@@ -72,11 +71,11 @@ public class LineQueue : MonoBehaviour {
         while(queueObjects.Count >= maxNumberOfBros) {
           GameObject broToRemove = queueObjects[0];
           Vector2 newTargetPosition = new Vector2(queueTileObjects[0].transform.position.x, queueTileObjects[0].transform.position.y);
-          //Debug.Log(newTargetPosition);
           broToRemove.GetComponent<Bro>().SetTargetObjectAndTargetPosition(null, newTargetPosition);
           broToRemove.GetComponent<Bro>().state = BroState.Roaming;
           queueObjects.Remove(broToRemove);
         }
+
         queueObjects.Add(gameObjectToAdd);
         ReconfigureBrosInLineQueueTiles(true);
       }
@@ -143,17 +142,20 @@ public int GetLineQueueTileGameObjectIsIn(GameObject gameObjectToCheck) {
     int currentTile = 0;
     List<GameObject> newMovementNodes = new List<GameObject>();
 
-    // Vector2 newTargetPosition = new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y);
-    // newTargetPosition.x += Random.Range(queueTileMinXRadiusForStanding, queueTileMaxXRadiusForStanding);
-    // newTargetPosition.y += Random.Range(queueTileMinYRadiusForStanding, queueTileMaxYRadiusForStanding);
+    // Debug.Log("Getting queue movement nodes")
+    while(currentTile < queueTileObjects.Count) {
+      // This is random pathing for the entrance of the bro
+      // Vector2 newTargetPosition = new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y);
+      // newTargetPosition.x += Random.Range(queueTileMinXRadiusForStanding, queueTileMaxXRadiusForStanding);
+      // newTargetPosition.y += Random.Range(queueTileMinYRadiusForStanding, queueTileMaxYRadiusForStanding);
+      // newMovementNodes.Add(newTargetPosition);
 
-    // newMovementNodes.Add(newTargetPosition);
-    // while(currentTile < queueTileObjects.Count) {
-    //   newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
-    //   currentTile++;
-    // }
+      // newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
+      newMovementNodes.Add(queueTileObjects[currentTile]);
+      currentTile++;
+    }
 
-    // newMovementNodes.Reverse();
+    newMovementNodes.Reverse();
 
     return newMovementNodes;
   }
