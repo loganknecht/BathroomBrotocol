@@ -458,7 +458,7 @@ public class Bro : TargetPathingNPC {
   		bool foundEmptyTile = false;
   		GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
   		while(!foundEmptyTile) {
-  			if(AStarManager.Instance.closedNodes.Contains(randomBathroomTile)) {
+  			if(AStarManager.Instance.permanentlyClosedNodes.Contains(randomBathroomTile)) {
   				randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
   			}
   			else {
@@ -544,6 +544,7 @@ public class Bro : TargetPathingNPC {
     BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
                                                                                      this.gameObject.transform.position.y,
                                                                                      true).GetComponent<BathroomTile>();
+    Debug.Log(broTile);
 
     // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
     // int selectedObject = Random.Range(0, objects.Count);
@@ -563,8 +564,8 @@ public class Bro : TargetPathingNPC {
       BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
 
       //Debug.Log("setting exit tile");
-      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                                new List<GameObject>(),
+      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.GetAllTilesAsList(),
+                                                                                AStarManager.Instance.permanentlyClosedNodes,
                                                                                 broTile,
                                                                                 randomObjectTile);
       state = BroState.MovingToTargetObject;

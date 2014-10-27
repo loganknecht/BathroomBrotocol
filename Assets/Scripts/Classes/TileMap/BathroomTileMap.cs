@@ -76,7 +76,7 @@ public class BathroomTileMap : TileMap {
             int selectedXIndex = Random.Range(0, tilesWide);
             int selectedYIndex = Random.Range(0, tilesHigh);
             foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
-			foreach(GameObject closedNode in AStarManager.Instance.closedNodes) {
+			foreach(GameObject closedNode in AStarManager.Instance.permanentlyClosedNodes) {
 				//if tile in closed nodes list reset and try again
                 if(closedNode == foundBathroomTile) {
 					foundOpenTile = false;
@@ -98,42 +98,51 @@ public class BathroomTileMap : TileMap {
         return tiles[selectedYIndex][selectedXIndex];
 	}
 
-  public List<GameObject> GetAllUntraversableTiles() {
-    // List<GameObject> allUntraversableTiles = new List<GameObject>();
+    public List<GameObject> GetAllTilesAsList() {
+        List<GameObject> allTiles = new List<GameObject>();
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tileGameObject in row) {
+                allTiles.Add(tileGameObject);
+            }
+        }
+        return allTiles;
+    }
 
-    // foreach(GameObject gameObj in tiles) {
-    //   BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
-    //   if(bathTileRef.isUntraversable) {
-    //     allUntraversableTiles.Add(gameObj);
-    //   }
-    // }
+    public List<GameObject> GetAllUntraversableTiles() {
+        // List<GameObject> allUntraversableTiles = new List<GameObject>();
 
-    // return allUntraversableTiles;
-    
-    return null;
-  }
+        // foreach(GameObject gameObj in tiles) {
+        //   BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
+        //   if(bathTileRef.isUntraversable) {
+        //     allUntraversableTiles.Add(gameObj);
+        //   }
+        // }
 
-  public bool CheckIfTileContainsBroInBathroomObject(int tileX, int tileY) {
+        // return allUntraversableTiles;
 
-    // foreach(GameObject bathroomObjGameObj in BathroomObjectManager.Instance.allBathroomObjects) {
+        return null;
+    }
 
-    //   if(bathroomObjGameObj.GetComponent<BathroomObject>().objectsOccupyingBathroomObject.Count > 0) {
-    //     GameObject bathroomObjectTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObjGameObj.transform.position.x, bathroomObjGameObj.transform.position.y, false);
-    //     BathroomTile bathroomObjTile = null;
+    public bool CheckIfTileContainsBroInBathroomObject(int tileX, int tileY) {
+        // foreach(GameObject bathroomObjGameObj in BathroomObjectManager.Instance.allBathroomObjects) {
 
-    //     if(bathroomObjectTileGameObject != null
-    //        && bathroomObjectTileGameObject.GetComponent<BathroomTile>() != null) {
-    //       bathroomObjTile = bathroomObjectTileGameObject.GetComponent<BathroomTile>();
-    //       if(tileX == bathroomObjTile.tileX
-    //         && tileY == bathroomObjTile.tileY) {
-    //         // Debug.Log("Tile X: " + tileX + " Y: " + tileY);
+        //   if(bathroomObjGameObj.GetComponent<BathroomObject>().objectsOccupyingBathroomObject.Count > 0) {
+        //     GameObject bathroomObjectTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObjGameObj.transform.position.x, bathroomObjGameObj.transform.position.y, false);
+        //     BathroomTile bathroomObjTile = null;
 
-    //         return true;
-    //       }
-    //     }
-    //   }
-    // }
+        //     if(bathroomObjectTileGameObject != null
+        //        && bathroomObjectTileGameObject.GetComponent<BathroomTile>() != null) {
+        //       bathroomObjTile = bathroomObjectTileGameObject.GetComponent<BathroomTile>();
+        //       if(tileX == bathroomObjTile.tileX
+        //         && tileY == bathroomObjTile.tileY) {
+        //         // Debug.Log("Tile X: " + tileX + " Y: " + tileY);
 
-    return false;
-  }
+        //         return true;
+        //       }
+        //     }
+        //   }
+        // }
+
+        return false;
+    }
 }
