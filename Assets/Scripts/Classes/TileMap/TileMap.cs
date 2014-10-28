@@ -38,7 +38,7 @@ public class TileMap : BaseBehavior {
             Debug.LogError("You cannot configure the tile map using the rowContainers AND the tiles list. You must configure the tile map using only one of these");
         }
         else {
-            // Perform tiles configuration
+            // Perform tiles configuration ONLY IF THERE ARE ONLY TILES IN THE TILE LIST
             if(tiles != null && tiles.Length > 0) {
                 // Error checking to make sure that row width is congruent/symmetrical in the tiles array
                 int rowWidth = -1;
@@ -54,9 +54,12 @@ public class TileMap : BaseBehavior {
                         }
                     }
                 }
+                
+                tilesWide = rowWidth; 
+                tilesHigh = tiles.Length;
             }
 
-            // Perform rowContainers configuration
+            // Perform rowContainers configuration ONLY IF THERE ARE ONLY ROWS IN THE ROW LIST
             if(rowContainers != null && rowContainers.Count > 0) {
                 // Error checking to make sure that the row containers are congruent/symmetrical
                 bool rowWidthsHaveSameLength = true;
@@ -93,7 +96,12 @@ public class TileMap : BaseBehavior {
                         }
                     }
                 }
+
+                tilesWide = rowWidth; 
+                tilesHigh = tiles.Length;
             }
+            // Debug.Log("tiles wide: " + tilesWide);
+            // Debug.Log("tiles high: " + tilesHigh);
         }
     }
 

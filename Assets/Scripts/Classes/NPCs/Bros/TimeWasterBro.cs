@@ -64,10 +64,10 @@ public class TimeWasterBro : Bro {
       if(exitSelectedGameObject != null) {
         BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false).GetComponent<BathroomTile>();
         BathroomTile exitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelectedGameObject.transform.position.x, exitSelectedGameObject.transform.position.y, false).GetComponent<BathroomTile>();
-        List<GameObject> bathroomEntranceToGameObjectMovementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                                                           AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                                                                                           broTile,
-                                                                                                           exitTile);
+        List<GameObject> bathroomEntranceToGameObjectMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                                              AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                                                                                              broTile,
+                                                                                                              exitTile);
         SetTargetObjectAndTargetPosition(exitSelectedGameObject, bathroomEntranceToGameObjectMovementNodes);
         state = BroState.MovingToTargetObject;
         speechBubbleReference.displaySpeechBubble = false;
@@ -92,10 +92,10 @@ public class TimeWasterBro : Bro {
         // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
 
         BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-        List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                               new List<GameObject>(),
-                                                                               startTile,
-                                                                               randomBathroomTile.GetComponent<BathroomTile>());
+        List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                  new List<GameObject>(),
+                                                                                  startTile,
+                                                                                  randomBathroomTile.GetComponent<BathroomTile>());
         SetTargetObjectAndTargetPosition(null, movementNodes);
 
         timeInRoamingSpot = 0f;

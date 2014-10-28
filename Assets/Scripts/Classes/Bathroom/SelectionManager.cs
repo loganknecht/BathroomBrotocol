@@ -66,43 +66,43 @@ public class SelectionManager : MonoBehaviour {
 		   && (currentlySelectedBathroomObject != null && currentlySelectedBathroomObject.GetComponent<BathroomObject>() != null)) {
 
 			BathroomObject bathObjRef = currentlySelectedBathroomObject.GetComponent<BathroomObject>();
-      Bro broRef = currentlySelectedBroGameObject.GetComponent<Bro>();
+            Bro broRef = currentlySelectedBroGameObject.GetComponent<Bro>();
 			if(bathObjRef.state != BathroomObjectState.Broken
 			   && bathObjRef.state != BathroomObjectState.BrokenByPee
 			   && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
-				List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-				                                                                       AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-				                                                                       BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBroGameObject.transform.position.x, currentlySelectedBroGameObject.transform.position.y, true).GetComponent<BathroomTile>(),
-				                                                                       BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBathroomObject.transform.position.x, currentlySelectedBathroomObject.transform.position.y, true).GetComponent<BathroomTile>());
+				List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+				                                                                          AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+				                                                                          BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBroGameObject.transform.position.x, currentlySelectedBroGameObject.transform.position.y, true).GetComponent<BathroomTile>(),
+				                                                                          BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBathroomObject.transform.position.x, currentlySelectedBathroomObject.transform.position.y, true).GetComponent<BathroomTile>());
 
-        bool sendBroToObject = true;
-        if(allowOnlyCorrectReliefTypeSelectionsForBros) {
-          if(!(broRef.reliefRequired == ReliefRequired.Pee &&  (bathObjRef.type == BathroomObjectType.Urinal || bathObjRef.type == BathroomObjectType.Stall))
-             && !(broRef.reliefRequired == ReliefRequired.Poop &&  (bathObjRef.type == BathroomObjectType.Stall))
-             && !(broRef.reliefRequired == ReliefRequired.WashHands &&  (bathObjRef.type == BathroomObjectType.Sink))) {
-            sendBroToObject = false;
-          }
-        }
+                bool sendBroToObject = true;
+                if(allowOnlyCorrectReliefTypeSelectionsForBros) {
+                  if(!(broRef.reliefRequired == ReliefRequired.Pee &&  (bathObjRef.type == BathroomObjectType.Urinal || bathObjRef.type == BathroomObjectType.Stall))
+                     && !(broRef.reliefRequired == ReliefRequired.Poop &&  (bathObjRef.type == BathroomObjectType.Stall))
+                     && !(broRef.reliefRequired == ReliefRequired.WashHands &&  (bathObjRef.type == BathroomObjectType.Sink))) {
+                    sendBroToObject = false;
+                  }
+                }
 
-        if(sendBroToObject) {
-            if(broRef.targetObject != null
-             && broRef.targetObject.GetComponent<BathroomObject>()) {
-            //reset the target object to the default interaction state for all bros since this bro is already in a bathroom object
-            broRef.targetObject.collider.enabled = true;
-            }
-			broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
-			broRef.selectableReference.isSelected = false;
-			broRef.selectableReference.ResetHighlightObjectAndSelectedState();
+                if(sendBroToObject) {
+                    if(broRef.targetObject != null
+                     && broRef.targetObject.GetComponent<BathroomObject>()) {
+                    //reset the target object to the default interaction state for all bros since this bro is already in a bathroom object
+                    broRef.targetObject.collider.enabled = true;
+                    }
+        			broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
+        			broRef.selectableReference.isSelected = false;
+        			broRef.selectableReference.ResetHighlightObjectAndSelectedState();
 
-			broRef.state = BroState.MovingToTargetObject;
-			EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(currentlySelectedBroGameObject);
+        			broRef.state = BroState.MovingToTargetObject;
+        			EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(currentlySelectedBroGameObject);
 
-			currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
-        }
-        else {
-          bathObjRef.selectableReference.isSelected = false;
-          currentlySelectedBathroomObject = null;
-        }
+        			currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+                }
+                else {
+                  bathObjRef.selectableReference.isSelected = false;
+                  currentlySelectedBathroomObject = null;
+                }
 			}
 			else {
 				bathObjRef.selectableReference.isSelected = false;

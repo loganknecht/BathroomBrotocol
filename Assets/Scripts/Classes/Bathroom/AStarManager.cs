@@ -70,18 +70,19 @@ public class AStarManager : MonoBehaviour {
     // }
   }
 //-----------------------------
-	public List<GameObject> CalculateAStarPath(List<GameObject> tilesBeingSearched, List<GameObject> closedNodes, Tile startTile, Tile endTile) {
+	public List<GameObject> CalculateAStarPath(GameObject tileMapBeingSearchedGameObject, List<GameObject> closedNodes, Tile startTile, Tile endTile) {
         Debug.Log("Start tile X: " + startTile.tileX + " Y: " + startTile.tileY);
         Debug.Log("End tile X: " + endTile.tileX + " Y: " + endTile.tileY);
+
+        if(tileMapBeingSearchedGameObject == null
+           || tileMapBeingSearchedGameObject.GetComponent<TileMap>() == null) {
+            return new List<GameObject>();
+        }
 
         // Short-circuits and returns empty list if start bathroom tile or endbathroom tile are null, because they must not be null
         if(startTile == null
            || endTile == null) {
             return new List<GameObject>();
-        }
-
-        foreach(GameObject tileGameObject in tilesBeingSearched) {
-            tileGameObject.GetComponent<AStarNode>().ResetAStarValues();
         }
 
         // Short-circuits and returns empty list if start tile and end tile are the same
@@ -91,6 +92,9 @@ public class AStarManager : MonoBehaviour {
 			// Debug.Log("Start tile and end tile are the same, returned empty new list.");
 			return bathroomTilePath;
 		}
+
+        TileMap tileMapBeingSearched = tileMapBeingSearchedGameObject.GetComponent<TileMap>();
+        GameObject[][] tilesBeingSearched = tileMapBeingSearched.tiles;
 
         List<GameObject> openNodes = new List<GameObject>();
 
@@ -102,6 +106,14 @@ public class AStarManager : MonoBehaviour {
 		int xOffsetToCheck = 0;
 		int yOffsetToCheck = 0;
 
+        // reset all astar path stuff just in case
+        foreach(GameObject[] row in tilesBeingSearched) {
+            foreach(GameObject tileGameObject in row) {
+                tileGameObject.GetComponent<AStarNode>().ResetAStarValues();
+            }
+        }
+
+
 		// try {
 			// Adds the first node to the starting list to kick it off
 			//1) Add the starting square (or node) to the open list.
@@ -109,10 +121,11 @@ public class AStarManager : MonoBehaviour {
             // Removes the end bathroom tile from the open nodes list, because that is the conditional for the while loop?
 			// openNodes.Remove(endTile.gameObject);
 
-            AStarNode lowestCost = null;
 			//2) Repeat the following:
 			while(!endTileIsInOpenNodeList) {
- 				//a) Look for the lowest F cost square on the open list. We refer to this as the current square.
+                Debug.Log("====================================================");
+				//a) Look for the lowest F cost square on the open list. We refer to this as the current square.
+                AStarNode lowestCost = null;
 				foreach(GameObject gameObj in openNodes) {
 					AStarNode openNode = gameObj.GetComponent<AStarNode>();
                     // openNode.heuristicValue = CalulateManhattanDistance(openNode.tileX, openNode.tileY, endTile.tileX, endTile.tileY);
@@ -122,6 +135,8 @@ public class AStarManager : MonoBehaviour {
 					else if(openNode.gValue + openNode.heuristicValue < lowestCost.gValue + lowestCost.heuristicValue) {
 						lowestCost = openNode;
 					}
+                    Debug.Log("lowest cost(" + lowestCost.gameObject.name + "): " + (lowestCost.gValue + lowestCost.heuristicValue));
+                    Debug.Log("openNode cost(" + openNode.gameObject.name + "): " + (openNode.gValue + openNode.heuristicValue));
 				}
 
     			previousNode = currentNode;
@@ -132,81 +147,102 @@ public class AStarManager : MonoBehaviour {
 
                 // currentNode.gameObject.GetComponent<BathroomTile>().tileX)
 
-//				Debug.Log("----------------------------------------------------");
+				Debug.Log("----------------------------------------------------");
 				Debug.Log("Current Node is: X: " + ((currentNode != null) ? currentNode.GetComponent<Tile>().tileX.ToString() : "Null current node") + " Y: " + ((currentNode != null) ? currentNode.gameObject.GetComponent<Tile>().tileY.ToString() : "Null current node"));
 //				Debug.Log("Current Node Parent is: " + ((currentNode != null) ? ((currentNode.parentAStarNode != null) ? currentNode.parentAStarNode.ToString() : "Null parent node") : "Null current node"));
-//				Debug.Log("----------------------------------------------------");
-//				Debug.Log("Performing Top Left A Star Tile Check");
-				PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX - 1, currentNodeTileY + 1), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-//				Debug.Log("----------------------------------------------------");
-//				Debug.Log("Performing Top A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX, currentNodeTileY + 1), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-                //	Debug.Log("----------------------------------------------------");
-                //	Debug.Log("Performing Top Right A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX + 1, currentNodeTileY + 1), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-                //	Debug.Log("----------------------------------------------------");
-                //	Debug.Log("Performing Left A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX - 1, currentNodeTileY), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-                //	Debug.Log("----------------------------------------------------");
-                //	Debug.Log("Performing Right A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX + 1, currentNodeTileY), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-                // Debug.Log("----------------------------------------------------");
-                // Debug.Log("Performing Bottom Left A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX - 1, currentNodeTileY - 1), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-                // Debug.Log("----------------------------------------------------");
-                // Debug.Log("Performing Bottom A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX, currentNodeTileY - 1), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
-                // Debug.Log("----------------------------------------------------");
-                // Debug.Log("Performing Bottom Right A Star Tile Check");
-                PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
-                                        RetrieveTileByXandY(tilesBeingSearched, currentNodeTileX + 1, currentNodeTileY - 1), 
-                                        endTile.tileX, 
-                                        endTile.tileY,
-                                        tilesBeingSearched,
-                                        openNodes, 
-                                        closedNodes);
+				Debug.Log("----------------------------------------------------");
+                Debug.Log("tiles high: " + tileMapBeingSearched.tilesHigh);
+                Debug.Log("tiles wide: " + tileMapBeingSearched.tilesWide);
+                if(currentNodeTileY + 1 <= tileMapBeingSearched.tilesHigh) {
+                    // Debug.Log("Top Row Check");
+                    if(currentNodeTileX - 1 >= 0) {
+                        Debug.Log("Performing Top Left A Star Tile Check");
+        				PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                                tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX - 1].GetComponent<Tile>(), 
+                                                endTile.tileX, 
+                                                endTile.tileY,
+                                                tilesBeingSearched,
+                                                openNodes,
+                                                closedNodes);
+                    }
+                    Debug.Log("----------------------------------------------------");
+                    Debug.Log("Performing Top A Star Tile Check");
+                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                            tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX].GetComponent<Tile>(), 
+                                            endTile.tileX, 
+                                            endTile.tileY,
+                                            tilesBeingSearched,
+                                            openNodes,
+                                            closedNodes);
+                    if(currentNodeTileX + 1 <= tileMapBeingSearched.tilesWide) {
+                        Debug.Log("----------------------------------------------------");
+                        Debug.Log("Performing Top Right A Star Tile Check");
+                        PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                                tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX + 1].GetComponent<Tile>(), 
+                                                endTile.tileX, 
+                                                endTile.tileY,
+                                                tilesBeingSearched,
+                                                openNodes,
+                                                closedNodes);
+                    }
+                }
+                if(currentNodeTileX - 1 >= 0) {
+                	Debug.Log("----------------------------------------------------");
+                	Debug.Log("Performing Left A Star Tile Check");
+                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                            tilesBeingSearched[currentNodeTileY][currentNodeTileX - 1].GetComponent<Tile>(), 
+                                            endTile.tileX, 
+                                            endTile.tileY,
+                                            tilesBeingSearched,
+                                            openNodes,
+                                            closedNodes);
+                }
+                if(currentNodeTileX + 1 <= tileMapBeingSearched.tilesHigh) {
+                	Debug.Log("----------------------------------------------------");
+                	Debug.Log("Performing Right A Star Tile Check");
+                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                            tilesBeingSearched[currentNodeTileY][currentNodeTileX + 1].GetComponent<Tile>(), 
+                                            endTile.tileX, 
+                                            endTile.tileY,
+                                            tilesBeingSearched,
+                                            openNodes,
+                                            closedNodes);
+                }
+                if(currentNodeTileY - 1 >= 0) {
+                    // Debug.Log("Bottom Row Check");
+                    if(currentNodeTileX - 1 >= 0) {
+                        Debug.Log("----------------------------------------------------");
+                        Debug.Log("Performing Bottom Left A Star Tile Check");
+                        PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                                tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX - 1].GetComponent<Tile>(), 
+                                                endTile.tileX, 
+                                                endTile.tileY,
+                                                tilesBeingSearched,
+                                                openNodes,
+                                                closedNodes);
+                    }
+                    Debug.Log("----------------------------------------------------");
+                    Debug.Log("Performing Bottom A Star Tile Check");
+                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                            tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX].GetComponent<Tile>(), 
+                                            endTile.tileX, 
+                                            endTile.tileY,
+                                            tilesBeingSearched,
+                                            openNodes,
+                                            closedNodes);
+                    if(currentNodeTileX + 1 <= tileMapBeingSearched.tilesWide) {
+                        Debug.Log("----------------------------------------------------");
+                        Debug.Log("Performing Bottom Right A Star Tile Check");
+                        PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                                                tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX + 1].GetComponent<Tile>(), 
+                                                endTile.tileX, 
+                                                endTile.tileY,
+                                                tilesBeingSearched,
+                                                openNodes,
+                                                closedNodes);
+                    }
+                }
+
                 // Debug.Log("----------------------------------------------------");
                 // Debug.Log("Size of Open Nodes After Calculation: " + openNodes.Count);
                 // Debug.Log("Size of Closed Nodes After Calculation: " + closedNodes.Count);
@@ -219,7 +255,9 @@ public class AStarManager : MonoBehaviour {
 					closedNodes.Add(currentNode.gameObject);
 				}
 
+                Debug.Log("End tile X: " + endTile.tileX + " Y: " + endTile.tileY);
                 bool endTileDetectedInOpenNodeList = CheckIfTileListContainsTile(openNodes, endTile.tileX, endTile.tileY);
+                Debug.Log("End tile detected in open node list: " + endTileDetectedInOpenNodeList);
                 //bool endTileDetectedInClosedNodeList = CheckIfTileListContainsTile(closedNodes, endTile.tileX, endTile.tileY);
 
                 if(endTileDetectedInOpenNodeList
@@ -229,34 +267,42 @@ public class AStarManager : MonoBehaviour {
                 }
     		}
 
-// 			//BathroomTile currentBathroomTile = RetrieveTileByXandY(openNodes, endTile.tileX, endTile.tileY);
-//       // GameObject currentBathroomTileObject = BathroomTileMap.Instance.GetTileByXandY(currentNode.tileX, currentNode.tileY);
-//       GameObject currentBathroomTileObject = null;
-//       if(openNodes.Count == 0) {
-//         currentBathroomTileObject = BathroomTileMap.Instance.GetTileByXandY(currentNode.tileX, currentNode.tileY);
-//       }
-//       else {
-//         foreach(GameObject gameObj in openNodes) {
-//           if(gameObj.GetComponent<BathroomTile>()
-//              && (gameObj.GetComponent<BathroomTile>().tileX == endTile.tileX && gameObj.GetComponent<BathroomTile>().tileY == endTile.tileY)) {
-//             currentBathroomTileObject = gameObj;
-//           }
-//         }
-//       }
 
-// 			BathroomTile currentBathroomTile = null;
-// 			if(currentBathroomTileObject != null) {
-// 				currentBathroomTile = currentBathroomTileObject.GetComponent<BathroomTile>();
-// 			}
-// 			while(currentBathroomTile != null) {
-//         // Debug.Log(currentBathroomTile);
-// //				Debug.Log("Adding tile (" + currentBathroomTile.tileX + "," + currentBathroomTile.tileY + ") to the movement node list");
-// 				bathroomTilePath.Add(new Vector2(currentBathroomTile.gameObject.transform.position.x, currentBathroomTile.gameObject.transform.position.y));
-// 				currentBathroomTile = currentBathroomTile.parentAStarNode;
-// 			}
-// 			//adds the first node, otherwise it's left out
-// 			//bathroomTilePath.Add(new Vector2(startTile.transform.position.x, startTile.transform.position.y));
-// 			bathroomTilePath.Reverse();
+			// BathroomTile currentBathroomTile = RetrieveTileByXandY(openNodes, endTile.tileX, endTile.tileY);
+            // GameObject currentBathroomTileObject = BathroomTileMap.Instance.GetTileByXandY(currentNode.tileX, currentNode.tileY);
+            GameObject currentBathroomTileObject = null;
+            if(openNodes.Count == 0) {
+                currentBathroomTileObject = BathroomTileMap.Instance.tiles[currentNode.gameObject.GetComponent<Tile>().tileY][currentNode.gameObject.GetComponent<Tile>().tileX];
+            }
+            else {
+                foreach(GameObject gameObj in openNodes) {
+                  if(gameObj.GetComponent<BathroomTile>()
+                     && (gameObj.GetComponent<BathroomTile>().tileX == endTile.tileX && gameObj.GetComponent<BathroomTile>().tileY == endTile.tileY)) {
+                    currentBathroomTileObject = gameObj;
+                  }
+                }
+            }
+
+			BathroomTile currentBathroomTile = null;
+			if(currentBathroomTileObject != null) {
+				currentBathroomTile = currentBathroomTileObject.GetComponent<BathroomTile>();
+			}
+			while(currentBathroomTile != null) {
+                // Debug.Log(currentBathroomTile);
+                // Debug.Log("Adding tile (" + currentBathroomTile.tileX + "," + currentBathroomTile.tileY + ") to the movement node list");
+				// bathroomTilePath.Add(new Vector2(currentBathroomTile.gameObject.transform.position.x, currentBathroomTile.gameObject.transform.position.y));
+                bathroomTilePath.Add(currentBathroomTile.gameObject);
+                if(currentBathroomTile.gameObject.GetComponent<AStarNode>().parentAStarNode != null) {
+                    currentBathroomTile = currentBathroomTile.gameObject.GetComponent<AStarNode>().parentAStarNode.gameObject.GetComponent<BathroomTile>();
+                }
+                else {
+                    currentBathroomTile = null;
+                } 
+			}
+			//adds the first node, otherwise it's left out
+			// bathroomTilePath.Add(new Vector2(startTile.transform.position.x, startTile.transform.position.y));
+            bathroomTilePath.Add(startTile.gameObject);
+			bathroomTilePath.Reverse();
 //------------------------------------------------------------------
 //       if(debugShowLastPathCalculated) {
 //         // List<GameObject> removeDebugTiles = new List<GameObject>();
@@ -306,7 +352,7 @@ public class AStarManager : MonoBehaviour {
 //         }
 //       }
 
-// 			return bathroomTilePath;
+			return bathroomTilePath;
 		// }
 		// catch(System.Exception e) {
 		// 	Debug.Log(e.StackTrace);
@@ -334,19 +380,18 @@ public class AStarManager : MonoBehaviour {
 		// 	//return bathroomTilePositionsForPath;
 		// 	return new List<GameObject>();
 		// }
-        // return null;
         return new List<GameObject>();
 	}
 
-	public void PerformAStarCalculation(Tile currentNode, Tile tileBeingChecked, int endTileX, int endTileY, List<GameObject> tilesBeingChecked, List<GameObject> openNodes, List<GameObject> closedNodes) {
+	public void PerformAStarCalculation(Tile currentNode, Tile tileBeingChecked, int endTileX, int endTileY, GameObject[][] tilesBeingChecked, List<GameObject> openNodes, List<GameObject> closedNodes) {
 		// int tileXBeingChecked = currentNode.tileX + xTileOffsetToPerformCalculationOn;
 		// int tileYBeingChecked = currentNode.tileY + yTileOffsetToPerformCalculationOn;
         int tileXBeingChecked = -1;
         int tileYBeingChecked = -1;
 
         if(tileBeingChecked != null) {
-            tileXBeingChecked = currentNode.tileX;
-            tileYBeingChecked = currentNode.tileY;
+            tileXBeingChecked = tileBeingChecked.tileX;
+            tileYBeingChecked = tileBeingChecked.tileY;
         }
 
 		int gValueOffset = 0;
@@ -409,42 +454,45 @@ public class AStarManager : MonoBehaviour {
 					gValueOffset = 0;
 				}
 			}
-			// Debug.Log("Current Node X: " + currentNode.tileX + " Y: " + currentNode.tileY);
 
-			bool openNodesContainTileBeingChecked = CheckIfTileListContainsTile(openNodes, tileXBeingChecked, tileYBeingChecked);
-			bool closedNodesContainTileBeingChecked = CheckIfTileListContainsTile(closedNodes, tileXBeingChecked, tileYBeingChecked);
+            // Debug.Log("Current Node X: " + currentNode.tileX + " Y: " + currentNode.tileY);
+            bool openNodesContainTileBeingChecked = CheckIfTileListContainsTile(openNodes, tileXBeingChecked, tileYBeingChecked);
+            bool closedNodesContainTileBeingChecked = CheckIfTileListContainsTile(closedNodes, tileXBeingChecked, tileYBeingChecked);
+            // Debug.Log("open nodes contain tile being checked: " + openNodesContainTileBeingChecked);
+            // Debug.Log("closed nodes contain tile being checked: " + closedNodesContainTileBeingChecked);
 
-			//If it is not walkable or if it is on the closed list, ignore it. Otherwise do the following.
+            //If it is not walkable or if it is on the closed list, ignore it. Otherwise do the following.
+            if(!closedNodesContainTileBeingChecked
+               || (closedNodesContainTileBeingChecked
+                    && (tileXBeingChecked == endTileX) && (tileYBeingChecked == endTileY))) {
+                Debug.Log("Not in closed nodes");
+                //If it isn’t on the open list, add it to the open list. Make the current square the parent of this square. Record the F, G, and H costs of the square.
+                if(!openNodesContainTileBeingChecked) {
+                    //openNodes.Add(currentNode.gameObject);
+                    openNodes.Add(tileBeingChecked.gameObject);
+                    tileBeingChecked.gameObject.GetComponent<AStarNode>().parentAStarNode = currentNode.gameObject.GetComponent<AStarNode>();
+                    tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue = currentNode.gameObject.GetComponent<AStarNode>().gValue + gValueOffset;
+                    tileBeingChecked.gameObject.GetComponent<AStarNode>().heuristicValue = CalulateManhattanDistance(tileXBeingChecked, tileYBeingChecked, endTileX, endTileY);
+                    Debug.Log("Added node to open node list");
+                }
+                //If it is on the open list already, check to see if this path to that square is better, using G cost as the measure.
+                else {
+                    //A lower G cost means that this is a better path. If so, change the parent of the square to the current square,
+                    //and recalculate the G and F scores of the square. If you are keeping your open list sorted by F score, you may
+                    //need to resort the list to account for the change.
+                    if(tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue < currentNode.gameObject.GetComponent<AStarNode>().gValue) {
+                        tileBeingChecked.gameObject.GetComponent<AStarNode>().parentAStarNode = currentNode.gameObject.GetComponent<AStarNode>();
+                        tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue = currentNode.gameObject.GetComponent<AStarNode>().gValue + gValueOffset;
+                    }
+                }
+            }
+            else {
+                Debug.Log("ENCOUNTERED CLOSED NODE AND SKIPPED IT");
+                Debug.Log(tileBeingChecked);
+            }
 
-			if(!closedNodesContainTileBeingChecked
-			   || (closedNodesContainTileBeingChecked
-			    	&& (tileXBeingChecked == endTileX) && (tileYBeingChecked == endTileY))) {
-				//Debug.Log("Not in closed nodes");
-				//If it isn’t on the open list, add it to the open list. Make the current square the parent of this square. Record the F, G, and H costs of the square.
-				if(!openNodesContainTileBeingChecked) {
-					//openNodes.Add(currentNode.gameObject);
-					openNodes.Add(tileBeingChecked.gameObject);
-					tileBeingChecked.gameObject.GetComponent<AStarNode>().parentAStarNode = currentNode.gameObject.GetComponent<AStarNode>();
-					tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue = currentNode.gameObject.GetComponent<AStarNode>().gValue + gValueOffset;
-					tileBeingChecked.gameObject.GetComponent<AStarNode>().heuristicValue = CalulateManhattanDistance(tileXBeingChecked, tileYBeingChecked, endTileX, endTileY);
-                    // Debug.Log("Added node to open node list");
-				}
-				//If it is on the open list already, check to see if this path to that square is better, using G cost as the measure.
-				else {
-					//A lower G cost means that this is a better path. If so, change the parent of the square to the current square,
-					//and recalculate the G and F scores of the square. If you are keeping your open list sorted by F score, you may
-					//need to resort the list to account for the change.
-					if(tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue < currentNode.gameObject.GetComponent<AStarNode>().gValue) {
-						tileBeingChecked.gameObject.GetComponent<AStarNode>().parentAStarNode = currentNode.gameObject.GetComponent<AStarNode>();
-						tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue = currentNode.gameObject.GetComponent<AStarNode>().gValue + gValueOffset;
-					}
-				}
-			}
-			else {
-				Debug.Log("ENCOUNTERED CLOSED NODE AND SKIPPED IT");
-				Debug.Log(tileBeingChecked);
-			}
-		}
+            Debug.Log("open nodes after operation: " + openNodes.Count);
+        }
 	}
 
 	public  Tile RetrieveTileByXandY(List<GameObject> listToRetrieveFrom, int tileXToSelect, int tileYToSelect) {
@@ -496,13 +544,12 @@ public class AStarManager : MonoBehaviour {
 
     //Closed nodes are actually the reference to the bathroom tile game object
     public List<GameObject> GetListCopyOfAStarClosedNodes() {
-    	// List<GameObject> copyOfPermanentNodes = new List<GameObject>();
-    	// foreach(GameObject gameObj in closedNodes) {
-    	// 	copyOfPermanentNodes.Add(gameObj);
-    	// }
+    	List<GameObject> copyOfPermanentNodes = new List<GameObject>();
+    	foreach(GameObject gameObj in permanentlyClosedNodes) {
+    		copyOfPermanentNodes.Add(gameObj);
+    	}
 
-    	// return copyOfPermanentNodes;
-        return null;
+    	return copyOfPermanentNodes;
     }
 
     //Closed nodes are actually the reference to the bathroom tile game object

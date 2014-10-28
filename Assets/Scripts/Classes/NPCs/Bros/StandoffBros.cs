@@ -224,10 +224,10 @@ public class StandoffBros : MonoBehaviour {
     BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
     BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
     newFightingBros.GetComponent<FightingBros>().SetTargetObjectAndTargetPosition(null,
-                                                                                  AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                                  AStarManager.Instance. GetListCopyOfAStarClosedNodes(),
-                                                                                  startTile,
-                                                                                  targetTile));
+                                                                                  AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                                                           AStarManager.Instance. GetListCopyOfAStarClosedNodes(),
+                                                                                                                           startTile,
+                                                                                                                           targetTile));
 
     BroManager.Instance.AddFightingBro(newFightingBros);
     BroManager.Instance.RemoveStandoffBro(this.gameObject, true);

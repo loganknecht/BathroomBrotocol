@@ -468,10 +468,10 @@ public class Bro : TargetPathingNPC {
 
       // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
       BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-  		List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-  		                                                                       AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                                                             startTile,
-  		                                                                       randomBathroomTile.GetComponent<BathroomTile>());
+  		List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+      		                                                                      AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                                                                startTile,
+      		                                                                      randomBathroomTile.GetComponent<BathroomTile>());
   		SetTargetObjectAndTargetPosition(null, movementNodes);
     }
 	}
@@ -528,7 +528,7 @@ public class Bro : TargetPathingNPC {
                                                                                               randomObject.transform.position.y,
                                                                                               true).GetComponent<BathroomTile>();
       //Debug.Log("setting exit tile");
-      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
+      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
                                                                                 new List<GameObject>(),
                                                                                 broTile,
                                                                                 randomObjectTile);
@@ -564,8 +564,8 @@ public class Bro : TargetPathingNPC {
       BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
 
       //Debug.Log("setting exit tile");
-      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.GetAllTilesAsList(),
-                                                                                AStarManager.Instance.permanentlyClosedNodes,
+      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
                                                                                 broTile,
                                                                                 randomObjectTile);
       state = BroState.MovingToTargetObject;
