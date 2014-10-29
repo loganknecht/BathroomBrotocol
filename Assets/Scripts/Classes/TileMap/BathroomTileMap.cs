@@ -45,6 +45,7 @@ public class BathroomTileMap : TileMap {
 	protected override void Start () {
 		base.Start();
         ConfigureBathroomObjectsWithTileTheyreIn();
+        ConfigureAStarPermanentClosedNodes();
     }
 
 	// Update is called once per frame
@@ -62,6 +63,21 @@ public class BathroomTileMap : TileMap {
                     if(bathroomTileContainingBathroomObject == tileGameObject) {
                         // Debug.Log("Found bathroom object " + bathroomObject.name + " in bathroom tile " + bathroomTileContainingBathroomObject.name);
                         bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileContainingBathroomObject;
+                    }
+                }
+            }
+        }
+    }
+
+    public void ConfigureAStarPermanentClosedNodes() {
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tileGameObject in row) {
+                // Debug.Log("In tile of: " + tileGameObject.name);
+                if(tileGameObject != null
+                   && tileGameObject.GetComponent<Tile>()
+                   && tileGameObject.GetComponent<AStarNode>().isUntraversable) {
+                    if(!AStarManager.Instance.permanentlyClosedNodes.Contains(tileGameObject)) {
+                        AStarManager.Instance.permanentlyClosedNodes.Add(tileGameObject);
                     }
                 }
             }

@@ -191,47 +191,47 @@ public class Bro : TargetPathingNPC {
 	}
 
 	public virtual void PerformArrivalLogic() {
-		// if(IsAtTargetPosition()) {
-		// 	if(targetObject != null
-		// 	   && targetObject.GetComponent<BathroomObject>() != null) {
-  //       BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
-  //       BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
+		if(IsAtTargetPosition()) {
+			if(targetObject != null
+			   && targetObject.GetComponent<BathroomObject>() != null) {
+        BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
+        BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
 
-  //       if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
+        if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
 
-  // 				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+  				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-  //         if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
-  //           && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-  //           && startRoamingOnArrivalAtBathroomObjectInUse) {
-  //           state = BroState.Roaming;
-  //         }
-  //         else {
-  //           PerformOnArrivalBrotocolScoreCheck();
+          if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+            && startRoamingOnArrivalAtBathroomObjectInUse) {
+            state = BroState.Roaming;
+          }
+          else {
+            PerformOnArrivalBrotocolScoreCheck();
 
-  //   				//Adds bro to occupation list
-  //   				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
-  //              // wtf, why is this here?
-  //   					bathObjRef.AddBro(this.gameObject);
-  //   				}
+    				//Adds bro to occupation list
+    				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
+               // wtf, why is this here?
+    					bathObjRef.AddBro(this.gameObject);
+    				}
 
-  //   				selectableReference.canBeSelected = false;
-  //   				selectableReference.ResetHighlightObjectAndSelectedState();
-  //   				speechBubbleReference.displaySpeechBubble = false;
+    				selectableReference.canBeSelected = false;
+    				selectableReference.ResetHighlightObjectAndSelectedState();
+    				speechBubbleReference.displaySpeechBubble = false;
 
-  //   				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-  //   				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-  //   					SelectionManager.Instance.currentlySelectedBroGameObject = null;
-  //   				}
+    				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+    				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+    					SelectionManager.Instance.currentlySelectedBroGameObject = null;
+    				}
 
-  //   				state = BroState.OccupyingObject;
-  //         }
-  //       }
-		// 	}
-		// 	else {
-		// 		state = BroState.Roaming;
-		// 	}
-		// }
+    				state = BroState.OccupyingObject;
+          }
+        }
+			}
+			else {
+				state = BroState.Roaming;
+			}
+		}
 	}
 	public virtual void PerformFightingLogic() {
 	}
@@ -469,7 +469,7 @@ public class Bro : TargetPathingNPC {
       // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
       BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
   		List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-      		                                                                      AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+      		                                                                      AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
                                                                                 startTile,
       		                                                                      randomBathroomTile.GetComponent<BathroomTile>());
   		SetTargetObjectAndTargetPosition(null, movementNodes);
@@ -544,7 +544,7 @@ public class Bro : TargetPathingNPC {
     BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
                                                                                      this.gameObject.transform.position.y,
                                                                                      true).GetComponent<BathroomTile>();
-    Debug.Log(broTile);
+    // Debug.Log(broTile);
 
     // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
     // int selectedObject = Random.Range(0, objects.Count);

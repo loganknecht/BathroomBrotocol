@@ -42,43 +42,43 @@ public class FightingBros : TargetPathingNPC {
   }
 
   public void PerformFightingBroArrivalLogic() {
-    // if(IsAtTargetPosition()) {
-    //   BathroomTile currentBathroomTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-    //   BathroomTile nextBathroomTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
-    //   foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
-    //     BathroomTile tileBathroomObjectIsIn = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, bathroomObject.transform.position.y, true).GetComponent<BathroomTile>();
+    if(IsAtTargetPosition()) {
+      BathroomTile currentBathroomTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
+      BathroomTile nextBathroomTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
+      foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
+        BathroomTile tileBathroomObjectIsIn = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, bathroomObject.transform.position.y, true).GetComponent<BathroomTile>();
 
-    //     if(bathroomObject.GetComponent<BathroomObject>() != null) {
-    //       if(tileBathroomObjectIsIn.tileX == currentBathroomTile.tileX
-    //          && tileBathroomObjectIsIn.tileY == currentBathroomTile.tileY) {
-    //         BathroomObject bathObjRef = bathroomObject.GetComponent<BathroomObject>();
-    //         if(bathObjRef.state != BathroomObjectState.Broken
-    //            && bathObjRef.state != BathroomObjectState.BrokenByPee
-    //            && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
-    //           bathObjRef.state = BathroomObjectState.Broken;
-    //           switch(bathObjRef.type) {
-    //             case(BathroomObjectType.Sink):
-    //               ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-    //             break;
-    //             case(BathroomObjectType.Stall):
-    //               ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
-    //             break;
-    //             case(BathroomObjectType.Urinal):
-    //               ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-    //             break;
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //   // Debug.Log("next node x: " + nextBathroomTile.gameObject.transform.position.x + " y: " + nextBathroomTile.gameObject.transform.position.y);
-    //   // Debug.Log("next node: " + nextBathroomTile.gameObject.name);
-    //   List<Vector2> newMovementNodes = AStarManager.Instance.CalculateAStarPath((new List<GameObject>()),
-    //                                                                             AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
-    //                                                                             currentBathroomTile,
-    //                                                                             nextBathroomTile);
-    //   SetTargetObjectAndTargetPosition(null, newMovementNodes);
-    // }
+        if(bathroomObject.GetComponent<BathroomObject>() != null) {
+          if(tileBathroomObjectIsIn.tileX == currentBathroomTile.tileX
+             && tileBathroomObjectIsIn.tileY == currentBathroomTile.tileY) {
+            BathroomObject bathObjRef = bathroomObject.GetComponent<BathroomObject>();
+            if(bathObjRef.state != BathroomObjectState.Broken
+               && bathObjRef.state != BathroomObjectState.BrokenByPee
+               && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
+              bathObjRef.state = BathroomObjectState.Broken;
+              switch(bathObjRef.type) {
+                case(BathroomObjectType.Sink):
+                  ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
+                break;
+                case(BathroomObjectType.Stall):
+                  ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
+                break;
+                case(BathroomObjectType.Urinal):
+                  ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
+                break;
+              }
+            }
+          }
+        }
+      }
+      // Debug.Log("next node x: " + nextBathroomTile.gameObject.transform.position.x + " y: " + nextBathroomTile.gameObject.transform.position.y);
+      // Debug.Log("next node: " + nextBathroomTile.gameObject.name);
+      List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
+                                                                                currentBathroomTile,
+                                                                                nextBathroomTile);
+      SetTargetObjectAndTargetPosition(null, newMovementNodes);
+    }
   }
 
   public void PerformMaxTapLogic() {

@@ -3,7 +3,6 @@ using System.Collections;
 
 public class BathroomTile : Tile {
   	public GameObject bathroomObjectInTile = null;
-    public bool isUntraversable = false;
 
 	public override void Awake() {
 		base.Awake();

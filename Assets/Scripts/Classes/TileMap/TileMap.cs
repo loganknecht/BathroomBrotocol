@@ -19,6 +19,7 @@ public class TileMap : BaseBehavior {
     public List<GameObject> rowContainers;
 
     protected override void Awake() {
+        base.Awake();
     }
 
 	// Use this for initialization
@@ -54,7 +55,7 @@ public class TileMap : BaseBehavior {
                         }
                     }
                 }
-                
+
                 tilesWide = rowWidth; 
                 tilesHigh = tiles.Length;
             }

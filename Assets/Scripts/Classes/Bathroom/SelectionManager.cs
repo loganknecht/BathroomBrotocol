@@ -71,7 +71,7 @@ public class SelectionManager : MonoBehaviour {
 			   && bathObjRef.state != BathroomObjectState.BrokenByPee
 			   && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
 				List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-				                                                                          AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+				                                                                          AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
 				                                                                          BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBroGameObject.transform.position.x, currentlySelectedBroGameObject.transform.position.y, true).GetComponent<BathroomTile>(),
 				                                                                          BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentlySelectedBathroomObject.transform.position.x, currentlySelectedBathroomObject.transform.position.y, true).GetComponent<BathroomTile>());
 
