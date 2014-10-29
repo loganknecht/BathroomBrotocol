@@ -41,7 +41,7 @@ public class Bro : TargetPathingNPC {
 	public override void Start () {
 		base.Start();
 
-    this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
+    // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
 
 		selectableReference.canBeSelected = true;
 	}
@@ -156,7 +156,7 @@ public class Bro : TargetPathingNPC {
 		}
 	}
 
-	public override void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<Vector2> newMovementNodes) {
+	public override void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
 		occupationTimer = 0;
 		base.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
 	}
@@ -458,7 +458,7 @@ public class Bro : TargetPathingNPC {
   		bool foundEmptyTile = false;
   		GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
   		while(!foundEmptyTile) {
-  			if(AStarManager.Instance.permanentClosedNodes.Contains(randomBathroomTile)) {
+  			if(AStarManager.Instance.permanentlyClosedNodes.Contains(randomBathroomTile)) {
   				randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
   			}
   			else {
@@ -468,10 +468,10 @@ public class Bro : TargetPathingNPC {
 
       // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
       BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-  		List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-  		                                                                       AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                                                             startTile,
-  		                                                                       randomBathroomTile.GetComponent<BathroomTile>());
+  		List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+      		                                                                      AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
+                                                                                startTile,
+      		                                                                      randomBathroomTile.GetComponent<BathroomTile>());
   		SetTargetObjectAndTargetPosition(null, movementNodes);
     }
 	}
@@ -528,10 +528,10 @@ public class Bro : TargetPathingNPC {
                                                                                               randomObject.transform.position.y,
                                                                                               true).GetComponent<BathroomTile>();
       //Debug.Log("setting exit tile");
-      List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                             new List<GameObject>(),
-                                                                             broTile,
-                                                                             randomObjectTile);
+      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                new List<GameObject>(),
+                                                                                broTile,
+                                                                                randomObjectTile);
       state = BroState.MovingToTargetObject;
       SetTargetObjectAndTargetPosition(randomObject, movementNodes);
     }
@@ -542,8 +542,9 @@ public class Bro : TargetPathingNPC {
 
   public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, params BathroomObjectType[] bathroomObjectTypesToTarget) {
     BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
-                                                                                       this.gameObject.transform.position.y,
-                                                                                       true).GetComponent<BathroomTile>();
+                                                                                     this.gameObject.transform.position.y,
+                                                                                     true).GetComponent<BathroomTile>();
+    // Debug.Log(broTile);
 
     // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
     // int selectedObject = Random.Range(0, objects.Count);
@@ -557,14 +558,16 @@ public class Bro : TargetPathingNPC {
     }
 
     if(randomObject) {
-      BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
-                                                                                              randomObject.transform.position.y,
-                                                                                              true).GetComponent<BathroomTile>();
+      // BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
+      //                                                                                           randomObject.transform.position.y,
+      //                                                                                           true).GetComponent<BathroomTile>();
+      BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
+
       //Debug.Log("setting exit tile");
-      List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                             new List<GameObject>(),
-                                                                             broTile,
-                                                                             randomObjectTile);
+      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
+                                                                                broTile,
+                                                                                randomObjectTile);
       state = BroState.MovingToTargetObject;
       SetTargetObjectAndTargetPosition(randomObject, movementNodes);
     }
@@ -625,45 +628,46 @@ public class Bro : TargetPathingNPC {
   // Returns true if any of the eight tiles around the bro has a bathroom object,
   // and if that bathroom object has a bro in it
  	public virtual bool CheckIfBroInAdjacentBathroomObjects() {
- 		bool broIsInAjdacentTile = false;
+ 		// bool broIsInAjdacentTile = false;
 
- 		BathroomTile currentTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
- 																			                                                   this.gameObject.transform.position.y,
- 																									                                       true).GetComponent<BathroomTile>();
+ 		// BathroomTile currentTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
+ 		// 																	                                                   this.gameObject.transform.position.y,
+ 		// 																							                                       true).GetComponent<BathroomTile>();
 
-    bool isBroOnTopLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY + 1);
-    bool isBroOnTopSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY + 1);
-    bool isBroOnTopRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY + 1);
+   //  bool isBroOnTopLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY + 1);
+   //  bool isBroOnTopSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY + 1);
+   //  bool isBroOnTopRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY + 1);
 
-    bool isBroOnLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY);
-    bool isBroOnRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY);
+   //  bool isBroOnLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY);
+   //  bool isBroOnRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY);
 
-    bool isBroOnBottomLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY - 1);
-    bool isBroOnBottomSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY - 1);
-    bool isBroOnBottomRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY - 1);
-    // Debug.Log("------------------------");
-    // Debug.Log("On Top Left: " + isBroOnTopLeftSide);
-    // Debug.Log("On Top: " + isBroOnTopSide);
-    // Debug.Log("On Top Right: " + isBroOnTopRightSide);
-    // Debug.Log("On Left: " + isBroOnLeftSide);
-    // Debug.Log("On Right: " + isBroOnRightSide);
-    // Debug.Log("On Bottom Left: " + isBroOnBottomLeftSide);
-    // Debug.Log("On Bottom: " + isBroOnBottomSide);
-    // Debug.Log("On Bottom Right: " + isBroOnBottomRightSide);
+   //  bool isBroOnBottomLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY - 1);
+   //  bool isBroOnBottomSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY - 1);
+   //  bool isBroOnBottomRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY - 1);
+   //  // Debug.Log("------------------------");
+   //  // Debug.Log("On Top Left: " + isBroOnTopLeftSide);
+   //  // Debug.Log("On Top: " + isBroOnTopSide);
+   //  // Debug.Log("On Top Right: " + isBroOnTopRightSide);
+   //  // Debug.Log("On Left: " + isBroOnLeftSide);
+   //  // Debug.Log("On Right: " + isBroOnRightSide);
+   //  // Debug.Log("On Bottom Left: " + isBroOnBottomLeftSide);
+   //  // Debug.Log("On Bottom: " + isBroOnBottomSide);
+   //  // Debug.Log("On Bottom Right: " + isBroOnBottomRightSide);
 
-    if(isBroOnTopLeftSide
-      || isBroOnTopSide
-      || isBroOnTopRightSide
-      || isBroOnLeftSide
-      || isBroOnRightSide
-      || isBroOnBottomLeftSide
-      || isBroOnBottomSide
-      || isBroOnBottomRightSide) {
-      // Debug.Log("Bro adjacent");
-      broIsInAjdacentTile = true;
-    }
+   //  if(isBroOnTopLeftSide
+   //    || isBroOnTopSide
+   //    || isBroOnTopRightSide
+   //    || isBroOnLeftSide
+   //    || isBroOnRightSide
+   //    || isBroOnBottomLeftSide
+   //    || isBroOnBottomSide
+   //    || isBroOnBottomRightSide) {
+   //    // Debug.Log("Bro adjacent");
+   //    broIsInAjdacentTile = true;
+   //  }
 
- 		return broIsInAjdacentTile;
+ 		// return broIsInAjdacentTile;
+    return false;
  	}
 
   public virtual bool CheckIfRelievedSelfBeforeTimeOut() {

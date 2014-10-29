@@ -24,6 +24,8 @@ public class BathroomObject : MonoBehaviour {
   public int numberOfTaps = 0;
   public int numberOfTapsNeededToRestoreToOrder = 5;
 
+  // This gets set in the bathroom tile manager singleton
+  public GameObject bathroomTileIn = null;
 	public List<GameObject> objectsOccupyingBathroomObject = new List<GameObject>();
 
 	public virtual void Start() {
@@ -163,10 +165,10 @@ public class BathroomObject : MonoBehaviour {
           BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
           BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
           newFightingBros.GetComponent<FightingBros>().SetTargetObjectAndTargetPosition(null,
-                                                                                        AStarManager.Instance.CalculateAStarPath(new List<GameObject>(),
-                                                                                        AStarManager.Instance. GetListCopyOfAStarClosedNodes(),
-                                                                                        startTile,
-                                                                                        targetTile));
+                                                                                        AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                                                                 AStarManager.Instance. GetListCopyOfAStarClosedNodes(),
+                                                                                                                                 startTile,
+                                                                                                                                 targetTile));
           objectOccupyingBathroomObjectToRemove.Add(firstBroFound);
           objectOccupyingBathroomObjectToRemove.Add(secondBroFound);
 

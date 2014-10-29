@@ -42,7 +42,12 @@ public class DrunkBro : Bro {
           GameObject randomExit = exits[selectedExit];
           BathroomTile randomExitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomExit.transform.position.x, randomExit.transform.position.y, true).GetComponent<BathroomTile>();
 
-          List<Vector2> movementNodes = AStarManager.Instance.CalculateAStarPath(new List<GameObject>(), new List<GameObject>(), broTile, randomExitTile); state = BroState.MovingToTargetObject; SetTargetObjectAndTargetPosition(randomExit, movementNodes);
+          List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                    new List<GameObject>(), 
+                                                                                    broTile, 
+                                                                                    randomExitTile); 
+          state = BroState.MovingToTargetObject; 
+          SetTargetObjectAndTargetPosition(randomExit, movementNodes);
         }
       }
     }

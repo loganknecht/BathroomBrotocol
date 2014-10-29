@@ -16,11 +16,11 @@ public class TargetPathingNPC : MonoBehaviour {
 	public float targetPositionXLockBuffer = 0.05f;
 	public float targetPositionYLockBuffer = 0.05f;
 
-	//Vector2 currentMovementNode = Vector2.zero;
-	public List<Vector2> movementNodes = new List<Vector2>();
+	public List<GameObject> movementNodes = null; 
 
-  public virtual void Awake() {
-  }
+	public virtual void Awake() {
+		movementNodes = new List<GameObject>();
+	}
 
 	// Use this for initialization
 	public virtual void Start () {
@@ -30,6 +30,9 @@ public class TargetPathingNPC : MonoBehaviour {
 
 	// Update is called once per frame
 	public virtual void Update () {
+		if(movementNodes == null) {
+			Debug.Log("lol lol movement nodes be null.");
+		}
 		PerformLogic();
 		UpdateAnimator();
 	}
@@ -53,8 +56,14 @@ public class TargetPathingNPC : MonoBehaviour {
 
 	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector2 newTargetPosition) {
 		targetObject = newTargetObject;
-		movementNodes = new List<Vector2>();
-		movementNodes.Add(new Vector2(newTargetPosition.x, newTargetPosition.y));
+
+		movementNodes = new List<GameObject>();
+
+		GameObject newTileGameObject = new GameObject();
+		Tile newMovementNode = newTileGameObject.AddComponent<Tile>();
+		newTileGameObject.transform.position = new Vector3(newTargetPosition.x, newTargetPosition.y, 0);
+		movementNodes.Add(newTileGameObject);
+
 		PopMovementNode();
 	}
 
@@ -62,10 +71,8 @@ public class TargetPathingNPC : MonoBehaviour {
 		SetTargetObjectAndTargetPosition(newTargetObject, new Vector2(newTargetPosition.x, newTargetPosition.y));
 	}
 
-	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<Vector2> newMovementNodes) {
+	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
 		targetObject = newTargetObject;
-
-		//movementNodes = null;
 		movementNodes = newMovementNodes;
 		PopMovementNode();
 	}
@@ -98,15 +105,22 @@ public class TargetPathingNPC : MonoBehaviour {
   			//Debug.Log("object at position");
   			PopMovementNode();
   		}
+
   		transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
 	}
 
 	public virtual void PopMovementNode() {
 		if(movementNodes.Count > 0) {
 			//Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
-			targetPosition = new Vector3(movementNodes[0].x, movementNodes[0].y, this.transform.position.z);
+			GameObject nextNode = movementNodes[0];
+			targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
 			//Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
 			movementNodes.RemoveAt(0);
+			// Destroy(nextNode);
+			// Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+			if(movementNodes == null) {
+				Debug.Log("movemeNodes is null");
+			}
 		}
 	}
 
