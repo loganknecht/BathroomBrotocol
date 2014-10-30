@@ -54,18 +54,19 @@ public class TargetPathingNPC : MonoBehaviour {
 		}
 	}
 
-	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector2 newTargetPosition) {
-		targetObject = newTargetObject;
+	// public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector2 newTargetPosition) {
+	// 	targetObject = newTargetObject;
 
-		movementNodes = new List<GameObject>();
+	// 	movementNodes = new List<GameObject>();
 
-		GameObject newTileGameObject = new GameObject();
-		Tile newMovementNode = newTileGameObject.AddComponent<Tile>();
-		newTileGameObject.transform.position = new Vector3(newTargetPosition.x, newTargetPosition.y, 0);
-		movementNodes.Add(newTileGameObject);
+	// 	GameObject newTileGameObject = new GameObject();
+	// 	// Tile newMovementNode = newTileGameObject.AddComponent<Tile>();
+	// 	newTileGameObject.transform.position = new Vector3(newTargetPosition.x, newTargetPosition.y, 0);
+	// 	newTileGameObject.AddComponent<BathroomTile>();
+	// 	movementNodes.Add(newTileGameObject);
 
-		PopMovementNode();
-	}
+	// 	PopMovementNode();
+	// }
 
 	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPosition) {
 		SetTargetObjectAndTargetPosition(newTargetObject, new Vector2(newTargetPosition.x, newTargetPosition.y));

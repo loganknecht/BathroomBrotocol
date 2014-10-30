@@ -123,17 +123,20 @@ public int GetLineQueueTileGameObjectIsIn(GameObject gameObjectToCheck) {
     int currentTile = (queueObjects.Count/maximumObjectsPerTile);
     List<GameObject> newMovementNodes = new List<GameObject>();
 
+    // Would be the random way to do pathing in.... but leaving out for now....
     // Vector2 newTargetPosition = new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y);
     // newTargetPosition.x += Random.Range(queueTileMinXRadiusForStanding, queueTileMaxXRadiusForStanding);
     // newTargetPosition.y += Random.Range(queueTileMinYRadiusForStanding, queueTileMaxYRadiusForStanding);
 
+    // GameObject newTargetNode = queueTileObjects[currentTile];
     // newMovementNodes.Add(newTargetPosition);
-    // while(currentTile < queueTileObjects.Count) {
-    //   newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
-    //   currentTile++;
-    // }
+    while(currentTile < queueTileObjects.Count) {
+      // newMovementNodes.Add(new Vector2(queueTileObjects[currentTile].transform.position.x, queueTileObjects[currentTile].transform.position.y));
+      newMovementNodes.Add(queueTileObjects[currentTile]);
+      currentTile++;
+    }
 
-    // newMovementNodes.Reverse();
+    newMovementNodes.Reverse();
 
     return newMovementNodes;
   }

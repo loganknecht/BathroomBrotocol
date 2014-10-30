@@ -49,6 +49,7 @@ public class BathroomTileMap : TileMap {
 		base.Start();
         ConfigureBathroomObjectsWithTileTheyreIn();
         ConfigureAStarPermanentClosedNodes();
+        // ConfigureBathroomTileBlockersInBathroomTile();
     }
 
 	// Update is called once per frame

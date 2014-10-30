@@ -46,14 +46,12 @@ public class TileMap : BaseBehavior {
             if(tiles != null && tiles.Length > 0) {
                 // Error checking to make sure that row width is congruent/symmetrical in the tiles array
                 int rowWidth = -1;
-                bool rowWidthsHaveSameLength = true;
                 foreach(GameObject[] row in tiles) {
                     if(rowWidth == -1) {
                         rowWidth = row.Length;
                     }
                     else {
                         if(rowWidth != row.Length) {
-                            rowWidthsHaveSameLength = false;
                             Debug.LogError("The tile map width is incongruent, please verify that all rows are equivilant in length!");
                         }
                     }

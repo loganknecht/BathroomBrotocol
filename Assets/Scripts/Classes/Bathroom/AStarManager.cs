@@ -36,9 +36,9 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 	private AStarManager() {
 	}
 
-	public void Awake() {
+	protected override void Awake() {
         base.Awake();
-        
+
 		//There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
 		//the script, which is assumedly attached to some GameObject. This in turn allows the instance
 		//to be assigned when a game object is given this script in the scene view.
@@ -95,9 +95,6 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 		AStarNode previousNode = null;
 
 		bool endTileIsInOpenNodeList = false;
-
-		int xOffsetToCheck = 0;
-		int yOffsetToCheck = 0;
 
         // reset all astar path stuff just in case
         foreach(GameObject[] row in tilesBeingSearched) {
@@ -373,7 +370,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 		// 	//return bathroomTilePositionsForPath;
 		// 	return new List<GameObject>();
 		// }
-        return new List<GameObject>();
+        // return new List<GameObject>();
 	}
 
 	public void PerformAStarCalculation(Tile currentNode, Tile tileBeingChecked, int endTileX, int endTileY, GameObject[][] tilesBeingChecked, List<GameObject> openNodes, List<GameObject> closedNodes) {
