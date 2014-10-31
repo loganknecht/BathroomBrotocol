@@ -31,6 +31,7 @@ public class TileMap : BaseBehavior {
     public virtual void Update () {
     }
 
+    // TO DO: probably move this over to bathroom tile map
     public void ConfigureTileMap() {
         if(singleTileWidth < 0 || singleTileHeight < 0) {
             Debug.LogError("SingleTileWidth and SingleTileHeight of the tile map cannot be negative numbers.");
@@ -107,12 +108,20 @@ public class TileMap : BaseBehavior {
         }
     }
 
-	public GameObject GetTileByXandY(int tileX, int tileY) {
+    public GameObject[][] GetTiles() {
+        return tiles;
+    }
+
+    public GameObject GetTileGameObjectByIndex(int tileX, int tileY) {
         if(tiles != null) {
            return tiles[tileY][tileX];
         }
-		return null;
-	}
+        return null;
+    }
+
+    public GameObject GetTileGameObjectByWorldPosition(Vector2 position, bool returnClosestTile) {
+        return GetTileGameObjectByWorldPosition(position.x, position.y, returnClosestTile);
+    }
 
 	public GameObject GetTileGameObjectByWorldPosition(float xPosition, float yPosition, bool returnClosestTile) {
         GameObject closestTile = null;

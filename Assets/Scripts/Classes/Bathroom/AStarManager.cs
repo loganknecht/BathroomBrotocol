@@ -87,7 +87,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 		}
 
         TileMap tileMapBeingSearched = tileMapBeingSearchedGameObject.GetComponent<TileMap>();
-        GameObject[][] tilesBeingSearched = tileMapBeingSearched.tiles;
+        GameObject[][] tilesBeingSearched = tileMapBeingSearched.GetTiles();
 
         List<GameObject> openNodes = new List<GameObject>();
 
@@ -259,10 +259,10 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
     		}
 
 			// BathroomTile currentBathroomTile = RetrieveTileByXandY(openNodes, endTile.tileX, endTile.tileY);
-            // GameObject currentBathroomTileObject = BathroomTileMap.Instance.GetTileByXandY(currentNode.tileX, currentNode.tileY);
+            // GameObject currentBathroomTileObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentNode.tileX, currentNode.tileY);
             GameObject currentBathroomTileObject = null;
             if(openNodes.Count == 0) {
-                currentBathroomTileObject = BathroomTileMap.Instance.tiles[currentNode.gameObject.GetComponent<Tile>().tileY][currentNode.gameObject.GetComponent<Tile>().tileX];
+                currentBathroomTileObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentNode.gameObject.GetComponent<Tile>().tileX, currentNode.gameObject.GetComponent<Tile>().tileY);
             }
             else {
                 foreach(GameObject gameObj in openNodes) {

@@ -20,6 +20,7 @@ public class TargetPathingNPC : MonoBehaviour {
 
 	public virtual void Awake() {
 		movementNodes = new List<GameObject>();
+		
 	}
 
 	// Use this for initialization
@@ -31,7 +32,7 @@ public class TargetPathingNPC : MonoBehaviour {
 	// Update is called once per frame
 	public virtual void Update () {
 		if(movementNodes == null) {
-			Debug.Log("lol lol movement nodes be null.");
+			Debug.Log("lol lol movement nodes of " + this.gameObject.name + " be null.");
 		}
 		PerformLogic();
 		UpdateAnimator();

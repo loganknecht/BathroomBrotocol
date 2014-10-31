@@ -70,9 +70,32 @@ public class EntranceQueueManager : MonoBehaviour {
         }
 	}
 
+    public GameObject GetTileGameObjectFromLineQueueByWorldPosition(float xPosition, float yPosition, bool returnClosestTile, int lineQueueToSelectFrom) {
+        GameObject tileGameObjectFound = null;
+        if(lineQueueToSelectFrom < lineQueues.Count) {
+            tileGameObjectFound = lineQueues[lineQueueToSelectFrom].GetComponent<LineQueue>().GetTileGameObjectByWorldPosition(xPosition, yPosition, returnClosestTile);
+        }
+        else {
+            Debug.LogError("You tried searching for a tile game object in a line queue index that does not exist in the entrance queue manager");
+        }
+
+        return tileGameObjectFound;
+    }
+    public GameObject GetTileGameObjectFromLineQueuesyWorldPosition(float xPosition, float yPosition, bool returnClosestTile) { 
+        GameObject lineQueueBathroomTileGameObjectFound = null;
+        foreach(GameObject lineQueueGameObject in lineQueues) {
+            lineQueueGameObject.GetComponent<LineQueue>().GetTileGameObjectByWorldPosition(xPosition, yPosition, returnClosestTile);
+            if(lineQueueBathroomTileGameObjectFound != null) {
+                // return early saving time for searches, reducing average search case
+                return lineQueueBathroomTileGameObjectFound;
+            }
+        }
+        return null;
+    }
+
     public void PerformDebugButtonPressLogic() {
         if(Input.GetKeyDown(KeyCode.Q)) {
-            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.DrunkBro, 1f } };
             Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
             BroDistributionObject firstWave = new BroDistributionObject(0, 0, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
@@ -88,32 +111,32 @@ public class EntranceQueueManager : MonoBehaviour {
                                                                                     }); 
         }
     }
-  public GameObject SelectRandomLineQueue() {
-    if(lineQueues.Count == 0) {
-      return null;
-    }
-    else {
-      return lineQueues[Random.Range(0, lineQueues.Count)];
-    }
-  }
-
-  public GameObject AddBroToEntranceQueue(GameObject broToAdd, int entranceQueueToAddTo) {
-    LineQueue lineQueueSelected = lineQueues[entranceQueueToAddTo].GetComponent<LineQueue>();
-
-    BroManager.Instance.AddBro(broToAdd);
-    Bro broReference = broToAdd.GetComponent<Bro>();
-
-    broReference.state = BroState.InAQueue;
-    lineQueueSelected.AddGameObjectToLineQueue(broToAdd);
-
-    broReference.PerformEnteredScore();
-
-    if(entranceAudioObject == null) {
-        entranceAudioObject = SoundManager.Instance.Play(AudioType.EntranceQueueDoorOpenClubMusic);
+    public GameObject SelectRandomLineQueue() {
+        if(lineQueues.Count == 0) {
+          return null;
+        }
+        else {
+          return lineQueues[Random.Range(0, lineQueues.Count)];
+        }
     }
 
-    return broToAdd;
-  }
+    public GameObject AddBroToEntranceQueue(GameObject broToAdd, int entranceQueueToAddTo) {
+        LineQueue lineQueueSelected = lineQueues[entranceQueueToAddTo].GetComponent<LineQueue>();
+
+        BroManager.Instance.AddBro(broToAdd);
+        Bro broReference = broToAdd.GetComponent<Bro>();
+
+        broReference.state = BroState.InAQueue;
+        lineQueueSelected.AddGameObjectToLineQueue(broToAdd);
+
+        broReference.PerformEnteredScore();
+
+        if(entranceAudioObject == null) {
+            entranceAudioObject = SoundManager.Instance.Play(AudioType.EntranceQueueDoorOpenClubMusic);
+        }
+
+        return broToAdd;
+    }
 
 	public void RemoveBroFromEntranceQueues(GameObject broToRemove) {
 		foreach(GameObject lineQueue in lineQueues) {

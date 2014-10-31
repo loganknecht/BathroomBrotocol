@@ -162,6 +162,54 @@ public int GetLineQueueTileGameObjectIsIn(GameObject gameObjectToCheck) {
 
     return newMovementNodes;
   }
+  public GameObject GetTileGameObjectByWorldPosition(float xPosition, float yPosition, bool returnClosestTile) {
+    GameObject closestTile = null;
+    float closestTileXDistance = 0f;
+    float closestTileYDistance = 0f;
+
+    foreach(GameObject tile in queueTileObjects) {
+      float tileWidth = tile.gameObject.transform.localScale.x;
+      float tileHeight = tile.gameObject.transform.localScale.y;
+
+      float leftBound = tile.transform.position.x - tileWidth/2;
+      float rightBound = tile.transform.position.x + tileWidth/2;
+
+      float bottomBound = tile.transform.position.y - tileHeight/2;
+      float topBound = tile.transform.position.y + tileHeight/2;
+
+      if(leftBound < xPosition
+         && rightBound > xPosition
+         && bottomBound < yPosition
+         && topBound > yPosition) {
+        return tile;
+      }
+
+      if(returnClosestTile) {
+        float currentClosestTileCheckXDistance = Mathf.Abs(xPosition - tile.transform.position.x);
+        float currentClosestTileCheckYDistance = Mathf.Abs(yPosition - tile.transform.position.y);
+        if(closestTile == null) {
+          closestTile = tile;
+          closestTileXDistance = currentClosestTileCheckXDistance;
+          closestTileYDistance = currentClosestTileCheckYDistance;
+        }
+        else {
+          if(currentClosestTileCheckXDistance <= closestTileXDistance
+             && currentClosestTileCheckYDistance <= closestTileYDistance) {
+            closestTile = tile;
+            closestTileXDistance = currentClosestTileCheckXDistance;
+            closestTileYDistance = currentClosestTileCheckYDistance;
+          }
+        }
+      }
+    }
+
+    if(returnClosestTile) {
+        return closestTile;
+    }
+    else {
+        return null;
+    }
+  }
 
 	public void RemoveGameObjectFromLineQueue(GameObject gameObjectToRemove) {
 		queueObjects.Remove(gameObjectToRemove);

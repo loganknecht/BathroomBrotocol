@@ -23,4 +23,22 @@ public class BathroomTile : Tile {
 	public override void Update () {
 		base.Update();
 	}
+
+	public virtual void AddBathroomTileBlocker(GameObject bathroomTileBlockerToAdd) {
+		BathroomTileBlocker bathroomTileBlockerRef = bathroomTileBlockerToAdd.GetComponent<BathroomTileBlocker>();
+		if(bathroomTileBlockerRef) {
+			if(!bathroomTileBlockers.Contains(bathroomTileBlockerToAdd)) {
+				bathroomTileBlockers.Add(bathroomTileBlockerToAdd);
+			}
+			bathroomTileBlockerRef.SetBathroomTileGameObjectIn(this.gameObject);
+		}
+	}
+
+	public virtual void RemoveBathroomTileBlocker(GameObject bathroomTileBlockerToRemove) {
+		BathroomTileBlocker bathroomTileBlockerRef = bathroomTileBlockerToRemove.GetComponent<BathroomTileBlocker>();
+		if(bathroomTileBlockerRef) {
+			bathroomTileBlockers.Remove(bathroomTileBlockerToRemove);
+			bathroomTileBlockerRef.RemoveFromBathroomTileGameObjectIn();
+		}
+	}
 }

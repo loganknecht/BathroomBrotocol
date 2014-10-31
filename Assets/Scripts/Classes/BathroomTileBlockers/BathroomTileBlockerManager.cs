@@ -50,16 +50,42 @@ public class BathroomTileBlockerManager : MonoBehaviour {
 
   public void AddBathroomTileBlockerGameObject(GameObject newGameObject) {
     if(newGameObject.GetComponent<BathroomTileBlocker>()) {
+      // Adds it to the total list of bathroom tile blockers
       if(!bathroomTileBlockers.Contains(newGameObject)) {
         bathroomTileBlockers.Add(newGameObject);
+      }
+
+      // Adds it to the tile it is located in
+      GameObject bathroomTileGameObjectContainingNewObject = null;
+      BathroomTile bathroomTileContainingNewObject = null;
+
+      // First try to locate the tile that the bathroom tile blocker would be in within the tile maps
+      bathroomTileGameObjectContainingNewObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newGameObject.transform.position.x, newGameObject.transform.position.y, false);
+      if(bathroomTileGameObjectContainingNewObject != null) {
+        bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
+        if(bathroomTileContainingNewObject == null) {
+          bathroomTileContainingNewObject.AddBathroomTileBlocker(newGameObject);
+        }
+      }
+
+      // Second try to locate the tile that the bathroom tile blocker would be in within the tile maps
+      if(bathroomTileGameObjectContainingNewObject == null) {
+        bathroomTileGameObjectContainingNewObject = EntranceQueueManager.Instance.GetTileGameObjectFromLineQueuesyWorldPosition(newGameObject.transform.position.x, newGameObject.transform.position.y, false);
+
+        if(bathroomTileGameObjectContainingNewObject != null) {
+          bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
+          if(bathroomTileContainingNewObject == null) {
+            bathroomTileContainingNewObject.AddBathroomTileBlocker(newGameObject);
+          }
+        }
       }
     }
     newGameObject.transform.parent = this.gameObject.transform;
   }
 
-  public void RemoveBathroomTileBlockerGameObject(GameObject newGameObject) {
-    if(newGameObject.GetComponent<BathroomTileBlocker>()) {
-      bathroomTileBlockers.Remove(newGameObject);
+  public void RemoveBathroomTileBlockerGameObject(GameObject bathroomTileBlockerGameObjectToRemove) {
+    if(bathroomTileBlockerGameObjectToRemove.GetComponent<BathroomTileBlocker>()) {
+      bathroomTileBlockers.Remove(bathroomTileBlockerGameObjectToRemove);
     }
   }
 

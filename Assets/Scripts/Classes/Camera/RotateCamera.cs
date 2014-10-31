@@ -78,8 +78,9 @@ public class RotateCamera : MonoBehaviour {
 
   public void RotateTileMapTiles() {
     // foreach(GameObject bathroomTileGameObject in BathroomTileMap.Instance.tiles) {
-    if(BathroomTileMap.Instance.tiles != null) {
-      foreach(GameObject[] row in BathroomTileMap.Instance.tiles) {
+    GameObject[][] bathroomTiles = BathroomTileMap.Instance.GetTiles();
+    if(bathroomTiles != null) {
+      foreach(GameObject[] row in bathroomTiles) {
         foreach(GameObject tile in row) {
           tile.transform.rotation = Quaternion.Euler(new Vector3(tile.transform.rotation.x, tile.transform.rotation.y, this.gameObject.transform.rotation.z));
         }

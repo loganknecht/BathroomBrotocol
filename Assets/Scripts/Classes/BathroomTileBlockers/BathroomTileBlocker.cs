@@ -7,6 +7,7 @@ public class BathroomTileBlocker : MonoBehaviour {
 	public BathroomTileBlockerType bathroomTileBlockerType = BathroomTileBlockerType.None;
 	public float repairDuration = 0f;
   public Selectable selectableReference = null;
+  public GameObject bathroomTileGameObjectIn = null;
 
 	// Use this for initialization
 	public virtual void Start() {
@@ -26,5 +27,23 @@ public class BathroomTileBlocker : MonoBehaviour {
     collider.enabled = true;
     selectableReference.isSelected = false;
     selectableReference.canBeSelected = true;
+  }
+
+  public void SetBathroomTileGameObjectIn(GameObject newBathroomTileGameObjectToResideIn) {
+    if(bathroomTileGameObjectIn != null) {
+      RemoveFromBathroomTileGameObjectIn();
+    }
+    
+    BathroomTile bathroomTileToResideIn = newBathroomTileGameObjectToResideIn.GetComponent<BathroomTile>();
+    if(bathroomTileToResideIn) {
+      bathroomTileToResideIn.AddBathroomTileBlocker(this.gameObject);
+      bathroomTileGameObjectIn = newBathroomTileGameObjectToResideIn;
+    }
+  }
+
+  public void RemoveFromBathroomTileGameObjectIn() {
+    if(bathroomTileGameObjectIn != null) {
+      bathroomTileGameObjectIn.GetComponent<BathroomTile>().RemoveBathroomTileBlocker(this.gameObject);
+    }
   }
 }

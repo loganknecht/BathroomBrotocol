@@ -79,6 +79,30 @@ public class Bro : TargetPathingNPC {
     }
   }
 
+  public override void PopMovementNode() {
+    if(movementNodes.Count > 0) {
+    //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
+      GameObject nextNode = movementNodes[0];
+      BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
+
+      if(nextTile != null
+         && nextTile.bathroomTileBlockers.Count == 0) {
+        targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
+        // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
+        movementNodes.RemoveAt(0);
+        // Destroy(nextNode);
+        // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+      }
+      else {
+        movementNodes.Clear();
+        state = BroState.Roaming;
+      }
+    }
+    if(movementNodes == null) {
+      Debug.Log("movemeNodes is null for " + this.gameObject.name);
+    }
+  }
+
   public virtual void PerformFightTimerLogic() {
     if(resetFightLogic) {
       fightCooldownTimer += Time.deltaTime;
