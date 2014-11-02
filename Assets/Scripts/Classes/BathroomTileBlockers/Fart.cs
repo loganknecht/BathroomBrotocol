@@ -10,15 +10,11 @@ public class Fart : BathroomTileBlocker {
 
   public bool triggerFadeOutAndDestroy = false;
 
-  public Animator fartAnimationController = null;
-
   public override void Start() {
     base.Start();
 
-    fartAnimationController = this.gameObject.GetComponent<Animator>();
     ResetTimer();
     bathroomTileBlockerType = BathroomTileBlockerType.Fart;
-    repairDuration = 1f;
   }
 
   public override void Update() {
@@ -27,13 +23,13 @@ public class Fart : BathroomTileBlocker {
     PerformFartTimerLogic();
   }
 
-  public void UpdateAnimator() {
-    fartAnimationController.SetBool("TriggerFadeOutAndDestroy", triggerFadeOutAndDestroy);
+  public override void OnMouseDown() {
+    // Debug.Log("Clicked");
   }
 
-  //  public void OnMouseDown() {
-  //    Debug.Log("Clicked");
-  //  }
+  public override void UpdateAnimator() {
+    animatorReference.SetBool("TriggerFadeOutAndDestroy", triggerFadeOutAndDestroy);
+  }
 
   public void PerformFartTimerLogic() {
     fartDurationTimer += Time.deltaTime;
@@ -47,10 +43,5 @@ public class Fart : BathroomTileBlocker {
     if(fartDurationTimerMaxIsStochastic) {
       fartDurationTimerMax = Random.Range(minFartDurationTimerMax, maxFartDurationTimerMax);
     }
-  }
-
-  public void SelfDestruct() {
-    BathroomTileBlockerManager.Instance.RemoveBathroomTileBlockerGameObject(this.gameObject);
-    Destroy(this.gameObject);
   }
 }

@@ -48,11 +48,12 @@ public class BathroomTileBlockerManager : MonoBehaviour {
 	public virtual void Update() {
 	}
 
-  public void AddBathroomTileBlockerGameObject(GameObject newGameObject) {
-    if(newGameObject.GetComponent<BathroomTileBlocker>()) {
+  public void AddBathroomTileBlockerGameObject(GameObject newBathroomTileBlockerGameObject) {
+    BathroomTileBlocker newBathroomTileBlocker = newBathroomTileBlockerGameObject.GetComponent<BathroomTileBlocker>();
+    if(newBathroomTileBlocker != null) {
       // Adds it to the total list of bathroom tile blockers
-      if(!bathroomTileBlockers.Contains(newGameObject)) {
-        bathroomTileBlockers.Add(newGameObject);
+      if(!bathroomTileBlockers.Contains(newBathroomTileBlockerGameObject)) {
+        bathroomTileBlockers.Add(newBathroomTileBlockerGameObject);
       }
 
       // Adds it to the tile it is located in
@@ -60,32 +61,29 @@ public class BathroomTileBlockerManager : MonoBehaviour {
       BathroomTile bathroomTileContainingNewObject = null;
 
       // First try to locate the tile that the bathroom tile blocker would be in within the tile maps
-      bathroomTileGameObjectContainingNewObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newGameObject.transform.position.x, newGameObject.transform.position.y, false);
-      if(bathroomTileGameObjectContainingNewObject != null) {
-        bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
-        if(bathroomTileContainingNewObject == null) {
-          bathroomTileContainingNewObject.AddBathroomTileBlocker(newGameObject);
-        }
-      }
-
+      bathroomTileGameObjectContainingNewObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newBathroomTileBlockerGameObject.transform.position.x, newBathroomTileBlockerGameObject.transform.position.y, false);
       // Second try to locate the tile that the bathroom tile blocker would be in within the tile maps
       if(bathroomTileGameObjectContainingNewObject == null) {
-        bathroomTileGameObjectContainingNewObject = EntranceQueueManager.Instance.GetTileGameObjectFromLineQueuesyWorldPosition(newGameObject.transform.position.x, newGameObject.transform.position.y, false);
+        bathroomTileGameObjectContainingNewObject = EntranceQueueManager.Instance.GetTileGameObjectFromLineQueuesyWorldPosition(newBathroomTileBlockerGameObject.transform.position.x, newBathroomTileBlockerGameObject.transform.position.y, false);
+      }
 
-        if(bathroomTileGameObjectContainingNewObject != null) {
-          bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
-          if(bathroomTileContainingNewObject == null) {
-            bathroomTileContainingNewObject.AddBathroomTileBlocker(newGameObject);
-          }
+      if(bathroomTileGameObjectContainingNewObject != null) {
+        bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
+        if(bathroomTileContainingNewObject != null) {
+          bathroomTileContainingNewObject.AddBathroomTileBlocker(newBathroomTileBlockerGameObject);
+          newBathroomTileBlocker.SetBathroomTileGameObjectIn(bathroomTileGameObjectContainingNewObject);
         }
       }
     }
-    newGameObject.transform.parent = this.gameObject.transform;
+    newBathroomTileBlockerGameObject.transform.parent = this.gameObject.transform;
   }
 
-  public void RemoveBathroomTileBlockerGameObject(GameObject bathroomTileBlockerGameObjectToRemove) {
+  public void RemoveBathroomTileBlockerGameObject(GameObject bathroomTileBlockerGameObjectToRemove, bool removeFromTileItOccupies) {
     if(bathroomTileBlockerGameObjectToRemove.GetComponent<BathroomTileBlocker>()) {
       bathroomTileBlockers.Remove(bathroomTileBlockerGameObjectToRemove);
+      if(removeFromTileItOccupies) {
+        bathroomTileBlockerGameObjectToRemove.GetComponent<BathroomTileBlocker>().RemoveFromBathroomTileGameObjectIn();
+      }
     }
   }
 

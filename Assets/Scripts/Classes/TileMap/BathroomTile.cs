@@ -26,11 +26,9 @@ public class BathroomTile : Tile {
 
 	public virtual void AddBathroomTileBlocker(GameObject bathroomTileBlockerToAdd) {
 		BathroomTileBlocker bathroomTileBlockerRef = bathroomTileBlockerToAdd.GetComponent<BathroomTileBlocker>();
-		if(bathroomTileBlockerRef) {
-			if(!bathroomTileBlockers.Contains(bathroomTileBlockerToAdd)) {
-				bathroomTileBlockers.Add(bathroomTileBlockerToAdd);
-			}
-			bathroomTileBlockerRef.SetBathroomTileGameObjectIn(this.gameObject);
+		if(bathroomTileBlockerRef
+		   && !bathroomTileBlockers.Contains(bathroomTileBlockerToAdd)) {
+			bathroomTileBlockers.Add(bathroomTileBlockerToAdd);
 		}
 	}
 
@@ -38,7 +36,6 @@ public class BathroomTile : Tile {
 		BathroomTileBlocker bathroomTileBlockerRef = bathroomTileBlockerToRemove.GetComponent<BathroomTileBlocker>();
 		if(bathroomTileBlockerRef) {
 			bathroomTileBlockers.Remove(bathroomTileBlockerToRemove);
-			bathroomTileBlockerRef.RemoveFromBathroomTileGameObjectIn();
 		}
 	}
 }
