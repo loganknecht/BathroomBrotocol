@@ -2,7 +2,6 @@
 using System.Collections;
 
 // TO DO: FIX ROTATE LOGIC SCRIPT SO THAT WHEN IT ROTATES IT BASES THE CAMERA'S DIRECTION BEING LOOKED IT USES WORLD COORDINATES TO CALCULATE IT... OR SOMETHING
-
 public class RotateCamera : MonoBehaviour {
   public GameObject cameraGameObject = null;
   public GameObject objectToRotateAround = null;
@@ -11,53 +10,67 @@ public class RotateCamera : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    directionBeingLookedAt = DirectionBeingLookedAt.Top;
+    // Sets the rotated view correctly
+    directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
     RotateBathroomToMatchCamera();
 	}
 
 	// Update is called once per frame
 	void Update () {
     if(Input.GetKeyDown(KeyCode.LeftArrow)) {
-      RotateBySpecifiedDegreesAroundObject(Vector3.forward, 90f);
+      RotateLeft();
     }
     else if(Input.GetKeyDown(KeyCode.RightArrow)) {
-      RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
+      RotateRight();
     }
 	}
 
   public void RotateLeft() {
-    RotateBySpecifiedDegreesAroundObject(Vector3.forward, 90f);
+    RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
   }
 
   public void RotateRight() {
-    RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
+    RotateBySpecifiedDegreesAroundObject(Vector3.forward, 90f);
   }
 
   public void RotateBySpecifiedDegreesAroundObject(Vector3 rotationVector, float degreesToRotateBy) {
     if(objectToRotateAround != null) {
       amountRotated += degreesToRotateBy;
       amountRotated = amountRotated%360;
-      if((amountRotated >= 0 && amountRotated < 90)
-         || (amountRotated <= 0 && amountRotated > -90) ) {
-        directionBeingLookedAt = DirectionBeingLookedAt.Top;
-      }
-      else if((amountRotated >= 90 && amountRotated < 180)
-              || (amountRotated <= -270 && amountRotated > -360) ) {
-        directionBeingLookedAt = DirectionBeingLookedAt.Left;
-      }
-      else if((amountRotated >= 180 && amountRotated < 270)
-         || (amountRotated <= -180 && amountRotated > -270) ) {
-        directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
-      }
-      else if((amountRotated >= 270 && amountRotated < 360)
-              || (amountRotated <= -90 && amountRotated > -180) ) {
-        directionBeingLookedAt = DirectionBeingLookedAt.Right;
-      }
+
+      directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
 
       // transform.RotateAround(objectToRotateAround.transform.position, rotationVector, degreesToRotateBy);
       cameraGameObject.transform.RotateAround(objectToRotateAround.transform.position, rotationVector, degreesToRotateBy);
       RotateBathroomToMatchCamera();
     }
+  }
+
+  public DirectionBeingLookedAt GetDirectionBeingLookedAt(float amountRotatedAroundZ) {
+    DirectionBeingLookedAt dirBeingLookedAt = DirectionBeingLookedAt.None;
+
+    if((amountRotated >= 0 && amountRotated < 90)
+       || (amountRotated > -90 && amountRotated <= 0)) {
+      // Debug.Log("Top");
+      dirBeingLookedAt = DirectionBeingLookedAt.TopRight;
+    }
+    else if((amountRotated >= 90 && amountRotated < 180)
+            || (amountRotated > -360 && amountRotated <= -270)) {
+      // Debug.Log("Left");
+      dirBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+    }
+    else if((amountRotated >= 270 && amountRotated < 360)
+            || (amountRotated > -180 && amountRotated <= -90)) {
+      // Debug.Log("Right");
+      dirBeingLookedAt = DirectionBeingLookedAt.BottomRight;
+    }
+    else if((amountRotated >= 180 && amountRotated < 270)
+       || (amountRotated > -270 && amountRotated <= -180)) {
+      // Debug.Log("Bottom");
+      dirBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+    }
+
+    return dirBeingLookedAt;
   }
 
   public void RotateBathroomToMatchCamera() {

@@ -61,14 +61,16 @@ public class CameraManager : MonoBehaviour {
   public void RotateLeft() {
     Vector3 cameraOffset = pinchZoomReference.cameraReference.gameObject.transform.localPosition;
     pinchZoomReference.cameraReference.gameObject.transform.localPosition = pinchZoomReference.cameraAnchor;
-    rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, 90f);
+    // rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, 90f);
+    rotateCameraReference.RotateLeft();
     pinchZoomReference.cameraReference.gameObject.transform.localPosition = cameraOffset;
   }
 
   public void RotateRight() {
     Vector3 cameraOffset = pinchZoomReference.cameraReference.gameObject.transform.localPosition;
     pinchZoomReference.cameraReference.gameObject.transform.localPosition = pinchZoomReference.cameraAnchor;
-    rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
+    // rotateCameraReference.RotateBySpecifiedDegreesAroundObject(Vector3.forward, -90f);
+    rotateCameraReference.RotateRight();
     pinchZoomReference.cameraReference.gameObject.transform.localPosition = cameraOffset;
   }
 
@@ -85,5 +87,177 @@ public class CameraManager : MonoBehaviour {
   public void StartLargeCameraShake() {
     mainCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 0.3f, 0.3f);
     guiCamera.GetComponent<CameraShake>().StartCameraShake(0.1f, 1f, 20f, 20f);
+  }
+
+  public DirectionBeingLookedAt GetDirectionFacingBasedOnCameraAndMovementDirection(bool movingUp, bool movingRight, bool movingDown, bool movingLeft) {
+    DirectionBeingLookedAt cameraDirectionBeingLookedAt = rotateCameraReference.directionBeingLookedAt;
+    DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
+    if(movingRight) {
+      // moving up right
+      if(movingUp) {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Top;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Right;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Left;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
+          break;
+        }
+      }
+      // moving down right
+      else if(movingDown) {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Right;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Top;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Left;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.Right;
+          break;
+        } 
+      }
+      // moving right
+      else {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.Right;
+          break;
+        }  
+      }
+    }
+    else if(movingLeft) {
+      // moving up left
+      if(movingUp) {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Left;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Top;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Right;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+          break;
+        } 
+      }
+      // moving down left
+      else if(movingDown) {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Left;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.Top;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.Right;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+          break;
+        } 
+      }
+      // moving left
+      else {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.Left;
+          break;
+        } 
+      }
+    }
+    else {
+      // moving up
+      if(movingUp) {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.Top;
+          break;
+        } 
+      }
+      // moving down 
+      if(movingDown) {
+        switch(cameraDirectionBeingLookedAt) {
+          case(DirectionBeingLookedAt.TopRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
+          break;
+          case(DirectionBeingLookedAt.TopLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+          break;
+          case(DirectionBeingLookedAt.BottomRight):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
+          break;
+          case(DirectionBeingLookedAt.BottomLeft):
+            directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+          break;
+          default:
+            directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
+          break;
+        } 
+      }
+    }
+    return directionBeingLookedAt;
   }
 }

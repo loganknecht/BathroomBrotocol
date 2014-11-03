@@ -95,14 +95,14 @@ public class EntranceQueueManager : MonoBehaviour {
 
     public void PerformDebugButtonPressLogic() {
         if(Input.GetKeyDown(KeyCode.Q)) {
-            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.DrunkBro, 1f } };
+            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
             Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
             BroDistributionObject firstWave = new BroDistributionObject(0, 0, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
             firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-            firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
+            firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
             firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-            firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, true);
+            firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
             firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
             firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, true);
 

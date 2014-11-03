@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TargetPathingNPC : MonoBehaviour {
-	public BathroomFacing bathroomFacingReference = null;
+	public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
 
 	public Animator animatorReference = null;
 
@@ -20,13 +20,12 @@ public class TargetPathingNPC : MonoBehaviour {
 
 	public virtual void Awake() {
 		movementNodes = new List<GameObject>();
-		
+
 	}
 
 	// Use this for initialization
 	public virtual void Start () {
 		animatorReference = this.gameObject.GetComponent<Animator>();
-		bathroomFacingReference = this.gameObject.GetComponent<BathroomFacing>();
 	}
 
 	// Update is called once per frame
@@ -49,7 +48,7 @@ public class TargetPathingNPC : MonoBehaviour {
 			animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
 			animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
 
-			animatorReference.SetBool(bathroomFacingReference.directionBeingLookedAt.ToString(), true);
+			animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
 
 			animatorReference.SetBool("None", false);
 		}
@@ -181,44 +180,55 @@ public class TargetPathingNPC : MonoBehaviour {
 		//Debug.Log("new position offset: " + newPositionOffset);
 		if(newPositionOffset.x != 0
 		   || newPositionOffset.y != 0) {
-
+		   	directionBeingLookedAt = CameraManager.Instance.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);
+		   	
 			//Debug.Log("moving");
 			//state = BroState.MovingToTargetObject;
+			// DirectionBeingLookedAt cameraDirectionBeingLookedAt = CameraManager.Instance.rotateCameraReference.directionBeingLookedAt;
+			// DirectionBeingLookedAt cameraDirectionBeingLookedAt = CameraManager.Instance.rotateCameraReference.directionBeingLookedAt;
 
-			if(movingRight) {
-				if(movingUp) {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
-				}
-				else if(movingDown) {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
-				}
-				else {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Right;
-				}
-			}
-			else if(movingLeft) {
-				if(movingUp) {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
-				}
-				else if(movingDown) {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
-				}
-				else {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Left;
-				}
-			}
-			else {
-				if(movingUp) {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Top;
-				}
-				if(movingDown) {
-					bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
-				}
-			}
+			// if(movingRight) {
+			// 	// moving up right
+			// 	if(movingUp) {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
+			// 	}
+			// 	// moving down right
+			// 	else if(movingDown) {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
+			// 	}
+			// 	// moving right
+			// 	else {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Right;
+			// 	}
+			// }
+			// else if(movingLeft) {
+			// 	// moving up left
+			// 	if(movingUp) {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
+			// 	}
+			// 	// moving down left
+			// 	else if(movingDown) {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
+			// 	}
+			// 	// moving left
+			// 	else {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Left;
+			// 	}
+			// }
+			// else {
+			// 	// moving up
+			// 	if(movingUp) {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Top;
+			// 	}
+			// 	// moving down 
+			// 	if(movingDown) {
+			// 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
+			// 	}
+			// }
 		}
 		else {
 			if(movementNodes.Count == 0) {
-				bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.None;
+				directionBeingLookedAt = DirectionBeingLookedAt.None;
 			}
 		}
 	}
