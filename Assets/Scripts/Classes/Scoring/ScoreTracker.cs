@@ -9,6 +9,7 @@ public class ScoreTracker : BaseBehavior {
 
   public int currentScore = 0;
   public int perfectScore = 0;
+  public float currentToPerfectScoreRatio = 0f;
 
   public int regularPointModifier = 100;
   public int brotocolPointModifier = 200;
@@ -19,20 +20,22 @@ public class ScoreTracker : BaseBehavior {
 
 	// Use this for initialization
 	void Start () {
-    InitializeScoreTracker();
+        InitializeScoreTracker();
 	}
 
 	// Update is called once per frame
 	void Update () {
-    currentScore = CalculateCurrentScore();
-    if(currentScore < 0) {
-      currentScore = 0;
-    }
+        currentScore = CalculateCurrentScore();
+        if(currentScore < 0) {
+            currentScore = 0;
+        }
 
-    perfectScore = CalculatePerfectScore();
-    if(perfectScore < 0) {
-      perfectScore = 0;
-    }
+        perfectScore = CalculatePerfectScore();
+        if(perfectScore < 0) {
+          perfectScore = 0;
+        }
+
+        CalculateCurrentToPerfectScoreRatio();
 	}
 
   void InitializeScoreTracker() {
@@ -142,6 +145,15 @@ public class ScoreTracker : BaseBehavior {
     scorePoints.Add(ScoreType.SinkRepaired, 0);
     scorePoints.Add(ScoreType.SinkHandsWashedIn, 0);
     scorePoints.Add(ScoreType.SinkVomitedIn, 0);
+  }
+
+  public void CalculateCurrentToPerfectScoreRatio() {
+    if(perfectScore == 0) {
+        currentToPerfectScoreRatio = 0;
+    }
+    else {
+        currentToPerfectScoreRatio = currentScore/perfectScore;
+    }
   }
 
   public int CalculateCurrentScore() {
