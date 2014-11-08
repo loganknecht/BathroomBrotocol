@@ -45,8 +45,6 @@ public class Factory
 		switch(typeOfBathroomObjectToGenerate) {
 		case BathroomObjectType.None:
 			break;
-		case BathroomObjectType.Entrance:
-			break;
 		case BathroomObjectType.Exit:
 			newBathroomObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/BathroomObjects/Exit") as GameObject);
 			break;
