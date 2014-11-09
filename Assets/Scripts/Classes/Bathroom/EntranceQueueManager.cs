@@ -12,6 +12,15 @@ public class EntranceQueueManager : MonoBehaviour {
     public GameObject entranceAudioObject = null;
 
     public List<GameObject> lineQueues = new List<GameObject>();
+    //-------------------------------------------------------------
+    public int debugEntranceQueue = 0;
+    public BroType debugBroType = BroType.None;
+    public ReliefRequired debugReliefRequired = ReliefRequired.None;
+    public float debugFightProbability = 0f;
+    public bool debugSkipLineQueue = false;
+    public bool debugChooseObjectOnLineSkip = false;
+    public bool debugStartRoamingOnArrivalAtBathroomObjectInUse = false;
+    public bool debugChooseObjectOnRelief = false;
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile EntranceQueueManager _instance;
@@ -95,20 +104,35 @@ public class EntranceQueueManager : MonoBehaviour {
 
     public void PerformDebugButtonPressLogic() {
         if(Input.GetKeyDown(KeyCode.Q)) {
-            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+            GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
+            broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1].transform.position.x,
+                                                           lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1].transform.position.y,
+                                                           broGameObject.transform.position.z);
+            Bro broReference = broGameObject.GetComponent<Bro>();
+            broReference.reliefRequired = debugReliefRequired;
+            broReference.probabilityOfFightOnCollisionWithBro = debugFightProbability;
+            broReference.skipLineQueue = debugSkipLineQueue;
+            broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
+            broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;
+            broReference.chooseRandomBathroomObjectAfterRelieved = debugChooseObjectOnRelief;
+            AddBroToEntranceQueue(broGameObject, debugEntranceQueue);
+            //-------------------------------------------------------------------------------------------------------------------
+            // TODO: Move to bro generator fo debugging
+            //-------------------------------------------------------------------------------------------------------------------
+            // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-            BroDistributionObject firstWave = new BroDistributionObject(0, 0, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-            firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-            firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
-            firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-            firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-            firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
-            firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, true);
+            // BroDistributionObject firstWave = new BroDistributionObject(0, 0, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+            // firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+            // firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
+            // firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+            // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, true);
+            // firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
+            // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, true);
 
-            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                                     firstWave,
-                                                                                    }); 
+            // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+            //                                                                          firstWave,
+            //                                                                         }); 
         }
     }
     public GameObject SelectRandomLineQueue() {

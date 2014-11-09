@@ -1,7 +1,8 @@
 ﻿public enum ReliefRequired {
   None,
+  DryHands,
   Pee,
   Poop,
-  WashHands,
-  Vomit
+  Vomit,
+  WashHands
 }

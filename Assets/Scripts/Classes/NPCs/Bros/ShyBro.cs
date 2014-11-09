@@ -80,7 +80,7 @@ public class ShyBro : Bro {
           PerformSinkOccupationFinishedLogic();
         }
         else if(bathObjRef.type == BathroomObjectType.Exit) {
-          PerformExitOccupationLogic();
+          PerformExitOccupationFinishedLogic();
         }
       }
       else {

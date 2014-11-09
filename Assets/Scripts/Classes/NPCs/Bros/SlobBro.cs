@@ -170,7 +170,7 @@ public class SlobBro : Bro {
       Debug.Log("SLOB BRO USED A SINK WHEN HE HAD WEIRD VALUES.");
     }
   }
-  public override void PerformExitOccupationLogic() {
+  public override void PerformExitOccupationFinishedLogic() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
     PerformExitedScore();
     BroManager.Instance.allBros.Remove(this.gameObject);

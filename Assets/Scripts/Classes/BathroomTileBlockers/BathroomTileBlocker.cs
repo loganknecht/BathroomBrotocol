@@ -39,7 +39,7 @@ public class BathroomTileBlocker : MonoBehaviour {
   }
 
   public void SetBathroomTileGameObjectIn(GameObject newBathroomTileGameObjectToResideIn) {
-    Debug.Log("Setting bathroom tile game object in!");
+    // Debug.Log("Setting bathroom tile game object in!");
     if(bathroomTileGameObjectIn != null) {
       RemoveFromBathroomTileGameObjectIn();
     }

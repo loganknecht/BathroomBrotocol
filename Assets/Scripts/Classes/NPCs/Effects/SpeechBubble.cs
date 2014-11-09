@@ -22,8 +22,10 @@ public class SpeechBubble : MonoBehaviour {
 		animatorReference.SetBool("DisplaySpeechBubble", displaySpeechBubble);
 
 		animatorReference.SetBool(SpeechBubbleImage.None.ToString(), false);
+		animatorReference.SetBool(SpeechBubbleImage.DryHands.ToString(), false);
 		animatorReference.SetBool(SpeechBubbleImage.Pee.ToString(), false);
 		animatorReference.SetBool(SpeechBubbleImage.Poop.ToString(), false);
+		animatorReference.SetBool(SpeechBubbleImage.WashHands.ToString(), false);
 
 		animatorReference.SetBool(speechBubbleImage.ToString(), true);
 	}
