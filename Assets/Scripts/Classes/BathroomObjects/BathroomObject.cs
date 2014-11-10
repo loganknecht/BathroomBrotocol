@@ -98,6 +98,17 @@ public class BathroomObject : MonoBehaviour {
     timesUsed++;
   }
 
+  public bool IsBroken() {
+    if(state == BathroomObjectState.Broken
+       || state == BathroomObjectState.BrokenByPee
+       || state == BathroomObjectState.BrokenByPoop) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   public void PerformOutOfOrderCheck() {
     if(timesUsed >= timesUsedNeededForOutOfOrder) {
       TriggerOutOfOrderState();
@@ -106,8 +117,10 @@ public class BathroomObject : MonoBehaviour {
 
   public void TriggerOutOfOrderState() {
     if(markOutOfOrderWhenOverUsed) {
-      numberOfTaps = 0;
-      state = BathroomObjectState.OutOfOrder;
+      if(!IsBroken()) {
+        numberOfTaps = 0;
+        state = BathroomObjectState.OutOfOrder;
+      }
     }
   }
 

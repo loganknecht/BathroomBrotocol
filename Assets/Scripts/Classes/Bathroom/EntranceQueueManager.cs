@@ -21,6 +21,9 @@ public class EntranceQueueManager : MonoBehaviour {
     public bool debugChooseObjectOnLineSkip = false;
     public bool debugStartRoamingOnArrivalAtBathroomObjectInUse = false;
     public bool debugChooseObjectOnRelief = false;
+    public bool debugHasRelievedSelf = false;
+    public bool debugHasWashedHands = false;
+    public bool debugHasDriedHands = false;
 
 	//BEGINNING OF SINGLETON CODE CONFIGURATION
 	private static volatile EntranceQueueManager _instance;
@@ -115,6 +118,9 @@ public class EntranceQueueManager : MonoBehaviour {
             broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
             broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;
             broReference.chooseRandomBathroomObjectAfterRelieved = debugChooseObjectOnRelief;
+            broReference.hasRelievedSelf = debugHasRelievedSelf;
+            broReference.hasWashedHands = debugHasWashedHands;
+            broReference.hasDriedHands = debugHasDriedHands;
             AddBroToEntranceQueue(broGameObject, debugEntranceQueue);
             //-------------------------------------------------------------------------------------------------------------------
             // TODO: Move to bro generator fo debugging
