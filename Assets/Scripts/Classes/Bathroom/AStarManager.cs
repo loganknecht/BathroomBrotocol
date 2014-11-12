@@ -1,4 +1,6 @@
-﻿using FullInspector;
+﻿#pragma warning disable 0219
+
+using FullInspector;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;

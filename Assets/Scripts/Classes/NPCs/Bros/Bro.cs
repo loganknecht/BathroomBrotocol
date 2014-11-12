@@ -33,8 +33,9 @@ public class Bro : TargetPathingNPC {
 	public bool isPaused = false;
 
   public bool resetFightLogic = false;
-  public float fightCooldownTimer = 0;
-  public float fightCooldownTimerMax = 2;
+  public float fightCooldownTimer = 0f;
+  public float fightCooldownTimerMax = 2f;
+
 
 	public override void Awake() {
 		selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
@@ -115,14 +116,12 @@ public class Bro : TargetPathingNPC {
       }
     }
   }
-  public virtual void ResetFightLogic() {
+  public virtual void ResetFightLogic(float fightResetDuration = 2f) {
     resetFightLogic = true;
     fightCooldownTimer = 0;
+    fightCooldownTimerMax = fightResetDuration;
   }
 
-  //	public void OnCollisionEnter(Collision collision) {
-  //		Debug.Log("Collision occurred with: " + collision.gameObject.name);
-  //	}
 	public virtual void OnMouseDown() {
     // Debug.Log("clicked");
     SelectionManager.Instance.SelectBro(this.gameObject);
@@ -132,6 +131,10 @@ public class Bro : TargetPathingNPC {
       }
     }
 	}
+
+  //  public void OnCollisionEnter(Collision collision) {
+  //    Debug.Log("Collision occurred with: " + collision.gameObject.name);
+  //  }
 
 	public void OnTriggerEnter(Collider other) {
 		// Debug.Log("Trigger occurred with: " + other.gameObject.name);
@@ -161,6 +164,9 @@ public class Bro : TargetPathingNPC {
 						otherBroRef.state = BroState.Standoff;
 					}
 				}
+        else {
+          ResetFightLogic(0.5f);
+        }
 			}
 		}
 	}
@@ -1234,7 +1240,7 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    
+
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBro(this.gameObject);
     bathObjRef.IncrementTimesUsed();
