@@ -97,7 +97,27 @@ public class BathroomObject : MonoBehaviour {
     public void RemoveBroAndIncrementUsedCount(GameObject broGameObjectToRemove) {
         objectsOccupyingBathroomObject.Remove(broGameObjectToRemove);
 
+        bool wasOutOfOrderBeforeRemoval = (state == BathroomObjectState.OutOfOrder);
         IncrementTimesUsed();
+        bool isOutOfOrderAfterRemoval  = (state == BathroomObjectState.OutOfOrder);
+
+        if(!wasOutOfOrderBeforeRemoval
+            && isOutOfOrderAfterRemoval) {
+            switch(type) {
+                case(BathroomObjectType.HandDryer):
+                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderHandDryerScore();
+                break;
+                case(BathroomObjectType.Sink):
+                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderSinkScore();
+                break;
+                case(BathroomObjectType.Stall):
+                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderStallScore();
+                break;
+                case(BathroomObjectType.Urinal):
+                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderUrinalScore();
+                break;
+            }
+        }
     }
 
     public void IncrementTimesUsed() {

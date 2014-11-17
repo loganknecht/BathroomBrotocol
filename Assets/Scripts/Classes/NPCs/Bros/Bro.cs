@@ -329,8 +329,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformExitedScore();
     BroManager.Instance.RemoveBro(this.gameObject, false);
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
     // bathObjRef.PerformOutOfOrderCheck();
 
     EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(this.gameObject);
@@ -416,8 +415,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         else {
           state = BroState.Roaming;
         }
-        bathObjRef.RemoveBro(this.gameObject);
-        bathObjRef.IncrementTimesUsed();
+        bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         bathObjRef.PerformOutOfOrderCheck();
 
         collider.enabled = true;
