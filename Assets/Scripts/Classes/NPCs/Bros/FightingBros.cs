@@ -13,6 +13,8 @@ public class FightingBros : TargetPathingNPC {
     base.Start();
 
     this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
+
+    PerformStartedFightScore();
   }
 
   // Update is called once per frame
@@ -41,6 +43,7 @@ public class FightingBros : TargetPathingNPC {
     PerformMaxTapLogic();
   }
 
+  // TODO: Fix to use the jagged array access instead
   public void PerformFightingBroArrivalLogic() {
     if(IsAtTargetPosition()) {
       BathroomTile currentBathroomTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
@@ -56,16 +59,10 @@ public class FightingBros : TargetPathingNPC {
                && bathObjRef.state != BathroomObjectState.BrokenByPee
                && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
               bathObjRef.state = BathroomObjectState.Broken;
-              switch(bathObjRef.type) {
-                case(BathroomObjectType.Sink):
-                  ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-                break;
-                case(BathroomObjectType.Stall):
-                  ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
-                break;
-                case(BathroomObjectType.Urinal):
-                  ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-                break;
+
+              foreach(GameObject broGameObject in brosFighting) {
+                Bro broReference = broGameObject.GetComponent<Bro>();
+                ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBathroomObjectBrokenByFightingScore(broReference.type, bathObjRef.type);
               }
             }
           }
@@ -81,30 +78,44 @@ public class FightingBros : TargetPathingNPC {
     }
   }
 
-  public void PerformMaxTapLogic() {
-    if(currentNumberOfTaps >= numberOfTapsNeededToBreakUp) {
-      foreach(GameObject gameObj in brosFighting) {
-        Bro broReference = gameObj.GetComponent<Bro>();
-        broReference.probabilityOfFightOnCollisionWithBro = 0f;
-        broReference.state = BroState.MovingToTargetObject;
-        gameObj.transform.position = this.gameObject.transform.position;
-        gameObj.renderer.enabled = true;
-        gameObj.SetActive(true);
+    public void PerformMaxTapLogic() {
+        if(currentNumberOfTaps >= numberOfTapsNeededToBreakUp) {
+            // goes before logic because it iterates over the bros fighting already
+            PerformStoppedFightScore();
 
-        List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
-        int selectedExit = Random.Range(0, exits.Count);
-        GameObject exitSelected = exits[selectedExit];
-        // Exit exitSelected = ExitManager.Instance.SelectRandomExit().GetComponent<Exit>();
-        BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-        BathroomTile targetTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelected.transform.position.x, exitSelected.transform.position.y, true).GetComponent<BathroomTile>();
-        List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                     AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
-                                                                                     startTile,
-                                                                                     targetTile);
-        broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);
-      }
-      BroManager.Instance.RemoveFightingBro(this.gameObject, true);
-      // Destroy(this.gameObject);
+            foreach(GameObject gameObj in brosFighting) {
+                Bro broReference = gameObj.GetComponent<Bro>();
+                broReference.probabilityOfFightOnCollisionWithBro = 0f;
+                broReference.state = BroState.MovingToTargetObject;
+                gameObj.transform.position = this.gameObject.transform.position;
+                gameObj.renderer.enabled = true;
+                gameObj.SetActive(true);
+
+                List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
+                int selectedExit = Random.Range(0, exits.Count);
+                GameObject exitSelected = exits[selectedExit];
+                // Exit exitSelected = ExitManager.Instance.SelectRandomExit().GetComponent<Exit>();
+                BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
+                BathroomTile targetTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelected.transform.position.x, exitSelected.transform.position.y, true).GetComponent<BathroomTile>();
+                List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                             AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
+                                                                                             startTile,
+                                                                                             targetTile);
+                broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);
+            }
+            BroManager.Instance.RemoveFightingBro(this.gameObject, true);
+            // Destroy(this.gameObject);
+        }
     }
-  }
+
+    public void PerformStartedFightScore() {
+        foreach(GameObject broGameObject in brosFighting) {
+            ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(broGameObject.GetComponent<Bro>().type);
+        }
+    }
+    public void PerformStoppedFightScore() {
+        foreach(GameObject broGameObject in brosFighting) {
+            ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStoppedFightScore(broGameObject.GetComponent<Bro>().type);
+        }
+    }
 }

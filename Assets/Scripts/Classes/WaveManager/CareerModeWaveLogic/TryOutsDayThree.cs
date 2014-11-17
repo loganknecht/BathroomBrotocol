@@ -239,7 +239,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
     //----------------------------------------------------------------------------
     //Second wave
     public void TriggerSecondWave() {
-        Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.FartingBro, 1f } };
+        Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GassyBro, 1f } };
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
                                                                                             { 1, .5f } };
 

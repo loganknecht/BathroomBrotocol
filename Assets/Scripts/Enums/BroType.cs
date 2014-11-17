@@ -7,7 +7,7 @@ public enum BroType {
     ChattyBro,
     CuttingBro,
     DrunkBro,
-    FartingBro,
+    GassyBro,
     GenericBro,
     Hobro,
     RichBro,

@@ -33,24 +33,24 @@ public class StandoffBros : MonoBehaviour {
     public float xLockOnBuffer = 0.0005f;
     public float yLockOnBuffer = 0.0005f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         numberOfTapsNeededToStop = UnityEngine.Random.Range(3,6);
-        PerformBroStandoffScore();
-	}
+        PerformStartedStandoffScore();
+    }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
         if(!isPaused) {
             PerformStandoffBroLogic();
             if(numberOfTapsNeededToStop <= 0) {
-                PlayerStoppedFight();
+                PlayerStoppedStandoff();
             }
             if(numberOfContractionsBeforeAFight <= 0) {
-                PlayerDidNotStopFight();
+                StandoffTurnedIntoFight();
             }
         }
-	}
+    }
 
     public void Pause() {
         isPaused = true;
@@ -164,7 +164,9 @@ public class StandoffBros : MonoBehaviour {
         }
     }
 
-    public void PlayerStoppedFight() {
+    public void PlayerStoppedStandoff() {
+        PerformStoppedStandoffScore();
+
         Bro broOneReferece = broOne.GetComponent<Bro>();
         broOne.collider.enabled = true;
         broOneReferece.state = BroState.Roaming;
@@ -201,7 +203,7 @@ public class StandoffBros : MonoBehaviour {
         BroManager.Instance.RemoveStandoffBro(this.gameObject, true);
     }
 
-    public void PlayerDidNotStopFight() {
+    public void StandoffTurnedIntoFight() {
         broOne.renderer.enabled = false;
         broOne.collider.enabled = false;
         broOne.SetActive(false);
@@ -228,23 +230,21 @@ public class StandoffBros : MonoBehaviour {
                                                                                                                                AStarManager.Instance. GetListCopyOfAStarClosedNodes(),
                                                                                                                                startTile,
                                                                                                                                targetTile));
-
+        
         BroManager.Instance.AddFightingBro(newFightingBros);
         BroManager.Instance.RemoveStandoffBro(this.gameObject, true);
-        PerformBroFightScore();
     }
 
     public void IncrementTapsFromPlayer() {
         numberOfTapsNeededToStop--;
     }
 
-    public void PerformBroStandoffScore() {
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroStandoffOccurred);
+    public void PerformStartedStandoffScore() {
+        broOne.GetComponent<Bro>().PerformStartedStandoffScore();
+        broTwo.GetComponent<Bro>().PerformStartedStandoffScore();
     }
-    public void PerformBroFightPreventedScore() {
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroFightPrevented);
-    }
-    public void PerformBroFightScore() {
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroFightOccurred);
+    public void PerformStoppedStandoffScore() {
+        broOne.GetComponent<Bro>().PerformStoppedStandoffScore();
+        broTwo.GetComponent<Bro>().PerformStoppedStandoffScore();
     }
 }

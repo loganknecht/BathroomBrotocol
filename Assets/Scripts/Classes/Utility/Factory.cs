@@ -94,8 +94,8 @@ public class Factory
         newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/DrunkBro1")) as GameObject;
         // newBro.GetComponent<DrunkBro>().vomitTimerThreshold = Random.Range(10f, 20f);
       break;
-      case(BroType.FartingBro):
-        newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/FartingBro1")) as GameObject;
+      case(BroType.GassyBro):
+        newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/GassyBro1")) as GameObject;
       break;
       case(BroType.GenericBro):
           newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/GenericBro1")) as GameObject;
@@ -188,7 +188,7 @@ public class Factory
 			broType = BroType.BluetoothBro;
 			break;
 		case(4):
-			broType = BroType.FartingBro;
+			broType = BroType.GassyBro;
 			break;
 		default:
 			broType = BroType.None;

@@ -20,20 +20,5 @@ public class CuttingBro : Bro {
     // on account that they rush wherever they want.
   }
 
-  //--------------------------------------------------------
-  public override void PerformEnteredScore() {
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.CuttingBroEntered);
-  }
-  public override void PerformRelievedScore() {
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.CuttingBroRelieved);
-  }
-  public override void PerformWashedHandsScore() {
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.CuttingBroHandsWashed);
-  }
-  public override void PerformBroFightScore() {
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroFightOccurred);
-  }
-  public override void PerformExitedScore() {
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.CuttingBroExited);
-  }
+    //=========================================================================
 }

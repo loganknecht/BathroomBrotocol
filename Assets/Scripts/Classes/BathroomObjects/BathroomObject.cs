@@ -3,38 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class BathroomObject : MonoBehaviour {
-	public BathroomObjectType type = BathroomObjectType.None;
-	public BathroomObjectState state = BathroomObjectState.None;
-  public bool destroyObjectIfMoreThanTwoOccupants = true;
+    public BathroomObjectType type = BathroomObjectType.None;
+    public BathroomObjectState state = BathroomObjectState.None;
+    public bool destroyObjectIfMoreThanTwoOccupants = true;
 
-	Animator animatorReference = null;
-	BathroomFacing bathroomFacingReference;
+    Animator animatorReference = null;
+    BathroomFacing bathroomFacingReference;
 
-	public Selectable selectableReference = null;
+    public Selectable selectableReference = null;
 
-	//public bool isBroken = false;
-	public float occupationDuration = 2.5f;
-	public float repairDuration = 2.0f;
+    //public bool isBroken = false;
+    public float occupationDuration = 2.5f;
+    public float repairDuration = 2.0f;
 
-	public int scoreValue = 0;
+    public int scoreValue = 0;
 
-  public bool markOutOfOrderWhenOverUsed = false;
-  public int timesUsed = 0;
-  public int timesUsedNeededForOutOfOrder = 10;
-  public int numberOfTaps = 0;
-  public int numberOfTapsNeededToRestoreToOrder = 5;
+    public bool markOutOfOrderWhenOverUsed = false;
+    public int timesUsed = 0;
+    public int timesUsedNeededForOutOfOrder = 10;
+    public int numberOfTaps = 0;
+    public int numberOfTapsNeededToRestoreToOrder = 5;
 
-  // This gets set in the bathroom tile manager singleton
-  public GameObject bathroomTileIn = null;
-	public List<GameObject> objectsOccupyingBathroomObject = new List<GameObject>();
+    // This gets set in the bathroom tile manager singleton
+    public GameObject bathroomTileIn = null;
+    public List<GameObject> objectsOccupyingBathroomObject = new List<GameObject>();
 
-	public virtual void Start() {
-		animatorReference = this.gameObject.GetComponent<Animator>();
-		bathroomFacingReference = this.gameObject.GetComponent<BathroomFacing>();
+    public virtual void Start() {
+        animatorReference = this.gameObject.GetComponent<Animator>();
+        bathroomFacingReference = this.gameObject.GetComponent<BathroomFacing>();
 
-		selectableReference = this.gameObject.GetComponent<Selectable>();
-		selectableReference.canBeSelected = true;
-	}
+        selectableReference = this.gameObject.GetComponent<Selectable>();
+        selectableReference.canBeSelected = true;
+    }
 
 	public virtual void Update() {
 		UpdateBathroomObjectAnimator();
@@ -86,42 +86,48 @@ public class BathroomObject : MonoBehaviour {
     selectableReference.canBeSelected = true;
   }
 
-  public void AddBro(GameObject broGameObjectToAdd) {
-    objectsOccupyingBathroomObject.Add(broGameObjectToAdd);
-  }
-
-  public void RemoveBro(GameObject broGameObjectToRemove) {
-    objectsOccupyingBathroomObject.Remove(broGameObjectToRemove);
-  }
-
-  public void IncrementTimesUsed() {
-    timesUsed++;
-  }
-
-  public bool IsBroken() {
-    if(state == BathroomObjectState.Broken
-       || state == BathroomObjectState.BrokenByPee
-       || state == BathroomObjectState.BrokenByPoop) {
-      return true;
+    public void AddBro(GameObject broGameObjectToAdd) {
+        objectsOccupyingBathroomObject.Add(broGameObjectToAdd);
     }
-    else {
-      return false;
-    }
-  }
 
-  public void PerformOutOfOrderCheck() {
-    if(timesUsed >= timesUsedNeededForOutOfOrder) {
-      TriggerOutOfOrderState();
+    public void RemoveBro(GameObject broGameObjectToRemove) {
+        objectsOccupyingBathroomObject.Remove(broGameObjectToRemove);
     }
-  }
+
+    public void RemoveBroAndIncrementUsedCount(GameObject broGameObjectToRemove) {
+        objectsOccupyingBathroomObject.Remove(broGameObjectToRemove);
+
+        IncrementTimesUsed();
+    }
+
+    public void IncrementTimesUsed() {
+        timesUsed++;
+        PerformOutOfOrderCheck();
+    }
+
+    public bool IsBroken() {
+        if(state == BathroomObjectState.Broken
+            || state == BathroomObjectState.BrokenByPee
+            || state == BathroomObjectState.BrokenByPoop) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void PerformOutOfOrderCheck() {
+        if(markOutOfOrderWhenOverUsed) {
+            if(timesUsed >= timesUsedNeededForOutOfOrder) {
+                if(!IsBroken()) {
+                    numberOfTaps = 0;
+                    state = BathroomObjectState.OutOfOrder;
+                }
+            }
+        }
+    }
 
   public void TriggerOutOfOrderState() {
-    if(markOutOfOrderWhenOverUsed) {
-      if(!IsBroken()) {
-        numberOfTaps = 0;
-        state = BathroomObjectState.OutOfOrder;
-      }
-    }
   }
 
   public void PerformMoreThanTwoOccupantsCheck() {
@@ -188,22 +194,9 @@ public class BathroomObject : MonoBehaviour {
           firstBroFound = null;
           secondBroFound = null;
 
-          switch(type) {
-            case(BathroomObjectType.Sink):
-              ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-            break;
-            case(BathroomObjectType.Stall):
-              ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
-            break;
-            case(BathroomObjectType.Urinal):
-              ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-            break;
-            default:
-              Debug.Log("A BROFIGHT HAS OCCURRED IN OBJECT THAT IT SHOULD NOT HAVE BEEN ABLE TO. THIS OBJECT IS THE OBJECT: " + this.gameObject.name);
-            break;
-          }
-
-          ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroFightOccurred);
+          ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBathroomObjectBrokenByFightingScore(firstBroFoundReference.type, type);
+          ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(firstBroFoundReference.type);
+          ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(secondBroFoundReference.type);
         }
       }
       foreach(GameObject gameObj in objectOccupyingBathroomObjectToRemove) {

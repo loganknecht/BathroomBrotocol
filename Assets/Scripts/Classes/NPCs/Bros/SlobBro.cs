@@ -51,124 +51,124 @@ public class SlobBro : Bro {
   //   }
   // }
   public override void PerformStallOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    if(!hasRelievedSelf
-       && bathObjRef.state != BathroomObjectState.OutOfOrder) {
-      hasRelievedSelf = true;
-      PerformRelievedScore();
+    // BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    // if(!hasRelievedSelf
+    //    && bathObjRef.state != BathroomObjectState.OutOfOrder) {
+    //   hasRelievedSelf = true;
+    //   PerformBathroomObjectUsedScore();
 
-      if(reliefRequired == ReliefRequired.Pee) {
-        bathObjRef.TriggerOutOfOrderState();
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPeedIn);
-      }
-      else if(reliefRequired == ReliefRequired.Poop) {
-        bathObjRef.TriggerOutOfOrderState();
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPoopedIn);
-      }
+    //   if(reliefRequired == ReliefRequired.Pee) {
+    //     bathObjRef.TriggerOutOfOrderState();
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPeedIn);
+    //   }
+    //   else if(reliefRequired == ReliefRequired.Poop) {
+    //     bathObjRef.TriggerOutOfOrderState();
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPoopedIn);
+    //   }
 
-      collider.enabled = true;
+    //   collider.enabled = true;
 
-      // state = BroState.Roaming;
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-      bathObjRef.RemoveBro(this.gameObject);
+    //   // state = BroState.Roaming;
+    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    //   bathObjRef.RemoveBro(this.gameObject);
 
-      selectableReference.canBeSelected = true;
-      speechBubbleReference.displaySpeechBubble = true;
-      speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-      reliefRequired = ReliefRequired.WashHands;
-    }
-    else {
-      collider.enabled = false;
+    //   selectableReference.canBeSelected = true;
+    //   speechBubbleReference.displaySpeechBubble = true;
+    //   speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
+    //   reliefRequired = ReliefRequired.WashHands;
+    // }
+    // else {
+    //   collider.enabled = false;
 
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-      bathObjRef.state = BathroomObjectState.Broken;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
-      probabilityOfFightOnCollisionWithBro = 0f;
-    }
+    //   bathObjRef.state = BathroomObjectState.Broken;
+    //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
+    //   probabilityOfFightOnCollisionWithBro = 0f;
+    // }
   }
   public override void PerformUrinalOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    if(!hasRelievedSelf
-       && bathObjRef.state != BathroomObjectState.OutOfOrder) {
-      hasRelievedSelf = true;
-      PerformRelievedScore();
+    // BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    // if(!hasRelievedSelf
+    //    && bathObjRef.state != BathroomObjectState.OutOfOrder) {
+    //   hasRelievedSelf = true;
+    //   PerformBathroomObjectUsedScore();
 
-      //displaySpeechBubble = true;
-      collider.enabled = true;
+    //   //displaySpeechBubble = true;
+    //   collider.enabled = true;
 
-      // state = BroState.Roaming;
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-      bathObjRef.RemoveBro(this.gameObject);
+    //   // state = BroState.Roaming;
+    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    //   bathObjRef.RemoveBro(this.gameObject);
 
-      if(reliefRequired == ReliefRequired.Pee) {
-        bathObjRef.TriggerOutOfOrderState();
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPeedIn);
-      }
-      else if(reliefRequired == ReliefRequired.Poop) {
-        bathObjRef.state = BathroomObjectState.BrokenByPoop;
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPoopedIn);
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-      }
+    //   if(reliefRequired == ReliefRequired.Pee) {
+    //     bathObjRef.TriggerOutOfOrderState();
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPeedIn);
+    //   }
+    //   else if(reliefRequired == ReliefRequired.Poop) {
+    //     bathObjRef.state = BathroomObjectState.BrokenByPoop;
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPoopedIn);
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
+    //   }
 
-      selectableReference.canBeSelected = true;
-      speechBubbleReference.displaySpeechBubble = true;
-      speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-      reliefRequired = ReliefRequired.WashHands;
-    }
-    else {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    //   selectableReference.canBeSelected = true;
+    //   speechBubbleReference.displaySpeechBubble = true;
+    //   speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
+    //   reliefRequired = ReliefRequired.WashHands;
+    // }
+    // else {
+    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-      bathObjRef.state = BathroomObjectState.Broken;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-    }
+    //   bathObjRef.state = BathroomObjectState.Broken;
+    //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
+    // }
   }
   public override void PerformSinkOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    if(!hasRelievedSelf) {
-      hasRelievedSelf = true;
-      PerformRelievedScore();
+    // BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    // if(!hasRelievedSelf) {
+    //   hasRelievedSelf = true;
+    //   PerformBathroomObjectUsedScore();
 
-      collider.enabled = true;
-      // state = BroState.Roaming;
-      bathObjRef.RemoveBro(this.gameObject);
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    //   collider.enabled = true;
+    //   // state = BroState.Roaming;
+    //   bathObjRef.RemoveBro(this.gameObject);
+    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-      if(reliefRequired == ReliefRequired.Pee) {
-        bathObjRef.state = BathroomObjectState.BrokenByPee;
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPeedIn);
-      }
-      else if(reliefRequired == ReliefRequired.Poop) {
-        bathObjRef.state = BathroomObjectState.BrokenByPoop;
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-        ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPoopedIn);
-      }
+    //   if(reliefRequired == ReliefRequired.Pee) {
+    //     bathObjRef.state = BathroomObjectState.BrokenByPee;
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPeedIn);
+    //   }
+    //   else if(reliefRequired == ReliefRequired.Poop) {
+    //     bathObjRef.state = BathroomObjectState.BrokenByPoop;
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
+    //     ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPoopedIn);
+    //   }
 
-      selectableReference.canBeSelected = true;
-      speechBubbleReference.displaySpeechBubble = true;
-      speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-      reliefRequired = ReliefRequired.WashHands;
-    }
-    else if(hasRelievedSelf
-            && !hasWashedHands) {
-      if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
-        bathObjRef.state = BathroomObjectState.Broken;
-      }
-      else {
-        bathObjRef.TriggerOutOfOrderState();
-      }
+    //   selectableReference.canBeSelected = true;
+    //   speechBubbleReference.displaySpeechBubble = true;
+    //   speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
+    //   reliefRequired = ReliefRequired.WashHands;
+    // }
+    // else if(hasRelievedSelf
+    //         && !hasWashedHands) {
+    //   if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
+    //     bathObjRef.state = BathroomObjectState.Broken;
+    //   }
+    //   else {
+    //     bathObjRef.TriggerOutOfOrderState();
+    //   }
 
-      hasWashedHands = true;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkHandsWashedIn);
-      PerformWashedHandsScore();
+    //   hasWashedHands = true;
+    //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkHandsWashedIn);
+    //   PerformBathroomObjectUsedScore();
 
-      bathObjRef.RemoveBro(this.gameObject);
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    }
-    else {
-      Debug.Log("SLOB BRO USED A SINK WHEN HE HAD WEIRD VALUES.");
-    }
+    //   bathObjRef.RemoveBro(this.gameObject);
+    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    // }
+    // else {
+    //   Debug.Log("SLOB BRO USED A SINK WHEN HE HAD WEIRD VALUES.");
+    // }
   }
   public override void PerformExitOccupationFinishedLogic() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
@@ -181,46 +181,30 @@ public class SlobBro : Bro {
 
   //This is being checked on arrival before switching to occupying an object
   public override void PerformOnArrivalBrotocolScoreCheck() {
-    bool brotocolWasSatisfied = false;
+    // bool brotocolWasSatisfied = false;
     
-    // As long as the target object is not null and it's not a bathroom exit
-    if(targetObject != null
-     && targetObject.GetComponent<BathroomObject>() != null
-     && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-      if(!hasRelievedSelf) {
-        //This is being checked on arrival before switching to occupying an object
-        if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-          // increment correct relief type
-          ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolCorrectReliefTypeForTargetObject);
-          brotocolWasSatisfied = true;
-        }
-        if(!CheckIfBroInAdjacentBathroomObjects()) {
-          // increment bro alone bonus
-          ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolNoAdjacentBro);
-          brotocolWasSatisfied = true;
-        }
-      }
-    }
+    // // As long as the target object is not null and it's not a bathroom exit
+    // if(targetObject != null
+    //  && targetObject.GetComponent<BathroomObject>() != null
+    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+    //   if(!hasRelievedSelf) {
+    //     //This is being checked on arrival before switching to occupying an object
+    //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+    //       // increment correct relief type
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolCorrectReliefTypeForTargetObject);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+    //       // increment bro alone bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolNoAdjacentBro);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //   }
+    // }
 
-    if(brotocolWasSatisfied) {
-      SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-    }
+    // if(brotocolWasSatisfied) {
+    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+    // }
   }
-
-	//--------------------------------------------------------
-	public override void PerformEnteredScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroEntered);
-	}
-	public override void PerformRelievedScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroRelieved);
-	}
-	public override void PerformWashedHandsScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroHandsWashed);
-	}
-	public override void PerformBroFightScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroFightOccurred);
-	}
-	public override void PerformExitedScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroExited);
-	}
+    //=========================================================================
 }

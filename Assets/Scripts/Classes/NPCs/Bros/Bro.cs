@@ -3,173 +3,174 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Bro : TargetPathingNPC {
-	public HighlightSelectable selectableReference = null;
+    public HighlightSelectable selectableReference = null;
 
-	public BroType type = BroType.None;
-	public BroState state = BroState.None;
+    public BroType type = BroType.None;
+    public BroState state = BroState.None;
 
-	public float occupationTimer = 0f;
+    public float occupationTimer = 0f;
 
-  public bool skipLineQueue = false;
-  public bool chooseRandomBathroomObjectOnSkipLineQueue = false;
-	public bool hasRelievedSelf = false;
-  public bool chooseRandomBathroomObjectAfterRelieved = false;
-  public bool hasWashedHands = false;
-  public bool chooseRandomBathroomObjectAfterWashedHands = false;
-  public bool hasDriedHands = false;
+    public bool skipLineQueue = false;
+    public bool chooseRandomBathroomObjectOnSkipLineQueue = false;
+    public bool hasRelievedSelf = false;
+    public bool chooseRandomBathroomObjectAfterRelieved = false;
+    public bool hasWashedHands = false;
+    public bool chooseRandomBathroomObjectAfterWashedHands = false;
+    public bool hasDriedHands = false;
 
-  public bool startRoamingOnArrivalAtBathroomObjectInUse = false;
+    public bool startRoamingOnArrivalAtBathroomObjectInUse = false;
 
-  public GameObject standOffBroGameObject = null;
-	public GameObject broFightingWith = null;
-  public GameObject lineQueueIn = null;
+    public GameObject standOffBroGameObject = null;
+    public GameObject broFightingWith = null;
+    public GameObject lineQueueIn = null;
 
-	public ReliefRequired reliefRequired = ReliefRequired.None;
+    public ReliefRequired reliefRequired = ReliefRequired.None;
 
-	public GameObject speechBubbleGameObject = null;
-	public SpeechBubble speechBubbleReference = null;
+    public GameObject speechBubbleGameObject = null;
+    public SpeechBubble speechBubbleReference = null;
 
-	public float probabilityOfFightOnCollisionWithBro = 0.15f;
-	public bool isPaused = false;
+    public float probabilityOfFightOnCollisionWithBro = 0.15f;
+    public bool isPaused = false;
 
-  public bool resetFightLogic = false;
-  public float fightCooldownTimer = 0f;
-  public float fightCooldownTimerMax = 2f;
+    public bool resetFightLogic = false;
+    public float fightCooldownTimer = 0f;
+    public float fightCooldownTimerMax = 2f;
 
 
-	public override void Awake() {
-		selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
-		speechBubbleReference = speechBubbleGameObject.GetComponent<SpeechBubble>();
-	}
-	// Use this for initialization
-	public override void Start () {
-		base.Start();
-
-    // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
-
-		selectableReference.canBeSelected = true;
-	}
-
-	// Update is called once per frame
-	public override void Update () {
-		if(!isPaused) {
-			base.Update();
-			PerformSpeechBubbleLogic();
-      PerformFightTimerLogic();
-		}
-	}
-
-  public virtual void Pause() {
-    isPaused = true;
-    if(this.gameObject.GetComponent<FartGenerator>() != null) {
-      this.gameObject.GetComponent<FartGenerator>().isPaused = true;
+    public override void Awake() {
+        selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
+        speechBubbleReference = speechBubbleGameObject.GetComponent<SpeechBubble>();
     }
-  }
-  public virtual void Unpause() {
-    isPaused = false;
-    if(this.gameObject.GetComponent<FartGenerator>() != null) {
-      this.gameObject.GetComponent<FartGenerator>().isPaused = false;
+    // Use this for initialization
+    public override void Start () {
+        base.Start();
+
+        // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
+
+        selectableReference.canBeSelected = true;
     }
-  }
 
-  public virtual bool IsExiting() {
-    if(targetObject != null
-      && targetObject.GetComponent<BathroomObject>() != null
-      && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  public override void PopMovementNode() {
-    if(movementNodes.Count > 0) {
-    //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
-      GameObject nextNode = movementNodes[0];
-      BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
-
-      if(nextTile != null
-         && nextTile.bathroomTileBlockers.Count == 0) {
-        targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
-        // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
-        movementNodes.RemoveAt(0);
-        // Destroy(nextNode);
-        // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-      }
-      else {
-        movementNodes.Clear();
-        state = BroState.Roaming;
-      }
-    }
-    if(movementNodes == null) {
-      Debug.Log("movemeNodes is null for " + this.gameObject.name);
-    }
-  }
-
-  public virtual void PerformFightTimerLogic() {
-    if(resetFightLogic) {
-      fightCooldownTimer += Time.deltaTime;
-      if(fightCooldownTimer > fightCooldownTimerMax) {
-        fightCooldownTimer = 0;
-        resetFightLogic = false;
-      }
-    }
-  }
-  public virtual void ResetFightLogic(float fightResetDuration = 2f) {
-    resetFightLogic = true;
-    fightCooldownTimer = 0;
-    fightCooldownTimerMax = fightResetDuration;
-  }
-
-	public virtual void OnMouseDown() {
-    // Debug.Log("clicked");
-    SelectionManager.Instance.SelectBro(this.gameObject);
-    if(state == BroState.Standoff) {
-      if(standOffBroGameObject != null) {
-        standOffBroGameObject.GetComponent<StandoffBros>().IncrementTapsFromPlayer();
-      }
-    }
-	}
-
-  //  public void OnCollisionEnter(Collision collision) {
-  //    Debug.Log("Collision occurred with: " + collision.gameObject.name);
-  //  }
-
-	public void OnTriggerEnter(Collider other) {
-		// Debug.Log("Trigger occurred with: " + other.gameObject.name);
-    Bro otherBroRef = other.gameObject.GetComponent<Bro>();
-		if(otherBroRef != null) {
-			//------------------------------------------------------------
-			if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
-         && !IsExiting()
-         && !resetFightLogic
-			   && probabilityOfFightOnCollisionWithBro > 0
-			   && (otherBroRef.state == BroState.MovingToTargetObject || otherBroRef.state == BroState.Roaming)
-         && !otherBroRef.IsExiting()
-         && !otherBroRef.resetFightLogic
-			   && otherBroRef.probabilityOfFightOnCollisionWithBro > 0) {
-
-				float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
-				if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
-					if(state != BroState.Fighting) {
-						broFightingWith = other.gameObject;
-						state = BroState.Standoff;
-						speechBubbleReference.displaySpeechBubble = false;
-						movementNodes.Clear();
-
-						otherBroRef.movementNodes.Clear();
-						otherBroRef.broFightingWith = this.gameObject;
-						otherBroRef.speechBubbleReference.displaySpeechBubble = false;
-						otherBroRef.state = BroState.Standoff;
-					}
-				}
-        else {
-          ResetFightLogic(0.5f);
+    // Update is called once per frame
+    public override void Update () {
+        if(!isPaused) {
+            base.Update();
+            PerformSpeechBubbleLogic();
+            PerformFightTimerLogic();
         }
-			}
-		}
-	}
+    }
+
+    public virtual void Pause() {
+        isPaused = true;
+        if(this.gameObject.GetComponent<FartGenerator>() != null) {
+            this.gameObject.GetComponent<FartGenerator>().isPaused = true;
+        }
+    }
+
+    public virtual void Unpause() {
+        isPaused = false;
+        if(this.gameObject.GetComponent<FartGenerator>() != null) {
+            this.gameObject.GetComponent<FartGenerator>().isPaused = false;
+        }
+    }
+
+    public virtual bool IsExiting() {
+        if(targetObject != null
+           && targetObject.GetComponent<BathroomObject>() != null
+           && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public override void PopMovementNode() {
+        if(movementNodes.Count > 0) {
+            //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
+            GameObject nextNode = movementNodes[0];
+            BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
+
+            if(nextTile != null
+               && nextTile.bathroomTileBlockers.Count == 0) {
+                targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
+                // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
+                movementNodes.RemoveAt(0);
+                // Destroy(nextNode);
+                // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+            }
+            else {
+                movementNodes.Clear();
+                state = BroState.Roaming;
+            }
+        }
+        if(movementNodes == null) {
+            Debug.Log("movemeNodes is null for " + this.gameObject.name);
+        }
+    }
+
+    public virtual void PerformFightTimerLogic() {
+        if(resetFightLogic) {
+            fightCooldownTimer += Time.deltaTime;
+            if(fightCooldownTimer > fightCooldownTimerMax) {
+                fightCooldownTimer = 0;
+                resetFightLogic = false;
+            }
+        }
+    }
+    public virtual void ResetFightLogic(float fightResetDuration = 2f) {
+        resetFightLogic = true;
+        fightCooldownTimer = 0;
+        fightCooldownTimerMax = fightResetDuration;
+    }
+
+    public virtual void OnMouseDown() {
+        // Debug.Log("clicked");
+        SelectionManager.Instance.SelectBro(this.gameObject);
+        if(state == BroState.Standoff) {
+            if(standOffBroGameObject != null) {
+                standOffBroGameObject.GetComponent<StandoffBros>().IncrementTapsFromPlayer();
+            }
+        }
+    }
+
+    //  public void OnCollisionEnter(Collision collision) {
+    //    Debug.Log("Collision occurred with: " + collision.gameObject.name);
+    //  }
+
+    public void OnTriggerEnter(Collider other) {
+        // Debug.Log("Trigger occurred with: " + other.gameObject.name);
+        Bro otherBroRef = other.gameObject.GetComponent<Bro>();
+        if(otherBroRef != null) {
+            //------------------------------------------------------------
+            if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
+                && !IsExiting()
+                && !resetFightLogic
+                && probabilityOfFightOnCollisionWithBro > 0
+                && (otherBroRef.state == BroState.MovingToTargetObject || otherBroRef.state == BroState.Roaming)
+                && !otherBroRef.IsExiting()
+                && !otherBroRef.resetFightLogic
+                && otherBroRef.probabilityOfFightOnCollisionWithBro > 0) {
+
+                float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
+                if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
+                    if(state != BroState.Fighting) {
+                        broFightingWith = other.gameObject;
+                        state = BroState.Standoff;
+                        speechBubbleReference.displaySpeechBubble = false;
+                        movementNodes.Clear();
+
+                        otherBroRef.movementNodes.Clear();
+                        otherBroRef.broFightingWith = this.gameObject;
+                        otherBroRef.speechBubbleReference.displaySpeechBubble = false;
+                        otherBroRef.state = BroState.Standoff;
+                    }
+                }
+                else {
+                    ResetFightLogic(0.5f);
+                }
+            }
+        }
+    }
 
 	public override void UpdateAnimator() {
 		if(animatorReference != null) {
@@ -194,82 +195,82 @@ public class Bro : TargetPathingNPC {
 		base.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
 	}
 
-	public override void PerformLogic() {
-		switch(state) {
-			case(BroState.None):
-			break;
-			case(BroState.Fighting):
-			break;
-			case(BroState.InAQueue):
-				PerformInAQueueLogic();
-			break;
-			case(BroState.MovingToTargetObject):
-				PerformMovingToTargetObjectLogic();
-			break;
-			case(BroState.OccupyingObject):
-				PerformOccupyingObjectLogic();
-			break;
-			case(BroState.Roaming):
-				PerformRoamingLogic();
-			break;
-			case(BroState.Standing):
-				PerformStandingLogic();
-			break;
-			case(BroState.Standoff):
-				PerformStandOffLogic();
-			break;
-			default:
-			break;
-		}
-	}
-
-	public virtual void PerformArrivalLogic() {
-		if(IsAtTargetPosition()) {
-			if(targetObject != null
-			   && targetObject.GetComponent<BathroomObject>() != null) {
-        BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
-        BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
-
-        if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
-
-  				BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-
-          if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
-            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-            && startRoamingOnArrivalAtBathroomObjectInUse) {
-            state = BroState.Roaming;
-          }
-          else {
-            PerformOnArrivalBrotocolScoreCheck();
-
-    				//Adds bro to occupation list
-    				if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
-               // wtf, why is this here?
-    					bathObjRef.AddBro(this.gameObject);
-    				}
-
-    				selectableReference.canBeSelected = false;
-    				selectableReference.ResetHighlightObjectAndSelectedState();
-    				speechBubbleReference.displaySpeechBubble = false;
-
-    				if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-    				   && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-    					SelectionManager.Instance.currentlySelectedBroGameObject = null;
-    				}
-
-    				state = BroState.OccupyingObject;
-          }
+    public override void PerformLogic() {
+        switch(state) {
+            case(BroState.None):
+            break;
+            case(BroState.Fighting):
+            break;
+            case(BroState.InAQueue):
+                PerformInAQueueLogic();
+            break;
+            case(BroState.MovingToTargetObject):
+                PerformMovingToTargetObjectLogic();
+            break;
+            case(BroState.OccupyingObject):
+                PerformOccupyingObjectLogic();
+            break;
+            case(BroState.Roaming):
+                PerformRoamingLogic();
+            break;
+            case(BroState.Standing):
+                PerformStandingLogic();
+            break;
+            case(BroState.Standoff):
+                PerformStandOffLogic();
+            break;
+            default:
+            break;
         }
-			}
-			else {
-				state = BroState.Roaming;
-			}
-		}
-	}
-	public virtual void PerformFightingLogic() {
-	}
-	public virtual void PerformInAQueueLogic() {
-		PerformMovementLogic();
+    }
+
+    public virtual void PerformArrivalLogic() {
+        if(IsAtTargetPosition()) {
+            if(targetObject != null
+               && targetObject.GetComponent<BathroomObject>() != null) {
+                BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
+                BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
+
+                if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
+
+                    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+
+                    if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+                    && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+                    && startRoamingOnArrivalAtBathroomObjectInUse) {
+                        state = BroState.Roaming;
+                    }
+                    else {
+                        PerformOnArrivalBrotocolScoreCheck();
+
+                        //Adds bro to occupation list
+                        if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
+                            // wtf, why is this here?
+                            bathObjRef.AddBro(this.gameObject);
+                        }
+
+                        selectableReference.canBeSelected = false;
+                        selectableReference.ResetHighlightObjectAndSelectedState();
+                        speechBubbleReference.displaySpeechBubble = false;
+
+                        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                           && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                        SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                        }
+
+                        state = BroState.OccupyingObject;
+                    }
+                }
+            }
+            else {
+                state = BroState.Roaming;
+            }
+        }
+    }
+    public virtual void PerformFightingLogic() {
+    }
+    public virtual void PerformInAQueueLogic() {
+    PerformMovementLogic();
     if(IsAtTargetPosition()) {
       if(skipLineQueue) {
         if(chooseRandomBathroomObjectOnSkipLineQueue) {
@@ -285,45 +286,45 @@ public class Bro : TargetPathingNPC {
         // skip line queue isn't true and the bro should just wait here
       }
     }
-	}
-	public virtual void PerformMovingToTargetObjectLogic() {
-		PerformMovementLogic();
-		PerformArrivalLogic();
-	}
+    }
+    public virtual void PerformMovingToTargetObjectLogic() {
+        PerformMovementLogic();
+        PerformArrivalLogic();
+    }
 
-	public virtual void PerformOccupyingObjectLogic() {
-		if(targetObject != null
-		   && targetObject.GetComponent<BathroomObject>() != null) {
-			BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    public virtual void PerformOccupyingObjectLogic() {
+        if(targetObject != null
+           && targetObject.GetComponent<BathroomObject>() != null) {
+            BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-			if(occupationTimer > bathObjRef.occupationDuration) {
-        // Debug.Log("occupation finished");
-        if(bathObjRef.type == BathroomObjectType.Exit) {
-          PerformExitOccupationFinishedLogic();
+            if(occupationTimer > bathObjRef.occupationDuration) {
+                // Debug.Log("occupation finished");
+                if(bathObjRef.type == BathroomObjectType.Exit) {
+                    PerformExitOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.HandDryer) {
+                    PerformHandDryerOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.Sink) {
+                    PerformSinkOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.Stall) {
+                    PerformStallOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.Urinal) {
+                    PerformUrinalOccupationFinishedLogic();
+                }
+            }
+            else {
+                //disables the collider because the bro resides in the object, but the timer is still going
+                collider.enabled = false;
+
+                occupationTimer += Time.deltaTime;
+            }
         }
-        else if(bathObjRef.type == BathroomObjectType.HandDryer) {
-          PerformHandDryerOccupationFinishedLogic();
-        }
-        else if(bathObjRef.type == BathroomObjectType.Sink) {
-          PerformSinkOccupationFinishedLogic();
-        }
-				else if(bathObjRef.type == BathroomObjectType.Stall) {
-          PerformStallOccupationFinishedLogic();
-				}
-				else if(bathObjRef.type == BathroomObjectType.Urinal) {
-          PerformUrinalOccupationFinishedLogic();
-				}
-			}
-			else {
-				//disables the collider because the bro resides in the object, but the timer is still going
-				collider.enabled = false;
+    }
 
-				occupationTimer += Time.deltaTime;
-			}
-		}
-	}
-
-  public virtual void PerformExitOccupationFinishedLogic() {
+public virtual void PerformExitOccupationFinishedLogic() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
     PerformExitedScore();
     BroManager.Instance.RemoveBro(this.gameObject, false);
@@ -334,106 +335,107 @@ public class Bro : TargetPathingNPC {
 
     EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(this.gameObject);
     Destroy(this.gameObject);
-  }
+}
 
-  //===========================================================================
-  public virtual void PerformHandDryerOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    // Bathroom object is out of order
-    if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
-      // Fall through logic for the bro bathroom lifecycle
-      if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) {
-        // Debug.Log("Out of Order - has not relieved self");
-        PerformOutOfOrderHandDryerRelief();
-      }
-      else if(reliefRequired == ReliefRequired.WashHands) {
-        // Debug.Log("Out of Order - has not washed hands");
-        PerformOutOfOrderHandDryerWashHands();
-      }
-      else if(reliefRequired == ReliefRequired.DryHands) {
-        // Debug.Log("Out of Order - has not dried hands");
-        PerformOutOfOrderHandDryerDryHands();
-      }
+//===========================================================================
+    public virtual void PerformHandDryerOccupationFinishedLogic() {
+        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        // Bathroom object is out of order
+        if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
+          // Fall through logic for the bro bathroom lifecycle
+          if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) {
+            // Debug.Log("Out of Order - has not relieved self");
+            PerformOutOfOrderHandDryerRelief();
+          }
+          else if(reliefRequired == ReliefRequired.WashHands) {
+            // Debug.Log("Out of Order - has not washed hands");
+            PerformOutOfOrderHandDryerWashHands();
+          }
+          else if(reliefRequired == ReliefRequired.DryHands) {
+            // Debug.Log("Out of Order - has not dried hands");
+            PerformOutOfOrderHandDryerDryHands();
+          }
+        }
+        // Bathroom object is broken
+        else if(bathObjRef.state == BathroomObjectState.Broken 
+                || bathObjRef.state == BathroomObjectState.BrokenByPee
+                || bathObjRef.state == BathroomObjectState.BrokenByPoop) {
+          // Fall through logic for the bro bathroom lifecycle
+          if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) {
+            // Debug.Log("Broken - has not relieved self");
+            PerformBrokenHandDryerRelief();
+          }
+          else if(reliefRequired == ReliefRequired.WashHands) {
+            // Debug.Log("Broken - has not washed hands");
+            PerformBrokenHandDryerWashHands();
+          }
+          else if(reliefRequired == ReliefRequired.DryHands) {
+            // Debug.Log("Broken - has not dried hands");
+            PerformBrokenHandDryerDryHands();
+          }
+        }
+        // Bathroom object is not broken or out of order
+        else {
+          // Fall through logic for the bro bathroom lifecycle
+          if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) {
+            // Debug.Log("Working - has not relieved self");
+            PerformWorkingHandDryerRelief();
+          }
+          else if(reliefRequired == ReliefRequired.WashHands) {
+            // Debug.Log("Working - has not washed hands");
+            PerformWorkingHandDryerWashHands();
+          }
+          else if(reliefRequired == ReliefRequired.DryHands) {
+            // Debug.Log("Working - has not dried hands");
+            PerformWorkingHandDryerDryHands();
+          }
+        }
     }
-    // Bathroom object is broken
-    else if(bathObjRef.state == BathroomObjectState.Broken 
-            || bathObjRef.state == BathroomObjectState.BrokenByPee
-            || bathObjRef.state == BathroomObjectState.BrokenByPoop) {
-      // Fall through logic for the bro bathroom lifecycle
-      if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) {
-        // Debug.Log("Broken - has not relieved self");
-        PerformBrokenHandDryerRelief();
-      }
-      else if(reliefRequired == ReliefRequired.WashHands) {
-        // Debug.Log("Broken - has not washed hands");
-        PerformBrokenHandDryerWashHands();
-      }
-      else if(reliefRequired == ReliefRequired.DryHands) {
-        // Debug.Log("Broken - has not dried hands");
-        PerformBrokenHandDryerDryHands();
-      }
-    }
-    // Bathroom object is not broken or out of order
-    else {
-      // Fall through logic for the bro bathroom lifecycle
-      if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) {
-        // Debug.Log("Working - has not relieved self");
-        PerformWorkingHandDryerRelief();
-      }
-      else if(reliefRequired == ReliefRequired.WashHands) {
-        // Debug.Log("Working - has not washed hands");
-        PerformWorkingHandDryerWashHands();
-      }
-      else if(reliefRequired == ReliefRequired.DryHands) {
-        // Debug.Log("Working - has not dried hands");
-        PerformWorkingHandDryerDryHands();
-      }
-    }
-  }
-  public virtual void PerformOutOfOrderHandDryerRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    public virtual void PerformOutOfOrderHandDryerRelief() {
+        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-    hasRelievedSelf = true;
-    PerformRelievedScore();
+        hasRelievedSelf = true;
 
-    collider.enabled = true;
-    if(reliefRequired == ReliefRequired.Pee) {
-      bathObjRef.state = BathroomObjectState.BrokenByPee;
-      // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBrokenByPee);
-    }
-    else if(reliefRequired == ReliefRequired.Poop) {
-      bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBrokenByPoop);
-    }
-    else if(reliefRequired == ReliefRequired.Vomit) {
-      bathObjRef.state = BathroomObjectState.Broken;
-      // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBroken);
-    }
+        PerformBathroomObjectUsedScore();
+        if(reliefRequired == ReliefRequired.Pee) {
+          bathObjRef.state = BathroomObjectState.BrokenByPee;
+          PerformBrokeHandDryerByPeeingScore();
+        }
+        else if(reliefRequired == ReliefRequired.Poop) {
+          bathObjRef.state = BathroomObjectState.BrokenByPoop;
+          PerformBrokeHandDryerByPoopingScore();
+        }
+        else if(reliefRequired == ReliefRequired.Vomit) {
+          bathObjRef.state = BathroomObjectState.Broken;
+          PerformBrokeHandDryerByVomittingScore();
+        }
 
-    if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    }
-    else {
-      state = BroState.Roaming;
-    }
+        if(chooseRandomBathroomObjectAfterRelieved) {
+          SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        }
+        else {
+          state = BroState.Roaming;
+        }
+        bathObjRef.RemoveBro(this.gameObject);
+        bathObjRef.IncrementTimesUsed();
+        bathObjRef.PerformOutOfOrderCheck();
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    selectableReference.canBeSelected = true;
-    speechBubbleReference.displaySpeechBubble = true;
-    speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-    reliefRequired = ReliefRequired.WashHands;
-  }
+        collider.enabled = true;
+        selectableReference.canBeSelected = true;
+        speechBubbleReference.displaySpeechBubble = true;
+        speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
+        reliefRequired = ReliefRequired.WashHands;
+    }
   public virtual void PerformOutOfOrderHandDryerWashHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasWashedHands = true;
-    PerformWashedHandsScore();
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeHandDryerByOutOfOrderUseScore();
 
     bathObjRef.state = BathroomObjectState.Broken;
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBroken);
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -442,11 +444,6 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -457,23 +454,14 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasDriedHands = true;
-    PerformDriedHandsScore();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerHandsDriedIn);
-
-    // if(chooseRandomBathroomObjectAfterDriedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    // }
-    // else {
-    //   state = BroState.Roaming;
-    // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    PerformBathroomObjectUsedScore();
+    PerformBrokeHandDryerByOutOfOrderUseScore();
 
     bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
+    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
     collider.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
@@ -481,21 +469,21 @@ public class Bro : TargetPathingNPC {
   }
   public virtual void PerformWorkingHandDryerRelief() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    hasRelievedSelf = true;
-    PerformRelievedScore();
 
-    collider.enabled = true;
+    hasRelievedSelf = true;
+
+    PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBrokenByPee);
+      PerformBrokeHandDryerByPeeingScore();
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBrokenByPoop);
+      PerformBrokeHandDryerByPoopingScore();
     }
     else if(reliefRequired == ReliefRequired.Vomit) {
       bathObjRef.state = BathroomObjectState.Broken;
-      // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBroken);
+      PerformBrokeHandDryerByVomittingScore();
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
@@ -504,11 +492,9 @@ public class Bro : TargetPathingNPC {
     else {
       state = BroState.Roaming;
     }
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
+    collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -518,10 +504,12 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasWashedHands = true;
-    PerformWashedHandsScore();
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokenHandDryerWashHands();
 
     bathObjRef.state = BathroomObjectState.Broken;
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerBroken);
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -530,12 +518,6 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
- 
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -546,22 +528,10 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasDriedHands = true;
-    PerformDriedHandsScore();
+    PerformBathroomObjectUsedScore();
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.HandDryerHandsDriedIn);
-
-    // if(chooseRandomBathroomObjectAfterDriedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    // }
-    // else {
-    //   state = BroState.Roaming;
-    // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
@@ -633,19 +603,21 @@ public class Bro : TargetPathingNPC {
 
   public virtual void PerformOutOfOrderSinkRelief() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    hasRelievedSelf = true;
-    PerformRelievedScore();
 
-    collider.enabled = true;
+    hasRelievedSelf = true;
+
+    PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPeedIn);
+      PerformBrokeSinkByPeeingScore();
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPoopedIn);
+      PerformBrokeSinkByPoopingScore();
+    }
+    else if(reliefRequired == ReliefRequired.Vomit) {
+      bathObjRef.state = BathroomObjectState.Broken;
+      PerformBrokeSinkByVomittingScore();
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
@@ -654,11 +626,9 @@ public class Bro : TargetPathingNPC {
     else {
       state = BroState.Roaming;
     }
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
+    collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -667,12 +637,15 @@ public class Bro : TargetPathingNPC {
 
   public virtual void PerformOutOfOrderSinkWashHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    hasWashedHands = true;
-    PerformWashedHandsScore();
 
-    collider.enabled = true;
+    hasWashedHands = true;
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeSinkByOutOfOrderUseScore();
+
     bathObjRef.state = BathroomObjectState.Broken;
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -681,11 +654,7 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
+    collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -694,43 +663,37 @@ public class Bro : TargetPathingNPC {
 
   public virtual void PerformOutOfOrderSinkDryHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+
     hasDriedHands = true;
-    PerformDriedHandsScore();
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeSinkByOutOfOrderUseScore();
 
     bathObjRef.state = BathroomObjectState.Broken;
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    // if(chooseRandomBathroomObjectAfterDriedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    // }
-    // else {
-    //   state = BroState.Roaming;
-    // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
   }
 
   public virtual void PerformWorkingSinkRelief() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    hasRelievedSelf = true;
-    PerformRelievedScore();
 
-    collider.enabled = true;
+    hasRelievedSelf = true;
+
+    PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPeedIn);
+      PerformBrokeSinkByPeeingScore();
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkPoopedIn);
+      PerformBrokeSinkByPoopingScore();
+    }
+    else if(reliefRequired == ReliefRequired.Poop) {
+      bathObjRef.state = BathroomObjectState.Broken;
+      PerformBrokeSinkByVomittingScore();
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
@@ -739,11 +702,10 @@ public class Bro : TargetPathingNPC {
     else {
       state = BroState.Roaming;
     }
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
 
+    collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -754,8 +716,10 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasWashedHands = true;
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkHandsWashedIn);
-    PerformWashedHandsScore();
+
+    PerformBathroomObjectUsedScore();
+
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -764,11 +728,6 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -780,23 +739,16 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasDriedHands = true;
-    PerformRelievedScore();
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeSinkByDryingHandsScore();
 
     bathObjRef.state = BathroomObjectState.Broken;
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.SinkBroken);
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    // if(chooseRandomBathroomObjectAfterDriedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
-
     reliefRequired = ReliefRequired.None;
   }
 
@@ -869,15 +821,21 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
-    PerformRelievedScore();
+
+    PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPeedIn);
+        PerformBrokeStallByPeeingScore();
     }
     else if(reliefRequired == ReliefRequired.Poop) {
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPoopedIn);
+        PerformBrokeStallByPoopingScore();
+    }
+    else if(reliefRequired == ReliefRequired.Vomit) {
+        PerformBrokeStallByVomittingScore();
     }
 
-    collider.enabled = true;
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+
 
     if(chooseRandomBathroomObjectAfterRelieved) {
       SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -885,16 +843,10 @@ public class Bro : TargetPathingNPC {
     else {
       state = BroState.Roaming;
     }
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
+    collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-
     reliefRequired = ReliefRequired.WashHands;
 
     SoundManager.Instance.Play(AudioType.Flush1);
@@ -903,10 +855,12 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasWashedHands = true;
-    PerformWashedHandsScore();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallWashedHandsIn);
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
+    PerformBathroomObjectUsedScore();
+    PerformBrokeStallByOutOfOrderUseScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -915,27 +869,22 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
-
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformOutOfOrderStallDryHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasDriedHands = true;
-    PerformDriedHandsScore();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallDriedHandsIn);
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
+    PerformBathroomObjectUsedScore();
+    PerformBrokeStallByOutOfOrderUseScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterDriedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -945,30 +894,19 @@ public class Bro : TargetPathingNPC {
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
-
     reliefRequired = ReliefRequired.None;
   }
   public virtual void PerformWorkingStallRelief() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
-    PerformRelievedScore();
-    if(reliefRequired == ReliefRequired.Pee) {
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPeedIn);
-    }
-    else if(reliefRequired == ReliefRequired.Poop) {
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallPoopedIn);
-    }
 
-    collider.enabled = true;
+    PerformBathroomObjectUsedScore();
+
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     if(chooseRandomBathroomObjectAfterRelieved) {
       SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -977,14 +915,10 @@ public class Bro : TargetPathingNPC {
       state = BroState.Roaming;
     }
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
+    collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-
     reliefRequired = ReliefRequired.WashHands;
 
     SoundManager.Instance.Play(AudioType.Flush1);
@@ -993,10 +927,12 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasWashedHands = true;
-    PerformWashedHandsScore();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallWashedHandsIn);
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
+    PerformBathroomObjectUsedScore();
+    PerformBrokeStallByWashingHandsScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -1005,11 +941,6 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
 
     collider.enabled = true;
     selectableReference.canBeSelected = true;
@@ -1022,10 +953,12 @@ public class Bro : TargetPathingNPC {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
     hasDriedHands = true;
-    PerformDriedHandsScore();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallDriedHandsIn);
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.StallBroken);
+    PerformBathroomObjectUsedScore();
+    PerformBrokeStallByDryingHandsScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterDriedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -1034,16 +967,9 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
     collider.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
-
     reliefRequired = ReliefRequired.None;
   }
   public virtual void PerformBrokenStallRelief() {
@@ -1111,17 +1037,18 @@ public class Bro : TargetPathingNPC {
   public virtual void PerformOutOfOrderUrinalRelief() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
+    hasRelievedSelf = true;
+
+    PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
-      bathObjRef.state = BathroomObjectState.Broken;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPeedIn);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
+      bathObjRef.state = BathroomObjectState.BrokenByPee;
+      PerformBrokeUrinalByPeeingScore();
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPoopedIn);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-      SoundManager.Instance.Play(AudioType.Pooping1);
+      PerformBrokeUrinalByPoopingScore();
     }
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     if(chooseRandomBathroomObjectAfterRelieved) {
       SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -1130,12 +1057,6 @@ public class Bro : TargetPathingNPC {
       state = BroState.Roaming;
     }
 
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    hasRelievedSelf = true;
-    PerformRelievedScore();
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1147,7 +1068,14 @@ public class Bro : TargetPathingNPC {
   public virtual void PerformOutOfOrderUrinalWashHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalWashedHands);
+    hasWashedHands = true;
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeUrinalByOutOfOrderUseScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
@@ -1155,14 +1083,6 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    hasWashedHands = true;
-    PerformWashedHandsScore();
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1172,7 +1092,14 @@ public class Bro : TargetPathingNPC {
   public virtual void PerformOutOfOrderUrinalDryHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
     
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalWashedHands);
+    hasDriedHands = true;
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeUrinalByOutOfOrderUseScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+
     // if(chooseRandomBathroomObjectAfterDriedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
@@ -1180,33 +1107,26 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    hasDriedHands = true;
-    PerformDriedHandsScore();
     collider.enabled = true;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
-
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
   }
   public virtual void PerformWorkingUrinalRelief() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-    if(reliefRequired == ReliefRequired.Pee) {
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPeedIn);
-    }
-    else if(reliefRequired == ReliefRequired.Poop) {
+    hasRelievedSelf = true;
+
+    PerformBathroomObjectUsedScore();
+    if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalPoopedIn);
-      ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
-      SoundManager.Instance.Play(AudioType.Pooping1);
+      PerformBrokeUrinalByPoopingScore();
     }
+    else if(reliefRequired == ReliefRequired.Vomit) {
+      bathObjRef.state = BathroomObjectState.Broken;
+      PerformBrokeUrinalByVomittingScore();
+    }
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     if(chooseRandomBathroomObjectAfterRelieved) {
       SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
@@ -1214,13 +1134,6 @@ public class Bro : TargetPathingNPC {
     else {
       state = BroState.Roaming;
     }
-
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    hasRelievedSelf = true;
-    PerformRelievedScore();
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1232,7 +1145,14 @@ public class Bro : TargetPathingNPC {
   public virtual void PerformWorkingUrinalWashHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalWashedHands);
+    hasWashedHands = true;
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeUrinalByWashingHandsScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+
     // if(chooseRandomBathroomObjectAfterWashedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
@@ -1240,14 +1160,6 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    hasWashedHands = true;
-    PerformWashedHandsScore();
     collider.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1257,7 +1169,14 @@ public class Bro : TargetPathingNPC {
   public virtual void PerformWorkingUrinalDryHands() {
     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
     
-    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalWashedHands);
+    hasDriedHands = true;
+
+    PerformBathroomObjectUsedScore();
+    PerformBrokeUrinalByDryingHandsScore();
+
+    bathObjRef.state = BathroomObjectState.Broken;
+    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+
     // if(chooseRandomBathroomObjectAfterDriedHands) {
     //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
@@ -1265,20 +1184,10 @@ public class Bro : TargetPathingNPC {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBro(this.gameObject);
-    bathObjRef.IncrementTimesUsed();
-    bathObjRef.PerformOutOfOrderCheck();
-
-    hasDriedHands = true;
-    PerformDriedHandsScore();
     collider.enabled = true;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
-
-    ScoreManager.Instance.IncrementScoreTracker(ScoreType.UrinalBroken);
   }
   public virtual void PerformBrokenUrinalRelief() {
     Debug.Log("Bro is relieving himself in a broken urinal. This shouldn't have happened");
@@ -1319,47 +1228,47 @@ public class Bro : TargetPathingNPC {
 	public virtual void PerformStandingLogic() {
 	}
 
-	public virtual void PerformStandOffLogic() {
-		//GameObject newFightingBros = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject);
-		if(state == BroState.Standoff) {
-      if(standOffBroGameObject == null) {
-        this.gameObject.collider.enabled = false;
-        broFightingWith.collider.enabled = false;
-        broFightingWith.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
+    public virtual void PerformStandOffLogic() {
+        if(state == BroState.Standoff) {
+            if(standOffBroGameObject == null) {
+                this.gameObject.collider.enabled = false;
+                broFightingWith.collider.enabled = false;
+                broFightingWith.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
 
-        selectableReference.ResetHighlightObjectAndSelectedState();
-        Vector2 standoffAnchor = new Vector2(((this.gameObject.transform.position.x + broFightingWith.transform.position.x)/2), ((this.gameObject.transform.position.y + broFightingWith.transform.position.y)/2));
+                selectableReference.ResetHighlightObjectAndSelectedState();
+                Vector2 standoffAnchor = new Vector2(((this.gameObject.transform.position.x + broFightingWith.transform.position.x)/2), ((this.gameObject.transform.position.y + broFightingWith.transform.position.y)/2));
 
-        standOffBroGameObject  = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/StandoffBros") as GameObject);
-        broFightingWith.GetComponent<Bro>().standOffBroGameObject = standOffBroGameObject;
-        standOffBroGameObject.GetComponent<StandoffBros>().StandoffBrosInit(this.gameObject, broFightingWith, standoffAnchor);
+                standOffBroGameObject  = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/StandoffBros") as GameObject);
+                broFightingWith.GetComponent<Bro>().standOffBroGameObject = standOffBroGameObject;
+                standOffBroGameObject.GetComponent<StandoffBros>().StandoffBrosInit(this.gameObject, broFightingWith, standoffAnchor);
 
-        BroManager.Instance.AddStandOffBros(standOffBroGameObject);
-      }
-		}
-	}
-	public virtual void PerformSpeechBubbleLogic() {
-    if(reliefRequired == ReliefRequired.None
-       && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.None) {
-      speechBubbleReference.speechBubbleImage = SpeechBubbleImage.None;
+                BroManager.Instance.AddStandOffBros(standOffBroGameObject);
+            }
+        }
     }
-    else if(reliefRequired == ReliefRequired.DryHands
+
+    public virtual void PerformSpeechBubbleLogic() {
+        if(reliefRequired == ReliefRequired.None
+            && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.None) {
+            speechBubbleReference.speechBubbleImage = SpeechBubbleImage.None;
+        }
+        else if(reliefRequired == ReliefRequired.DryHands
             && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.DryHands) {
-      speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
+            speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
+        }
+        else if(reliefRequired == ReliefRequired.Pee
+                && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.Pee) {
+            speechBubbleReference.speechBubbleImage = SpeechBubbleImage.Pee;
+        }
+        else if(reliefRequired == ReliefRequired.Poop
+                && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.Poop) {
+            speechBubbleReference.speechBubbleImage = SpeechBubbleImage.Poop;
+        }
+        else if(reliefRequired == ReliefRequired.WashHands
+                && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.WashHands) {
+            speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
+        }
     }
-		else if(reliefRequired == ReliefRequired.Pee
-		   && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.Pee) {
-			speechBubbleReference.speechBubbleImage = SpeechBubbleImage.Pee;
-		}
-		else if(reliefRequired == ReliefRequired.Poop
-		   && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.Poop) {
-			speechBubbleReference.speechBubbleImage = SpeechBubbleImage.Poop;
-		}
-		else if(reliefRequired == ReliefRequired.WashHands
-		   && speechBubbleReference.speechBubbleImage != SpeechBubbleImage.WashHands) {
-			speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-		}
-	}
 
   public void SetRandomOpenBathroomObjectTarget(params BathroomObjectType[] bathroomObjectTypesToTarget) {
     BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
@@ -1471,70 +1380,338 @@ public class Bro : TargetPathingNPC {
 
   // Returns true if any of the eight tiles around the bro has a bathroom object,
   // and if that bathroom object has a bro in it
- 	public virtual bool CheckIfBroInAdjacentBathroomObjects() {
- 		// bool broIsInAjdacentTile = false;
+    public virtual bool CheckIfBroInAdjacentBathroomObjects() {
+        // bool broIsInAjdacentTile = false;
 
- 		// BathroomTile currentTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
- 		// 																	                                                   this.gameObject.transform.position.y,
- 		// 																							                                       true).GetComponent<BathroomTile>();
+        // BathroomTile currentTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
+        // 																	                                                   this.gameObject.transform.position.y,
+        // 																							                                       true).GetComponent<BathroomTile>();
 
-   //  bool isBroOnTopLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY + 1);
-   //  bool isBroOnTopSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY + 1);
-   //  bool isBroOnTopRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY + 1);
+        //  bool isBroOnTopLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY + 1);
+        //  bool isBroOnTopSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY + 1);
+        //  bool isBroOnTopRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY + 1);
 
-   //  bool isBroOnLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY);
-   //  bool isBroOnRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY);
+        //  bool isBroOnLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY);
+        //  bool isBroOnRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY);
 
-   //  bool isBroOnBottomLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY - 1);
-   //  bool isBroOnBottomSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY - 1);
-   //  bool isBroOnBottomRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY - 1);
-   //  // Debug.Log("------------------------");
-   //  // Debug.Log("On Top Left: " + isBroOnTopLeftSide);
-   //  // Debug.Log("On Top: " + isBroOnTopSide);
-   //  // Debug.Log("On Top Right: " + isBroOnTopRightSide);
-   //  // Debug.Log("On Left: " + isBroOnLeftSide);
-   //  // Debug.Log("On Right: " + isBroOnRightSide);
-   //  // Debug.Log("On Bottom Left: " + isBroOnBottomLeftSide);
-   //  // Debug.Log("On Bottom: " + isBroOnBottomSide);
-   //  // Debug.Log("On Bottom Right: " + isBroOnBottomRightSide);
+        //  bool isBroOnBottomLeftSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX - 1, currentTile.tileY - 1);
+        //  bool isBroOnBottomSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX, currentTile.tileY - 1);
+        //  bool isBroOnBottomRightSide = BathroomTileMap.Instance.CheckIfTileContainsBroInBathroomObject(currentTile.tileX + 1, currentTile.tileY - 1);
+        //  // Debug.Log("------------------------");
+        //  // Debug.Log("On Top Left: " + isBroOnTopLeftSide);
+        //  // Debug.Log("On Top: " + isBroOnTopSide);
+        //  // Debug.Log("On Top Right: " + isBroOnTopRightSide);
+        //  // Debug.Log("On Left: " + isBroOnLeftSide);
+        //  // Debug.Log("On Right: " + isBroOnRightSide);
+        //  // Debug.Log("On Bottom Left: " + isBroOnBottomLeftSide);
+        //  // Debug.Log("On Bottom: " + isBroOnBottomSide);
+        //  // Debug.Log("On Bottom Right: " + isBroOnBottomRightSide);
 
-   //  if(isBroOnTopLeftSide
-   //    || isBroOnTopSide
-   //    || isBroOnTopRightSide
-   //    || isBroOnLeftSide
-   //    || isBroOnRightSide
-   //    || isBroOnBottomLeftSide
-   //    || isBroOnBottomSide
-   //    || isBroOnBottomRightSide) {
-   //    // Debug.Log("Bro adjacent");
-   //    broIsInAjdacentTile = true;
-   //  }
+        //  if(isBroOnTopLeftSide
+        //    || isBroOnTopSide
+        //    || isBroOnTopRightSide
+        //    || isBroOnLeftSide
+        //    || isBroOnRightSide
+        //    || isBroOnBottomLeftSide
+        //    || isBroOnBottomSide
+        //    || isBroOnBottomRightSide) {
+        //    // Debug.Log("Bro adjacent");
+        //    broIsInAjdacentTile = true;
+        //  }
 
- 		// return broIsInAjdacentTile;
-    return false;
+        // return broIsInAjdacentTile;
+        return false;
  	}
 
-  public virtual bool CheckIfRelievedSelfBeforeTimeOut() {
-    Debug.Log("WARNING YOU HAVE CALLED THE BASE BRO METHOD 'CheckIfRelievedSelfBeforeTimeOut' BUT THE BASE BRO CLASS DOES NOT SUPPORT THIS METHOD AND IS MEANT TO BE EXTENDED");
-    return false;
-  }
+    public virtual bool CheckIfRelievedSelfBeforeTimeOut() {
+        Debug.Log("WARNING YOU HAVE CALLED THE BASE BRO METHOD 'CheckIfRelievedSelfBeforeTimeOut' BUT THE BASE BRO CLASS DOES NOT SUPPORT THIS METHOD AND IS MEANT TO BE EXTENDED");
+        return false;
+    }
 
-  public virtual bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
-    Debug.Log("WARNING YOU HAVE CALLED THE BASE BRO METHOD 'CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry' BUT THE BASE BRO CLASS DOES NOT SUPPORT THIS METHOD AND IS MEANT TO BE EXTENDED");
-    return false;
-  }
+    public virtual bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
+        Debug.Log("WARNING YOU HAVE CALLED THE BASE BRO METHOD 'CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry' BUT THE BASE BRO CLASS DOES NOT SUPPORT THIS METHOD AND IS MEANT TO BE EXTENDED");
+        return false;
+    }
 
-	//--------------------------------------------------------------------
-	public virtual void PerformEnteredScore() {
-	}
-	public virtual void PerformRelievedScore() {
-	}
-	public virtual void PerformWashedHandsScore() {
-	}
-  public virtual void PerformDriedHandsScore() {
-  }
-	public virtual void PerformBroFightScore() {
-	}
-	public virtual void PerformExitedScore() {
-	}
+    //=========================================================================
+    // This assumes it's called at the correct point and that the target object and relief required are accessible
+    public virtual void PerformBathroomObjectUsedScore() {
+        if(targetObject != null) {
+            BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+            if(bathObjRef != null) {
+                if(bathObjRef.type == BathroomObjectType.HandDryer) {
+                    if(reliefRequired == ReliefRequired.DryHands) {
+                        PerformDriedHandsInHandDryerScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Pee) {
+                        PerformRelievedPeeInHandDryerScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Poop) {
+                        PerformRelievedPoopInHandDryerScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Vomit) {
+                        PerformRelievedVomitInHandDryerScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.WashHands) {
+                        PerformWashedHandsInHandDryerScore();
+                    }
+                }
+                else if(bathObjRef.type == BathroomObjectType.Sink) {
+                    if(reliefRequired == ReliefRequired.DryHands) {
+                        PerformDriedHandsInSinkScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Pee) {
+                        PerformRelievedPeeInSinkScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Poop) {
+                        PerformRelievedPoopInSinkScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Vomit) {
+                        PerformRelievedVomitInSinkScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.WashHands) {
+                        PerformWashedHandsInSinkScore();
+                    }
+                }
+                else if(bathObjRef.type == BathroomObjectType.Stall) {
+                    if(reliefRequired == ReliefRequired.DryHands) {
+                        PerformDriedHandsInStallScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Pee) {
+                        PerformRelievedPeeInStallScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Poop) {
+                        PerformRelievedPoopInStallScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Vomit) {
+                        PerformRelievedVomitInStallScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.WashHands) {
+                        PerformWashedHandsInStallScore();
+                    }
+                }
+                else if(bathObjRef.type == BathroomObjectType.Urinal) {
+                    if(reliefRequired == ReliefRequired.DryHands) {
+                        PerformDriedHandsInUrinalScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Pee) {
+                        PerformRelievedPeeInUrinalScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Poop) {
+                        PerformRelievedPoopInUrinalScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.Vomit) {
+                        PerformRelievedVomitInUrinalScore();
+                    }
+                    else if(reliefRequired == ReliefRequired.WashHands) {
+                        PerformWashedHandsInUrinalScore();
+                    }
+                }
+            }
+        }
+    }
+
+    //=========================================================================
+    public virtual void PerformEnteredScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroEnteredScore(type);
+    }
+    public virtual void PerformExitedScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroExitedScore(type);
+    }
+    //--------------------------------------------------------------------
+    public virtual void PerformRelievedPeeInHandDryerScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInHandDryerScore(type);
+    }
+    public virtual void PerformRelievedPeeInSinkScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInSinkScore(type);
+    }
+    public virtual void PerformRelievedPeeInStallScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInStallScore(type);
+    }
+    public virtual void PerformRelievedPeeInUrinalScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInUrinalScore(type);
+    }
+
+    public virtual void PerformRelievedPoopInHandDryerScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInHandDryerScore(type);
+    }
+    public virtual void PerformRelievedPoopInSinkScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInSinkScore(type);
+    }
+    public virtual void PerformRelievedPoopInStallScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInStallScore(type);
+    }
+    public virtual void PerformRelievedPoopInUrinalScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInUrinalScore(type);
+    }
+
+    public virtual void PerformRelievedVomitInHandDryerScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInHandDryerScore(type);
+    }
+    public virtual void PerformRelievedVomitInSinkScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInSinkScore(type);
+    }
+    public virtual void PerformRelievedVomitInStallScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInStallScore(type);
+    }
+    public virtual void PerformRelievedVomitInUrinalScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInUrinalScore(type);
+    }
+    //--------------------------------------------------------------------
+    public virtual void PerformWashedHandsInHandDryerScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInHandDryerScore(type);
+    }
+    public virtual void PerformWashedHandsInSinkScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInSinkScore(type);
+    }
+    public virtual void PerformWashedHandsInStallScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInStallScore(type);
+    }
+    public virtual void PerformWashedHandsInUrinalScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInUrinalScore(type);
+    }
+    //--------------------------------------------------------------------
+    public virtual void PerformDriedHandsInHandDryerScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInHandDryerScore(type);
+    }
+    public virtual void PerformDriedHandsInSinkScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInSinkScore(type);
+    }
+    public virtual void PerformDriedHandsInStallScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInStallScore(type);
+    }
+    public virtual void PerformDriedHandsInUrinalScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInUrinalScore(type);
+    }
+    //--------------------------------------------------------------------
+    public virtual void PerformStartedStandoffScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedStandoffScore(type);
+    }
+    public virtual void PerformStoppedStandoffScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStoppedStandoffScore(type);
+    }
+    public virtual void PerformStartedFightScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(type);
+    }
+    public virtual void PerformStoppedFightScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStoppedFightScore(type);
+    }
+    //--------------------------------------------------------------------
+    public virtual void PerformCausedOutOfOrderHandDryerScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderHandDryerScore(type);
+    }
+    public virtual void PerformCausedOutOfOrderSinkScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderSinkScore(type);
+    }
+    public virtual void PerformCausedOutOfOrderStallScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderStallScore(type);
+    }
+    public virtual void PerformCausedOutOfOrderUrinalScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderUrinalScore(type);
+    }
+    //--------------------------------------------------------------------
+    public virtual void PerformBrokeHandDryerByOutOfOrderUseScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByOutOfOrderUseScore(type);
+    }
+    public virtual void PerformBrokeSinkByOutOfOrderUseScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByOutOfOrderUseScore(type);
+    }
+    public virtual void PerformBrokeStallByOutOfOrderUseScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByOutOfOrderUseScore(type);
+    }
+    public virtual void PerformBrokeUrinalByOutOfOrderUseScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByOutOfOrderUseScore(type);
+    }
+
+    public virtual void PerformBrokeHandDryerByPeeingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByPeeingScore(type);
+    }
+    public virtual void PerformBrokeSinkByPeeingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByPeeingScore(type);
+    }
+    public virtual void PerformBrokeStallByPeeingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByPeeingScore(type);
+    }
+    public virtual void PerformBrokeUrinalByPeeingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByPeeingScore(type);
+    }
+
+    public virtual void PerformBrokeHandDryerByPoopingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByPoopingScore(type);
+    }
+    public virtual void PerformBrokeSinkByPoopingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByPoopingScore(type);
+    }
+    public virtual void PerformBrokeStallByPoopingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByPoopingScore(type);
+    }
+    public virtual void PerformBrokeUrinalByPoopingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByPoopingScore(type);
+    }
+
+    public virtual void PerformBrokeHandDryerByVomittingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByVomittingScore(type);
+    }
+    public virtual void PerformBrokeSinkByVomittingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByVomittingScore(type);
+    }
+    public virtual void PerformBrokeStallByVomittingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByVomittingScore(type);
+    }
+    public virtual void PerformBrokeUrinalByVomittingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByVomittingScore(type);
+    }
+
+    public virtual void PerformBrokeHandDryerByWashingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByWashingHandsScore(type);
+    }
+    public virtual void PerformBrokeSinkByWashingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByWashingHandsScore(type);
+    }
+    public virtual void PerformBrokeStallByWashingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByWashingHandsScore(type);
+    }
+    public virtual void PerformBrokeUrinalByWashingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByWashingHandsScore(type);
+    }
+
+    public virtual void PerformBrokeHandDryerByDryingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByDryingHandsScore(type);
+    }
+    public virtual void PerformBrokeSinkByDryingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByDryingHandsScore(type);
+    }
+    public virtual void PerformBrokeStallByDryingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByDryingHandsScore(type);
+    }
+    public virtual void PerformBrokeUrinalByDryingHandsScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByDryingHandsScore(type);
+    }
+
+    public virtual void PerformBrokeHandDryerByFightingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByFightingScore(type);
+    }
+    public virtual void PerformBrokeSinkByFightingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByFightingScore(type);
+    }
+    public virtual void PerformBrokeStallByFightingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByFightingScore(type);
+    }
+    public virtual void PerformBrokeUrinalByFightingScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByFightingScore(type);
+    }
+    //-------------------------------------------------------------------------
+    public virtual void PerformSatisfiedBrotocolNoAdjacentBrosScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroSatisfiedBrotocolNoAdjacentBrosScore(type);
+    }
+    public virtual void PerformTotalPossibleBrotocolNoAdjacentBrosScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroTotalPossibleBrotocolNoAdjacentBrosScore(type);
+    }
+    public virtual void PerformSatisfiedBrotocolRelievedInCorrectObjectOnFirstTryScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroSatisfiedBrotocolRelievedInCorrectObjectOnFirstTryScore(type);
+    }
+    public virtual void PerformTotalPossibleBrotocolRelievedInCorrectObjectOnFirstTryScore() {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroTotalPossibleBrotocolRelievedInCorrectObjectOnFirstTryScore(type);
+    }
+    //=========================================================================
 }

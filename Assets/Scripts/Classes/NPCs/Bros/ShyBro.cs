@@ -106,32 +106,32 @@ public class ShyBro : Bro {
   public override void PerformOnArrivalBrotocolScoreCheck() {
     bool brotocolWasSatisfied = false;
 
-    // As long as the target object is not null and it's not a bathroom exit
-    if(targetObject != null
-     && targetObject.GetComponent<BathroomObject>() != null
-     && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-      if(!hasRelievedSelf) {
-        //This is being checked on arrival before switching to occupying an object
-        // if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-        //   // increment correct relief type
-        //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolCorrectReliefTypeForTargetObject);
-        // }
-        if(!CheckIfBroInAdjacentBathroomObjects()) {
-          // increment bro alone bonus
-          ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolNoAdjacentBro);
-          brotocolWasSatisfied = true;
-        }
-        if(CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry()) {
-          // increment no janitor summoned bonus
-          ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolRelievedSelfInCorrectBathroomObjectTypeOnFirstTry);
-          brotocolWasSatisfied = true;
-        }
-      }
-    }
+    // // As long as the target object is not null and it's not a bathroom exit
+    // if(targetObject != null
+    //  && targetObject.GetComponent<BathroomObject>() != null
+    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+    //   if(!hasRelievedSelf) {
+    //     //This is being checked on arrival before switching to occupying an object
+    //     // if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+    //     //   // increment correct relief type
+    //     //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolCorrectReliefTypeForTargetObject);
+    //     // }
+    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+    //       // increment bro alone bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolNoAdjacentBro);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //     if(CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry()) {
+    //       // increment no janitor summoned bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolRelievedSelfInCorrectBathroomObjectTypeOnFirstTry);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //   }
+    // }
 
-    if(brotocolWasSatisfied) {
-      SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-    }
+    // if(brotocolWasSatisfied) {
+    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+    // }
   }
 
   public override bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
@@ -142,21 +142,5 @@ public class ShyBro : Bro {
       return false;
     }
   }
-
-	//--------------------------------------------------------
-	public override void PerformEnteredScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroEntered);
-	}
-	public override void PerformRelievedScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroRelieved);
-	}
-	public override void PerformWashedHandsScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroHandsWashed);
-	}
-	public override void PerformBroFightScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.BroFightOccurred);
-	}
-	public override void PerformExitedScore() {
-		ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroExited);
-	}
+    //=========================================================================
 }

@@ -325,7 +325,7 @@ public class BroDistributionObject : DistributionObject {
     broProbabilities[BroType.ChattyBro] = uniformBroTypeDistribution;
     broProbabilities[BroType.CuttingBro] = uniformBroTypeDistribution;
     broProbabilities[BroType.DrunkBro] = uniformBroTypeDistribution;
-    broProbabilities[BroType.FartingBro] = uniformBroTypeDistribution;
+    broProbabilities[BroType.GassyBro] = uniformBroTypeDistribution;
     broProbabilities[BroType.GenericBro] = uniformBroTypeDistribution;
     broProbabilities[BroType.Hobro] = uniformBroTypeDistribution;
     broProbabilities[BroType.RichBro] = uniformBroTypeDistribution;
