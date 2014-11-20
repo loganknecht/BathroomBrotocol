@@ -62,45 +62,47 @@ public class ShyBro : Bro {
     }
   }
 
-  public override void PerformOccupyingObjectLogic() {
-    if(targetObject != null
-       && targetObject.GetComponent<BathroomObject>() != null) {
-      BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-
-      if(occupationTimer > bathObjRef.occupationDuration) {
-        //OBJECT LOGIC ACTUALLY STARTS HERE
-        if(bathObjRef.type == BathroomObjectType.Stall) {
-          PerformStallOccupationFinishedLogic();
-        }
-        else if(bathObjRef.type == BathroomObjectType.Urinal
-                && reliefRequired == ReliefRequired.WashHands) {
-          PerformUrinalOccupationFinishedLogic();
-        }
-        else if(bathObjRef.type == BathroomObjectType.Sink) {
-          PerformSinkOccupationFinishedLogic();
-        }
-        else if(bathObjRef.type == BathroomObjectType.Exit) {
-          PerformExitOccupationFinishedLogic();
-        }
-      }
-      else {
+    public override void PerformOccupyingObjectLogic() {
         if(targetObject != null
-           && reliefRequired == ReliefRequired.Pee
-           && (targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Urinal
-              || targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Sink)) {
-          // Debug.Log("in urinal");
-          collider.enabled = true;
-          probabilityOfFightOnCollisionWithBro = 0f;
-          selectableReference.canBeSelected = true;
+           && targetObject.GetComponent<BathroomObject>() != null) {
+            BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+
+            if(occupationTimer > bathObjRef.occupationDuration) {
+                // Debug.Log("occupation finished");
+                if(bathObjRef.type == BathroomObjectType.Exit) {
+                    PerformExitOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.HandDryer) {
+                    PerformHandDryerOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.Sink) {
+                    PerformSinkOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.Stall) {
+                    PerformStallOccupationFinishedLogic();
+                }
+                else if(bathObjRef.type == BathroomObjectType.Urinal) {
+                    PerformUrinalOccupationFinishedLogic();
+                }
+            }
+            else {
+                if(targetObject != null
+                    && reliefRequired == ReliefRequired.Pee
+                    && (targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Urinal
+                    || targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Sink)) {
+                    // Debug.Log("in urinal");
+                    collider.enabled = true;
+                    probabilityOfFightOnCollisionWithBro = 0f;
+                    selectableReference.canBeSelected = true;
+                }
+                else {
+                    //disables the collider because the bro resides in the object, but the timer is still going
+                    collider.enabled = false;
+                    occupationTimer += Time.deltaTime;
+                }
+            }
         }
-        else {
-          //disables the collider because the bro resides in the object, but the timer is still going
-          collider.enabled = false;
-          occupationTimer += Time.deltaTime;
-        }
-      }
     }
-  }
 
   //This is being checked on arrival before switching to occupying an object
   public override void PerformOnArrivalBrotocolScoreCheck() {
