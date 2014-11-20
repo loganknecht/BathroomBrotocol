@@ -21,42 +21,32 @@ public class DrunkBro : Bro {
 
   public void PerformVomitTimerLogic() {
     if(!hasRelievedSelf) {
-      if(state != BroState.InAQueue
-         && state != BroState.Standoff
-         && state != BroState.Fighting
-         && state != BroState.OccupyingObject) {
-        vomitTimer += Time.deltaTime;
-      }
-      if(vomitTimer > vomitTimerMax) {
-        if(!vomitThrowUpPerformed) {
-          vomitThrowUpPerformed = true;
-          hasRelievedSelf = true;
-          // GameObject newVomit = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/Bathroom/BathroomTileBlockers/Vomit") as GameObject);
-          GameObject newVomit = Factory.Instance.GenerateBathroomTileBlockerObject(BathroomTileBlockerType.Vomit);
-          newVomit.transform.position = this.gameObject.transform.position;
-          BathroomTileBlockerManager.Instance.AddBathroomTileBlockerGameObject(newVomit);
-
-          BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-          List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
-          int selectedExit = Random.Range(0, exits.Count);
-          GameObject randomExit = exits[selectedExit];
-          BathroomTile randomExitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomExit.transform.position.x, randomExit.transform.position.y, true).GetComponent<BathroomTile>();
-
-          List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                    new List<GameObject>(), 
-                                                                                    broTile, 
-                                                                                    randomExitTile); 
-          state = BroState.MovingToTargetObject; 
-          SetTargetObjectAndTargetPosition(randomExit, movementNodes);
+        if(state != BroState.InAQueue
+           && state != BroState.Standoff
+           && state != BroState.Fighting
+           && state != BroState.OccupyingObject) {
+            vomitTimer += Time.deltaTime;
         }
-      }
+        if(vomitTimer > vomitTimerMax) {
+            if(!vomitThrowUpPerformed) {
+                vomitThrowUpPerformed = true;
+                hasRelievedSelf = true;
+
+                GameObject newVomit = Factory.Instance.GenerateBathroomTileBlockerObject(BathroomTileBlockerType.Vomit);
+                newVomit.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newVomit.transform.position.z);
+                BathroomTileBlockerManager.Instance.AddBathroomTileBlockerGameObject(newVomit);
+
+                BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
+                List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
+                int selectedExit = Random.Range(0, exits.Count);
+                GameObject randomExit = exits[selectedExit];
+                BathroomTile randomExitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomExit.transform.position.x, randomExit.transform.position.y, true).GetComponent<BathroomTile>();
+
+                SetRandomBathroomObjectTarget(false, AStarManager.Instance.GetListCopyOfPermanentClosedNodes(), BathroomObjectType.Exit);
+            }
+        }
     }
   }
-
-  // public override void PerformInAQueueLogic() {
-  //   PerformMovementLogic();
-  //   PerformArrivalLogic();
-  // }
 
   public override void PerformOccupyingObjectLogic() {
     // if(targetObject != null

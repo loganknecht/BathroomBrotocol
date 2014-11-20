@@ -4,58 +4,59 @@ using System.Collections.Generic;
 
 public class BathroomTileMap : TileMap {
 
-	//BEGINNING OF SINGLETON CODE CONFIGURATION
-	private static volatile BathroomTileMap _instance;
-	private static object _lock = new object();
+    //BEGINNING OF SINGLETON CODE CONFIGURATION
+    private static volatile BathroomTileMap _instance;
+    private static object _lock = new object();
 
-	//Stops the lock being created ahead of time if it's not necessary
-	static BathroomTileMap() {
-	}
+    //Stops the lock being created ahead of time if it's not necessary
+    static BathroomTileMap() {
+    }
 
-	public static BathroomTileMap Instance {
-		get {
-			if(_instance == null) {
-				lock(_lock) {
-					if (_instance == null) {
-						GameObject bathroomTileMapGameObject = new GameObject("BathroomTileMapGameObject");
-						_instance = (bathroomTileMapGameObject.AddComponent<BathroomTileMap>()).GetComponent<BathroomTileMap>();
-					}
-				}
-			}
-			return _instance;
-		}
-	}
+    public static BathroomTileMap Instance {
+        get {
+            if(_instance == null) {
+                lock(_lock) {
+                    if (_instance == null) {
+                        GameObject bathroomTileMapGameObject = new GameObject("BathroomTileMapGameObject");
+                        _instance = (bathroomTileMapGameObject.AddComponent<BathroomTileMap>()).GetComponent<BathroomTileMap>();
+                    }
+                }
+            }
+            return _instance;
+        }
+    }
 
-	private BathroomTileMap() {
-	}
+    private BathroomTileMap() {
+    }
 
-	protected override void Awake() {
-		//There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
-		//the script, which is assumedly attached to some GameObject. This in turn allows the instance
-		//to be assigned when a game object is given this script in the scene view.
-		//This also allows the pre-configured lazy instantiation to occur when the script is referenced from
-		//another call to it, so that you don't need to worry if it exists or not.
-		_instance = this;
+    protected override void Awake() {
+        //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
+        //the script, which is assumedly attached to some GameObject. This in turn allows the instance
+        //to be assigned when a game object is given this script in the scene view.
+        //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
+        //another call to it, so that you don't need to worry if it exists or not.
+        _instance = this;
 
         base.Awake();
-	}
-	//END OF SINGLETON CODE CONFIGURATION
+    }
+    //END OF SINGLETON CODE CONFIGURATION
 
-	// Use this for initialization
-	protected override void Start () {
-        if(AStarManager.Instance.permanentlyClosedNodes == null) {
-           AStarManager.Instance.permanentlyClosedNodes = new List<GameObject>(); 
+    // Use this for initialization
+    protected override void Start () {
+        if(AStarManager.Instance.permanentClosedNodes == null) {
+           AStarManager.Instance.permanentClosedNodes = new List<GameObject>(); 
         }
-		base.Start();
+        base.Start();
         ConfigureBathroomObjectsWithTileTheyreIn();
-        ConfigureAStarPermanentClosedNodes();
+        // Needs to be called after bathroom tile map is configured
+        AStarManager.Instance.ConfigureAStarPermanentClosedNodes(tiles);
         // ConfigureBathroomTileBlockersInBathroomTile();
     }
 
-	// Update is called once per frame
-	public override void Update () {
-		base.Update();
-	}
+    // Update is called once per frame
+    public override void Update () {
+        base.Update();
+    }
 
     public void ConfigureBathroomObjectsWithTileTheyreIn() {
         BathroomObject[] allBathroomObjects = Resources.FindObjectsOfTypeAll(typeof(BathroomObject)) as BathroomObject[]; 
@@ -76,20 +77,6 @@ public class BathroomTileMap : TileMap {
         }
     }
 
-    public void ConfigureAStarPermanentClosedNodes() {
-        foreach(GameObject[] row in tiles) {
-            foreach(GameObject tileGameObject in row) {
-                // Debug.Log("In tile of: " + tileGameObject.name);
-                if(tileGameObject != null
-                   && tileGameObject.GetComponent<Tile>()
-                   && tileGameObject.GetComponent<AStarNode>().isUntraversable) {
-                    if(!AStarManager.Instance.permanentlyClosedNodes.Contains(tileGameObject)) {
-                        AStarManager.Instance.permanentlyClosedNodes.Add(tileGameObject);
-                    }
-                }
-            }
-        }
-    }
 
 	public GameObject SelectRandomOpenTile() {
         GameObject foundBathroomTile = null;
@@ -99,7 +86,7 @@ public class BathroomTileMap : TileMap {
             int selectedXIndex = Random.Range(0, tilesWide);
             int selectedYIndex = Random.Range(0, tilesHigh);
             foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
-			foreach(GameObject closedNode in AStarManager.Instance.permanentlyClosedNodes) {
+			foreach(GameObject closedNode in AStarManager.Instance.permanentClosedNodes) {
 				//if tile in closed nodes list reset and try again
                 if(closedNode == foundBathroomTile) {
 					foundOpenTile = false;

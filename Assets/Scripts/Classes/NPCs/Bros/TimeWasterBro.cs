@@ -66,7 +66,7 @@ public class TimeWasterBro : Bro {
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false).GetComponent<BathroomTile>();
                 BathroomTile exitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelectedGameObject.transform.position.x, exitSelectedGameObject.transform.position.y, false).GetComponent<BathroomTile>();
                 List<GameObject> bathroomEntranceToGameObjectMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                                                      AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
+                                                                                                                      AStarManager.Instance.GetListCopyOfPermanentClosedNodes(),
                                                                                                                       broTile,
                                                                                                                       exitTile);
                 SetTargetObjectAndTargetPosition(exitSelectedGameObject, bathroomEntranceToGameObjectMovementNodes);
@@ -82,7 +82,7 @@ public class TimeWasterBro : Bro {
                 bool foundEmptyTile = false;
                 GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
                 while(!foundEmptyTile) {
-                    if(AStarManager.Instance.permanentlyClosedNodes.Contains(randomBathroomTile)) {
+                    if(AStarManager.Instance.permanentClosedNodes.Contains(randomBathroomTile)) {
                         randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
                     }
                     else {

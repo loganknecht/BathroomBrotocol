@@ -123,24 +123,24 @@ public class TileMap : BaseBehavior {
         return GetTileGameObjectByWorldPosition(position.x, position.y, returnClosestTile);
     }
 
-	public GameObject GetTileGameObjectByWorldPosition(float xPosition, float yPosition, bool returnClosestTile) {
+    public GameObject GetTileGameObjectByWorldPosition(float xPosition, float yPosition, bool returnClosestTile) {
         GameObject closestTile = null;
         float closestTileXDistance = 0f;
         float closestTileYDistance = 0f;
 
-		foreach(GameObject[] row in tiles) {
+        foreach(GameObject[] row in tiles) {
             foreach(GameObject tile in row) {
-    			float leftBound = tile.transform.position.x - singleTileWidth/2;
-    			float rightBound = tile.transform.position.x + singleTileWidth/2;
+            float leftBound = tile.transform.position.x - singleTileWidth/2;
+            float rightBound = tile.transform.position.x + singleTileWidth/2;
 
-    			float bottomBound = tile.transform.position.y - singleTileHeight/2;
-    			float topBound = tile.transform.position.y + singleTileHeight/2;
+            float bottomBound = tile.transform.position.y - singleTileHeight/2;
+            float topBound = tile.transform.position.y + singleTileHeight/2;
 
-    			if(leftBound < xPosition
-    			   && rightBound > xPosition
-    			   && bottomBound < yPosition
-    			   && topBound > yPosition) {
-    				return tile;
+            if(leftBound < xPosition
+                && rightBound > xPosition
+                && bottomBound < yPosition
+                && topBound > yPosition) {
+                    return tile;
                 }
 
                 if(returnClosestTile) {

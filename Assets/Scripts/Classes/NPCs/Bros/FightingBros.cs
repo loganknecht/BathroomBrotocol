@@ -71,9 +71,9 @@ public class FightingBros : TargetPathingNPC {
       // Debug.Log("next node x: " + nextBathroomTile.gameObject.transform.position.x + " y: " + nextBathroomTile.gameObject.transform.position.y);
       // Debug.Log("next node: " + nextBathroomTile.gameObject.name);
       List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
-                                                                                currentBathroomTile,
-                                                                                nextBathroomTile);
+                                                                                    AStarManager.Instance.GetListCopyOfPermanentClosedNodes(),
+                                                                                    currentBathroomTile,
+                                                                                    nextBathroomTile);
       SetTargetObjectAndTargetPosition(null, newMovementNodes);
     }
   }
@@ -98,7 +98,7 @@ public class FightingBros : TargetPathingNPC {
                 BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
                 BathroomTile targetTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(exitSelected.transform.position.x, exitSelected.transform.position.y, true).GetComponent<BathroomTile>();
                 List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                             AStarManager.Instance.GetListCopyOfAStarClosedNodes(),
+                                                                                             AStarManager.Instance.GetListCopyOfPermanentClosedNodes(),
                                                                                              startTile,
                                                                                              targetTile);
                 broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);

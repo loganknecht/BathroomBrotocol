@@ -8,53 +8,54 @@ using System.Collections.Generic;
 public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 
     //These should be considered the de facto closed nodes. Reason being is that additional nodes can be added as closed nodes, but these should be considered permanently closed nodes for the sake of having this covered.... it sounded right in my head
-	public List<GameObject> permanentlyClosedNodes = null; 
+    public List<GameObject> permanentClosedNodes = null; 
+    public List<GameObject> temporaryClosedNodes = null; 
 
-	//BEGINNING OF SINGLETON CODE CONFIGURATION
-	private static volatile AStarManager _instance;
-	private static object _lock = new object();
+    //BEGINNING OF SINGLETON CODE CONFIGURATION
+    private static volatile AStarManager _instance;
+    private static object _lock = new object();
 
     public bool debugShowLastPathCalculated = false;
     public List<GameObject> debugLastPathNodes = null;
 
-	//Stops the lock being created ahead of time if it's not necessary
-	static AStarManager() {
-	}
+    //Stops the lock being created ahead of time if it's not necessary
+    static AStarManager() {
+    }
 
-	public static AStarManager Instance {
-		get {
-			if(_instance == null) {
-				lock(_lock) {
-					if (_instance == null) {
-						GameObject aStarManagerGameObject = new GameObject("AStarManagerGameObject");
-						_instance = (aStarManagerGameObject.AddComponent<AStarManager>()).GetComponent<AStarManager>();
-					}
-				}
-			}
-			return _instance;
-		}
-	}
+    public static AStarManager Instance {
+        get {
+            if(_instance == null) {
+                lock(_lock) {
+                    if (_instance == null) {
+                        GameObject aStarManagerGameObject = new GameObject("AStarManagerGameObject");
+                        _instance = (aStarManagerGameObject.AddComponent<AStarManager>()).GetComponent<AStarManager>();
+                    }
+                }
+            }
+            return _instance;
+        }
+    }
 
-	private AStarManager() {
-	}
+    private AStarManager() {
+    }
 
-	protected override void Awake() {
+    protected override void Awake() {
         base.Awake();
 
-		//There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
-		//the script, which is assumedly attached to some GameObject. This in turn allows the instance
-		//to be assigned when a game object is given this script in the scene view.
-		//This also allows the pre-configured lazy instantiation to occur when the script is referenced from
-		//another call to it, so that you don't need to worry if it exists or not.
-		_instance = this;
-	}
-	//END OF SINGLETON CODE CONFIGURATION
+        //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
+        //the script, which is assumedly attached to some GameObject. This in turn allows the instance
+        //to be assigned when a game object is given this script in the scene view.
+        //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
+        //another call to it, so that you don't need to worry if it exists or not.
+        _instance = this;
+    }
+    //END OF SINGLETON CODE CONFIGURATION
 
-	// Use this for initialization
-	void Start () {
-	}
+    // Use this for initialization
+    void Start () {
+    }
 
-	// Update is called once per frame
+    // Update is called once per frame
     void Update () {
         // if(!debugShowLastPathCalculated) {
         //     foreach(GameObject gameObj in debugLastPathNodes) {
@@ -64,8 +65,44 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         //     debugLastPathNodes.Clear();
         // }
     }
-//-----------------------------
-	public List<GameObject> CalculateAStarPath(GameObject tileMapBeingSearchedGameObject, List<GameObject> closedNodes, Tile startTile, Tile endTile) {
+
+    public void ConfigureAStarPermanentClosedNodes(GameObject[][] tiles) {
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tileGameObject in row) {
+                // Debug.Log("In tile of: " + tileGameObject.name);
+                if(tileGameObject != null
+                   && tileGameObject.GetComponent<Tile>()
+                   && tileGameObject.GetComponent<AStarNode>().isUntraversable) {
+                        AddPermanentClosedNode(tileGameObject);
+                }
+            }
+        }
+    }
+
+    public void AddPermanentClosedNode(GameObject tileGameObject) {
+        if(!permanentClosedNodes.Contains(tileGameObject)) {
+            permanentClosedNodes.Add(tileGameObject);
+        }
+    }
+    public void RemovePermanentClosedNode(GameObject tileGameObject) {
+        if(permanentClosedNodes.Contains(tileGameObject)) {
+            permanentClosedNodes.Remove(tileGameObject);
+        }
+    }
+    public void AddTemporaryClosedNode(GameObject tileGameObject) {
+        if(!temporaryClosedNodes.Contains(tileGameObject)
+            && !permanentClosedNodes.Contains(tileGameObject)) {
+            temporaryClosedNodes.Add(tileGameObject);
+        }
+    }
+    public void RemoveTemporaryClosedNode(GameObject tileGameObject) {
+        if(temporaryClosedNodes.Contains(tileGameObject)) {
+            temporaryClosedNodes.Remove(tileGameObject);
+        }
+    }
+
+    //-----------------------------
+    public List<GameObject> CalculateAStarPath(GameObject tileMapBeingSearchedGameObject, List<GameObject> closedNodes, Tile startTile, Tile endTile) {
         // Debug.Log("Start tile X: " + startTile.tileX + " Y: " + startTile.tileY);
         // Debug.Log("End tile X: " + endTile.tileX + " Y: " + endTile.tileY);
 
@@ -81,22 +118,22 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         }
 
         // Short-circuits and returns empty list if start tile and end tile are the same
-		List<GameObject> bathroomTilePath = new List<GameObject>();
-		if(startTile.tileX == endTile.tileX
-		   && startTile.tileY == endTile.tileY) {
-			// Debug.Log("Start tile and end tile are the same, returned empty new list.");
-			return bathroomTilePath;
-		}
+        List<GameObject> bathroomTilePath = new List<GameObject>();
+        if(startTile.tileX == endTile.tileX
+            && startTile.tileY == endTile.tileY) {
+            // Debug.Log("Start tile and end tile are the same, returned empty new list.");
+            return bathroomTilePath;
+        }
 
         TileMap tileMapBeingSearched = tileMapBeingSearchedGameObject.GetComponent<TileMap>();
         GameObject[][] tilesBeingSearched = tileMapBeingSearched.GetTiles();
 
         List<GameObject> openNodes = new List<GameObject>();
 
-		AStarNode currentNode = null;
-		AStarNode previousNode = null;
+        AStarNode currentNode = null;
+        AStarNode previousNode = null;
 
-		bool endTileIsInOpenNodeList = false;
+        bool endTileIsInOpenNodeList = false;
 
         // reset all astar path stuff just in case
         foreach(GameObject[] row in tilesBeingSearched) {
@@ -106,51 +143,51 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         }
 
 
-		// try {
-			// Adds the first node to the starting list to kick it off
-			//1) Add the starting square (or node) to the open list.
-			openNodes.Add(startTile.gameObject);
+        // try {
+            // Adds the first node to the starting list to kick it off
+            //1) Add the starting square (or node) to the open list.
+            openNodes.Add(startTile.gameObject);
             // Removes the end bathroom tile from the open nodes list, because that is the conditional for the while loop?
-			// openNodes.Remove(endTile.gameObject);
+            // openNodes.Remove(endTile.gameObject);
 
-			//2) Repeat the following:
-			while(!endTileIsInOpenNodeList) {
-                // Debug.Log("====================================================");
-				//a) Look for the lowest F cost square on the open list. We refer to this as the current square.
+            //2) Repeat the following:
+            while(!endTileIsInOpenNodeList) {
+                Debug.Log("====================================================");
+                //a) Look for the lowest F cost square on the open list. We refer to this as the current square.
                 AStarNode lowestCost = null;
-				foreach(GameObject gameObj in openNodes) {
-					AStarNode openNode = gameObj.GetComponent<AStarNode>();
+                foreach(GameObject gameObj in openNodes) {
+                    AStarNode openNode = gameObj.GetComponent<AStarNode>();
                     // openNode.heuristicValue = CalulateManhattanDistance(openNode.tileX, openNode.tileY, endTile.tileX, endTile.tileY);
-					if(lowestCost == null) {
-						lowestCost = openNode;
-					}
-					else if(openNode.gValue + openNode.heuristicValue < lowestCost.gValue + lowestCost.heuristicValue) {
-						lowestCost = openNode;
-					}
+                    if(lowestCost == null) {
+                        lowestCost = openNode;
+                    }
+                    else if(openNode.gValue + openNode.heuristicValue < lowestCost.gValue + lowestCost.heuristicValue) {
+                        lowestCost = openNode;
+                    }
                     // Debug.Log("lowest cost(" + lowestCost.gameObject.name + "): " + (lowestCost.gValue + lowestCost.heuristicValue));
                     // Debug.Log("openNode cost(" + openNode.gameObject.name + "): " + (openNode.gValue + openNode.heuristicValue));
-				}
+                }
 
-    			previousNode = currentNode;
-    			currentNode = lowestCost;
+                previousNode = currentNode;
+                currentNode = lowestCost;
 
                 int currentNodeTileX = currentNode.gameObject.GetComponent<BathroomTile>().tileX;
                 int currentNodeTileY = currentNode.gameObject.GetComponent<BathroomTile>().tileY;
 
                 // currentNode.gameObject.GetComponent<BathroomTile>().tileX)
 
-				// Debug.Log("----------------------------------------------------");
+                // Debug.Log("----------------------------------------------------");
                 // Debug.Log(currentNode.gameObject.name);
-				// Debug.Log("Current Node is: X: " + ((currentNode != null) ? currentNode.GetComponent<Tile>().tileX.ToString() : "Null current node") + " Y: " + ((currentNode != null) ? currentNode.gameObject.GetComponent<Tile>().tileY.ToString() : "Null current node"));
-				// Debug.Log("Current Node Parent is: " + ((currentNode != null) ? ((currentNode.parentAStarNode != null) ? currentNode.parentAStarNode.ToString() : "Null parent node") : "Null current node"));
-				// Debug.Log("----------------------------------------------------");
+                // Debug.Log("Current Node is: X: " + ((currentNode != null) ? currentNode.GetComponent<Tile>().tileX.ToString() : "Null current node") + " Y: " + ((currentNode != null) ? currentNode.gameObject.GetComponent<Tile>().tileY.ToString() : "Null current node"));
+                // Debug.Log("Current Node Parent is: " + ((currentNode != null) ? ((currentNode.parentAStarNode != null) ? currentNode.parentAStarNode.ToString() : "Null parent node") : "Null current node"));
+                // Debug.Log("----------------------------------------------------");
                 // Debug.Log("tiles high: " + tileMapBeingSearched.tilesHigh);
                 // Debug.Log("tiles wide: " + tileMapBeingSearched.tilesWide);
                 if(currentNodeTileY + 1 < tileMapBeingSearched.tilesHigh) {
                     // Debug.Log("Top Row Check");
                     if(currentNodeTileX - 1 >= 0) {
                         // Debug.Log("Performing Top Left A Star Tile Check");
-        				PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
+                        PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
                                                 tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX - 1].GetComponent<Tile>(), 
                                                 endTile.tileX, 
                                                 endTile.tileY,
@@ -180,8 +217,8 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                     }
                 }
                 if(currentNodeTileX - 1 >= 0) {
-                	// Debug.Log("----------------------------------------------------");
-                	// Debug.Log("Performing Left A Star Tile Check");
+                    // Debug.Log("----------------------------------------------------");
+                    // Debug.Log("Performing Left A Star Tile Check");
                     PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
                                             tilesBeingSearched[currentNodeTileY][currentNodeTileX - 1].GetComponent<Tile>(), 
                                             endTile.tileX, 
@@ -191,8 +228,8 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                                             closedNodes);
                 }
                 if(currentNodeTileX + 1 < tileMapBeingSearched.tilesHigh) {
-                	// Debug.Log("----------------------------------------------------");
-                	// Debug.Log("Performing Right A Star Tile Check");
+                    // Debug.Log("----------------------------------------------------");
+                    // Debug.Log("Performing Right A Star Tile Check");
                     PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
                                             tilesBeingSearched[currentNodeTileY][currentNodeTileX + 1].GetComponent<Tile>(), 
                                             endTile.tileX, 
@@ -237,16 +274,18 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                 }
 
                 // Debug.Log("----------------------------------------------------");
-                // Debug.Log("Size of Open Nodes After Calculation: " + openNodes.Count);
+                Debug.Log("Size of Open Nodes After Calculation: " + openNodes.Count);
                 // Debug.Log("Size of Closed Nodes After Calculation: " + closedNodes.Count);
                 // Debug.Log("-----------End of Surrounding Tile Check------------");
 
-				if(openNodes.Contains(currentNode.gameObject)) {
-					openNodes.Remove(currentNode.gameObject);
-				}
-				if(!closedNodes.Contains(currentNode.gameObject)) {
-					closedNodes.Add(currentNode.gameObject);
-				}
+                if(openNodes.Contains(currentNode.gameObject)) {
+                    openNodes.Remove(currentNode.gameObject);
+                }
+                // if not in closed nodes
+                // if in closed nodes, ignore the start tile
+                if(!closedNodes.Contains(currentNode.gameObject)) {
+                    closedNodes.Add(currentNode.gameObject);
+                }
 
                 // Debug.Log("End tile X: " + endTile.tileX + " Y: " + endTile.tileY);
                 bool endTileDetectedInOpenNodeList = CheckIfTileListContainsTile(openNodes, endTile.tileX, endTile.tileY);
@@ -258,31 +297,31 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                   // Debug.Log("End tile detected in open nodes");
                   endTileIsInOpenNodeList = true;
                 }
-    		}
+            }
 
-			// BathroomTile currentBathroomTile = RetrieveTileByXandY(openNodes, endTile.tileX, endTile.tileY);
+            // BathroomTile currentBathroomTile = RetrieveTileByXandY(openNodes, endTile.tileX, endTile.tileY);
             // GameObject currentBathroomTileObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentNode.tileX, currentNode.tileY);
             GameObject currentBathroomTileObject = null;
             if(openNodes.Count == 0) {
                 currentBathroomTileObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentNode.gameObject.GetComponent<Tile>().tileX, currentNode.gameObject.GetComponent<Tile>().tileY);
             }
             else {
-                foreach(GameObject gameObj in openNodes) {
-                  if(gameObj.GetComponent<BathroomTile>()
-                     && (gameObj.GetComponent<BathroomTile>().tileX == endTile.tileX && gameObj.GetComponent<BathroomTile>().tileY == endTile.tileY)) {
-                    currentBathroomTileObject = gameObj;
+                foreach(GameObject openNode in openNodes) {
+                  if(openNode.GetComponent<BathroomTile>()
+                     && (openNode.GetComponent<BathroomTile>().tileX == endTile.tileX && openNode.GetComponent<BathroomTile>().tileY == endTile.tileY)) {
+                    currentBathroomTileObject = openNode;
                   }
                 }
             }
 
-			BathroomTile currentBathroomTile = null;
-			if(currentBathroomTileObject != null) {
-				currentBathroomTile = currentBathroomTileObject.GetComponent<BathroomTile>();
-			}
-			while(currentBathroomTile != null) {
+            BathroomTile currentBathroomTile = null;
+            if(currentBathroomTileObject != null) {
+                currentBathroomTile = currentBathroomTileObject.GetComponent<BathroomTile>();
+            }
+            while(currentBathroomTile != null) {
                 // Debug.Log(currentBathroomTile);
                 // Debug.Log("Adding tile (" + currentBathroomTile.tileX + "," + currentBathroomTile.tileY + ") to the movement node list");
-				// bathroomTilePath.Add(new Vector2(currentBathroomTile.gameObject.transform.position.x, currentBathroomTile.gameObject.transform.position.y));
+                // bathroomTilePath.Add(new Vector2(currentBathroomTile.gameObject.transform.position.x, currentBathroomTile.gameObject.transform.position.y));
                 bathroomTilePath.Add(currentBathroomTile.gameObject);
                 if(currentBathroomTile.gameObject.GetComponent<AStarNode>().parentAStarNode != null) {
                     currentBathroomTile = currentBathroomTile.gameObject.GetComponent<AStarNode>().parentAStarNode.gameObject.GetComponent<BathroomTile>();
@@ -290,11 +329,11 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                 else {
                     currentBathroomTile = null;
                 } 
-			}
-			//adds the first node, otherwise it's left out
-			// bathroomTilePath.Add(new Vector2(startTile.transform.position.x, startTile.transform.position.y));
+            }
+            //adds the first node, otherwise it's left out
+            // bathroomTilePath.Add(new Vector2(startTile.transform.position.x, startTile.transform.position.y));
             bathroomTilePath.Add(startTile.gameObject);
-			bathroomTilePath.Reverse();
+            bathroomTilePath.Reverse();
 //------------------------------------------------------------------
 //       if(debugShowLastPathCalculated) {
 //         // List<GameObject> removeDebugTiles = new List<GameObject>();
@@ -344,40 +383,40 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 //         }
 //       }
 
-			return bathroomTilePath;
-		// }
-		// catch(System.Exception e) {
-		// 	Debug.Log(e.StackTrace);
-		// 	// ------------------------------------------------
-		// 	Debug.Log("-------------------------------------------------------------");
-		// 	Debug.Log("Custom Log");
-		// 	Debug.Log("-------------------------------------------------------------");
-		// 	Debug.Log("There was an issue with the Calculate AStar Path method. Please validate with the information provided in order to fix the issue. - Love your past self");
-		// 	Debug.Log("Number of open nodes: " + openNodes.Count);
-		// 	Debug.Log("Number of closed nodes: " + closedNodes.Count);
-		// 	Debug.Log("Start Bathroom Tile: " + startTile.name);
-		// 	Debug.Log("End Bathroom Tile: " + endTile.name);
-		// 	// Debug.Log("Previous Node X: " + previousNode.tileX + " Y: " + previousNode.tileY);
-		// 	Debug.Log("Current Node: " + currentNode);
-		// 	Debug.Log("xOffsetToCheck: " + xOffsetToCheck);
-		// 	Debug.Log("yOffsetToCheck: " + yOffsetToCheck);
-		// 	Debug.Log("End bathroom tile is in the open list: " + endTileIsInOpenNodeList);
-		// 	if(currentNode != null) {
-		// 		// Debug.Log("Tile X Being checked: " + currentNode.tileX);
-		// 		// Debug.Log("Tile Y Being checked: " + currentNode.tileX);
-		// 	}
-		// 	else {
-		// 		Debug.Log("Current node is null, so Tile X and Y being checked are null as well.");
-		// 	}
-		// 	//return bathroomTilePositionsForPath;
-		// 	return new List<GameObject>();
-		// }
+            return bathroomTilePath;
+        // }
+        // catch(System.Exception e) {
+        // 	Debug.Log(e.StackTrace);
+        // 	// ------------------------------------------------
+        // 	Debug.Log("-------------------------------------------------------------");
+        // 	Debug.Log("Custom Log");
+        // 	Debug.Log("-------------------------------------------------------------");
+        // 	Debug.Log("There was an issue with the Calculate AStar Path method. Please validate with the information provided in order to fix the issue. - Love your past self");
+        // 	Debug.Log("Number of open nodes: " + openNodes.Count);
+        // 	Debug.Log("Number of closed nodes: " + closedNodes.Count);
+        // 	Debug.Log("Start Bathroom Tile: " + startTile.name);
+        // 	Debug.Log("End Bathroom Tile: " + endTile.name);
+        // 	// Debug.Log("Previous Node X: " + previousNode.tileX + " Y: " + previousNode.tileY);
+        // 	Debug.Log("Current Node: " + currentNode);
+        // 	Debug.Log("xOffsetToCheck: " + xOffsetToCheck);
+        // 	Debug.Log("yOffsetToCheck: " + yOffsetToCheck);
+        // 	Debug.Log("End bathroom tile is in the open list: " + endTileIsInOpenNodeList);
+        // 	if(currentNode != null) {
+        // 		// Debug.Log("Tile X Being checked: " + currentNode.tileX);
+        // 		// Debug.Log("Tile Y Being checked: " + currentNode.tileX);
+        // 	}
+        // 	else {
+        // 		Debug.Log("Current node is null, so Tile X and Y being checked are null as well.");
+        // 	}
+        // 	//return bathroomTilePositionsForPath;
+        // 	return new List<GameObject>();
+        // }
         // return new List<GameObject>();
-	}
+    }
 
-	public void PerformAStarCalculation(Tile currentNode, Tile tileBeingChecked, int endTileX, int endTileY, GameObject[][] tilesBeingChecked, List<GameObject> openNodes, List<GameObject> closedNodes) {
-		// int tileXBeingChecked = currentNode.tileX + xTileOffsetToPerformCalculationOn;
-		// int tileYBeingChecked = currentNode.tileY + yTileOffsetToPerformCalculationOn;
+    public void PerformAStarCalculation(Tile currentNode, Tile tileBeingChecked, int endTileX, int endTileY, GameObject[][] tilesBeingChecked, List<GameObject> openNodes, List<GameObject> closedNodes) {
+        // int tileXBeingChecked = currentNode.tileX + xTileOffsetToPerformCalculationOn;
+        // int tileYBeingChecked = currentNode.tileY + yTileOffsetToPerformCalculationOn;
         int tileXBeingChecked = -1;
         int tileYBeingChecked = -1;
 
@@ -386,21 +425,13 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
             tileYBeingChecked = tileBeingChecked.tileY;
         }
 
-		int gValueOffset = 0;
+        int gValueOffset = 0;
 
-        // Redundant it's passed in
-		// GameObject bathroomTileBeingCheckedObject = BathroomTileMap.Instance.GetTileByXandY(tileXBeingChecked, tileYBeingChecked);
-		// Tile tileBeingChecked = null;
-		// if(tileBeingChecked != null) {
-		// 	tileBeingChecked = tileBeingChecked.GetComponent<Tile>();
-		// }
-		// Debug.Log("Tile Being Checked X: " + tileXBeingChecked + " Y: " + tileYBeingChecked);
-
-		if(tileBeingChecked != null) {
-//			if(tileBeingChecked.tileX == endTileX
-//			   && tileBeingChecked.tileY == endTileY) {
-//				Debug.Log("LOCATED END TILE");
-//			}
+        if(tileBeingChecked != null) {
+            // if(tileBeingChecked.tileX == endTileX
+            // && tileBeingChecked.tileY == endTileY) {
+            //     Debug.Log("LOCATED END TILE");
+            // }
 			//left
 			if(currentNode.tileX < tileBeingChecked.tileX) {
 				//top left
@@ -484,66 +515,83 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
             }
             // Debug.Log("open nodes after operation: " + openNodes.Count);
         }
-	}
+    }
 
-	public  Tile RetrieveTileByXandY(List<GameObject> listToRetrieveFrom, int tileXToSelect, int tileYToSelect) {
-		foreach(GameObject gameObj in listToRetrieveFrom) {
-			Tile node = gameObj.GetComponent<Tile>();
-			if(node != null
-			   && node.tileX == tileXToSelect
-			   && node.tileY == tileYToSelect) {
-				return node;
-			}
-		}
-
-		return null;
-	}
-
-	public bool CheckIfTileListContainsTile(List<GameObject> listToCheck, int tileXToCheckFor, int tileYToCheckFor) {
-		bool listContainsNodeSpecified = false;
-        if(listToCheck != null) {
-    		foreach(GameObject gameObj in listToCheck) {
-                if(gameObj != null) {
-        			Tile node = gameObj.GetComponent<Tile>();
-        			if(node != null
-        			   && node.tileX == tileXToCheckFor
-        			   && node.tileY == tileYToCheckFor) {
-        				listContainsNodeSpecified =  true;
-        			}
-                }
-    		}
+    public  Tile RetrieveTileByXandY(List<GameObject> listToRetrieveFrom, int tileXToSelect, int tileYToSelect) {
+        foreach(GameObject gameObj in listToRetrieveFrom) {
+            Tile node = gameObj.GetComponent<Tile>();
+            if(node != null
+                && node.tileX == tileXToSelect
+                && node.tileY == tileYToSelect) {
+                return node;
+            }
         }
-		return listContainsNodeSpecified;
+        return null;
+    }
+
+    public bool CheckIfTileListContainsTile(List<GameObject> listToCheck, int tileXToCheckFor, int tileYToCheckFor) {
+        bool listContainsNodeSpecified = false;
+        if(listToCheck != null) {
+            foreach(GameObject gameObj in listToCheck) {
+                if(gameObj != null) {
+                    Tile node = gameObj.GetComponent<Tile>();
+                    if(node != null
+                        && node.tileX == tileXToCheckFor
+                        && node.tileY == tileYToCheckFor) {
+                            listContainsNodeSpecified =  true;
+                    }
+                }
+            }
+        }
+        return listContainsNodeSpecified;
         // return false;
-	}
+    }
 
-	public float CalulateManhattanDistance(float startTileX, float startTileY, float endTileX, float endTileY) {
-		float horizontalManhattanDistance = 0f;
-		float verticalManhattanDistance = 0f;
+    public float CalulateManhattanDistance(float startTileX, float startTileY, float endTileX, float endTileY) {
+        float horizontalManhattanDistance = 0f;
+        float verticalManhattanDistance = 0f;
 
-		if(endTileX > startTileX) {
-			horizontalManhattanDistance = (endTileX - startTileX);
-		}
-		else {
-			horizontalManhattanDistance = (startTileX - endTileX);
-		}
+        if(endTileX > startTileX) {
+            horizontalManhattanDistance = (endTileX - startTileX);
+        }
+        else {
+            horizontalManhattanDistance = (startTileX - endTileX);
+        }
 
-		if(endTileY > startTileY) {
-			verticalManhattanDistance = (endTileY - startTileY);
-		}
-		else {
-			verticalManhattanDistance = (startTileY - endTileY);
-		}
-		return (horizontalManhattanDistance + verticalManhattanDistance);
-	}
+        if(endTileY > startTileY) {
+            verticalManhattanDistance = (endTileY - startTileY);
+        }
+        else {
+            verticalManhattanDistance = (startTileY - endTileY);
+        }
+        return (horizontalManhattanDistance + verticalManhattanDistance);
+    }
+
+    public List<GameObject> GetListCopyOfAllClosedNodes() {
+        List<GameObject> closedNodes = new List<GameObject>();
+        closedNodes.AddRange(GetListCopyOfPermanentClosedNodes());
+        closedNodes.AddRange(GetListCopyOfTemporaryClosedNodes());
+
+        return closedNodes;
+    }
 
     //Closed nodes are actually the reference to the bathroom tile game object
-    public List<GameObject> GetListCopyOfAStarClosedNodes() {
-    	List<GameObject> copyOfPermanentNodes = new List<GameObject>();
-    	foreach(GameObject gameObj in permanentlyClosedNodes) {
-    		copyOfPermanentNodes.Add(gameObj);
-    	}
+    public List<GameObject> GetListCopyOfPermanentClosedNodes() {
+        List<GameObject> copyOfPermanentNodes = new List<GameObject>();
+        foreach(GameObject gameObj in permanentClosedNodes) {
+            copyOfPermanentNodes.Add(gameObj);
+        }
 
-    	return copyOfPermanentNodes;
+        return copyOfPermanentNodes;
+    }
+
+    // These are the temporary closed nodes
+    public List<GameObject> GetListCopyOfTemporaryClosedNodes() {
+        List<GameObject> copyOfTemporaryNodes = new List<GameObject>();
+        foreach(GameObject gameObj in temporaryClosedNodes) {
+            copyOfTemporaryNodes.Add(gameObj);
+        }
+
+        return copyOfTemporaryNodes;
     }
 }

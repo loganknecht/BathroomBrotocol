@@ -53,13 +53,18 @@ public class BathroomTileBlocker : MonoBehaviour {
 
   public void RemoveFromBathroomTileGameObjectIn() {
     if(bathroomTileGameObjectIn != null) {
-      bathroomTileGameObjectIn.GetComponent<BathroomTile>().RemoveBathroomTileBlocker(this.gameObject);
+        bathroomTileGameObjectIn.GetComponent<BathroomTile>().RemoveBathroomTileBlocker(this.gameObject);
+        // Checks to see if the bathroom tile has other bathroom tile blockers left in it so that it doesn't remove it 
+        // from being blocked by another bathroom tile blocker. If nothing in it, then it's removed
+        if(bathroomTileGameObjectIn.GetComponent<BathroomTile>().bathroomTileBlockers.Count == 0) {
+            AStarManager.Instance.RemoveTemporaryClosedNode(bathroomTileGameObjectIn);
+        }
     }
     bathroomTileGameObjectIn = null;
   }
 
   public void SelfDestruct() {
-    BathroomTileBlockerManager.Instance.RemoveBathroomTileBlockerGameObject(this.gameObject, true);
+    BathroomTileBlockerManager.Instance.RemoveBathroomTileBlockerGameObject(this.gameObject);
     Destroy(this.gameObject);
   }
 }
