@@ -70,7 +70,7 @@ public class BathroomTileBlockerManager : MonoBehaviour {
 
             if(bathroomTileGameObjectContainingNewObject != null) {
                 AStarManager.Instance.AddTemporaryClosedNode(bathroomTileGameObjectContainingNewObject);
-                Debug.Log("adding");
+                // Debug.Log("adding");
                 bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
                 if(bathroomTileContainingNewObject != null) {
                   bathroomTileContainingNewObject.AddBathroomTileBlocker(newBathroomTileBlockerGameObject);

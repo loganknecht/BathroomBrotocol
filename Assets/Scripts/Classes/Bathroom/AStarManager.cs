@@ -152,7 +152,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
 
             //2) Repeat the following:
             while(!endTileIsInOpenNodeList) {
-                Debug.Log("====================================================");
+                // Debug.Log("====================================================");
                 //a) Look for the lowest F cost square on the open list. We refer to this as the current square.
                 AStarNode lowestCost = null;
                 foreach(GameObject gameObj in openNodes) {
@@ -274,7 +274,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                 }
 
                 // Debug.Log("----------------------------------------------------");
-                Debug.Log("Size of Open Nodes After Calculation: " + openNodes.Count);
+                // Debug.Log("Size of Open Nodes After Calculation: " + openNodes.Count);
                 // Debug.Log("Size of Closed Nodes After Calculation: " + closedNodes.Count);
                 // Debug.Log("-----------End of Surrounding Tile Check------------");
 

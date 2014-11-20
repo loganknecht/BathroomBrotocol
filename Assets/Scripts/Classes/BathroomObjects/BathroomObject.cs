@@ -87,7 +87,9 @@ public class BathroomObject : MonoBehaviour {
   }
 
     public void AddBro(GameObject broGameObjectToAdd) {
-        objectsOccupyingBathroomObject.Add(broGameObjectToAdd);
+        if(!objectsOccupyingBathroomObject.Contains(broGameObjectToAdd)) {
+            objectsOccupyingBathroomObject.Add(broGameObjectToAdd);
+        }
     }
 
     public void RemoveBro(GameObject broGameObjectToRemove) {
