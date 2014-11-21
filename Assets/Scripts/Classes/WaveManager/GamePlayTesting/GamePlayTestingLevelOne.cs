@@ -7,7 +7,7 @@ public class GamePlayTestingLevelOne : WaveLogic, WaveLogicContract {
     GameObject secondWaveGameObject;
 
     public override void Awake() {
-    base.Awake();
+        base.Awake();
     }
 
     // Use this for initialization
@@ -37,7 +37,7 @@ public class GamePlayTestingLevelOne : WaveLogic, WaveLogicContract {
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
                                                                                            { 1, .5f } };
 
-        BroDistributionObject firstWave = new BroDistributionObject(0, 60, 20, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        BroDistributionObject firstWave = new BroDistributionObject(0, 60, 10, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
         firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
         firstWave.SetFightProbability(BroDistribution.AllBros, 0.5f);
         firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
@@ -61,12 +61,12 @@ public class GamePlayTestingLevelOne : WaveLogic, WaveLogicContract {
 
     public void PerformFirstWave() {
         if(BroGenerator.Instance.HasFinishedGenerating()
-           && BroManager.Instance.NoBrosInRestroom()) {
-          PerformWaveStatePlayingFinishedTrigger();
-              waveLogicFinished = true;
+            && BroManager.Instance.NoBrosInRestroom()) {
+            PerformWaveStatePlayingFinishedTrigger();
+            waveLogicFinished = true;
         }
         if(BroGenerator.Instance.HasFinishedGenerating()
-           && BroManager.Instance.NoBrosInRestroom()) {
+            && BroManager.Instance.NoBrosInRestroom()) {
             PerformWaveStatePlayingFinishedTrigger();
         }
     }

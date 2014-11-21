@@ -237,31 +237,37 @@ public class Bro : TargetPathingNPC {
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
                 BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
 
-                if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
+                if(broTile.tileX == targetObjectTile.tileX 
+                    && broTile.tileY == targetObjectTile.tileY) {
 
                     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-                    if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
-                        && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-                        && startRoamingOnArrivalAtBathroomObjectInUse) {
+                    if(bathObjRef.IsBroken()) {
                         state = BroState.Roaming;
                     }
                     else {
-                        PerformOnArrivalBrotocolScoreCheck();
-
-                        //Adds bro to occupation list
-                        bathObjRef.AddBro(this.gameObject);
-
-                        selectableReference.canBeSelected = false;
-                        selectableReference.ResetHighlightObjectAndSelectedState();
-                        speechBubbleReference.displaySpeechBubble = false;
-
-                        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-                           && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-                            SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                        if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+                            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+                            && startRoamingOnArrivalAtBathroomObjectInUse) {
+                            state = BroState.Roaming;
                         }
+                        else {
+                            PerformOnArrivalBrotocolScoreCheck();
 
-                        state = BroState.OccupyingObject;
+                            //Adds bro to occupation list
+                            bathObjRef.AddBro(this.gameObject);
+
+                            selectableReference.canBeSelected = false;
+                            selectableReference.ResetHighlightObjectAndSelectedState();
+                            speechBubbleReference.displaySpeechBubble = false;
+
+                            if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                               && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                                SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                            }
+
+                            state = BroState.OccupyingObject;
+                        }
                     }
                 }
             }

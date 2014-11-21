@@ -122,6 +122,16 @@ public class BathroomObject : MonoBehaviour {
         }
     }
 
+    public void EjectBros() {
+        foreach(GameObject broGameObject in objectsOccupyingBathroomObject) {
+            Bro broRef = broGameObject.GetComponent<Bro>();
+
+            broRef.state = BroState.Roaming;
+            broRef.speechBubbleReference.displaySpeechBubble = true;
+            broRef.targetObject = null;
+        }
+    }
+
     public void IncrementTimesUsed() {
         timesUsed++;
         PerformOutOfOrderCheck();
