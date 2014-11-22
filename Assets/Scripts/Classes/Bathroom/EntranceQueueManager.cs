@@ -113,7 +113,7 @@ public class EntranceQueueManager : MonoBehaviour {
                                                            broGameObject.transform.position.z);
             Bro broReference = broGameObject.GetComponent<Bro>();
             broReference.reliefRequired = debugReliefRequired;
-            broReference.probabilityOfFightOnCollisionWithBro = debugFightProbability;
+            broReference.baseProbabilityOfFightOnCollisionWithBro = debugFightProbability;
             broReference.skipLineQueue = debugSkipLineQueue;
             broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
             broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;

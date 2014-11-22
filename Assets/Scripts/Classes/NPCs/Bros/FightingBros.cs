@@ -86,7 +86,7 @@ PerformMaxTapLogic();
 
             foreach(GameObject broGameObj in brosFighting) {
                 Bro broReference = broGameObj.GetComponent<Bro>();
-                broReference.probabilityOfFightOnCollisionWithBro = 0f;
+                broReference.baseProbabilityOfFightOnCollisionWithBro = 0f;
                 broReference.state = BroState.MovingToTargetObject;
                 broGameObj.transform.position = this.gameObject.transform.position;
                 broGameObj.renderer.enabled = true;

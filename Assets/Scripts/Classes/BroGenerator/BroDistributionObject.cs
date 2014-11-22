@@ -155,14 +155,14 @@ public class BroDistributionObject : DistributionObject {
     Bro broRef = broToGenerate.GetComponent<Bro>();
     switch(broDistributionFightProbability) {
       case(BroDistribution.NoBros):
-        broRef.probabilityOfFightOnCollisionWithBro = 0f;
+        broRef.baseProbabilityOfFightOnCollisionWithBro = 0f;
       break;
       case(BroDistribution.AllBros):
-        broRef.probabilityOfFightOnCollisionWithBro = defaultBroFightProbability;
+        broRef.baseProbabilityOfFightOnCollisionWithBro = defaultBroFightProbability;
       break;
       case(BroDistribution.RandomBros):
         defaultBroFightProbability = UnityEngine.Random.Range(0f, 1f);
-        broRef.probabilityOfFightOnCollisionWithBro = defaultBroFightProbability;
+        broRef.baseProbabilityOfFightOnCollisionWithBro = defaultBroFightProbability;
       break;
       default:
         Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");

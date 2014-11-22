@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GamePlayTestingLevelOne : WaveLogic, WaveLogicContract {
+public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
     GameObject firstWaveGameObject;
     GameObject secondWaveGameObject;
 
@@ -37,7 +37,7 @@ public class GamePlayTestingLevelOne : WaveLogic, WaveLogicContract {
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
                                                                                            { 1, .5f } };
 
-        BroDistributionObject firstWave = new BroDistributionObject(0, 60, 10, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        BroDistributionObject firstWave = new BroDistributionObject(0, 10, 3, DistributionType.LinearIn, DistributionSpacing.Random, broProbabilities, entranceQueueProbabilities);
         firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
         firstWave.SetFightProbability(BroDistribution.AllBros, 0.5f);
         firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
@@ -45,17 +45,17 @@ public class GamePlayTestingLevelOne : WaveLogic, WaveLogicContract {
         firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
         firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, true);
 
-        // BroDistributionObject secondWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-        // secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-        // secondWave.SetFightProbability(BroDistribution.AllBros, 1f);
-        // secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-        // secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-        // secondWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
-        // secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+        BroDistributionObject secondWave = new BroDistributionObject(0, 5, 0, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee);
+        secondWave.SetFightProbability(BroDistribution.AllBros, 1f);
+        secondWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
+        secondWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+        secondWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
+        secondWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
         BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                                  firstWave,
-                                                                                 // secondWave
+                                                                                 secondWave
                                                                                 });
     }
 

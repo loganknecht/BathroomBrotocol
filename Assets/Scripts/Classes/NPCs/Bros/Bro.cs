@@ -9,6 +9,7 @@ public class Bro : TargetPathingNPC {
     public BroState state = BroState.None;
 
     public float occupationTimer = 0f;
+    public Dictionary<BathroomObjectType, float> occupationDuration = null;
 
     public bool skipLineQueue = false;
     public bool chooseRandomBathroomObjectOnSkipLineQueue = false;
@@ -29,12 +30,14 @@ public class Bro : TargetPathingNPC {
     public GameObject speechBubbleGameObject = null;
     public SpeechBubble speechBubbleReference = null;
 
-    public float probabilityOfFightOnCollisionWithBro = 0.15f;
-    public bool isPaused = false;
+    public float baseProbabilityOfFightOnCollisionWithBro = 0.15f;
+    public bool modifyBroFightProbablityUsingScoreRatio = false;
 
     public bool resetFightLogic = false;
     public float fightCooldownTimer = 0f;
     public float fightCooldownTimerMax = 2f;
+
+    public bool isPaused = false;
 
 
     public override void Awake() {
@@ -57,6 +60,20 @@ public class Bro : TargetPathingNPC {
             PerformSpeechBubbleLogic();
             PerformFightTimerLogic();
         }
+    }
+
+    public virtual void InitializeOccupationDuration() {
+        float defaultOccupationDuration = 2f;
+        occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
+    }
+    public virtual float GetOccupationDuration(BathroomObjectType bathroomObjectType) {
+        return occupationDuration[bathroomObjectType];
+    }
+    public virtual void SetOccupationDuration(BathroomObjectType bathroomObjectType, float occupationDurationTime) {
+        occupationDuration[bathroomObjectType] = occupationDurationTime;
     }
 
     public virtual void Pause() {
@@ -114,6 +131,15 @@ public class Bro : TargetPathingNPC {
         }
     }
 
+    // Returns the base probablity of fighting plus the modifier based on the score
+    public virtual float GetFightProbability() {
+        if(modifyBroFightProbablityUsingScoreRatio) {
+            return (baseProbabilityOfFightOnCollisionWithBro); //TODO: GET SCORETRACKER TO RETURN THE MODIFIER BASE ON SCORE TRACKER'S PERFECT SCORE RATIO
+        }
+        else {
+            return baseProbabilityOfFightOnCollisionWithBro;
+        }
+    }
     public virtual void PerformFightTimerLogic() {
         if(resetFightLogic) {
             fightCooldownTimer += Time.deltaTime;
@@ -151,14 +177,14 @@ public class Bro : TargetPathingNPC {
             if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
                 && !IsExiting()
                 && !resetFightLogic
-                && probabilityOfFightOnCollisionWithBro > 0
+                && baseProbabilityOfFightOnCollisionWithBro > 0
                 && (otherBroRef.state == BroState.MovingToTargetObject || otherBroRef.state == BroState.Roaming)
                 && !otherBroRef.IsExiting()
                 && !otherBroRef.resetFightLogic
-                && otherBroRef.probabilityOfFightOnCollisionWithBro > 0) {
+                && otherBroRef.baseProbabilityOfFightOnCollisionWithBro > 0) {
 
                 float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
-                if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
+                if(checkToSeeIfFightOccurs < baseProbabilityOfFightOnCollisionWithBro) {
                     if(state != BroState.Fighting) {
                         broFightingWith = other.gameObject;
                         state = BroState.Standoff;
