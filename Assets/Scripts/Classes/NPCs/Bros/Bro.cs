@@ -51,6 +51,7 @@ public class Bro : TargetPathingNPC {
         // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
 
         selectableReference.canBeSelected = true;
+        InitializeOccupationDuration();
     }
 
     // Update is called once per frame
@@ -64,6 +65,10 @@ public class Bro : TargetPathingNPC {
 
     public virtual void InitializeOccupationDuration() {
         float defaultOccupationDuration = 2f;
+
+        occupationDuration = new Dictionary<BathroomObjectType, float>();
+
+        occupationDuration[BathroomObjectType.Exit] = 0;
         occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
         occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
         occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
@@ -334,7 +339,7 @@ public class Bro : TargetPathingNPC {
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-            if(occupationTimer > bathObjRef.occupationDuration) {
+            if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
                     PerformExitOccupationFinishedLogic();

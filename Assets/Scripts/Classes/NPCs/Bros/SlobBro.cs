@@ -19,7 +19,7 @@ public class SlobBro : Bro {
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-            if(occupationTimer > bathObjRef.occupationDuration) {
+            if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
                     PerformExitOccupationFinishedLogic();

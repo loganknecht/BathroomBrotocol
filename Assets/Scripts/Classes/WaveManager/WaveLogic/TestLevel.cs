@@ -150,7 +150,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
 
     BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
+    firstWave.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
@@ -160,51 +160,52 @@ public class TestLevel : WaveLogic, WaveLogicContract {
                                                                              firstWave,
                                                                             });
   }
-  public void PerformFirstWave() {
-    if(BroGenerator.Instance.HasFinishedGenerating()
-       && BroManager.Instance.NoBrosInRestroom()) {
-      PerformWaveStatePlayingFinishedTrigger();
+    public void PerformFirstWave() {
+        if(BroGenerator.Instance.HasFinishedGenerating()
+            && BroManager.Instance.NoBrosInRestroom()) {
+            PerformWaveStatePlayingFinishedTrigger();
+        }
+        else if(!BroManager.Instance.NoFightingBrosInRestroom()
+                && !broFightingExplanationOccurred) {
+            PerformWaveStateThenReturn(broFightingExplanation);
+            broFightingExplanationOccurred = true;
+        }
     }
-    else if(!BroManager.Instance.NoFightingBrosInRestroom()
-            && !broFightingExplanationOccurred) {
-      PerformWaveStateThenReturn(broFightingExplanation);
-      broFightingExplanationOccurred = true;
+    
+    public void FinishFirstWave() {
     }
-  }
-  public void FinishFirstWave() {
-  }
-  //----------------------------------------------------------------------------
-  public void TriggerSecondWave() {
-    Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.SlobBro, 1f } };
-    Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
-                                                                                       { 1, .5f } };
+    //----------------------------------------------------------------------------
+    public void TriggerSecondWave() {
+        Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.SlobBro, 1f } };
+        Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
+                                                                                           { 1, .5f } };
 
-    BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    firstBroSet.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstBroSet.SetFightProbability(BroDistribution.AllBros, 0f);
-    firstBroSet.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    firstBroSet.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstBroSet.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
-    firstBroSet.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+        BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        firstBroSet.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+        firstBroSet.SetFightProbability(BroDistribution.AllBros, 0f, 0f);
+        firstBroSet.SetLineQueueSkipType(BroDistribution.AllBros, true);
+        firstBroSet.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
+        firstBroSet.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
+        firstBroSet.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
-    BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                             firstBroSet,
-                                                                            });
-  }
-  public void PerformSecondWave() {
-    if(BroGenerator.Instance.HasFinishedGenerating()
-       && BroManager.Instance.NoBrosInRestroom()) {
-      PerformWaveStatePlayingFinishedTrigger();
-      waveLogicFinished = true;
+        BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                                 firstBroSet,
+                                                                                });
     }
-    // else if(!BroManager.Instance.NoFightingBrosInRestroom()
-    //         && !broFightingExplanationOccurred) {
-    //   PerformWaveStateThenReturn(broFightingExplanation);
-    //   broFightingExplanationOccurred = true;
-    // }
-  }
-  public void FinishSecondWave() {
-  }
+    public void PerformSecondWave() {
+        if(BroGenerator.Instance.HasFinishedGenerating()
+            && BroManager.Instance.NoBrosInRestroom()) {
+                PerformWaveStatePlayingFinishedTrigger();
+                waveLogicFinished = true;
+        }
+        // else if(!BroManager.Instance.NoFightingBrosInRestroom()
+        //         && !broFightingExplanationOccurred) {
+        //   PerformWaveStateThenReturn(broFightingExplanation);
+        //   broFightingExplanationOccurred = true;
+        // }
+    }
+    public void FinishSecondWave() {
+    }
   //----------------------------------------------------------------------------
   public void TriggerBroFightingExplanation() {
     BroManager.Instance.Pause();

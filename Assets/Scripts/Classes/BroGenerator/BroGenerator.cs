@@ -13,12 +13,17 @@ using System.Collections.Generic;
 // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
 // BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-// firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-// firstWave.SetFightProbability(BroDistribution.AllBros, UnityEngine.Random.Range(0f, 1f));
-// firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-// firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-// firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
-// firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+// firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+//     .SetFightProbability(BroDistribution.AllBros, UnityEngine.Random.Range(0f, 1f))
+//     .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.All, BathroomObjectType.HandDryer, 2f, 2f)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.All, BathroomObjectType.Sink, 2f, 2f)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.All, BathroomObjectType.Stall, 2f, 2f)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.All, BathroomObjectType.Urinal, 2f, 2f)
+//     .SetLineQueueSkipType(BroDistribution.AllBros, true)
+//     .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+//     .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
+//     .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
 // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                          // firstWave,

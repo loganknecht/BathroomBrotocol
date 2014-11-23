@@ -198,7 +198,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
         firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
 
         //Fight probability is set to 100%
-        firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
+        firstWave.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
 
         //The bros will skip the line queue
         firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
@@ -245,7 +245,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
 
         BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
         firstBroSet.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-        firstBroSet.SetFightProbability(BroDistribution.AllBros, 1f);
+        firstBroSet.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
         firstBroSet.SetLineQueueSkipType(BroDistribution.AllBros, true);
         firstBroSet.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
         firstBroSet.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);

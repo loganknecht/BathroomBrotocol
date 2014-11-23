@@ -13,7 +13,6 @@ public class BathroomObject : MonoBehaviour {
     public Selectable selectableReference = null;
 
     //public bool isBroken = false;
-    public float occupationDuration = 2.5f;
     public float repairDuration = 2.0f;
 
     public int scoreValue = 0;

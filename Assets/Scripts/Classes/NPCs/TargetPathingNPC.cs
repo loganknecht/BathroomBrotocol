@@ -3,39 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TargetPathingNPC : MonoBehaviour {
-	public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
+    public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
 
-	public Animator animatorReference = null;
+    public Animator animatorReference = null;
 
-	public GameObject targetObject = null;
-	public Vector3 targetPosition = Vector3.zero;
+    public GameObject targetObject = null;
+    public Vector3 targetPosition = Vector3.zero;
 
-	public float xMoveSpeed = 1;
-	public float yMoveSpeed = 1;
+    public float xMoveSpeed = 1;
+    public float yMoveSpeed = 1;
 
-	public float targetPositionXLockBuffer = 0.05f;
-	public float targetPositionYLockBuffer = 0.05f;
+    public float targetPositionXLockBuffer = 0.05f;
+    public float targetPositionYLockBuffer = 0.05f;
 
-	public List<GameObject> movementNodes = null; 
+    public List<GameObject> movementNodes = null; 
 
-	public virtual void Awake() {
-		movementNodes = new List<GameObject>();
+    public virtual void Awake() {
+        movementNodes = new List<GameObject>();
+    }
 
-	}
+    // Use this for initialization
+    public virtual void Start () {
+        animatorReference = this.gameObject.GetComponent<Animator>();
+    }
 
-	// Use this for initialization
-	public virtual void Start () {
-		animatorReference = this.gameObject.GetComponent<Animator>();
-	}
-
-	// Update is called once per frame
-	public virtual void Update () {
-		if(movementNodes == null) {
-			Debug.Log("lol lol movement nodes of " + this.gameObject.name + " be null.");
-		}
-		PerformLogic();
-		UpdateAnimator();
-	}
+    // Update is called once per frame
+    public virtual void Update () {
+        if(movementNodes == null) {
+            Debug.Log("lol lol movement nodes of " + this.gameObject.name + " be null.");
+        }
+        PerformLogic();
+        UpdateAnimator();
+    }
 
 	public virtual void UpdateAnimator() {
 		if(animatorReference != null) {
