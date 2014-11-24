@@ -7,9 +7,6 @@ using System.Collections.Generic;
 [System.Serializable]
 public class EntranceQueueManager : BaseBehavior {
 
-    public bool brosWillSkipLineQueue = false;
-    public bool brosSelectRandomTargetObjectOnEntrance = false;
-    public bool brosSelectRandomTargetObjectAfterRelief = false;
     public bool isPaused = false;
 
     public GameObject entranceAudioObject = null;
@@ -22,7 +19,7 @@ public class EntranceQueueManager : BaseBehavior {
     public float debugYMoveSpeed = 1f;
     public Dictionary<BathroomObjectType, float> debugOccupationDuration = new Dictionary<BathroomObjectType, float>();
     public BroType debugBroType = BroType.None;
-    public ReliefRequired debugReliefRequired = ReliefRequired.None;
+    public ReliefRequired[] debugReliefRequired = new ReliefRequired[]{};
     public float debugFightProbability = 0f;
     public bool debugModifyBroFightProbablityUsingScoreRatio = false;
     public bool debugSkipLineQueue = false;
@@ -141,7 +138,7 @@ public class EntranceQueueManager : BaseBehavior {
             Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
             BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-            firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
+            firstWave.SetReliefType(BroDistribution.AllBros, debugReliefRequired);
             firstWave.SetXMoveSpeed(BroDistribution.AllBros, debugXMoveSpeed, debugXMoveSpeed);
             firstWave.SetYMoveSpeed(BroDistribution.AllBros , debugYMoveSpeed, debugYMoveSpeed);
             firstWave.SetFightProbability(BroDistribution.AllBros, debugFightProbability, debugFightProbability);
@@ -161,6 +158,7 @@ public class EntranceQueueManager : BaseBehavior {
                                                                                     });
         }
     }
+
     public GameObject SelectRandomLineQueue() {
         if(lineQueues.Count == 0) {
           return null;

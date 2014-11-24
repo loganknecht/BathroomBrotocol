@@ -39,99 +39,99 @@ public class TargetPathingNPC : BaseBehavior {
         UpdateAnimator();
     }
 
-	public virtual void UpdateAnimator() {
-		if(animatorReference != null) {
-			animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
-			animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
+    public virtual void UpdateAnimator() {
+        if(animatorReference != null) {
+            animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
 
-			animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
+            animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
 
-			animatorReference.SetBool("None", false);
-		}
-	}
+            animatorReference.SetBool("None", false);
+        }
+    }
 
-	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPosition) {
-		SetTargetObjectAndTargetPosition(newTargetObject, new Vector2(newTargetPosition.x, newTargetPosition.y));
-	}
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPosition) {
+        SetTargetObjectAndTargetPosition(newTargetObject, new Vector2(newTargetPosition.x, newTargetPosition.y));
+    }
 
-	public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
-		targetObject = newTargetObject;
-		movementNodes = newMovementNodes;
-		PopMovementNode();
-	}
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
+        targetObject = newTargetObject;
+        movementNodes = newMovementNodes;
+        PopMovementNode();
+    }
 
-	public bool IsAtTargetPosition() {
-		if(movementNodes.Count == 0
-		   && this.gameObject.transform.position.x == targetPosition.x
-		   && this.gameObject.transform.position.y == targetPosition.y) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+    public bool IsAtTargetPosition() {
+        if(movementNodes.Count == 0
+            && this.gameObject.transform.position.x == targetPosition.x
+            && this.gameObject.transform.position.y == targetPosition.y) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
-	public virtual void PerformLogic() {
-		PerformMovementLogic();
-	}
+    public virtual void PerformLogic() {
+        PerformMovementLogic();
+    }
 
-	public virtual void PerformMovementLogic() {
-  		//This is the logic for the bro moving to their destination
-  		Vector2 newPositionOffset = CalculateNextPositionOffset();
-  		newPositionOffset = (newPositionOffset*Time.deltaTime);
-  		newPositionOffset = LockNewPositionOffsetToTarget(newPositionOffset);
-  		UpdateBathroomFacingBasedOnNewPositionOffset(newPositionOffset);
+    public virtual void PerformMovementLogic() {
+        //This is the logic for the bro moving to their destination
+        Vector2 newPositionOffset = CalculateNextPositionOffset();
+        newPositionOffset = (newPositionOffset*Time.deltaTime);
+        newPositionOffset = LockNewPositionOffsetToTarget(newPositionOffset);
+        UpdateBathroomFacingBasedOnNewPositionOffset(newPositionOffset);
 
-  		//performs check to pop new node from the movemeNodes list
-  		if(this.transform.position.x == targetPosition.x
-  		   && this.transform.position.y == targetPosition.y) {
-  			//Debug.Log("object at position");
-  			PopMovementNode();
-  		}
+        //performs check to pop new node from the movemeNodes list
+        if(this.transform.position.x == targetPosition.x
+            && this.transform.position.y == targetPosition.y) {
+            //Debug.Log("object at position");
+            PopMovementNode();
+        }
 
-  		transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
-	}
+        transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
+    }
 
-	public virtual void PopMovementNode() {
-		if(movementNodes.Count > 0) {
-			//Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
-			GameObject nextNode = movementNodes[0];
-			targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
-			//Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
-			movementNodes.RemoveAt(0);
-			// Destroy(nextNode);
-			// Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-			if(movementNodes == null) {
-				Debug.Log("movemeNodes is null");
-			}
-		}
-	}
+    public virtual void PopMovementNode() {
+        if(movementNodes.Count > 0) {
+        //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
+            GameObject nextNode = movementNodes[0];
+            targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
+            //Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
+            movementNodes.RemoveAt(0);
+            // Destroy(nextNode);
+            // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+            if(movementNodes == null) {
+                Debug.Log("movemeNodes is null");
+            }
+        }
+    }
 
-	public virtual Vector2 CalculateNextPositionOffset() {
-		Vector2 newPositionOffset = Vector2.zero;
+    public virtual Vector2 CalculateNextPositionOffset() {
+        Vector2 newPositionOffset = Vector2.zero;
 
-		if(this.gameObject.transform.position.x < targetPosition.x) {
-			newPositionOffset.x += xMoveSpeed;
-		}
-		else if(this.gameObject.transform.position.x > targetPosition.x) {
-			newPositionOffset.x -= xMoveSpeed;
-		}
+        if(this.gameObject.transform.position.x < targetPosition.x) {
+            newPositionOffset.x += xMoveSpeed;
+        }
+        else if(this.gameObject.transform.position.x > targetPosition.x) {
+            newPositionOffset.x -= xMoveSpeed;
+        }
 
-		if(this.gameObject.transform.position.y < targetPosition.y) {
-			newPositionOffset.y += yMoveSpeed;
-		}
-		else if(this.gameObject.transform.position.y > targetPosition.y) {
-			newPositionOffset.y -= yMoveSpeed;
-		}
+        if(this.gameObject.transform.position.y < targetPosition.y) {
+            newPositionOffset.y += yMoveSpeed;
+        }
+        else if(this.gameObject.transform.position.y > targetPosition.y) {
+            newPositionOffset.y -= yMoveSpeed;
+        }
 
-		return newPositionOffset;
-	}
+        return newPositionOffset;
+    }
 
 	public virtual Vector2 LockNewPositionOffsetToTarget(Vector2 newPositionOffset) {
 		//x locker
