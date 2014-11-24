@@ -7,10 +7,14 @@ public class DrunkBro : Bro {
     public float vomitTimerMax = Random.Range(10, 15);
     public bool vomitThrowUpPerformed = false;
 
+    public override void Awake() {
+        type = BroType.DrunkBro;
+        base.Awake();
+    }
+
     // Use this for initialization
     public override void Start () {
         base.Start();
-        type = BroType.DrunkBro;
     }
 
     // Update is called once per frame

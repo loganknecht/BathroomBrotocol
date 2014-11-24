@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using FullInspector;
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TargetPathingNPC : MonoBehaviour {
+public class TargetPathingNPC : BaseBehavior {
     public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
 
     public Animator animatorReference = null;
@@ -20,6 +22,7 @@ public class TargetPathingNPC : MonoBehaviour {
 
     public virtual void Awake() {
         movementNodes = new List<GameObject>();
+        base.Awake();
     }
 
     // Use this for initialization

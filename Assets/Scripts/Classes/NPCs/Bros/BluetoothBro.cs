@@ -2,16 +2,22 @@
 using System.Collections;
 
 public class BluetoothBro : Bro {
-	// Use this for initialization
-	public override void Start () {
-		base.Start();
-		type = BroType.BluetoothBro;
-	}
 
-	// Update is called once per frame
-	public override void Update () {
-		base.Update();
-	}
+    public override void Awake() {
+        type = BroType.BluetoothBro;
+        base.Awake();
+    }
+
+    // Use this for initialization
+    public override void Start () {
+        base.Start();
+        type = BroType.BluetoothBro;
+    }
+
+    // Update is called once per frame
+    public override void Update () {
+        base.Update();
+    }
 
    // This is being checked on arrival before switching to occupying an object
   public override void PerformOnArrivalBrotocolScoreCheck() {

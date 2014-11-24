@@ -3,10 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class SlobBro : Bro {
+
+    public override void Awake() {
+        type = BroType.SlobBro;
+        base.Awake();
+    }
+    
     // Use this for initialization
     public override void Start () {
         base.Start();
-        type = BroType.SlobBro;
     }
 
     // Update is called once per frame

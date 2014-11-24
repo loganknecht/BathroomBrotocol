@@ -9,7 +9,7 @@ public class Bro : TargetPathingNPC {
     public BroState state = BroState.None;
 
     public float occupationTimer = 0f;
-    public Dictionary<BathroomObjectType, float> occupationDuration = null;
+    public Dictionary<BathroomObjectType, float> occupationDuration;
 
     public bool skipLineQueue = false;
     public bool chooseRandomBathroomObjectOnSkipLineQueue = false;
@@ -43,6 +43,8 @@ public class Bro : TargetPathingNPC {
     public override void Awake() {
         selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
         speechBubbleReference = speechBubbleGameObject.GetComponent<SpeechBubble>();
+
+        InitializeOccupationDuration();
     }
     // Use this for initialization
     public override void Start () {
@@ -51,7 +53,6 @@ public class Bro : TargetPathingNPC {
         // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
 
         selectableReference.canBeSelected = true;
-        InitializeOccupationDuration();
     }
 
     // Update is called once per frame

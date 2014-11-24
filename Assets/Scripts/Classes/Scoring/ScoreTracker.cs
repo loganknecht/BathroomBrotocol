@@ -23,9 +23,12 @@ public class ScoreTracker : BaseBehavior {
     // public SlobBroScoreType slobBroScore = null;
     // public ShyBroScoreType shyBroScore = null;
 
+    void Awake() {
+        InitializeScoreTrackers();
+    }
+
     // Use this for initialization
     void Start () {
-        InitializeScoreTrackers();
     }
 
     // Update is called once per frame

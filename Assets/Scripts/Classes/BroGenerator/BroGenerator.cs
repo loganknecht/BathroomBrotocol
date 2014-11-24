@@ -14,6 +14,8 @@ using System.Collections.Generic;
 
 // BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
 // firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+//     .SetXMoveSpeed(BroDistribution.AllBros, 1, 1)
+//     .SetYMoveSpeed(BroDistribution.AllBros , 1, 1)
 //     .SetFightProbability(BroDistribution.AllBros, UnityEngine.Random.Range(0f, 1f))
 //     .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
 //     .SetBathroomObjectOccupationDuration(BroDistribution.All, BathroomObjectType.HandDryer, 2f, 2f)
@@ -24,6 +26,8 @@ using System.Collections.Generic;
 //     .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
 //     .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
 //     .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+    // TODO
+    // SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {
 
 // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                          // firstWave,

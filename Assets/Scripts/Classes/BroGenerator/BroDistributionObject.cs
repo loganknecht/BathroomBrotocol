@@ -139,10 +139,12 @@ public class BroDistributionObject : DistributionObject {
           broToGenerate.SetActive(false);
 
           ConfigureBroToGenerateReliefType(broToGenerate);
+          ConfigureBroXMoveSpeed(broToGenerate);
+          ConfigureBroYMoveSpeed(broToGenerate);
           ConfigureBroToGenerateFightCheckType(broToGenerate);
           ConfigureBroToGenerateModifyFightProbabilityUsingScoreRatio(broToGenerate);
-          ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.HandDryer);
           ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Exit);
+          ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.HandDryer);
           ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Sink);
           ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Stall);
           ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Urinal);
@@ -308,12 +310,17 @@ public class BroDistributionObject : DistributionObject {
 
     public GameObject ConfigureBroToGenerateBathroomObjectOccupationDuration(GameObject broToGenerate, BathroomObjectType bathroomObjectType) {
         Bro broRef = broToGenerate.GetComponent<Bro>();
+        // Debug.Log(broDistributionBathroomObjectOccupationDuration[bathroomObjectType].ToString());
+        // Debug.Log(bathroomObjectType.ToString());
+        // Debug.Log(broRef.occupationDuration);
+        // Debug.Log(broRef.occupationDuration.ContainsKey(bathroomObjectType));
 
         switch(broDistributionBathroomObjectOccupationDuration[bathroomObjectType]) {
             case(BroDistribution.NoBros):
                 broRef.occupationDuration[bathroomObjectType] = 2;
             break;
             case(BroDistribution.AllBros):
+                // Debug.Log(broRef.occupationDuration[bathroomObjectType]);
                 if(defaultBathroomObjectOccupationDuration[bathroomObjectType] == float.PositiveInfinity) {
                     defaultBathroomObjectOccupationDuration[bathroomObjectType] = UnityEngine.Random.Range(defaultMinBathroomObjectOccupationDuration[bathroomObjectType], defaultMaxBathroomObjectOccupationDuration[bathroomObjectType]);
                 }

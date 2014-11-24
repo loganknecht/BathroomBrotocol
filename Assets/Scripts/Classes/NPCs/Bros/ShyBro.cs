@@ -5,10 +5,14 @@ public class ShyBro : Bro {
     public bool firstArrivalOccurred = false;
     public bool firstArrivalWasWrongObject = false;
 
+    public override void Awake() {
+        type = BroType.ShyBro;
+        base.Awake();
+    }
+    
     // Use this for initialization
     public override void Start () {
         base.Start();
-        type = BroType.ShyBro;
     }
 
     // Update is called once per frame
