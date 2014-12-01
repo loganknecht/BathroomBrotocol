@@ -3,9 +3,9 @@ using System.Collections;
 
 public class BluetoothBro : Bro {
 
-    public override void Awake() {
-        type = BroType.BluetoothBro;
+    protected override void Awake() {
         base.Awake();
+        type = BroType.BluetoothBro;
     }
 
     // Use this for initialization

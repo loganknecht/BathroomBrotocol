@@ -3,9 +3,10 @@ using System.Collections;
 
 public class ChattyBro : Bro {
 
-    public override void Awake() {
-        type = BroType.ChattyBro;
+    protected override void Awake() {
         base.Awake();
+        
+        type = BroType.ChattyBro;
     }
     
     // Use this for initialization
@@ -13,10 +14,10 @@ public class ChattyBro : Bro {
         base.Start();
     }
 
-  // Update is called once per frame
-  public override void Update () {
-    base.Update();
-  }
+    // Update is called once per frame
+    public override void Update () {
+        base.Update();
+    }
 
   public override void PerformOnArrivalBrotocolScoreCheck() {
     // As long as the target object is not null and it's not a bathroom exit

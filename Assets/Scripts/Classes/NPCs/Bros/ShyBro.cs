@@ -5,9 +5,10 @@ public class ShyBro : Bro {
     public bool firstArrivalOccurred = false;
     public bool firstArrivalWasWrongObject = false;
 
-    public override void Awake() {
-        type = BroType.ShyBro;
+    protected override void Awake() {
         base.Awake();
+
+        type = BroType.ShyBro;
     }
     
     // Use this for initialization
@@ -21,9 +22,11 @@ public class ShyBro : Bro {
     }
 
     public override void PerformArrivalLogic() {
-        if(transform.position.x == targetPosition.x
-            && transform.position.y == targetPosition.y
-            && movementNodes.Count == 0) {
+        if(transform.position.x == GetTargetPosition().x
+            && transform.position.y == GetTargetPosition().y
+            && GetMovementNodes().Count == 0) {
+
+            GameObject targetObject = GetTargetObject(); 
 
             if(targetObject != null
                 && targetObject.GetComponent<BathroomObject>() != null) {
@@ -67,6 +70,8 @@ public class ShyBro : Bro {
     }
 
     public override void PerformOccupyingObjectLogic() {
+        GameObject targetObject = GetTargetObject();
+        
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();

@@ -127,7 +127,7 @@ public class BathroomObject : MonoBehaviour {
 
             broRef.state = BroState.Roaming;
             broRef.speechBubbleReference.displaySpeechBubble = true;
-            broRef.targetObject = null;
+            broRef.SetTargetObject(null);
         }
     }
 

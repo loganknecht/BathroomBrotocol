@@ -3,9 +3,10 @@ using System.Collections;
 
 public class RichBro : Bro {
 
-    public override void Awake() {
-        type = BroType.RichBro;
+    protected override void Awake() {
         base.Awake();
+
+        type = BroType.RichBro;
     }
     
     // Use this for initialization

@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using FullInspector;
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Bro : TargetPathingNPC {
+public class Bro : BaseBehavior {
+    public TargetPathing targetPathingReference = null;
+    public Animator animatorReference = null;
     public HighlightSelectable selectableReference = null;
 
     public BroType type = BroType.None;
@@ -40,15 +44,17 @@ public class Bro : TargetPathingNPC {
     public bool isPaused = false;
 
 
-    public override void Awake() {
+    protected override void Awake() {
+        base.Awake();
+
         selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
         speechBubbleReference = speechBubbleGameObject.GetComponent<SpeechBubble>();
 
         InitializeOccupationDuration();
     }
     // Use this for initialization
-    public override void Start () {
-        base.Start();
+    public virtual void Start () {
+        // base.Start();
 
         // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
 
@@ -56,13 +62,49 @@ public class Bro : TargetPathingNPC {
     }
 
     // Update is called once per frame
-    public override void Update () {
+    public virtual void Update () {
         if(!isPaused) {
-            base.Update();
             PerformSpeechBubbleLogic();
             PerformFightTimerLogic();
         }
     }
+
+    public void SetXMoveSpeed(float newXMoveSpeed) {
+        targetPathingReference.SetXMoveSpeed(newXMoveSpeed);
+    }
+    public void SetYMoveSpeed(float newYMoveSpeed) {
+        targetPathingReference.SetYMoveSpeed(newYMoveSpeed);
+    }
+
+    public void SetTargetObject(GameObject newTargetObject) {
+        targetPathingReference.SetTargetObject(newTargetObject);
+    }
+
+    public GameObject GetTargetObject() {
+        return targetPathingReference.GetTargetObject();
+    }
+
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPosition) {
+        targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, new Vector2(newTargetPosition.x, newTargetPosition.y));
+    }
+
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
+        occupationTimer = 0;
+        targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
+    }
+
+    public List<GameObject> GetMovementNodes() {
+        return targetPathingReference.GetMovementNodes();
+    }
+
+    public Vector3 GetTargetPosition() {
+        return targetPathingReference.GetTargetPosition();
+    }
+
+    public virtual bool IsAtTargetPosition() {
+        return targetPathingReference.IsAtTargetPosition();
+    }
+
 
     public virtual void InitializeOccupationDuration() {
         float defaultOccupationDuration = 2f;
@@ -97,9 +139,9 @@ public class Bro : TargetPathingNPC {
     }
 
     public virtual bool IsExiting() {
-        if(targetObject != null
-           && targetObject.GetComponent<BathroomObject>() != null
-           && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
+        if(GetTargetObject() != null
+           && GetTargetObject().GetComponent<BathroomObject>() != null
+           && GetTargetObject().GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
             return true;
         }
         else {
@@ -107,39 +149,39 @@ public class Bro : TargetPathingNPC {
         }
     }
 
-    public override void PopMovementNode() {
-        if(movementNodes.Count > 0) {
-            //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
-            GameObject currentBroTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false);
-            BathroomTile currentBroTile = null;
-            if(currentBroTileGameObject != null) {
-                currentBroTile = currentBroTileGameObject.GetComponent<BathroomTile>();
-            }
+    // public override void PopMovementNode() {
+    //     if(movementNodes.Count > 0) {
+    //         //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
+    //         GameObject currentBroTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false);
+    //         BathroomTile currentBroTile = null;
+    //         if(currentBroTileGameObject != null) {
+    //             currentBroTile = currentBroTileGameObject.GetComponent<BathroomTile>();
+    //         }
 
-            GameObject nextNode = movementNodes[0];
-            BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
+    //         GameObject nextNode = movementNodes[0];
+    //         BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
 
-            if((nextTile != null 
-                    && (nextTile.bathroomTileBlockers.Count == 0 || currentBroTile == nextTile))
-                || (state == BroState.MovingToTargetObject 
-                    && targetObject != null 
-                    && targetObject.GetComponent<BathroomObject>() != null 
-                    && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit)) {
-                targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
-                // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
-                movementNodes.RemoveAt(0);
-                // Destroy(nextNode);
-                // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-            }
-            else {
-                movementNodes.Clear();
-                state = BroState.Roaming;
-            }
-        }
-        if(movementNodes == null) {
-            Debug.Log("movemeNodes is null for " + this.gameObject.name);
-        }
-    }
+    //         if((nextTile != null 
+    //                 && (nextTile.bathroomTileBlockers.Count == 0 || currentBroTile == nextTile))
+    //             || (state == BroState.MovingToTargetObject 
+    //                 && targetObject != null 
+    //                 && targetObject.GetComponent<BathroomObject>() != null 
+    //                 && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit)) {
+    //             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
+    //             // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
+    //             movementNodes.RemoveAt(0);
+    //             // Destroy(nextNode);
+    //             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+    //         }
+    //         else {
+    //             movementNodes.Clear();
+    //             state = BroState.Roaming;
+    //         }
+    //     }
+    //     if(movementNodes == null) {
+    //         Debug.Log("movemeNodes is null for " + this.gameObject.name);
+    //     }
+    // }
 
     // Returns the base probablity of fighting plus the modifier based on the score
     public virtual float GetFightProbability() {
@@ -199,9 +241,9 @@ public class Bro : TargetPathingNPC {
                         broFightingWith = other.gameObject;
                         state = BroState.Standoff;
                         speechBubbleReference.displaySpeechBubble = false;
-                        movementNodes.Clear();
+                        targetPathingReference.ClearMovementNodes();
 
-                        otherBroRef.movementNodes.Clear();
+                        otherBroRef.targetPathingReference.ClearMovementNodes();
                         otherBroRef.broFightingWith = this.gameObject;
                         otherBroRef.speechBubbleReference.displaySpeechBubble = false;
                         otherBroRef.state = BroState.Standoff;
@@ -214,9 +256,9 @@ public class Bro : TargetPathingNPC {
         }
     }
 
-    public override void UpdateAnimator() {
+    public virtual void UpdateAnimator() {
         if(animatorReference != null) {
-            base.UpdateAnimator();
+            // base.UpdateAnimator();
 
             animatorReference.SetBool(BroState.Fighting.ToString(), false);
             animatorReference.SetBool(BroState.InAQueue.ToString(), false);
@@ -232,12 +274,7 @@ public class Bro : TargetPathingNPC {
         }
     }
 
-	public override void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
-		occupationTimer = 0;
-		base.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
-	}
-
-    public override void PerformLogic() {
+    public virtual void PerformLogic() {
         switch(state) {
             case(BroState.None):
             break;
@@ -268,6 +305,7 @@ public class Bro : TargetPathingNPC {
 
     public virtual void PerformArrivalLogic() {
         if(IsAtTargetPosition()) {
+            GameObject targetObject = GetTargetObject();
             if(targetObject != null
                && targetObject.GetComponent<BathroomObject>() != null) {
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
@@ -319,7 +357,7 @@ public class Bro : TargetPathingNPC {
     }
 
     public virtual void PerformInAQueueLogic() {
-        PerformMovementLogic();
+        // PerformMovementLogic();
         if(IsAtTargetPosition()) {
             if(skipLineQueue) {
                 if(chooseRandomBathroomObjectOnSkipLineQueue) {
@@ -337,11 +375,12 @@ public class Bro : TargetPathingNPC {
         }
     }
     public virtual void PerformMovingToTargetObjectLogic() {
-        PerformMovementLogic();
+        // PerformMovementLogic();
         PerformArrivalLogic();
     }
 
     public virtual void PerformOccupyingObjectLogic() {
+        GameObject targetObject = GetTargetObject();
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
@@ -374,7 +413,7 @@ public class Bro : TargetPathingNPC {
     }
 
 public virtual void PerformExitOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     PerformExitedScore();
     BroManager.Instance.RemoveBro(this.gameObject, false);
 
@@ -386,7 +425,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
 //===========================================================================
     public virtual void PerformHandDryerOccupationFinishedLogic() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
         // Bathroom object is out of order
         if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
           // Fall through logic for the bro bathroom lifecycle
@@ -439,7 +478,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         }
     }
     public virtual void PerformOutOfOrderHandDryerRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -475,7 +514,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         reliefRequired = ReliefRequired.WashHands;
     }
     public virtual void PerformOutOfOrderHandDryerWashHands() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasWashedHands = true;
 
@@ -499,7 +538,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         reliefRequired = ReliefRequired.DryHands;
     }
     public virtual void PerformOutOfOrderHandDryerDryHands() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasDriedHands = true;
 
@@ -516,7 +555,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         reliefRequired = ReliefRequired.None;
     }
   public virtual void PerformWorkingHandDryerRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -549,7 +588,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.WashHands;
   }
   public virtual void PerformWorkingHandDryerWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -573,7 +612,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformWorkingHandDryerDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
     PerformBathroomObjectUsedScore();
@@ -596,7 +635,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
   //===========================================================================
   public virtual void PerformSinkOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     // Bathroom object is out of order
     if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
       // Fall through logic for the bro bathroom lifecycle
@@ -650,7 +689,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderSinkRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -687,7 +726,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderSinkWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -713,7 +752,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderSinkDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -729,7 +768,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformWorkingSinkRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -766,7 +805,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformWorkingSinkWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -789,7 +828,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformWorkingSinkDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -818,7 +857,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
   //===========================================================================
   public virtual void PerformStallOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
       // Fall through logic for the bro bathroom lifecycle
       if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) { 
@@ -871,7 +910,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderStallRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -905,7 +944,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush1);
   }
   public virtual void PerformOutOfOrderStallWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -929,7 +968,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformOutOfOrderStallDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -953,7 +992,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.None;
   }
   public virtual void PerformWorkingStallRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -977,7 +1016,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush1);
   }
   public virtual void PerformWorkingStallWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -1003,7 +1042,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformWorkingStallDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -1036,7 +1075,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   } 
   //===========================================================================
   public virtual void PerformUrinalOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
       // Fall through logic for the bro bathroom lifecycle
       if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) { 
@@ -1088,7 +1127,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
   }
   public virtual void PerformOutOfOrderUrinalRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -1119,7 +1158,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush2);
   }
   public virtual void PerformOutOfOrderUrinalWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -1143,7 +1182,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformOutOfOrderUrinalDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     
     hasDriedHands = true;
 
@@ -1166,7 +1205,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.None;
   }
   public virtual void PerformWorkingUrinalRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -1195,7 +1234,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush2);
   }
   public virtual void PerformWorkingUrinalWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -1219,7 +1258,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.DryHands;
   }
     public virtual void PerformWorkingUrinalDryHands() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasDriedHands = true;
 
@@ -1253,7 +1292,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
     //===========================================================================
     public virtual void PerformRoamingLogic() {
-        PerformMovementLogic();
+        // PerformMovementLogic();
 
         if(IsAtTargetPosition()) {
             bool foundEmptyTile = false;
@@ -1389,6 +1428,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   //----------------------------------------------------------------------------
   //This is being checked on arrival before switching to occupying an object
   public virtual void PerformOnArrivalBrotocolScoreCheck() {
+    GameObject targetObject = GetTargetObject();
     if(targetObject != null
        && targetObject.GetComponent<BathroomObject>() != null
        && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
@@ -1408,7 +1448,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   /// <returns>True if target object is a bathroom object, and if reliefRequired
   /// matches the correct bathroom object.</returns>
   public virtual bool CheckIfBroHasCorrectReliefTypeForTargetObject() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     if(hasRelievedSelf == false
      // && (reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Vomit)
      && (reliefRequired == ReliefRequired.Pee)
@@ -1491,8 +1531,8 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //=========================================================================
     // This assumes it's called at the correct point and that the target object and relief required are accessible
     public virtual void PerformBathroomObjectUsedScore() {
-        if(targetObject != null) {
-            BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        if(GetTargetObject() != null) {
+            BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
             if(bathObjRef != null) {
                 if(bathObjRef.type == BathroomObjectType.HandDryer) {
                     if(reliefRequired == ReliefRequired.DryHands) {

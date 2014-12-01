@@ -14,14 +14,14 @@ public class TimeWasterBro : Bro {
     public float minTimeInRoamingSpotMax = 2f;
     public float maxTimeInRoamingSpotMax = 4f;
 
-    public override void Awake() {
+    protected override void Awake() {
+        base.Awake();
+        
         type = BroType.TimeWasterBro;
 
         if(randomizeRoamingTime) {
             timeInRoamingSpotMax = Random.Range(minTimeInRoamingSpotMax, maxTimeInRoamingSpotMax);
         }
-        
-        base.Awake();
     }
 
     // Use this for initialization

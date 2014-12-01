@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 public class SlobBro : Bro {
 
-    public override void Awake() {
-        type = BroType.SlobBro;
+    protected override void Awake() {
         base.Awake();
+
+        type = BroType.SlobBro;
     }
     
     // Use this for initialization
@@ -20,6 +21,8 @@ public class SlobBro : Bro {
     }
 
     public override void PerformOccupyingObjectLogic() {
+        GameObject targetObject = GetTargetObject();
+        
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();

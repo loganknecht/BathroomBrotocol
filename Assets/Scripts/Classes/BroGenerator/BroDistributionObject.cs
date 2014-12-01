@@ -181,17 +181,17 @@ public class BroDistributionObject : DistributionObject {
                 if(defaultXMoveSpeed == float.PositiveInfinity) {
                     defaultXMoveSpeed = UnityEngine.Random.Range(defaultMinXMoveSpeed, defaultMaxXMoveSpeed);
                 }
-                broRef.xMoveSpeed = defaultXMoveSpeed;
+                broRef.SetXMoveSpeed(defaultXMoveSpeed);
             break;
             case(BroDistribution.AllBros):
                 if(defaultXMoveSpeed == float.PositiveInfinity) {
                     defaultXMoveSpeed = UnityEngine.Random.Range(defaultMinXMoveSpeed, defaultMaxXMoveSpeed);
                 }
-                broRef.xMoveSpeed = defaultXMoveSpeed;
+                broRef.SetXMoveSpeed(defaultXMoveSpeed);
             break;
             case(BroDistribution.RandomBros):
                 defaultXMoveSpeed = UnityEngine.Random.Range(defaultMinXMoveSpeed, defaultMaxXMoveSpeed);
-                broRef.xMoveSpeed = defaultXMoveSpeed;
+                broRef.SetXMoveSpeed(defaultXMoveSpeed);
             break;
             default:
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
@@ -209,17 +209,17 @@ public class BroDistributionObject : DistributionObject {
                 if(defaultYMoveSpeed == float.PositiveInfinity) {
                     defaultYMoveSpeed = UnityEngine.Random.Range(defaultMinYMoveSpeed, defaultMaxYMoveSpeed);
                 }
-                broRef.yMoveSpeed = defaultYMoveSpeed;
+                broRef.SetYMoveSpeed(defaultYMoveSpeed);
             break;
             case(BroDistribution.AllBros):
                 if(defaultYMoveSpeed == float.PositiveInfinity) {
                     defaultYMoveSpeed = UnityEngine.Random.Range(defaultMinYMoveSpeed, defaultMaxYMoveSpeed);
                 }
-                broRef.yMoveSpeed = defaultYMoveSpeed;
+                broRef.SetYMoveSpeed(defaultYMoveSpeed);
             break;
             case(BroDistribution.RandomBros):
                 defaultYMoveSpeed = UnityEngine.Random.Range(defaultMinYMoveSpeed, defaultMaxYMoveSpeed);
-                broRef.yMoveSpeed = defaultYMoveSpeed;
+                broRef.SetYMoveSpeed(defaultYMoveSpeed);
             break;
             default:
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");

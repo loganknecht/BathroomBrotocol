@@ -7,9 +7,10 @@ public class DrunkBro : Bro {
     public float vomitTimerMax = Random.Range(10, 15);
     public bool vomitThrowUpPerformed = false;
 
-    public override void Awake() {
-        type = BroType.DrunkBro;
+    protected override void Awake() {
         base.Awake();
+
+        type = BroType.DrunkBro;
     }
 
     // Use this for initialization
@@ -57,7 +58,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderHandDryerRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -95,7 +96,7 @@ public class DrunkBro : Bro {
         reliefRequired = ReliefRequired.WashHands;
     }
     public override void PerformWorkingHandDryerRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -130,7 +131,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderSinkRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -167,7 +168,7 @@ public class DrunkBro : Bro {
         reliefRequired = ReliefRequired.WashHands;
     }
     public override void PerformWorkingSinkRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -202,7 +203,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderStallRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -239,7 +240,7 @@ public class DrunkBro : Bro {
         SoundManager.Instance.Play(AudioType.Flush1);
     }
     public override void PerformWorkingStallRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -264,7 +265,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderUrinalRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -301,7 +302,7 @@ public class DrunkBro : Bro {
         SoundManager.Instance.Play(AudioType.Flush2);
     }
     public override void PerformWorkingUrinalRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 

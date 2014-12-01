@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class FightingBros : TargetPathingNPC {
+public class FightingBros : TargetPathing {
     public List<GameObject> brosFighting; 
     public int currentNumberOfTaps = 0;
     public int numberOfTapsNeededToBreakUp = 0;
@@ -10,7 +10,7 @@ public class FightingBros : TargetPathingNPC {
 
     public override void Awake() {
         base.Awake();
-        
+
         brosFighting = new List<GameObject>();
     }
 
