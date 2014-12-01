@@ -8,6 +8,9 @@ public class Bro : BaseBehavior {
     public TargetPathing targetPathingReference = null;
     public Animator animatorReference = null;
     public HighlightSelectable selectableReference = null;
+    public SpeechBubble speechBubbleReference = null;
+    public IsometricDisplay isometricDisplayReference = null;
+    public BoxCollider2D colliderReference = null;
 
     public BroType type = BroType.None;
     public BroState state = BroState.None;
@@ -31,9 +34,6 @@ public class Bro : BaseBehavior {
 
     public ReliefRequired reliefRequired = ReliefRequired.None;
 
-    public GameObject speechBubbleGameObject = null;
-    public SpeechBubble speechBubbleReference = null;
-
     public float baseProbabilityOfFightOnCollisionWithBro = 0.15f;
     public bool modifyBroFightProbablityUsingScoreRatio = false;
 
@@ -46,19 +46,13 @@ public class Bro : BaseBehavior {
 
     protected override void Awake() {
         base.Awake();
-
-        selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
-        speechBubbleReference = speechBubbleGameObject.GetComponent<SpeechBubble>();
-
-        InitializeOccupationDuration();
     }
     // Use this for initialization
     public virtual void Start () {
         // base.Start();
 
-        // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
-
-        selectableReference.canBeSelected = true;
+        InitializeOccupationDuration();
+        InitializeComponents();
     }
 
     // Update is called once per frame
@@ -66,7 +60,38 @@ public class Bro : BaseBehavior {
         if(!isPaused) {
             PerformSpeechBubbleLogic();
             PerformFightTimerLogic();
+            PerformLogic();
         }
+    }
+
+    public virtual void InitializeComponents() {
+        if(targetPathingReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'targetPathingReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(animatorReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'animatorReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(selectableReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'selectableReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(speechBubbleReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'speechBubbleReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(isometricDisplayReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'isometricDisplayReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        isometricDisplayReference.UpdateDisplayPosition();
+    }
+    public virtual void InitializeOccupationDuration() {
+        float defaultOccupationDuration = 2f;
+
+        occupationDuration = new Dictionary<BathroomObjectType, float>();
+
+        occupationDuration[BathroomObjectType.Exit] = 0;
+        occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
     }
 
     public void SetXMoveSpeed(float newXMoveSpeed) {
@@ -105,18 +130,6 @@ public class Bro : BaseBehavior {
         return targetPathingReference.IsAtTargetPosition();
     }
 
-
-    public virtual void InitializeOccupationDuration() {
-        float defaultOccupationDuration = 2f;
-
-        occupationDuration = new Dictionary<BathroomObjectType, float>();
-
-        occupationDuration[BathroomObjectType.Exit] = 0;
-        occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
-        occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
-        occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
-        occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
-    }
     public virtual float GetOccupationDuration(BathroomObjectType bathroomObjectType) {
         return occupationDuration[bathroomObjectType];
     }
@@ -208,7 +221,7 @@ public class Bro : BaseBehavior {
     }
 
     public virtual void OnMouseDown() {
-        // Debug.Log("clicked");
+        Debug.Log("clicked");
         SelectionManager.Instance.SelectBro(this.gameObject);
         if(state == BroState.Standoff) {
             if(standOffBroGameObject != null) {
@@ -308,6 +321,7 @@ public class Bro : BaseBehavior {
             GameObject targetObject = GetTargetObject();
             if(targetObject != null
                && targetObject.GetComponent<BathroomObject>() != null) {
+                Debug.Log("target object is not null");
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
                 BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
 
@@ -347,6 +361,7 @@ public class Bro : BaseBehavior {
             }
             else {
                 if(targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+                    Debug.Log("lol starting to roam");
                     state = BroState.Roaming;
                 }
             }
@@ -405,7 +420,7 @@ public class Bro : BaseBehavior {
             }
             else {
                 //disables the collider because the bro resides in the object, but the timer is still going
-                collider.enabled = false;
+                colliderReference.enabled = false;
 
                 occupationTimer += Time.deltaTime;
             }
@@ -507,7 +522,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         }
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-        collider.enabled = true;
+        colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -531,7 +546,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-        collider.enabled = true;
+        colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -549,7 +564,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-        collider.enabled = false;
+        colliderReference.enabled = false;
         selectableReference.canBeSelected = false;
         speechBubbleReference.displaySpeechBubble = false;
         reliefRequired = ReliefRequired.None;
@@ -581,7 +596,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -605,7 +620,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -619,7 +634,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = false;
+    colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -718,7 +733,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -744,7 +759,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -797,7 +812,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -820,7 +835,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -935,7 +950,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     else {
       state = BroState.Roaming;
     }
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -961,7 +976,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -986,7 +1001,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-    collider.enabled = false;
+    colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -1007,7 +1022,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
       state = BroState.Roaming;
     }
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -1034,7 +1049,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -1059,7 +1074,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = false;
+    colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -1149,7 +1164,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
       state = BroState.Roaming;
     }
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -1175,7 +1190,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -1199,7 +1214,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -1225,7 +1240,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     else {
       state = BroState.Roaming;
     }
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -1251,7 +1266,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -1275,7 +1290,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-        collider.enabled = true;
+        colliderReference.enabled = true;
         selectableReference.canBeSelected = false;
         speechBubbleReference.displaySpeechBubble = false;
         reliefRequired = ReliefRequired.None;
@@ -1302,7 +1317,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
             BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
             // Debug.Log(AStarManager.Instance.GetListCopyOfAllClosedNodes());
             // Debug.Log(startTile);
-            Debug.Log(randomBathroomTile);
+            // Debug.Log(randomBathroomTile);
             List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
                                                                                 AStarManager.Instance.GetListCopyOfAllClosedNodes(),
                                                                                 startTile,
@@ -1317,8 +1332,8 @@ public virtual void PerformExitOccupationFinishedLogic() {
     public virtual void PerformStandOffLogic() {
         if(state == BroState.Standoff) {
             if(standOffBroGameObject == null) {
-                this.gameObject.collider.enabled = false;
-                broFightingWith.collider.enabled = false;
+                colliderReference.enabled = false;
+                broFightingWith.GetComponent<Bro>().colliderReference.enabled = false;
                 broFightingWith.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
 
                 selectableReference.ResetHighlightObjectAndSelectedState();

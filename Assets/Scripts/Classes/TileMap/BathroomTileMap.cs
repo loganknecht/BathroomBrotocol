@@ -86,7 +86,6 @@ public class BathroomTileMap : TileMap {
             int selectedXIndex = Random.Range(0, tilesWide);
             int selectedYIndex = Random.Range(0, tilesHigh);
             foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
-            Debug.Log(foundBathroomTile);
             foreach(GameObject closedNode in AStarManager.Instance.permanentClosedNodes) {
                 //if tile in closed nodes list reset and try again
                 if(closedNode == foundBathroomTile) {

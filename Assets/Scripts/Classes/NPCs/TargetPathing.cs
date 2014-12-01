@@ -24,13 +24,12 @@ public class TargetPathing : BaseBehavior {
 
     public virtual void Awake() {
         base.Awake();
-        
+
         movementNodes = new List<GameObject>();
     }
 
     // Use this for initialization
     public virtual void Start () {
-        animatorReference = this.gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -108,8 +107,8 @@ public class TargetPathing : BaseBehavior {
 
     public bool IsAtTargetPosition() {
         if(movementNodes.Count == 0
-            && this.gameObject.transform.position.x == targetPosition.x
-            && this.gameObject.transform.position.y == targetPosition.y) {
+            && gameObjectToMove.transform.position.x == targetPosition.x
+            && gameObjectToMove.transform.position.y == targetPosition.y) {
             return true;
         }
         else {
@@ -129,8 +128,8 @@ public class TargetPathing : BaseBehavior {
         UpdateBathroomFacingBasedOnNewPositionOffset(newPositionOffset);
 
         //performs check to pop new node from the movemeNodes list
-        if(this.transform.position.x == targetPosition.x
-            && this.transform.position.y == targetPosition.y) {
+        if(gameObjectToMove.transform.position.x == targetPosition.x
+            && gameObjectToMove.transform.position.y == targetPosition.y) {
             //Debug.Log("object at position");
             PopMovementNode();
         }
@@ -139,6 +138,9 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual void PopMovementNode() {
+        if(movementNodes == null) {
+            Debug.Log("movemeNodes is null");
+        }
         if(movementNodes.Count > 0) {
         //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
             GameObject nextNode = movementNodes[0];
@@ -147,26 +149,23 @@ public class TargetPathing : BaseBehavior {
             movementNodes.RemoveAt(0);
             // Destroy(nextNode);
             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-            if(movementNodes == null) {
-                Debug.Log("movemeNodes is null");
-            }
         }
     }
 
     public virtual Vector2 CalculateNextPositionOffset() {
         Vector2 newPositionOffset = Vector2.zero;
 
-        if(this.gameObject.transform.position.x < targetPosition.x) {
+        if(gameObjectToMove.transform.position.x < targetPosition.x) {
             newPositionOffset.x += xMoveSpeed;
         }
-        else if(this.gameObject.transform.position.x > targetPosition.x) {
+        else if(gameObjectToMove.transform.position.x > targetPosition.x) {
             newPositionOffset.x -= xMoveSpeed;
         }
 
-        if(this.gameObject.transform.position.y < targetPosition.y) {
+        if(gameObjectToMove.transform.position.y < targetPosition.y) {
             newPositionOffset.y += yMoveSpeed;
         }
-        else if(this.gameObject.transform.position.y > targetPosition.y) {
+        else if(gameObjectToMove.transform.position.y > targetPosition.y) {
             newPositionOffset.y -= yMoveSpeed;
         }
 
@@ -179,21 +178,21 @@ public class TargetPathing : BaseBehavior {
         // Debug.Log("target x pos less: " + (targetPosition.x + targetPositionXLockBuffer));
         // Debug.Log("target x pos: " + targetPosition.x);
         // Debug.Log("next x pos: " + (this.gameObject.transform.position.x + newPositionOffset.x));
-        if((this.gameObject.transform.position.x + newPositionOffset.x) > (targetPosition.x - targetPositionXLockBuffer)
-            && (this.gameObject.transform.position.x + newPositionOffset.x) < (targetPosition.x + targetPositionXLockBuffer)) {
+        if((gameObjectToMove.transform.position.x + newPositionOffset.x) > (targetPosition.x - targetPositionXLockBuffer)
+            && (gameObjectToMove.transform.position.x + newPositionOffset.x) < (targetPosition.x + targetPositionXLockBuffer)) {
             //Debug.Log("setting x position to target");
-            this.gameObject.transform.position = new Vector3(targetPosition.x,
-                                                             this.gameObject.transform.position.y,
-                                                             this.gameObject.transform.position.z);
+            gameObjectToMove.transform.position = new Vector3(targetPosition.x,
+                                                             gameObjectToMove.transform.position.y,
+                                                             gameObjectToMove.transform.position.z);
             newPositionOffset.x = 0;
         }
         // Y Locker
-        if((this.gameObject.transform.position.y + newPositionOffset.y) > (targetPosition.y - targetPositionYLockBuffer)
-            && (this.gameObject.transform.position.y + newPositionOffset.y) < (targetPosition.y + targetPositionYLockBuffer)) {
+        if((gameObjectToMove.transform.position.y + newPositionOffset.y) > (targetPosition.y - targetPositionYLockBuffer)
+            && (gameObjectToMove.transform.position.y + newPositionOffset.y) < (targetPosition.y + targetPositionYLockBuffer)) {
             //Debug.Log("setting y position to target");
-            this.gameObject.transform.position = new Vector3(this.gameObject.transform.position.x,
+            gameObjectToMove.transform.position = new Vector3(gameObjectToMove.transform.position.x,
                                                              targetPosition.y,
-                                                             this.gameObject.transform.position.z);
+                                                             gameObjectToMove.transform.position.z);
             newPositionOffset.y = 0;
         }
 
