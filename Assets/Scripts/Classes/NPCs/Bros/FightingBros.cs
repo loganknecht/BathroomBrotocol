@@ -3,45 +3,53 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class FightingBros : TargetPathingNPC {
-  public List<GameObject> brosFighting = new List<GameObject>();
-  public int currentNumberOfTaps = 0;
-  public int numberOfTapsNeededToBreakUp = 0;
-  public bool isPaused = false;
+    public List<GameObject> brosFighting; 
+    public int currentNumberOfTaps = 0;
+    public int numberOfTapsNeededToBreakUp = 0;
+    public bool isPaused = false;
 
-  // Use this for initialization
-  public override void Start () {
-    base.Start();
-
-    this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
-
-    PerformStartedFightScore();
-  }
-
-  // Update is called once per frame
- public override void Update () {
-  if(!isPaused) {
-    // base.Update();
-    PerformLogic();
-  }
- }
-  public void Pause() {
-    isPaused = true;
-  } 
-  public void Unpause() {
-    isPaused = false;
-  } 
-
-  public void OnMouseDown() {
-    if(!isPaused) {
-      currentNumberOfTaps++;
+    public override void Awake() {
+        base.Awake();
+        
+        brosFighting = new List<GameObject>();
     }
-  }
 
-public override void PerformLogic() {
-PerformMovementLogic();
-PerformFightingBroArrivalLogic();
-PerformMaxTapLogic();
-}
+    // Use this for initialization
+    public override void Start () {
+        Debug.Log(brosFighting);
+
+        base.Start();
+
+        this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
+
+        PerformStartedFightScore();
+    }
+
+    // Update is called once per frame
+    public override void Update () {
+        if(!isPaused) {
+            // base.Update();
+            PerformLogic();
+        }
+    }
+    public void Pause() {
+        isPaused = true;
+    } 
+    public void Unpause() {
+        isPaused = false;
+    } 
+
+    public void OnMouseDown() {
+        if(!isPaused) {
+            currentNumberOfTaps++;
+        }
+    }
+
+    public override void PerformLogic() {
+        PerformMovementLogic();
+        PerformFightingBroArrivalLogic();
+        PerformMaxTapLogic();
+    }
 
     // TODO: Fix to use the jagged array access instead
     public void PerformFightingBroArrivalLogic() {

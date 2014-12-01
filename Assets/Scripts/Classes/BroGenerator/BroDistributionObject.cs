@@ -99,7 +99,7 @@ public class BroDistributionObject : DistributionObject {
     public void ResetVariablesToInitialValues() {
         InitializeOccupationDuration();
 
-        Debug.Log("RESETTING BRO GENERATOR TO DEFAULT VALUES");
+        // Debug.Log("RESETTING BRO GENERATOR TO DEFAULT VALUES");
     }
 
     public override List<GameObject> CalculateDistributionPoints() {
@@ -236,6 +236,9 @@ public class BroDistributionObject : DistributionObject {
           case(BroDistribution.NoBros):
           break;
           case(BroDistribution.AllBros):
+            if(defaultReliefRequired == ReliefRequired.None) {
+                defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
+            }
             broRef.reliefRequired = defaultReliefRequired;
           break;
           case(BroDistribution.RandomBros):
@@ -248,9 +251,9 @@ public class BroDistributionObject : DistributionObject {
           break;
         }
 
-        if(broRef.type == BroType.ShyBro) {
-          broRef.reliefRequired = ReliefRequired.Pee;
-        }
+        // if(broRef.type == BroType.ShyBro) {
+        //   broRef.reliefRequired = ReliefRequired.Pee;
+        // }
 
         return broToGenerate;
     }
@@ -427,7 +430,6 @@ public class BroDistributionObject : DistributionObject {
     public BroDistributionObject SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {
         broDistributionReliefType = typeOfBroDistribution;
         defaultReliefRequiredToChooseFrom = newReliefRequiredToChooseFrom;
-        defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
         return this;
     }
 

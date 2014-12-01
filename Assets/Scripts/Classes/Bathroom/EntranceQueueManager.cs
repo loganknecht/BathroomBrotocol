@@ -113,6 +113,8 @@ public class EntranceQueueManager : BaseBehavior {
 
     public void PerformDebugButtonPressLogic() {
         if(Input.GetKeyDown(KeyCode.Q)) {
+            Debug.Log("Generating bro!");
+
             // GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
             // int lastLineQueueTileIndex = lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1;
             // broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.x,

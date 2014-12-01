@@ -37,17 +37,65 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
                                                                                            { 1, .5f } };
 
-        BroDistributionObject firstWave = new BroDistributionObject(0, 10, 3, DistributionType.LinearIn, DistributionSpacing.Random, broProbabilities, entranceQueueProbabilities);
+        BroDistributionObject firstWave = new BroDistributionObject(0, 5, 3, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
         firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
-            .SetFightProbability(BroDistribution.AllBros, 0.5f, 0.5f)
-            .SetLineQueueSkipType(BroDistribution.AllBros, true)
-            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, true)
-            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
-            .SetChooseObjectOnRelief(BroDistribution.AllBros, true);
-
-        BroDistributionObject secondWave = new BroDistributionObject(0, 5, 0, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-        secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee)
+            .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
+            .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
             .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2f, 2f)
+            .SetLineQueueSkipType(BroDistribution.AllBros, true)
+            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
+            .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+
+        BroDistributionObject secondWave = new BroDistributionObject(15, 30, 2, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+            .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
+            .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
+            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2f, 2f)
+            .SetLineQueueSkipType(BroDistribution.AllBros, true)
+            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
+            .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+
+        BroDistributionObject thirdWave = new BroDistributionObject(30, 35, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        thirdWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+            .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
+            .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
+            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2f, 2f)
+            .SetLineQueueSkipType(BroDistribution.AllBros, true)
+            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
+            .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+
+        BroDistributionObject fourthWave = new BroDistributionObject(50, 65, 10, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+        fourthWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+            .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
+            .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
+            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2f, 2f)
             .SetLineQueueSkipType(BroDistribution.AllBros, true)
             .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
             .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
@@ -55,7 +103,9 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
 
         BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                                  firstWave,
-                                                                                 // secondWave
+                                                                                 secondWave,
+                                                                                 thirdWave,
+                                                                                 fourthWave
                                                                                 });
     }
 
