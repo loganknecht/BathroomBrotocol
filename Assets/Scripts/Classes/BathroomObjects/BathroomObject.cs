@@ -7,8 +7,9 @@ public class BathroomObject : MonoBehaviour {
     public BathroomObjectState state = BathroomObjectState.None;
     public bool destroyObjectIfMoreThanTwoOccupants = true;
 
-    Animator animatorReference = null;
-    BathroomFacing bathroomFacingReference;
+    public Animator animatorReference = null;
+    public BathroomFacing bathroomFacingReference = null;
+    public BoxCollider2D colliderReference = null;
 
     public Selectable selectableReference = null;
 
@@ -35,23 +36,23 @@ public class BathroomObject : MonoBehaviour {
         selectableReference.canBeSelected = true;
     }
 
-	public virtual void Update() {
-		UpdateBathroomObjectAnimator();
-    PerformMoreThanTwoOccupantsCheck();
-	}
-
-	public virtual void OnMouseDown() {
-		SelectionManager.Instance.currentlySelectedBathroomObject = this.gameObject;
-
-    if(state == BathroomObjectState.OutOfOrder) {
-      numberOfTaps++;
-      if(numberOfTaps >= numberOfTapsNeededToRestoreToOrder) {
-        state = BathroomObjectState.Idle;
-        timesUsed = 0;
-      }
+    public virtual void Update() {
+        UpdateBathroomObjectAnimator();
+        PerformMoreThanTwoOccupantsCheck();
     }
-    // Debug.Log("Derp down");
-	}
+
+    public virtual void OnMouseDown() {
+        SelectionManager.Instance.currentlySelectedBathroomObject = this.gameObject;
+
+        if(state == BathroomObjectState.OutOfOrder) {
+            numberOfTaps++;
+            if(numberOfTaps >= numberOfTapsNeededToRestoreToOrder) {
+                state = BathroomObjectState.Idle;
+                timesUsed = 0;
+            }
+        }
+        // Debug.Log("Derp down");
+    }
 
 	public virtual void UpdateBathroomObjectAnimator() {
     if(animatorReference != null) {
@@ -79,11 +80,15 @@ public class BathroomObject : MonoBehaviour {
     }
 	}
 
-  public void ResetColliderAndSelectableReference() {
-    collider.enabled = true;
-    selectableReference.isSelected = false;
-    selectableReference.canBeSelected = true;
-  }
+    public void ResetColliderAndSelectableReference() {
+        collider.enabled = true;
+        selectableReference.isSelected = false;
+        selectableReference.canBeSelected = true;
+    }
+    
+    public void SetColliderActive(bool isActive) {
+        colliderReference.enabled = isActive;
+    }
 
     public void AddBro(GameObject broGameObjectToAdd) {
         if(!objectsOccupyingBathroomObject.Contains(broGameObjectToAdd)) {

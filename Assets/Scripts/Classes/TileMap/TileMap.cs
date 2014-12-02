@@ -9,23 +9,23 @@ using System.Collections.Generic;
 // IF USING THE ROW CONTAINER CONVENIENCE LIST TILES MUST BE IN ORDER
 public class TileMap : BaseBehavior {
 
-	public float singleTileWidth = -1;
-	public float singleTileHeight = -1;
+    public float singleTileWidth = -1;
+    public float singleTileHeight = -1;
     public int tilesWide = 0;
     public int tilesHigh = 0;
     public int tileCount = 0;
 
-	public GameObject[][] tiles;
+    public GameObject[][] tiles;
     public List<GameObject> rowContainers;
 
     protected override void Awake() {
         base.Awake();
     }
 
-	// Use this for initialization
-	protected virtual void Start () {
+    // Use this for initialization
+    protected virtual void Start () {
         ConfigureTileMap();
-	}
+    }
 
     // Update is called once per frame
     public virtual void Update () {
@@ -130,16 +130,16 @@ public class TileMap : BaseBehavior {
 
         foreach(GameObject[] row in tiles) {
             foreach(GameObject tile in row) {
-            float leftBound = tile.transform.position.x - singleTileWidth/2;
-            float rightBound = tile.transform.position.x + singleTileWidth/2;
+                float leftBound = tile.transform.position.x - singleTileWidth/2;
+                float rightBound = tile.transform.position.x + singleTileWidth/2;
 
-            float bottomBound = tile.transform.position.y - singleTileHeight/2;
-            float topBound = tile.transform.position.y + singleTileHeight/2;
+                float bottomBound = tile.transform.position.y - singleTileHeight/2;
+                float topBound = tile.transform.position.y + singleTileHeight/2;
 
-            if(leftBound < xPosition
-                && rightBound > xPosition
-                && bottomBound < yPosition
-                && topBound > yPosition) {
+                if(leftBound < xPosition
+                    && rightBound > xPosition
+                    && bottomBound < yPosition
+                    && topBound > yPosition) {
                     return tile;
                 }
 
@@ -161,7 +161,7 @@ public class TileMap : BaseBehavior {
                     }
                 }
             }
-		}
+        }
 
         if(returnClosestTile) {
             return closestTile;
@@ -169,5 +169,5 @@ public class TileMap : BaseBehavior {
         else {
             return null;
         }
-	}
+    }
 }

@@ -94,6 +94,10 @@ public class Bro : BaseBehavior {
         occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
     }
 
+    public void SetColliderActive(bool isActive) {
+        colliderReference.enabled = isActive;
+    }
+
     public void SetXMoveSpeed(float newXMoveSpeed) {
         targetPathingReference.SetXMoveSpeed(newXMoveSpeed);
     }
@@ -221,7 +225,7 @@ public class Bro : BaseBehavior {
     }
 
     public virtual void OnMouseDown() {
-        Debug.Log("clicked");
+        // Debug.Log("clicked");
         SelectionManager.Instance.SelectBro(this.gameObject);
         if(state == BroState.Standoff) {
             if(standOffBroGameObject != null) {
@@ -321,7 +325,7 @@ public class Bro : BaseBehavior {
             GameObject targetObject = GetTargetObject();
             if(targetObject != null
                && targetObject.GetComponent<BathroomObject>() != null) {
-                Debug.Log("target object is not null");
+                // Debug.Log("target object is not null");
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
                 BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
 

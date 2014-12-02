@@ -56,7 +56,7 @@ public class SelectionManager : MonoBehaviour {
 
         //Resets for next update
         PerformCurrentlySelectedBroReset();
-        PerformCurrentlySelectedBathroomObjectReset();
+        // PerformCurrentlySelectedBathroomObjectReset();
         PerformCurrentlySelectedBathroomTileBlockerReset();
     }
 
@@ -87,7 +87,7 @@ public class SelectionManager : MonoBehaviour {
                     if(broRef.GetTargetObject() != null
                      && broRef.GetTargetObject().GetComponent<BathroomObject>()) {
                         //reset the target object to the default interaction state for all bros since this bro is already in a bathroom object
-                        broRef.GetTargetObject().collider.enabled = true;
+                        broRef.GetTargetObject().GetComponent<BathroomObject>().SetColliderActive(true);
                     }
                     broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
                     broRef.selectableReference.isSelected = false;
