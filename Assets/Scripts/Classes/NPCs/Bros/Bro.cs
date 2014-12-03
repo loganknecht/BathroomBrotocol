@@ -61,6 +61,7 @@ public class Bro : BaseBehavior {
             PerformSpeechBubbleLogic();
             PerformFightTimerLogic();
             PerformLogic();
+            UpdateAnimator();
         }
     }
 

@@ -56,7 +56,7 @@ public class SelectionManager : MonoBehaviour {
 
         //Resets for next update
         PerformCurrentlySelectedBroReset();
-        // PerformCurrentlySelectedBathroomObjectReset();
+        PerformCurrentlySelectedBathroomObjectReset();
         PerformCurrentlySelectedBathroomTileBlockerReset();
     }
 

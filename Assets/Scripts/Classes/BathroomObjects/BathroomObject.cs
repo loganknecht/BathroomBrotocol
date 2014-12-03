@@ -54,40 +54,42 @@ public class BathroomObject : MonoBehaviour {
         // Debug.Log("Derp down");
     }
 
-	public virtual void UpdateBathroomObjectAnimator() {
-    if(animatorReference != null) {
-  		//animatorReference.SetBool(DirectionBeingLookedAt.None.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
-  		animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
+    public virtual void UpdateBathroomObjectAnimator() {
+        if(animatorReference != null) {
+            //animatorReference.SetBool(DirectionBeingLookedAt.None.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
+            animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
 
-  		animatorReference.SetBool(BathroomObjectState.BeingRepaired.ToString(), false);
-  		animatorReference.SetBool(BathroomObjectState.Broken.ToString(), false);
-  		animatorReference.SetBool(BathroomObjectState.BrokenByPoop.ToString(), false);
-  		animatorReference.SetBool(BathroomObjectState.Idle.ToString(), false);
-  		animatorReference.SetBool(BathroomObjectState.InUse.ToString(), false);
-      animatorReference.SetBool(BathroomObjectState.OutOfOrder.ToString(), false);
+            animatorReference.SetBool(BathroomObjectState.BeingRepaired.ToString(), false);
+            animatorReference.SetBool(BathroomObjectState.Broken.ToString(), false);
+            animatorReference.SetBool(BathroomObjectState.BrokenByPoop.ToString(), false);
+            animatorReference.SetBool(BathroomObjectState.Idle.ToString(), false);
+            animatorReference.SetBool(BathroomObjectState.InUse.ToString(), false);
+            animatorReference.SetBool(BathroomObjectState.OutOfOrder.ToString(), false);
 
-  		animatorReference.SetBool(bathroomFacingReference.directionBeingLookedAt.ToString(), true);
-  		animatorReference.SetBool(state.ToString(), true);
+            animatorReference.SetBool(bathroomFacingReference.directionBeingLookedAt.ToString(), true);
+            animatorReference.SetBool(state.ToString(), true);
 
-  		animatorReference.SetBool("None", false);
+            animatorReference.SetBool("None", false);
+        }
     }
-	}
 
     public void ResetColliderAndSelectableReference() {
         collider.enabled = true;
         selectableReference.isSelected = false;
         selectableReference.canBeSelected = true;
     }
-    
+
     public void SetColliderActive(bool isActive) {
-        colliderReference.enabled = isActive;
+        if(colliderReference != null) {
+            colliderReference.enabled = isActive;
+        }
     }
 
     public void AddBro(GameObject broGameObjectToAdd) {

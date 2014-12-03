@@ -1,7 +1,26 @@
 fileFormatVersion: 2
 guid: 15859d9359f584cee8025f34ea89b97a
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: house_tiles_2_0
+    21300002: house_tiles_2_1
+    21300004: house_tiles_2_2
+    21300006: house_tiles_2_3
+    21300008: house_tiles_2_4
+    21300010: house_tiles_2_5
+    21300012: house_tiles_2_6
+    21300014: house_tiles_2_7
+    21300016: house_tiles_2_8
+    21300018: house_tiles_2_9
+    21300020: house_tiles_2_10
+    21300022: house_tiles_2_11
+    21300024: house_tiles_2_12
+    21300026: house_tiles_2_13
+    21300028: house_tiles_2_14
+    21300030: house_tiles_2_15
+    21300032: house_tiles_2_16
+    21300034: house_tiles_2_17
+    21300036: house_tiles_2_18
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -27,21 +46,211 @@ TextureImporter:
     filterMode: -1
     aniso: -1
     mipBias: -1
-    wrapMode: -1
+    wrapMode: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 128
   alphaIsTransparency: 1
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: house_tiles_2_0
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 391
+        width: 97
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_1
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 391
+        width: 97
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_2
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 399
+        width: 97
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_3
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 391
+        width: 81
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_4
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 391
+        width: 96
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_5
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 391
+        width: 81
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_6
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 390
+        width: 100
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_7
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 390
+        width: 100
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 128
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_9
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 256
+        width: 64
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_10
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 256
+        width: 64
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_11
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 256
+        width: 64
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_12
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 256
+        width: 76
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_13
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 256
+        width: 76
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 192
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_15
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 64
+        height: 95
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_16
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 128
+        width: 64
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_17
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 135
+        width: 76
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: house_tiles_2_18
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 135
+        width: 76
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
