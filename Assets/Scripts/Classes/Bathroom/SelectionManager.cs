@@ -84,52 +84,52 @@ public class SelectionManager : MonoBehaviour {
                 }
 
                 if(sendBroToObject) {
-                    if(broRef.targetObject != null
-                     && broRef.targetObject.GetComponent<BathroomObject>()) {
-                    //reset the target object to the default interaction state for all bros since this bro is already in a bathroom object
-                    broRef.targetObject.collider.enabled = true;
+                    if(broRef.GetTargetObject() != null
+                     && broRef.GetTargetObject().GetComponent<BathroomObject>()) {
+                        //reset the target object to the default interaction state for all bros since this bro is already in a bathroom object
+                        broRef.GetTargetObject().GetComponent<BathroomObject>().SetColliderActive(true);
                     }
-        			broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
-        			broRef.selectableReference.isSelected = false;
-        			broRef.selectableReference.ResetHighlightObjectAndSelectedState();
+                    broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
+                    broRef.selectableReference.isSelected = false;
+                    broRef.selectableReference.ResetHighlightObjectAndSelectedState();
 
-        			broRef.state = BroState.MovingToTargetObject;
-        			EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(currentlySelectedBroGameObject);
+                    broRef.state = BroState.MovingToTargetObject;
+                    EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(currentlySelectedBroGameObject);
 
-        			currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
+                    currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected = false;
                 }
                 else {
                   bathObjRef.selectableReference.isSelected = false;
                   currentlySelectedBathroomObject = null;
                 }
-			}
-			else {
-				bathObjRef.selectableReference.isSelected = false;
-				currentlySelectedBathroomObject = null;
-			}
-		}
-	}
+            }
+            else {
+                bathObjRef.selectableReference.isSelected = false;
+                currentlySelectedBathroomObject = null;
+            }
+        }
+    }
 
-	//Resets bro reference to null if not selected
-	public void PerformCurrentlySelectedBroReset() {
-		if(currentlySelectedBroGameObject != null
-		   && currentlySelectedBroGameObject.GetComponent<Bro>() != null
-		   && currentlySelectedBroGameObject.GetComponent<Bro>().selectableReference.isSelected == false) {
-			currentlySelectedBroGameObject = null;
-		}
-	}
+    //Resets bro reference to null if not selected
+    public void PerformCurrentlySelectedBroReset() {
+        if(currentlySelectedBroGameObject != null
+            && currentlySelectedBroGameObject.GetComponent<Bro>() != null
+            && currentlySelectedBroGameObject.GetComponent<Bro>().selectableReference.isSelected == false) {
+            currentlySelectedBroGameObject = null;
+        }
+    }
 
-	//Resets bathroom object reference to null if not selected
-	public void PerformCurrentlySelectedBathroomObjectReset() {
-		if(currentlySelectedBroGameObject == null) {
-			currentlySelectedBathroomObject = null;
-		}
-		if(currentlySelectedBathroomObject != null
-	 	   && currentlySelectedBathroomObject.GetComponent<BathroomObject>() != null
-   		   && currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected == false) {
-			currentlySelectedBathroomObject = null;
-		}
-	}
+    //Resets bathroom object reference to null if not selected
+    public void PerformCurrentlySelectedBathroomObjectReset() {
+        if(currentlySelectedBroGameObject == null) {
+            currentlySelectedBathroomObject = null;
+        }
+        if(currentlySelectedBathroomObject != null
+            && currentlySelectedBathroomObject.GetComponent<BathroomObject>() != null
+            && currentlySelectedBathroomObject.GetComponent<BathroomObject>().selectableReference.isSelected == false) {
+            currentlySelectedBathroomObject = null;
+        }
+    }
 
   //Resets bro reference to null if not selected
   public void PerformCurrentlySelectedBathroomTileBlockerReset() {

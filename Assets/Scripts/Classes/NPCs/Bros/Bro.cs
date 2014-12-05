@@ -1,14 +1,22 @@
-﻿using UnityEngine;
+﻿using FullInspector;
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Bro : TargetPathingNPC {
+public class Bro : BaseBehavior {
+    public TargetPathing targetPathingReference = null;
+    public Animator animatorReference = null;
     public HighlightSelectable selectableReference = null;
+    public SpeechBubble speechBubbleReference = null;
+    public IsometricDisplay isometricDisplayReference = null;
+    public BoxCollider2D colliderReference = null;
 
     public BroType type = BroType.None;
     public BroState state = BroState.None;
 
     public float occupationTimer = 0f;
+    public Dictionary<BathroomObjectType, float> occupationDuration;
 
     public bool skipLineQueue = false;
     public bool chooseRandomBathroomObjectOnSkipLineQueue = false;
@@ -26,37 +34,112 @@ public class Bro : TargetPathingNPC {
 
     public ReliefRequired reliefRequired = ReliefRequired.None;
 
-    public GameObject speechBubbleGameObject = null;
-    public SpeechBubble speechBubbleReference = null;
-
-    public float probabilityOfFightOnCollisionWithBro = 0.15f;
-    public bool isPaused = false;
+    public float baseProbabilityOfFightOnCollisionWithBro = 0.15f;
+    public bool modifyBroFightProbablityUsingScoreRatio = false;
 
     public bool resetFightLogic = false;
     public float fightCooldownTimer = 0f;
-    public float fightCooldownTimerMax = 2f;
+    public float fightCooldownTimerMax = 3f;
+
+    public bool isPaused = false;
 
 
-    public override void Awake() {
-        selectableReference = this.gameObject.GetComponent<HighlightSelectable>();
-        speechBubbleReference = speechBubbleGameObject.GetComponent<SpeechBubble>();
+    protected override void Awake() {
+        base.Awake();
     }
     // Use this for initialization
-    public override void Start () {
-        base.Start();
+    public virtual void Start () {
+        // base.Start();
 
-        // this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
-
-        selectableReference.canBeSelected = true;
+        InitializeOccupationDuration();
+        InitializeComponents();
     }
 
     // Update is called once per frame
-    public override void Update () {
+    public virtual void Update () {
         if(!isPaused) {
-            base.Update();
             PerformSpeechBubbleLogic();
             PerformFightTimerLogic();
+            PerformLogic();
+            UpdateAnimator();
         }
+    }
+
+    public virtual void InitializeComponents() {
+        if(targetPathingReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'targetPathingReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(animatorReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'animatorReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(selectableReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'selectableReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(speechBubbleReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'speechBubbleReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(isometricDisplayReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'isometricDisplayReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        isometricDisplayReference.UpdateDisplayPosition();
+    }
+    public virtual void InitializeOccupationDuration() {
+        float defaultOccupationDuration = 2f;
+
+        occupationDuration = new Dictionary<BathroomObjectType, float>();
+
+        occupationDuration[BathroomObjectType.Exit] = 0;
+        occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
+        occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
+    }
+
+    public void SetColliderActive(bool isActive) {
+        colliderReference.enabled = isActive;
+    }
+
+    public void SetXMoveSpeed(float newXMoveSpeed) {
+        targetPathingReference.SetXMoveSpeed(newXMoveSpeed);
+    }
+    public void SetYMoveSpeed(float newYMoveSpeed) {
+        targetPathingReference.SetYMoveSpeed(newYMoveSpeed);
+    }
+
+    public void SetTargetObject(GameObject newTargetObject) {
+        targetPathingReference.SetTargetObject(newTargetObject);
+    }
+
+    public GameObject GetTargetObject() {
+        return targetPathingReference.GetTargetObject();
+    }
+
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPosition) {
+        targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, new Vector2(newTargetPosition.x, newTargetPosition.y));
+    }
+
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
+        occupationTimer = 0;
+        targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
+    }
+
+    public List<GameObject> GetMovementNodes() {
+        return targetPathingReference.GetMovementNodes();
+    }
+
+    public Vector3 GetTargetPosition() {
+        return targetPathingReference.GetTargetPosition();
+    }
+
+    public virtual bool IsAtTargetPosition() {
+        return targetPathingReference.IsAtTargetPosition();
+    }
+
+    public virtual float GetOccupationDuration(BathroomObjectType bathroomObjectType) {
+        return occupationDuration[bathroomObjectType];
+    }
+    public virtual void SetOccupationDuration(BathroomObjectType bathroomObjectType, float occupationDurationTime) {
+        occupationDuration[bathroomObjectType] = occupationDurationTime;
     }
 
     public virtual void Pause() {
@@ -74,9 +157,9 @@ public class Bro : TargetPathingNPC {
     }
 
     public virtual bool IsExiting() {
-        if(targetObject != null
-           && targetObject.GetComponent<BathroomObject>() != null
-           && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
+        if(GetTargetObject() != null
+           && GetTargetObject().GetComponent<BathroomObject>() != null
+           && GetTargetObject().GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
             return true;
         }
         else {
@@ -84,36 +167,49 @@ public class Bro : TargetPathingNPC {
         }
     }
 
-    public override void PopMovementNode() {
-        if(movementNodes.Count > 0) {
-            //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
-            GameObject currentBroTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false);
-            BathroomTile currentBroTile = null;
-            if(currentBroTileGameObject != null) {
-                currentBroTile = currentBroTileGameObject.GetComponent<BathroomTile>();
-            }
+    // public override void PopMovementNode() {
+    //     if(movementNodes.Count > 0) {
+    //         //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
+    //         GameObject currentBroTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false);
+    //         BathroomTile currentBroTile = null;
+    //         if(currentBroTileGameObject != null) {
+    //             currentBroTile = currentBroTileGameObject.GetComponent<BathroomTile>();
+    //         }
 
-            GameObject nextNode = movementNodes[0];
-            BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
+    //         GameObject nextNode = movementNodes[0];
+    //         BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
 
-            if(nextTile != null
-               && (nextTile.bathroomTileBlockers.Count == 0 || currentBroTile == nextTile)) {
-                targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
-                // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
-                movementNodes.RemoveAt(0);
-                // Destroy(nextNode);
-                // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-            }
-            else {
-                movementNodes.Clear();
-                state = BroState.Roaming;
-            }
+    //         if((nextTile != null 
+    //                 && (nextTile.bathroomTileBlockers.Count == 0 || currentBroTile == nextTile))
+    //             || (state == BroState.MovingToTargetObject 
+    //                 && targetObject != null 
+    //                 && targetObject.GetComponent<BathroomObject>() != null 
+    //                 && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit)) {
+    //             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
+    //             // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
+    //             movementNodes.RemoveAt(0);
+    //             // Destroy(nextNode);
+    //             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+    //         }
+    //         else {
+    //             movementNodes.Clear();
+    //             state = BroState.Roaming;
+    //         }
+    //     }
+    //     if(movementNodes == null) {
+    //         Debug.Log("movemeNodes is null for " + this.gameObject.name);
+    //     }
+    // }
+
+    // Returns the base probablity of fighting plus the modifier based on the score
+    public virtual float GetFightProbability() {
+        if(modifyBroFightProbablityUsingScoreRatio) {
+            return (baseProbabilityOfFightOnCollisionWithBro); //TODO: GET SCORETRACKER TO RETURN THE MODIFIER BASE ON SCORE TRACKER'S PERFECT SCORE RATIO
         }
-        if(movementNodes == null) {
-            Debug.Log("movemeNodes is null for " + this.gameObject.name);
+        else {
+            return baseProbabilityOfFightOnCollisionWithBro;
         }
     }
-
     public virtual void PerformFightTimerLogic() {
         if(resetFightLogic) {
             fightCooldownTimer += Time.deltaTime;
@@ -151,21 +247,21 @@ public class Bro : TargetPathingNPC {
             if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
                 && !IsExiting()
                 && !resetFightLogic
-                && probabilityOfFightOnCollisionWithBro > 0
+                && baseProbabilityOfFightOnCollisionWithBro > 0
                 && (otherBroRef.state == BroState.MovingToTargetObject || otherBroRef.state == BroState.Roaming)
                 && !otherBroRef.IsExiting()
                 && !otherBroRef.resetFightLogic
-                && otherBroRef.probabilityOfFightOnCollisionWithBro > 0) {
+                && otherBroRef.baseProbabilityOfFightOnCollisionWithBro > 0) {
 
                 float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
-                if(checkToSeeIfFightOccurs < probabilityOfFightOnCollisionWithBro) {
+                if(checkToSeeIfFightOccurs < baseProbabilityOfFightOnCollisionWithBro) {
                     if(state != BroState.Fighting) {
                         broFightingWith = other.gameObject;
                         state = BroState.Standoff;
                         speechBubbleReference.displaySpeechBubble = false;
-                        movementNodes.Clear();
+                        targetPathingReference.ClearMovementNodes();
 
-                        otherBroRef.movementNodes.Clear();
+                        otherBroRef.targetPathingReference.ClearMovementNodes();
                         otherBroRef.broFightingWith = this.gameObject;
                         otherBroRef.speechBubbleReference.displaySpeechBubble = false;
                         otherBroRef.state = BroState.Standoff;
@@ -178,9 +274,9 @@ public class Bro : TargetPathingNPC {
         }
     }
 
-    public override void UpdateAnimator() {
+    public virtual void UpdateAnimator() {
         if(animatorReference != null) {
-            base.UpdateAnimator();
+            // base.UpdateAnimator();
 
             animatorReference.SetBool(BroState.Fighting.ToString(), false);
             animatorReference.SetBool(BroState.InAQueue.ToString(), false);
@@ -196,12 +292,7 @@ public class Bro : TargetPathingNPC {
         }
     }
 
-	public override void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
-		occupationTimer = 0;
-		base.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
-	}
-
-    public override void PerformLogic() {
+    public virtual void PerformLogic() {
         switch(state) {
             case(BroState.None):
             break;
@@ -232,41 +323,52 @@ public class Bro : TargetPathingNPC {
 
     public virtual void PerformArrivalLogic() {
         if(IsAtTargetPosition()) {
+            GameObject targetObject = GetTargetObject();
             if(targetObject != null
                && targetObject.GetComponent<BathroomObject>() != null) {
+                // Debug.Log("target object is not null");
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
                 BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
 
-                if(broTile.tileX == targetObjectTile.tileX && broTile.tileY == targetObjectTile.tileY) {
+                if(broTile.tileX == targetObjectTile.tileX 
+                    && broTile.tileY == targetObjectTile.tileY) {
 
                     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-                    if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
-                        && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-                        && startRoamingOnArrivalAtBathroomObjectInUse) {
+                    if(bathObjRef.IsBroken()) {
                         state = BroState.Roaming;
                     }
                     else {
-                        PerformOnArrivalBrotocolScoreCheck();
-
-                        //Adds bro to occupation list
-                        bathObjRef.AddBro(this.gameObject);
-
-                        selectableReference.canBeSelected = false;
-                        selectableReference.ResetHighlightObjectAndSelectedState();
-                        speechBubbleReference.displaySpeechBubble = false;
-
-                        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-                           && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-                            SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                        if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
+                            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+                            && startRoamingOnArrivalAtBathroomObjectInUse) {
+                            state = BroState.Roaming;
                         }
+                        else {
+                            PerformOnArrivalBrotocolScoreCheck();
 
-                        state = BroState.OccupyingObject;
+                            //Adds bro to occupation list
+                            bathObjRef.AddBro(this.gameObject);
+
+                            selectableReference.canBeSelected = false;
+                            selectableReference.ResetHighlightObjectAndSelectedState();
+                            speechBubbleReference.displaySpeechBubble = false;
+
+                            if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                               && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                                SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                            }
+
+                            state = BroState.OccupyingObject;
+                        }
                     }
                 }
             }
             else {
-                state = BroState.Roaming;
+                if(targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+                    Debug.Log("lol starting to roam");
+                    state = BroState.Roaming;
+                }
             }
         }
     }
@@ -275,7 +377,7 @@ public class Bro : TargetPathingNPC {
     }
 
     public virtual void PerformInAQueueLogic() {
-        PerformMovementLogic();
+        // PerformMovementLogic();
         if(IsAtTargetPosition()) {
             if(skipLineQueue) {
                 if(chooseRandomBathroomObjectOnSkipLineQueue) {
@@ -293,16 +395,17 @@ public class Bro : TargetPathingNPC {
         }
     }
     public virtual void PerformMovingToTargetObjectLogic() {
-        PerformMovementLogic();
+        // PerformMovementLogic();
         PerformArrivalLogic();
     }
 
     public virtual void PerformOccupyingObjectLogic() {
+        GameObject targetObject = GetTargetObject();
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-            if(occupationTimer > bathObjRef.occupationDuration) {
+            if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
                     PerformExitOccupationFinishedLogic();
@@ -322,7 +425,7 @@ public class Bro : TargetPathingNPC {
             }
             else {
                 //disables the collider because the bro resides in the object, but the timer is still going
-                collider.enabled = false;
+                colliderReference.enabled = false;
 
                 occupationTimer += Time.deltaTime;
             }
@@ -330,7 +433,7 @@ public class Bro : TargetPathingNPC {
     }
 
 public virtual void PerformExitOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     PerformExitedScore();
     BroManager.Instance.RemoveBro(this.gameObject, false);
 
@@ -342,7 +445,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
 //===========================================================================
     public virtual void PerformHandDryerOccupationFinishedLogic() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
         // Bathroom object is out of order
         if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
           // Fall through logic for the bro bathroom lifecycle
@@ -395,7 +498,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         }
     }
     public virtual void PerformOutOfOrderHandDryerRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -424,14 +527,14 @@ public virtual void PerformExitOccupationFinishedLogic() {
         }
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-        collider.enabled = true;
+        colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
         reliefRequired = ReliefRequired.WashHands;
     }
     public virtual void PerformOutOfOrderHandDryerWashHands() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasWashedHands = true;
 
@@ -448,14 +551,14 @@ public virtual void PerformExitOccupationFinishedLogic() {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-        collider.enabled = true;
+        colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
         reliefRequired = ReliefRequired.DryHands;
     }
     public virtual void PerformOutOfOrderHandDryerDryHands() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasDriedHands = true;
 
@@ -466,13 +569,13 @@ public virtual void PerformExitOccupationFinishedLogic() {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-        collider.enabled = false;
+        colliderReference.enabled = false;
         selectableReference.canBeSelected = false;
         speechBubbleReference.displaySpeechBubble = false;
         reliefRequired = ReliefRequired.None;
     }
   public virtual void PerformWorkingHandDryerRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -498,14 +601,14 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
     reliefRequired = ReliefRequired.WashHands;
   }
   public virtual void PerformWorkingHandDryerWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -522,21 +625,21 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformWorkingHandDryerDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
     PerformBathroomObjectUsedScore();
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = false;
+    colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -552,7 +655,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
   //===========================================================================
   public virtual void PerformSinkOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     // Bathroom object is out of order
     if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
       // Fall through logic for the bro bathroom lifecycle
@@ -606,7 +709,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderSinkRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -635,7 +738,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -643,7 +746,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderSinkWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -661,7 +764,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -669,7 +772,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderSinkDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -685,7 +788,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformWorkingSinkRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -714,7 +817,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -722,7 +825,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformWorkingSinkWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -737,7 +840,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -745,7 +848,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformWorkingSinkDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -774,7 +877,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
   //===========================================================================
   public virtual void PerformStallOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
       // Fall through logic for the bro bathroom lifecycle
       if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) { 
@@ -827,7 +930,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   }
 
   public virtual void PerformOutOfOrderStallRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -852,7 +955,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     else {
       state = BroState.Roaming;
     }
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -861,7 +964,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush1);
   }
   public virtual void PerformOutOfOrderStallWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -878,14 +981,14 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformOutOfOrderStallDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -903,13 +1006,13 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-    collider.enabled = false;
+    colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
   }
   public virtual void PerformWorkingStallRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -924,7 +1027,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
       state = BroState.Roaming;
     }
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -933,7 +1036,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush1);
   }
   public virtual void PerformWorkingStallWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -951,7 +1054,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
@@ -959,7 +1062,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformWorkingStallDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasDriedHands = true;
 
@@ -976,7 +1079,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = false;
+    colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -992,7 +1095,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   } 
   //===========================================================================
   public virtual void PerformUrinalOccupationFinishedLogic() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     if(bathObjRef.state == BathroomObjectState.OutOfOrder) {
       // Fall through logic for the bro bathroom lifecycle
       if(reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Poop || reliefRequired == ReliefRequired.Vomit) { 
@@ -1044,7 +1147,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
   }
   public virtual void PerformOutOfOrderUrinalRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -1066,7 +1169,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
       state = BroState.Roaming;
     }
 
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -1075,7 +1178,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush2);
   }
   public virtual void PerformOutOfOrderUrinalWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -1092,14 +1195,14 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
     reliefRequired = ReliefRequired.DryHands;
   }
   public virtual void PerformOutOfOrderUrinalDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     
     hasDriedHands = true;
 
@@ -1116,13 +1219,13 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
   }
   public virtual void PerformWorkingUrinalRelief() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasRelievedSelf = true;
 
@@ -1142,7 +1245,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     else {
       state = BroState.Roaming;
     }
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -1151,7 +1254,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     SoundManager.Instance.Play(AudioType.Flush2);
   }
   public virtual void PerformWorkingUrinalWashHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
     hasWashedHands = true;
 
@@ -1168,79 +1271,74 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //   state = BroState.Roaming;
     // }
     SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
+    colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
     speechBubbleReference.speechBubbleImage = SpeechBubbleImage.DryHands;
     reliefRequired = ReliefRequired.DryHands;
   }
-  public virtual void PerformWorkingUrinalDryHands() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-    
-    hasDriedHands = true;
+    public virtual void PerformWorkingUrinalDryHands() {
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
-    PerformBathroomObjectUsedScore();
-    PerformBrokeUrinalByDryingHandsScore();
+        hasDriedHands = true;
 
-    bathObjRef.state = BathroomObjectState.Broken;
-    bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
+        PerformBathroomObjectUsedScore();
+        PerformBrokeUrinalByDryingHandsScore();
 
-    // if(chooseRandomBathroomObjectAfterDriedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-    // }
-    // else {
-    //   state = BroState.Roaming;
-    // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
-    collider.enabled = true;
-    selectableReference.canBeSelected = false;
-    speechBubbleReference.displaySpeechBubble = false;
-    reliefRequired = ReliefRequired.None;
-  }
-  public virtual void PerformBrokenUrinalRelief() {
-    Debug.Log("Bro is relieving himself in a broken urinal. This shouldn't have happened");
-  }
-  public virtual void PerformBrokenUrinalWashHands() {
-    Debug.Log("Bro is washing his hands in a broken urinal. This shouldn't have happened");
-  }
-  public virtual void PerformBrokenUrinalDryHands() {
-    Debug.Log("Bro is drying his hands in a broken urinal. This shouldn't have happened");
-  } 
+        bathObjRef.state = BathroomObjectState.Broken;
+        bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-  //===========================================================================
-  public virtual void PerformRoamingLogic() {
-    PerformMovementLogic();
+        // if(chooseRandomBathroomObjectAfterDriedHands) {
+        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        // }
+        // else {
+        //   state = BroState.Roaming;
+        // }
+        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        colliderReference.enabled = true;
+        selectableReference.canBeSelected = false;
+        speechBubbleReference.displaySpeechBubble = false;
+        reliefRequired = ReliefRequired.None;
+    }
+    public virtual void PerformBrokenUrinalRelief() {
+        Debug.Log("Bro is relieving himself in a broken urinal. This shouldn't have happened");
+    }
+    public virtual void PerformBrokenUrinalWashHands() {
+        Debug.Log("Bro is washing his hands in a broken urinal. This shouldn't have happened");
+    }
+    public virtual void PerformBrokenUrinalDryHands() {
+        Debug.Log("Bro is drying his hands in a broken urinal. This shouldn't have happened");
+    } 
 
-    if(IsAtTargetPosition()) {
-      bool foundEmptyTile = false;
-      GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
-      while(!foundEmptyTile) {
-        if(AStarManager.Instance.permanentClosedNodes.Contains(randomBathroomTile)) {
-          randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
-        }
-        else {
-          foundEmptyTile = true;
-        }
-      }
+    //===========================================================================
+    public virtual void PerformRoamingLogic() {
+        // PerformMovementLogic();
 
-      // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
-      BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+        if(IsAtTargetPosition()) {
+            bool foundEmptyTile = false;
+            GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
+
+            // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
+            BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
+            // Debug.Log(AStarManager.Instance.GetListCopyOfAllClosedNodes());
+            // Debug.Log(startTile);
+            // Debug.Log(randomBathroomTile);
+            List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
                                                                                 AStarManager.Instance.GetListCopyOfAllClosedNodes(),
                                                                                 startTile,
                                                                                 randomBathroomTile.GetComponent<BathroomTile>());
-      SetTargetObjectAndTargetPosition(null, movementNodes);
+            SetTargetObjectAndTargetPosition(null, movementNodes);
+        }
     }
-  }
 
-	public virtual void PerformStandingLogic() {
-	}
+    public virtual void PerformStandingLogic() {
+    }
 
     public virtual void PerformStandOffLogic() {
         if(state == BroState.Standoff) {
             if(standOffBroGameObject == null) {
-                this.gameObject.collider.enabled = false;
-                broFightingWith.collider.enabled = false;
+                colliderReference.enabled = false;
+                broFightingWith.GetComponent<Bro>().colliderReference.enabled = false;
                 broFightingWith.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
 
                 selectableReference.ResetHighlightObjectAndSelectedState();
@@ -1350,6 +1448,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   //----------------------------------------------------------------------------
   //This is being checked on arrival before switching to occupying an object
   public virtual void PerformOnArrivalBrotocolScoreCheck() {
+    GameObject targetObject = GetTargetObject();
     if(targetObject != null
        && targetObject.GetComponent<BathroomObject>() != null
        && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
@@ -1369,7 +1468,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
   /// <returns>True if target object is a bathroom object, and if reliefRequired
   /// matches the correct bathroom object.</returns>
   public virtual bool CheckIfBroHasCorrectReliefTypeForTargetObject() {
-    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+    BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
     if(hasRelievedSelf == false
      // && (reliefRequired == ReliefRequired.Pee || reliefRequired == ReliefRequired.Vomit)
      && (reliefRequired == ReliefRequired.Pee)
@@ -1452,8 +1551,8 @@ public virtual void PerformExitOccupationFinishedLogic() {
     //=========================================================================
     // This assumes it's called at the correct point and that the target object and relief required are accessible
     public virtual void PerformBathroomObjectUsedScore() {
-        if(targetObject != null) {
-            BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        if(GetTargetObject() != null) {
+            BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
             if(bathObjRef != null) {
                 if(bathObjRef.type == BathroomObjectType.HandDryer) {
                     if(reliefRequired == ReliefRequired.DryHands) {

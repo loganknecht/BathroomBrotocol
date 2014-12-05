@@ -3,10 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class SlobBro : Bro {
+
+    protected override void Awake() {
+        base.Awake();
+
+        type = BroType.SlobBro;
+    }
+    
     // Use this for initialization
     public override void Start () {
         base.Start();
-        type = BroType.SlobBro;
     }
 
     // Update is called once per frame
@@ -15,11 +21,13 @@ public class SlobBro : Bro {
     }
 
     public override void PerformOccupyingObjectLogic() {
+        GameObject targetObject = GetTargetObject();
+        
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-            if(occupationTimer > bathObjRef.occupationDuration) {
+            if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
                     PerformExitOccupationFinishedLogic();
@@ -58,32 +66,32 @@ public class SlobBro : Bro {
         }
     }
 
-  //This is being checked on arrival before switching to occupying an object
-  public override void PerformOnArrivalBrotocolScoreCheck() {
-    // bool brotocolWasSatisfied = false;
-    
-    // // As long as the target object is not null and it's not a bathroom exit
-    // if(targetObject != null
-    //  && targetObject.GetComponent<BathroomObject>() != null
-    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-    //   if(!hasRelievedSelf) {
-    //     //This is being checked on arrival before switching to occupying an object
-    //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-    //       // increment correct relief type
-    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolCorrectReliefTypeForTargetObject);
-    //       brotocolWasSatisfied = true;
-    //     }
-    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
-    //       // increment bro alone bonus
-    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolNoAdjacentBro);
-    //       brotocolWasSatisfied = true;
-    //     }
-    //   }
-    // }
+    //This is being checked on arrival before switching to occupying an object
+    public override void PerformOnArrivalBrotocolScoreCheck() {
+        // bool brotocolWasSatisfied = false;
 
-    // if(brotocolWasSatisfied) {
-    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-    // }
-  }
+        // // As long as the target object is not null and it's not a bathroom exit
+        // if(targetObject != null
+        //  && targetObject.GetComponent<BathroomObject>() != null
+        //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+        //   if(!hasRelievedSelf) {
+        //     //This is being checked on arrival before switching to occupying an object
+        //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+        //       // increment correct relief type
+        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolCorrectReliefTypeForTargetObject);
+        //       brotocolWasSatisfied = true;
+        //     }
+        //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+        //       // increment bro alone bonus
+        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolNoAdjacentBro);
+        //       brotocolWasSatisfied = true;
+        //     }
+        //   }
+        // }
+
+        // if(brotocolWasSatisfied) {
+        //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+        // }
+    }
     //=========================================================================
 }

@@ -3,17 +3,17 @@ using System.Collections;
 
 // TO DO: FIX ROTATE LOGIC SCRIPT SO THAT WHEN IT ROTATES IT BASES THE CAMERA'S DIRECTION BEING LOOKED IT USES WORLD COORDINATES TO CALCULATE IT... OR SOMETHING
 public class RotateCamera : MonoBehaviour {
-  public GameObject cameraGameObject = null;
-  public GameObject objectToRotateAround = null;
-  public float amountRotated = 0f;
-  public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
+    public GameObject cameraGameObject = null;
+    public GameObject objectToRotateAround = null;
+    public float amountRotated = 0f;
+    public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
 
-	// Use this for initialization
-	void Start () {
-    // Sets the rotated view correctly
-    directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
-    RotateBathroomToMatchCamera();
-	}
+    // Use this for initialization
+    void Start () {
+        // Sets the rotated view correctly
+        directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
+        RotateBathroomToMatchCamera();
+    }
 
 	// Update is called once per frame
 	void Update () {

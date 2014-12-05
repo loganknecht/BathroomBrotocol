@@ -7,10 +7,15 @@ public class DrunkBro : Bro {
     public float vomitTimerMax = Random.Range(10, 15);
     public bool vomitThrowUpPerformed = false;
 
+    protected override void Awake() {
+        base.Awake();
+
+        type = BroType.DrunkBro;
+    }
+
     // Use this for initialization
     public override void Start () {
         base.Start();
-        type = BroType.DrunkBro;
     }
 
     // Update is called once per frame
@@ -36,11 +41,11 @@ public class DrunkBro : Bro {
                     newVomit.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newVomit.transform.position.z);
                     BathroomTileBlockerManager.Instance.AddBathroomTileBlockerGameObject(newVomit);
 
-                    BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-                    List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
-                    int selectedExit = Random.Range(0, exits.Count);
-                    GameObject randomExit = exits[selectedExit];
-                    BathroomTile randomExitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomExit.transform.position.x, randomExit.transform.position.y, true).GetComponent<BathroomTile>();
+                    // BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
+                    // List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
+                    // int selectedExit = Random.Range(0, exits.Count);
+                    // GameObject randomExit = exits[selectedExit];
+                    // BathroomTile randomExitTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomExit.transform.position.x, randomExit.transform.position.y, true).GetComponent<BathroomTile>();
 
                     SetRandomBathroomObjectTarget(false, AStarManager.Instance.GetListCopyOfPermanentClosedNodes(), BathroomObjectType.Exit);
                 }
@@ -53,7 +58,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderHandDryerRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -91,7 +96,7 @@ public class DrunkBro : Bro {
         reliefRequired = ReliefRequired.WashHands;
     }
     public override void PerformWorkingHandDryerRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -126,7 +131,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderSinkRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -163,7 +168,7 @@ public class DrunkBro : Bro {
         reliefRequired = ReliefRequired.WashHands;
     }
     public override void PerformWorkingSinkRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -198,7 +203,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderStallRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -235,7 +240,7 @@ public class DrunkBro : Bro {
         SoundManager.Instance.Play(AudioType.Flush1);
     }
     public override void PerformWorkingStallRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -260,7 +265,7 @@ public class DrunkBro : Bro {
     }
     //===========================================================================
     public override void PerformOutOfOrderUrinalRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -297,7 +302,7 @@ public class DrunkBro : Bro {
         SoundManager.Instance.Play(AudioType.Flush2);
     }
     public override void PerformWorkingUrinalRelief() {
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+        BathroomObject bathObjRef = GetTargetObject().GetComponent<BathroomObject>();
 
         hasRelievedSelf = true;
 
@@ -330,23 +335,23 @@ public class DrunkBro : Bro {
     //--------------------------------------------------------
     //This is being checked on arrival before switching to occupying an object
     public override void PerformOnArrivalBrotocolScoreCheck() {
-        bool brotocolWasSatisfied = false;
+        // bool brotocolWasSatisfied = false;
 
-    // // As long as the target object is not null and it's not a bathroom exit
-    // if(targetObject != null
-    //  && targetObject.GetComponent<BathroomObject>() != null
-    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-    //   if(!hasRelievedSelf) {
-    //     if(CheckIfRelievedSelfBeforeTimeOut()) {
-    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.DrunkBroBrotocolRelievedSelfBeforeTimeOut);
-    //       brotocolWasSatisfied = true;
-    //     }
-    //   }
-    // }
+        // // As long as the target object is not null and it's not a bathroom exit
+        // if(targetObject != null
+        //  && targetObject.GetComponent<BathroomObject>() != null
+        //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+        //   if(!hasRelievedSelf) {
+        //     if(CheckIfRelievedSelfBeforeTimeOut()) {
+        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.DrunkBroBrotocolRelievedSelfBeforeTimeOut);
+        //       brotocolWasSatisfied = true;
+        //     }
+        //   }
+        // }
 
-    // if(brotocolWasSatisfied) {
-    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-    // }
+        // if(brotocolWasSatisfied) {
+        //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+        // }
     }
 
   public override bool CheckIfRelievedSelfBeforeTimeOut() {

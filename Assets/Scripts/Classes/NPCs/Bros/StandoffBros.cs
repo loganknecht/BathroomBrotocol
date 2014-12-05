@@ -204,35 +204,39 @@ public class StandoffBros : MonoBehaviour {
     }
 
     public void StandoffTurnedIntoFight() {
-        broOne.renderer.enabled = false;
-        broOne.collider.enabled = false;
-        broOne.SetActive(false);
         Bro broOneReference = broOne.GetComponent<Bro>();
-        broOneReference.state = BroState.Fighting;
-        broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
-
-        broTwo.renderer.enabled = false;
-        broTwo.collider.enabled = false;
-        broTwo.SetActive(false);
         Bro broTwoReference = broTwo.GetComponent<Bro>();
-        broTwoReference.state = BroState.Fighting;
-        broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
 
-        GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
-        newFightingBros.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, newFightingBros.transform.position.z);
-        newFightingBros.GetComponent<FightingBros>().brosFighting.Add(broOne);
-        newFightingBros.GetComponent<FightingBros>().brosFighting.Add(broTwo);
+        if(broOneReference.state != BroState.Fighting
+            && broTwoReference.state != BroState.Fighting) {
+            broOne.renderer.enabled = false;
+            broOne.collider.enabled = false;
+            broOne.SetActive(false);
+            broOneReference.state = BroState.Fighting;
+            broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
 
-        BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
-        BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
-        newFightingBros.GetComponent<FightingBros>().SetTargetObjectAndTargetPosition(null,
-                                                                                      AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                                                               AStarManager.Instance. GetListCopyOfPermanentClosedNodes(),
-                                                                                                                               startTile,
-                                                                                                                               targetTile));
+            broTwo.renderer.enabled = false;
+            broTwo.collider.enabled = false;
+            broTwo.SetActive(false);
+            broTwoReference.state = BroState.Fighting;
+            broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
 
-        BroManager.Instance.AddFightingBro(newFightingBros);
-        BroManager.Instance.RemoveStandoffBro(this.gameObject, true);
+            GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
+            newFightingBros.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, newFightingBros.transform.position.z);
+            newFightingBros.GetComponent<FightingBros>().brosFighting.Add(broOne);
+            newFightingBros.GetComponent<FightingBros>().brosFighting.Add(broTwo);
+
+            BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
+            BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
+            newFightingBros.GetComponent<FightingBros>().SetTargetObjectAndTargetPosition(null,
+                                                                                          AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                                                                   AStarManager.Instance. GetListCopyOfPermanentClosedNodes(),
+                                                                                                                                   startTile,
+                                                                                                                                   targetTile));
+
+            BroManager.Instance.AddFightingBro(newFightingBros);
+            BroManager.Instance.RemoveStandoffBro(this.gameObject, true);
+        }
     }
 
     public void IncrementTapsFromPlayer() {

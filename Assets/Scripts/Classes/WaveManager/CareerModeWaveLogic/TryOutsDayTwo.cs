@@ -151,7 +151,7 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
     BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstWave.SetFightProbability(BroDistribution.AllBros, 1f);
+    firstWave.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
     firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
@@ -182,7 +182,7 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
 
     BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
     firstBroSet.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstBroSet.SetFightProbability(BroDistribution.AllBros, 1f);
+    firstBroSet.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
     firstBroSet.SetLineQueueSkipType(BroDistribution.AllBros, true);
     firstBroSet.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
     firstBroSet.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);

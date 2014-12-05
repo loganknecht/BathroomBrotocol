@@ -79,7 +79,7 @@ public class Factory
     GameObject newBro = null;
     switch(broTypeToGenerate) {
       case(BroType.None):
-        Debug.Log("There was a none type sent to the Factory for a bro. If this was not intended please check the logic.");
+        Debug.LogError("There was a none type sent to the Factory for a bro. If this was not intended please check the logic.");
       break;
       case(BroType.BluetoothBro):
         newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/BluetoothBro1")) as GameObject;

@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using FullInspector;
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class EntranceQueueManager : MonoBehaviour {
+[System.Serializable]
+public class EntranceQueueManager : BaseBehavior {
 
-    public bool brosWillSkipLineQueue = false;
-    public bool brosSelectRandomTargetObjectOnEntrance = false;
-    public bool brosSelectRandomTargetObjectAfterRelief = false;
     public bool isPaused = false;
 
     public GameObject entranceAudioObject = null;
@@ -14,9 +14,14 @@ public class EntranceQueueManager : MonoBehaviour {
     public List<GameObject> lineQueues = new List<GameObject>();
     //-------------------------------------------------------------
     public int debugEntranceQueue = 0;
+
+    public float debugXMoveSpeed = 1f;
+    public float debugYMoveSpeed = 1f;
+    public Dictionary<BathroomObjectType, float> debugOccupationDuration = new Dictionary<BathroomObjectType, float>();
     public BroType debugBroType = BroType.None;
-    public ReliefRequired debugReliefRequired = ReliefRequired.None;
+    public ReliefRequired[] debugReliefRequired = new ReliefRequired[]{};
     public float debugFightProbability = 0f;
+    public bool debugModifyBroFightProbablityUsingScoreRatio = false;
     public bool debugSkipLineQueue = false;
     public bool debugChooseObjectOnLineSkip = false;
     public bool debugStartRoamingOnArrivalAtBathroomObjectInUse = false;
@@ -25,62 +30,63 @@ public class EntranceQueueManager : MonoBehaviour {
     public bool debugHasWashedHands = false;
     public bool debugHasDriedHands = false;
 
-	//BEGINNING OF SINGLETON CODE CONFIGURATION
-	private static volatile EntranceQueueManager _instance;
-	private static object _lock = new object();
+    //BEGINNING OF SINGLETON CODE CONFIGURATION
+    private static volatile EntranceQueueManager _instance;
+    private static object _lock = new object();
 
-	//Stops the lock being created ahead of time if it's not necessary
-	static EntranceQueueManager() {
-	}
+    //Stops the lock being created ahead of time if it's not necessary
+    static EntranceQueueManager() {
+    }
 
-	public static EntranceQueueManager Instance {
-		get {
-			if(_instance == null) {
-				lock(_lock) {
-					if (_instance == null) {
-						GameObject entranceQueueManagerGameObject = new GameObject("EntranceQueueManagerGameObject");
-						_instance = (entranceQueueManagerGameObject.AddComponent<EntranceQueueManager>()).GetComponent<EntranceQueueManager>();
-					}
-				}
-			}
-			return _instance;
-		}
-	}
+    public static EntranceQueueManager Instance {
+        get {
+            if(_instance == null) {
+                lock(_lock) {
+                    if (_instance == null) {
+                        GameObject entranceQueueManagerGameObject = new GameObject("EntranceQueueManagerGameObject");
+                        _instance = (entranceQueueManagerGameObject.AddComponent<EntranceQueueManager>()).GetComponent<EntranceQueueManager>();
+                    }
+                }
+            }
+            return _instance;
+        }
+    }
 
-	private EntranceQueueManager() {
-	}
+    private EntranceQueueManager() {
+    }
 
-	// Use this for initialization
-	void Awake() {
-		//There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
-		//the script, which is assumedly attached to some GameObject. This in turn allows the instance
-		//to be assigned when a game object is given this script in the scene view.
-		//This also allows the pre-configured lazy instantiation to occur when the script is referenced from
-		//another call to it, so that you don't need to worry if it exists or not.
-		_instance = this;
-	}
-	//END OF SINGLETON CODE CONFIGURATION
+    // Use this for initialization
+    void Awake() {
+        //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
+        //the script, which is assumedly attached to some GameObject. This in turn allows the instance
+        //to be assigned when a game object is given this script in the scene view.
+        //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
+        //another call to it, so that you don't need to worry if it exists or not.
+        _instance = this;
+         base.Awake();
+    }
+    //END OF SINGLETON CODE CONFIGURATION
 
-	// Use this for initialization
-	void Start() {
-	}
+    // Use this for initialization
+    void Start() {
+    }
 
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update () {
         if(!isPaused) {
-    		if(Input.GetKeyDown(KeyCode.B)) {
-    			foreach(GameObject lineQueueObject in lineQueues) {
-    				lineQueueObject.GetComponent<LineQueue>().ReconfigureBrosInLineQueueTiles(true);
-    			}
-    		}
+            if(Input.GetKeyDown(KeyCode.B)) {
+                foreach(GameObject lineQueueObject in lineQueues) {
+                    lineQueueObject.GetComponent<LineQueue>().ReconfigureBrosInLineQueueTiles(true);
+                }
+            }
             if(entranceAudioObject != null
-               && entranceAudioObject.GetComponent<AudioSource>().isPlaying == false) {
+                && entranceAudioObject.GetComponent<AudioSource>().isPlaying == false) {
                 entranceAudioObject = null;
             }
 
             PerformDebugButtonPressLogic();
         }
-	}
+    }
 
     public GameObject GetTileGameObjectFromLineQueueByWorldPosition(float xPosition, float yPosition, bool returnClosestTile, int lineQueueToSelectFrom) {
         GameObject tileGameObjectFound = null;
@@ -107,40 +113,54 @@ public class EntranceQueueManager : MonoBehaviour {
 
     public void PerformDebugButtonPressLogic() {
         if(Input.GetKeyDown(KeyCode.Q)) {
-            GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
-            broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1].transform.position.x,
-                                                           lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1].transform.position.y,
-                                                           broGameObject.transform.position.z);
-            Bro broReference = broGameObject.GetComponent<Bro>();
-            broReference.reliefRequired = debugReliefRequired;
-            broReference.probabilityOfFightOnCollisionWithBro = debugFightProbability;
-            broReference.skipLineQueue = debugSkipLineQueue;
-            broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
-            broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;
-            broReference.chooseRandomBathroomObjectAfterRelieved = debugChooseObjectOnRelief;
-            broReference.hasRelievedSelf = debugHasRelievedSelf;
-            broReference.hasWashedHands = debugHasWashedHands;
-            broReference.hasDriedHands = debugHasDriedHands;
-            AddBroToEntranceQueue(broGameObject, debugEntranceQueue);
-            //-------------------------------------------------------------------------------------------------------------------
-            // TODO: Move to bro generator fo debugging
-            //-------------------------------------------------------------------------------------------------------------------
-            // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-            // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+            // Debug.Log("Generating bro!");
 
-            // BroDistributionObject firstWave = new BroDistributionObject(0, 0, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-            // firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-            // firstWave.SetFightProbability(BroDistribution.AllBros, 0f);
-            // firstWave.SetLineQueueSkipType(BroDistribution.AllBros, true);
-            // firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, true);
-            // firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false);
-            // firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, true);
+            // GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
+            // int lastLineQueueTileIndex = lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1;
+            // broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.x,
+            //                                                lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.y,
+            //                                                broGameObject.transform.position.z);
+            // Bro broReference = broGameObject.GetComponent<Bro>();
+            // broReference.reliefRequired = debugReliefRequired;
+            // broReference.baseProbabilityOfFightOnCollisionWithBro = debugFightProbability;
+            // broReference.modifyBroFightProbablityUsingScoreRatio = debugModifyBroFightProbablityUsingScoreRatio;
+            // broReference.occupationDuration = debugOccupationDuration;
+            // broReference.skipLineQueue = debugSkipLineQueue;
+            // broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
+            // broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;
+            // broReference.chooseRandomBathroomObjectAfterRelieved = debugChooseObjectOnRelief;
+            // broReference.hasRelievedSelf = debugHasRelievedSelf;
+            // broReference.hasWashedHands = debugHasWashedHands;
+            // broReference.hasDriedHands = debugHasDriedHands;
+            // AddBroToEntranceQueue(broGameObject, debugEntranceQueue);
+            //-------------------------------------------------------------------------------------------------------------------
+            // Alt generation
+            //-------------------------------------------------------------------------------------------------------------------
+            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-            // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-            //                                                                          firstWave,
-            //                                                                         }); 
+            BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+            firstWave.SetReliefType(BroDistribution.AllBros, debugReliefRequired);
+            firstWave.SetXMoveSpeed(BroDistribution.AllBros, debugXMoveSpeed, debugXMoveSpeed);
+            firstWave.SetYMoveSpeed(BroDistribution.AllBros , debugYMoveSpeed, debugYMoveSpeed);
+            firstWave.SetFightProbability(BroDistribution.AllBros, debugFightProbability, debugFightProbability);
+            firstWave.SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, debugModifyBroFightProbablityUsingScoreRatio);
+            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, debugOccupationDuration[BathroomObjectType.Exit], debugOccupationDuration[BathroomObjectType.Exit]);
+            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, debugOccupationDuration[BathroomObjectType.HandDryer], debugOccupationDuration[BathroomObjectType.HandDryer]);
+            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, debugOccupationDuration[BathroomObjectType.Sink], debugOccupationDuration[BathroomObjectType.Sink]);
+            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, debugOccupationDuration[BathroomObjectType.Stall], debugOccupationDuration[BathroomObjectType.Stall]);
+            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, debugOccupationDuration[BathroomObjectType.Urinal], debugOccupationDuration[BathroomObjectType.Urinal]);
+            firstWave.SetLineQueueSkipType(BroDistribution.AllBros, debugSkipLineQueue);
+            firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, debugChooseObjectOnLineSkip);
+            firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, debugStartRoamingOnArrivalAtBathroomObjectInUse);
+            firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, debugChooseObjectOnRelief);
+
+            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                                                                                     firstWave,
+                                                                                    });
         }
     }
+
     public GameObject SelectRandomLineQueue() {
         if(lineQueues.Count == 0) {
           return null;
@@ -168,12 +188,12 @@ public class EntranceQueueManager : MonoBehaviour {
         return broToAdd;
     }
 
-	public void RemoveBroFromEntranceQueues(GameObject broToRemove) {
-		foreach(GameObject lineQueue in lineQueues) {
-			if(lineQueue.GetComponent<LineQueue>() != null
-			   && lineQueue.GetComponent<LineQueue>().queueObjects.Contains(broToRemove)) {
-				lineQueue.GetComponent<LineQueue>().RemoveGameObjectFromLineQueue(broToRemove);
-			}
-		}
-	}
+    public void RemoveBroFromEntranceQueues(GameObject broToRemove) {
+        foreach(GameObject lineQueue in lineQueues) {
+            if(lineQueue.GetComponent<LineQueue>() != null
+                && lineQueue.GetComponent<LineQueue>().queueObjects.Contains(broToRemove)) {
+                lineQueue.GetComponent<LineQueue>().RemoveGameObjectFromLineQueue(broToRemove);
+            }
+        }
+    }
 }

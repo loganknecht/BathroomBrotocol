@@ -3,64 +3,64 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class WaveLogic : MonoBehaviour, WaveLogicContract {
-  public LinkedList<GameObject> waveStatesQueue = new LinkedList<GameObject>();
-  public GameObject currentWaveStateGameObject = null;
+    public LinkedList<GameObject> waveStatesQueue = new LinkedList<GameObject>();
+    GameObject currentWaveStateGameObject = null;
 
-  public bool waveLogicFinished = false;
+    public bool waveLogicFinished = false;
 
-	public virtual void Awake() {
-	}
+    public virtual void Awake() {
+    }
 
-	public virtual void Start() {
-	}
+    public virtual void Start() {
+    }
 
-	public virtual void Update() {
-		PerformWaveLogic();
-    PerformLevelFailCheck();
-    PerformLevelFinishCheck();
-	}
+    public virtual void Update() {
+        PerformWaveLogic();
+        PerformLevelFailCheck();
+        PerformLevelFinishCheck();
+    }
 
-  public virtual void PerformWaveLogic() {
-    //this assumes that the paused state is already managed by the wave manager
-    if(currentWaveStateGameObject != null) {
-      // Debug.Log("performing wave state logic");
-      WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
+    public virtual void PerformWaveLogic() {
+        //this assumes that the paused state is already managed by the wave manager
+        if(currentWaveStateGameObject != null) {
+            // Debug.Log("performing wave state logic");
+            WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
 
-      if(!currentWaveStateRef.hasBeenTriggered) {
-        currentWaveStateRef.hasBeenTriggered = true;
-        currentWaveStateRef.isPlaying = true;
-        currentWaveStateRef.waveStateStartLogic();
-      }
-      else if(currentWaveStateRef.hasBeenTriggered
-              && !currentWaveStateRef.triggerFinishLogic) {
-        currentWaveStateRef.waveStateLogic();
-      }
-      else if(currentWaveStateRef.triggerFinishLogic) {
-        currentWaveStateRef.waveStateFinishLogic();
-      }
+            if(!currentWaveStateRef.hasBeenTriggered) {
+                currentWaveStateRef.hasBeenTriggered = true;
+                currentWaveStateRef.isPlaying = true;
+                currentWaveStateRef.waveStateStartLogic();
+            }
+            else if(currentWaveStateRef.hasBeenTriggered
+                  && !currentWaveStateRef.triggerFinishLogic) {
+                currentWaveStateRef.waveStateLogic();
+            }
+            else if(currentWaveStateRef.triggerFinishLogic) {
+                currentWaveStateRef.waveStateFinishLogic();
+            }
 
-      if(currentWaveStateRef.hasFinished) {
-        if(waveStatesQueue.Count > 0) {
-          currentWaveStateGameObject = (GameObject)DequeueWaveState();
+            if(currentWaveStateRef.hasFinished) {
+                if(waveStatesQueue.Count > 0) {
+                  currentWaveStateGameObject = (GameObject)DequeueWaveState();
+                }
+                else {
+                  currentWaveStateGameObject = null;
+                }
+            }
         }
-        else {
-          currentWaveStateGameObject = null;
+    }
+
+    public virtual void PerformLevelFailCheck() {
+        if(AllBathroomObjectsBroken()) {
+            LevelManager.Instance.TriggerFailedLevel();
         }
-      }
     }
-  }
 
-  public virtual void PerformLevelFailCheck() {
-    if(AllBathroomObjectsBroken()) {
-      LevelManager.Instance.TriggerFailedLevel();
+    public virtual void PerformLevelFinishCheck() {
+        if(waveLogicFinished) {
+            LevelManager.Instance.TriggerFinishedLevel();
+        }
     }
-  }
-
-  public virtual void PerformLevelFinishCheck() {
-    if(waveLogicFinished) {
-      LevelManager.Instance.TriggerFinishedLevel();
-    }
-  }
 
   public bool AllBathroomObjectsBroken() {
     bool foundBathroomObjectThatIsNotBroken = false;

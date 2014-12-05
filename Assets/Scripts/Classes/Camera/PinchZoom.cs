@@ -3,40 +3,41 @@ using System.Collections;
 
 public class PinchZoom : MonoBehaviour
 {
-  public Camera cameraReference;
+    public Camera cameraReference;
 
-	public float zoomStepSize= 0.2f;
+    public float zoomStepSize= 0.2f;
 
-  // zoom-in and zoom-out limits
-  public float minZoom = 1.0f;
-	public float maxZoom = 5.0f;
+    // zoom-in and zoom-out limits
+    public float minZoom = 1.0f;
+    public float maxZoom = 5.0f;
 
-  public float horizontalPanSpeedModifier = 0.1f;
-  public float verticalPanSpeedModifier = 0.1f;
+    public float horizontalPanSpeedModifier = 0.1f;
+    public float verticalPanSpeedModifier = 0.1f;
 
-	private bool isPointerPressed;
+    private bool isPointerPressed;
 
-	private Vector2 previousPinchDistance = new Vector2(0,0);
-	private Vector2 currentPinchDistance = new Vector2(0,0);
-	private Vector2 pinchMidPoint = new Vector2(0,0);
+    private Vector2 previousPinchDistance = new Vector2(0,0);
+    private Vector2 currentPinchDistance = new Vector2(0,0);
+    private Vector2 pinchMidPoint = new Vector2(0,0);
 
-	public Vector3 cameraAnchor;
-  public float minAnchorXOffset = 5f;
-  public float maxAnchorXOffset = 5f;
-  public float minAnchorYOffset = 5f;
-  public float maxAnchorYOffset = 5f;
+    public Vector3 cameraAnchor;
+    public float minAnchorXOffset = 5f;
+    public float maxAnchorXOffset = 5f;
+    public float minAnchorYOffset = 5f;
+    public float maxAnchorYOffset = 5f;
 
-	void Start () {
-		// cameraAnchor = this.gameObject.transform.localPosition;
-    cameraAnchor = cameraReference.gameObject.transform.localPosition;
-    // cameraAnchor = Vector3.zero;
-    // Debug.Log("Camera Anchor Set To:\n" + cameraAnchor);
+    void Start () {
+        // cameraAnchor = this.gameObject.transform.localPosition;
+        cameraAnchor = cameraReference.gameObject.transform.localPosition;
+        // cameraAnchor = Vector3.zero;
+        // Debug.Log("Camera Anchor Set To:\n" + cameraAnchor);
 
-		isPointerPressed = false;
-	}
-	void Update () {
-    PerformPinchZoomLogic();
-	}
+        isPointerPressed = false;
+    }
+    
+    void Update () {
+        PerformPinchZoomLogic();
+    }
 
   private void PerformPinchZoomLogic() {
     if(Input.GetMouseButtonDown(0)) {

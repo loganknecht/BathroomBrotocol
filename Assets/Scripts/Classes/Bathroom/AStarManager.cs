@@ -330,9 +330,9 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                     currentBathroomTile = null;
                 } 
             }
-            //adds the first node, otherwise it's left out
-            // bathroomTilePath.Add(new Vector2(startTile.transform.position.x, startTile.transform.position.y));
-            bathroomTilePath.Add(startTile.gameObject);
+            // adds the first node, otherwise it's left out
+            // for now... ignore it
+            // bathroomTilePath.Add(startTile.gameObject);
             bathroomTilePath.Reverse();
 //------------------------------------------------------------------
 //       if(debugShowLastPathCalculated) {

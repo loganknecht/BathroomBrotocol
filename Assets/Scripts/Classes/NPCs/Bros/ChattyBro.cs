@@ -2,16 +2,22 @@
 using System.Collections;
 
 public class ChattyBro : Bro {
-  // Use this for initialization
-  public override void Start () {
-    base.Start();
-    type = BroType.ChattyBro;
-  }
 
-  // Update is called once per frame
-  public override void Update () {
-    base.Update();
-  }
+    protected override void Awake() {
+        base.Awake();
+        
+        type = BroType.ChattyBro;
+    }
+    
+    // Use this for initialization
+    public override void Start () {
+        base.Start();
+    }
+
+    // Update is called once per frame
+    public override void Update () {
+        base.Update();
+    }
 
   public override void PerformOnArrivalBrotocolScoreCheck() {
     // As long as the target object is not null and it's not a bathroom exit

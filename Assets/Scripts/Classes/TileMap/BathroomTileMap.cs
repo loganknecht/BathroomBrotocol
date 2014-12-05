@@ -78,35 +78,31 @@ public class BathroomTileMap : TileMap {
     }
 
 
-	public GameObject SelectRandomOpenTile() {
+    public GameObject SelectRandomOpenTile() {
         GameObject foundBathroomTile = null;
-		bool foundOpenTile = false;
-		while(!foundOpenTile) {
+        bool foundOpenTile = false;
+        while(!foundOpenTile) {
             foundOpenTile = true;
             int selectedXIndex = Random.Range(0, tilesWide);
             int selectedYIndex = Random.Range(0, tilesHigh);
             foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
-			foreach(GameObject closedNode in AStarManager.Instance.permanentClosedNodes) {
-				//if tile in closed nodes list reset and try again
+            foreach(GameObject closedNode in AStarManager.Instance.permanentClosedNodes) {
+                //if tile in closed nodes list reset and try again
                 if(closedNode == foundBathroomTile) {
-					foundOpenTile = false;
+                    foundOpenTile = false;
                     foundBathroomTile = null;
-				}
-
-                if(foundOpenTile) {
-                    return foundBathroomTile;
                 }
-			}
-		}
+            }
+        }
 
-        return null;
-	}
+        return foundBathroomTile;
+    }
 
-	public GameObject SelectRandomTile() {
+    public GameObject SelectRandomTile() {
         int selectedXIndex = Random.Range(0, tilesWide);
         int selectedYIndex = Random.Range(0, tilesHigh);
         return tiles[selectedYIndex][selectedXIndex];
-	}
+    }
 
     public List<GameObject> GetAllTilesAsList() {
         List<GameObject> allTiles = new List<GameObject>();

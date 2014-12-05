@@ -2,20 +2,24 @@
 using System.Collections;
 
 public class GenericBro : Bro {
-	// Use this for initialization
-	public override void Start () {
-		base.Start();
-		type = BroType.GenericBro;
-	}
+    protected override void Awake() {
+        base.Awake();
 
-	// Update is called once per frame
-	public override void Update () {
-		base.Update();
-	}
+        type = BroType.GenericBro;
+    }
+    // Use this for initialization
+    public override void Start () {
+        base.Start();
+    }
+
+    // Update is called once per frame
+    public override void Update () {
+        base.Update();
+    }
 
     //This is being checked on arrival before switching to occupying an object
     public override void PerformOnArrivalBrotocolScoreCheck() {
-        bool brotocolWasSatisfied = false;
+        // bool brotocolWasSatisfied = false;
 
         // // As long as the target object is not null and it's not a bathroom exit
         // if(targetObject != null

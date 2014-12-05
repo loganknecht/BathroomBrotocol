@@ -2,72 +2,81 @@
 using System.Collections;
 
 public class ShyBro : Bro {
-  public bool firstArrivalOccurred = false;
-  public bool firstArrivalWasWrongObject = false;
+    public bool firstArrivalOccurred = false;
+    public bool firstArrivalWasWrongObject = false;
 
-	// Use this for initialization
-	public override void Start () {
-		base.Start();
-		type = BroType.ShyBro;
-	}
+    protected override void Awake() {
+        base.Awake();
 
-	// Update is called once per frame
-	public override void Update () {
-		base.Update();
-	}
-
-  public override void PerformArrivalLogic() {
-    if(transform.position.x == targetPosition.x
-       && transform.position.y == targetPosition.y
-       && movementNodes.Count == 0) {
-
-      if(targetObject != null
-         && targetObject.GetComponent<BathroomObject>() != null) {
-
-        BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-
-        //Adds bro to occupation list
-        if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
-          bathObjRef.objectsOccupyingBathroomObject.Add(this.gameObject);
-        }
-
-        // if(reliefRequired != ReliefRequired.Pee
-        if(reliefRequired == ReliefRequired.Pee && bathObjRef.type == BathroomObjectType.Stall) {
-          //Brotocol score check triggered
-          PerformOnArrivalBrotocolScoreCheck();
-        }
-        else {
-          targetObject.collider.enabled = false;
-          if(!firstArrivalOccurred) {
-            firstArrivalWasWrongObject = true;
-          }
-        }
-
-        selectableReference.ResetHighlightObjectAndSelectedState();
-        speechBubbleReference.displaySpeechBubble = false;
-
-        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-           && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-          SelectionManager.Instance.currentlySelectedBroGameObject = null;
-        }
-
-        if(!firstArrivalOccurred) {
-          firstArrivalOccurred = true;
-        }
-        state = BroState.OccupyingObject;
-      }
-      else {
-        state = BroState.Roaming;
-      }
+        type = BroType.ShyBro;
     }
-  }
+    
+    // Use this for initialization
+    public override void Start () {
+        base.Start();
+    }
+
+    // Update is called once per frame
+    public override void Update () {
+        base.Update();
+    }
+
+    public override void PerformArrivalLogic() {
+        if(transform.position.x == GetTargetPosition().x
+            && transform.position.y == GetTargetPosition().y
+            && GetMovementNodes().Count == 0) {
+
+            GameObject targetObject = GetTargetObject(); 
+
+            if(targetObject != null
+                && targetObject.GetComponent<BathroomObject>() != null) {
+
+                BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+
+                //Adds bro to occupation list
+                if(!bathObjRef.objectsOccupyingBathroomObject.Contains(this.gameObject)) {
+                    bathObjRef.objectsOccupyingBathroomObject.Add(this.gameObject);
+                }
+
+                // if(reliefRequired != ReliefRequired.Pee
+                if(reliefRequired == ReliefRequired.Pee && bathObjRef.type == BathroomObjectType.Stall) {
+                    //Brotocol score check triggered
+                    PerformOnArrivalBrotocolScoreCheck();
+                }
+                else {
+                    targetObject.collider.enabled = false;
+                    if(!firstArrivalOccurred) {
+                        firstArrivalWasWrongObject = true;
+                    }
+                }
+
+                selectableReference.ResetHighlightObjectAndSelectedState();
+                speechBubbleReference.displaySpeechBubble = false;
+
+                if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                    && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                    SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                }
+
+                if(!firstArrivalOccurred) {
+                    firstArrivalOccurred = true;
+                }
+                state = BroState.OccupyingObject;
+            }
+            else {
+            state = BroState.Roaming;
+            }
+        }
+    }
 
     public override void PerformOccupyingObjectLogic() {
+        GameObject targetObject = GetTargetObject();
+        
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
 
-            if(occupationTimer > bathObjRef.occupationDuration) {
+            if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
                     PerformExitOccupationFinishedLogic();
@@ -92,7 +101,7 @@ public class ShyBro : Bro {
                     || targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Sink)) {
                     // Debug.Log("in urinal");
                     collider.enabled = true;
-                    probabilityOfFightOnCollisionWithBro = 0f;
+                    baseProbabilityOfFightOnCollisionWithBro = 0f;
                     selectableReference.canBeSelected = true;
                 }
                 else {
@@ -104,45 +113,45 @@ public class ShyBro : Bro {
         }
     }
 
-  //This is being checked on arrival before switching to occupying an object
-  public override void PerformOnArrivalBrotocolScoreCheck() {
-    bool brotocolWasSatisfied = false;
+    //This is being checked on arrival before switching to occupying an object
+    public override void PerformOnArrivalBrotocolScoreCheck() {
+        // bool brotocolWasSatisfied = false;
 
-    // // As long as the target object is not null and it's not a bathroom exit
-    // if(targetObject != null
-    //  && targetObject.GetComponent<BathroomObject>() != null
-    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-    //   if(!hasRelievedSelf) {
-    //     //This is being checked on arrival before switching to occupying an object
-    //     // if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-    //     //   // increment correct relief type
-    //     //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolCorrectReliefTypeForTargetObject);
-    //     // }
-    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
-    //       // increment bro alone bonus
-    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolNoAdjacentBro);
-    //       brotocolWasSatisfied = true;
-    //     }
-    //     if(CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry()) {
-    //       // increment no janitor summoned bonus
-    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolRelievedSelfInCorrectBathroomObjectTypeOnFirstTry);
-    //       brotocolWasSatisfied = true;
-    //     }
-    //   }
-    // }
+        // // As long as the target object is not null and it's not a bathroom exit
+        // if(targetObject != null
+        //  && targetObject.GetComponent<BathroomObject>() != null
+        //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+        //   if(!hasRelievedSelf) {
+        //     //This is being checked on arrival before switching to occupying an object
+        //     // if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+        //     //   // increment correct relief type
+        //     //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolCorrectReliefTypeForTargetObject);
+        //     // }
+        //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+        //       // increment bro alone bonus
+        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolNoAdjacentBro);
+        //       brotocolWasSatisfied = true;
+        //     }
+        //     if(CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry()) {
+        //       // increment no janitor summoned bonus
+        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolRelievedSelfInCorrectBathroomObjectTypeOnFirstTry);
+        //       brotocolWasSatisfied = true;
+        //     }
+        //   }
+        // }
 
-    // if(brotocolWasSatisfied) {
-    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-    // }
-  }
-
-  public override bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
-    if(!firstArrivalWasWrongObject) {
-      return true;
+        // if(brotocolWasSatisfied) {
+        //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+        // }
     }
-    else {
-      return false;
+
+    public override bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
+        if(!firstArrivalWasWrongObject) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-  }
     //=========================================================================
 }
