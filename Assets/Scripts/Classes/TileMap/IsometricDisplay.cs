@@ -49,8 +49,11 @@ public class IsometricDisplay : MonoBehaviour {
         }
     }
     public void UpdateDisplayPosition() {
+        // Use for images that should be of a 2 to 1 width to height ratio
         // float halfTileWidth = BathroomTileMap.Instance.singleTileWidth/2;
         // float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/2;
+        
+        // Use for images that should be of a 1 to 1 width to height ratio
         float halfTileWidth = BathroomTileMap.Instance.singleTileWidth/2;
         float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/4;
 
@@ -67,8 +70,11 @@ public class IsometricDisplay : MonoBehaviour {
     public Vector2 ConvertScreenToIsometricCoordinates(float screenX, float screenY, float halfTileWidth, float halfTileHeight) {
         // screen.x = (map.x - map.y) * TILE_WIDTH_HALF;
         // screen.y = (map.x + map.y) * TILE_HEIGHT_HALF;
+
+        // Offset to the top of the screen
         Vector2 isometricVector = new Vector2((screenX - screenY) * halfTileWidth,
                                               (screenX + screenY) * halfTileHeight);
+
         return isometricVector;
     }
 

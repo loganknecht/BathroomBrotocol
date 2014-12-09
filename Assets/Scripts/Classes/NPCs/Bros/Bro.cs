@@ -1442,24 +1442,43 @@ public virtual void PerformExitOccupationFinishedLogic() {
       state = BroState.Roaming;
     }
   }
-
-  //----------------------------------------------------------------------------
-  // Brotocol Score Logic Goes Here
-  //----------------------------------------------------------------------------
-  //This is being checked on arrival before switching to occupying an object
-  public virtual void PerformOnArrivalBrotocolScoreCheck() {
-    GameObject targetObject = GetTargetObject();
-    if(targetObject != null
-       && targetObject.GetComponent<BathroomObject>() != null
-       && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-      if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-        // increment correct relief type
-      }
-      if(!CheckIfBroInAdjacentBathroomObjects()) {
-        // increment bro alone bonus
-      }
+    public Vector2 GetOffsetFromCurrentTile() {
+        if(targetPathingReference.targetTile != null) {
+            return new Vector2(targetPathingReference.targetTile.transform.position.x - this.gameObject.transform.position.x,
+                                targetPathingReference.targetTile.transform.position.y - this.gameObject.transform.position.y); 
+        }
+        else {
+            return Vector2.zero;
+        }
     }
-  }
+
+    public void SetPositionInWorldBasedOnCurrentTile(Vector2 tileOffset) {
+        this.gameObject.transform.position = new Vector3(targetPathingReference.targetTile.transform.position.x + tileOffset.x,
+                                                            targetPathingReference.targetTile.transform.position.y + tileOffset.y,
+                                                            this.gameObject.transform.position.z);
+        // return tileMapToSetPositions;
+    }
+
+    public void UpdateAllTilesIsometricDisplay() {
+        // return tilesToUpdate;
+    }
+    //----------------------------------------------------------------------------
+    // Brotocol Score Logic Goes Here
+    //----------------------------------------------------------------------------
+    //This is being checked on arrival before switching to occupying an object
+    public virtual void PerformOnArrivalBrotocolScoreCheck() {
+        GameObject targetObject = GetTargetObject();
+        if(targetObject != null
+            && targetObject.GetComponent<BathroomObject>() != null
+            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+            if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+                // increment correct relief type
+            }
+            if(!CheckIfBroInAdjacentBathroomObjects()) {
+                // increment bro alone bonus
+            }
+        }
+    }
 
   // This is so dumb to document this
   /// <summary>This checks to see if the bro's target object is a bathroom object,

@@ -13,14 +13,14 @@ public class TargetPathing : BaseBehavior {
 
     public GameObject targetObject = null;
     public Vector3 targetPosition = Vector3.zero;
+    public GameObject targetTile = null;
+    public List<GameObject> movementNodes = null; 
 
     public float xMoveSpeed = 1;
     public float yMoveSpeed = 1;
 
     public float targetPositionXLockBuffer = 0.05f;
     public float targetPositionYLockBuffer = 0.05f;
-
-    public List<GameObject> movementNodes = null; 
 
     public virtual void Awake() {
         base.Awake();
@@ -104,6 +104,9 @@ public class TargetPathing : BaseBehavior {
     public Vector3 GetTargetPosition() {
         return targetPosition;
     }
+    public void SetTargetPosition(Vector3 newTargetPosition) {
+        targetPosition = newTargetPosition;
+    }
 
     public bool IsAtTargetPosition() {
         if(movementNodes.Count == 0
@@ -144,11 +147,15 @@ public class TargetPathing : BaseBehavior {
         if(movementNodes.Count > 0) {
         //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
             GameObject nextNode = movementNodes[0];
+            targetTile = nextNode;
             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
             //Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
             movementNodes.RemoveAt(0);
             // Destroy(nextNode);
             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
+        }
+        else {
+            targetTile = null;
         }
     }
 

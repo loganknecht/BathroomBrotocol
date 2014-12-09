@@ -170,4 +170,89 @@ public class TileMap : BaseBehavior {
             return null;
         }
     }
+
+    // +90 - counter clockwise
+    // TODO - This is not the best it could be, if you get a chance some day refactor this section
+    public void RotateTileMatrixLeft() {
+        tiles = TransposeMatrix(tiles, tilesWide, tilesHigh);
+        ReverseAllRows(tiles);
+        SetPositionsInWorldBasedOnTileMapProperties(tiles);
+        UpdateAllTilesIsometricDisplay(tiles);
+    }
+    // -90 - clockwise
+    public void RotateTileMatrixRight() {
+        tiles = TransposeMatrix(tiles, tilesWide, tilesHigh);
+        ReverseAllColumns(tiles);
+        SetPositionsInWorldBasedOnTileMapProperties(tiles);
+        UpdateAllTilesIsometricDisplay(tiles);
+    // public GameObject[][] ReverseColumn(GameObject[][] tileMapToRotate, int columnToRotate) {
+    }
+
+    // This should really be a generic, but whatever
+    public GameObject[][] TransposeMatrix(GameObject[][] tileMapToRotate, int tilesWide, int tilesHigh) {
+        GameObject[][] tempTileMap = new GameObject[tilesWide][];
+        for(int j = 0; j < tilesWide; j++) {
+            tempTileMap[j] = new GameObject[tilesHigh];
+        }
+
+
+        for(int j = 0; j < tilesWide; j++) {
+            for(int i = 0; i < tilesHigh; i++) {
+                tempTileMap[j][i] = tiles[i][j];
+            }
+        }
+        return tempTileMap;
+    }
+
+    public GameObject[][] ReverseAllColumns(GameObject[][] tileMapToRotate) {
+        for(int i = 0; i < tileMapToRotate.Length; i++) {
+            ReverseColumn(tileMapToRotate, i);
+        }
+        return tileMapToRotate;
+    }
+    // This should really be a generic, but whatever
+    public GameObject[][] ReverseColumn(GameObject[][] tileMapToRotate, int columnToRotate) {
+        //9/2 = 4, with 5 as the midpoint
+        //10/2 = 5, with 4/5 as the midpoint
+        for(int j = 0; j < tileMapToRotate.Length/2; j++) {
+            GameObject tempTileGameObject = tileMapToRotate[j][columnToRotate];
+            tileMapToRotate[j][columnToRotate] = tileMapToRotate[tileMapToRotate.Length - 1 - j][columnToRotate];
+            tileMapToRotate[tileMapToRotate.Length - 1 - j][columnToRotate] = tempTileGameObject;
+        }
+        return tileMapToRotate;
+    }
+
+    public GameObject[][] ReverseAllRows(GameObject[][] tileMapToRotate) {
+        for(int j = 0; j < tileMapToRotate.Length; j++) {
+            ReverseRow(tileMapToRotate, j);
+        }
+        return tileMapToRotate;
+    }
+
+    // This should really be a generic, but whatever
+    public GameObject[][] ReverseRow(GameObject[][] tileMapToRotate, int rowToReverse) {
+        System.Array.Reverse(tileMapToRotate[rowToReverse]);
+        return tileMapToRotate;
+    }
+
+    public GameObject[][] SetPositionsInWorldBasedOnTileMapProperties(GameObject[][] tileMapToSetPositions) {
+        for(int j = 0; j < tileMapToSetPositions.Length; j++) {
+            for(int i = 0; i < tileMapToSetPositions[j].Length; i++) {
+                tileMapToSetPositions[j][i].transform.position = new Vector3(i * singleTileWidth, j * singleTileHeight, tileMapToSetPositions[j][i].transform.position.z);
+            }
+        }
+        return tileMapToSetPositions;
+    }
+
+    public GameObject[][] UpdateAllTilesIsometricDisplay(GameObject[][] tilesToUpdate) {
+        foreach(GameObject[] row in tilesToUpdate) {
+            foreach(GameObject cell in row) {
+                if(cell.GetComponent<IsometricDisplay>() != null) {
+                    cell.GetComponent<IsometricDisplay>().UpdateDisplayPosition();
+                }
+            }
+        }
+
+        return tilesToUpdate;
+    }
 }
