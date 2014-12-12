@@ -31,6 +31,9 @@ public class LineQueue : MonoBehaviour {
         PerformShuffleLogic();
     }
 
+    public List<GameObject> GetQueueTileObjects() {
+        return queueTileObjects;
+    }
     public void PerformShuffleLogic() {
         if(shufflingAllowed) {
             shuffleTimer += Time.deltaTime;

@@ -79,6 +79,14 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         }
     }
 
+    public List<GameObject> GetPermanentleyClosedNodes() {
+        return permanentClosedNodes;
+    }
+
+    public List<GameObject> GetTemporaryClosedNodes() {
+        return temporaryClosedNodes;
+    }
+
     public void AddPermanentClosedNode(GameObject tileGameObject) {
         if(!permanentClosedNodes.Contains(tileGameObject)) {
             permanentClosedNodes.Add(tileGameObject);
@@ -227,7 +235,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
                                             openNodes,
                                             closedNodes);
                 }
-                if(currentNodeTileX + 1 < tileMapBeingSearched.tilesHigh) {
+                if(currentNodeTileX + 1 < tileMapBeingSearched.tilesWide) {
                     // Debug.Log("----------------------------------------------------");
                     // Debug.Log("Performing Right A Star Tile Check");
                     PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(), 
@@ -386,30 +394,30 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
             return bathroomTilePath;
         // }
         // catch(System.Exception e) {
-        // 	Debug.Log(e.StackTrace);
-        // 	// ------------------------------------------------
-        // 	Debug.Log("-------------------------------------------------------------");
-        // 	Debug.Log("Custom Log");
-        // 	Debug.Log("-------------------------------------------------------------");
-        // 	Debug.Log("There was an issue with the Calculate AStar Path method. Please validate with the information provided in order to fix the issue. - Love your past self");
-        // 	Debug.Log("Number of open nodes: " + openNodes.Count);
-        // 	Debug.Log("Number of closed nodes: " + closedNodes.Count);
-        // 	Debug.Log("Start Bathroom Tile: " + startTile.name);
-        // 	Debug.Log("End Bathroom Tile: " + endTile.name);
-        // 	// Debug.Log("Previous Node X: " + previousNode.tileX + " Y: " + previousNode.tileY);
-        // 	Debug.Log("Current Node: " + currentNode);
-        // 	Debug.Log("xOffsetToCheck: " + xOffsetToCheck);
-        // 	Debug.Log("yOffsetToCheck: " + yOffsetToCheck);
-        // 	Debug.Log("End bathroom tile is in the open list: " + endTileIsInOpenNodeList);
-        // 	if(currentNode != null) {
-        // 		// Debug.Log("Tile X Being checked: " + currentNode.tileX);
-        // 		// Debug.Log("Tile Y Being checked: " + currentNode.tileX);
-        // 	}
-        // 	else {
-        // 		Debug.Log("Current node is null, so Tile X and Y being checked are null as well.");
-        // 	}
-        // 	//return bathroomTilePositionsForPath;
-        // 	return new List<GameObject>();
+        //  Debug.Log(e.StackTrace);
+        //  // ------------------------------------------------
+        //  Debug.Log("-------------------------------------------------------------");
+        //  Debug.Log("Custom Log");
+        //  Debug.Log("-------------------------------------------------------------");
+        //  Debug.Log("There was an issue with the Calculate AStar Path method. Please validate with the information provided in order to fix the issue. - Love your past self");
+        //  Debug.Log("Number of open nodes: " + openNodes.Count);
+        //  Debug.Log("Number of closed nodes: " + closedNodes.Count);
+        //  Debug.Log("Start Bathroom Tile: " + startTile.name);
+        //  Debug.Log("End Bathroom Tile: " + endTile.name);
+        //  // Debug.Log("Previous Node X: " + previousNode.tileX + " Y: " + previousNode.tileY);
+        //  Debug.Log("Current Node: " + currentNode);
+        //  Debug.Log("xOffsetToCheck: " + xOffsetToCheck);
+        //  Debug.Log("yOffsetToCheck: " + yOffsetToCheck);
+        //  Debug.Log("End bathroom tile is in the open list: " + endTileIsInOpenNodeList);
+        //  if(currentNode != null) {
+        //      // Debug.Log("Tile X Being checked: " + currentNode.tileX);
+        //      // Debug.Log("Tile Y Being checked: " + currentNode.tileX);
+        //  }
+        //  else {
+        //      Debug.Log("Current node is null, so Tile X and Y being checked are null as well.");
+        //  }
+        //  //return bathroomTilePositionsForPath;
+        //  return new List<GameObject>();
         // }
         // return new List<GameObject>();
     }
@@ -432,57 +440,61 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
             // && tileBeingChecked.tileY == endTileY) {
             //     Debug.Log("LOCATED END TILE");
             // }
-			//left
-			if(currentNode.tileX < tileBeingChecked.tileX) {
-				//top left
-				if(currentNode.tileY > tileBeingChecked.tileY) {
-					gValueOffset = 14;
-				}
-				//bottom left
-				else if(currentNode.tileY < tileBeingChecked.tileY) {
-					gValueOffset = 14;
-				}
-				//left
-				else {
-					gValueOffset = 10;
-				}
-			}
-			//right
-			else if(currentNode.tileX > tileBeingChecked.tileX) {
-				//top right
-				if(currentNode.tileY > tileBeingChecked.tileY) {
-					gValueOffset = 14;
-				}
-				//bottom right
-				else if(currentNode.tileY < tileBeingChecked.tileY) {
-					gValueOffset = 14;
-				}
-				//right
-				else {
-					gValueOffset = 10;
-				}
-			}
-			else {
-				//top
-				if(currentNode.tileY > tileBeingChecked.tileY) {
-					gValueOffset = 10;
-				}
-				//bottom
-				else if(currentNode.tileY < tileBeingChecked.tileY) {
-					gValueOffset = 10;
-				}
-				//middle
-				else {
-					//not sure when this would happen?
-					gValueOffset = 0;
-				}
-			}
+            //left
+            if(currentNode.tileX < tileBeingChecked.tileX) {
+                //top left
+                if(currentNode.tileY > tileBeingChecked.tileY) {
+                    gValueOffset = 14;
+                }
+                //bottom left
+                else if(currentNode.tileY < tileBeingChecked.tileY) {
+                    gValueOffset = 14;
+                }
+                //left
+                else {
+                    gValueOffset = 10;
+                }
+            }
+            //right
+            else if(currentNode.tileX > tileBeingChecked.tileX) {
+                //top right
+                if(currentNode.tileY > tileBeingChecked.tileY) {
+                    gValueOffset = 14;
+                }
+                //bottom right
+                else if(currentNode.tileY < tileBeingChecked.tileY) {
+                    gValueOffset = 14;
+                }
+                //right
+                else {
+                    gValueOffset = 10;
+                }
+            }
+            else {
+                //top
+                if(currentNode.tileY > tileBeingChecked.tileY) {
+                    gValueOffset = 10;
+                }
+                //bottom
+                else if(currentNode.tileY < tileBeingChecked.tileY) {
+                    gValueOffset = 10;
+                }
+                //middle
+                else {
+                    //not sure when this would happen?
+                    gValueOffset = 0;
+                }
+            }
 
-            // Debug.Log("Current Node X: " + currentNode.tileX + " Y: " + currentNode.tileY);
             bool openNodesContainTileBeingChecked = CheckIfTileListContainsTile(openNodes, tileXBeingChecked, tileYBeingChecked);
             bool closedNodesContainTileBeingChecked = CheckIfTileListContainsTile(closedNodes, tileXBeingChecked, tileYBeingChecked);
-            // Debug.Log("open nodes contain tile being checked: " + openNodesContainTileBeingChecked);
-            // Debug.Log("closed nodes contain tile being checked: " + closedNodesContainTileBeingChecked);
+            // if(currentNode.gameObject.GetComponent<AStarNode>() != null) { 
+            //     Debug.Log("---------------------");
+            //     Debug.Log("Is Untraversable: " + currentNode.gameObject.GetComponent<AStarNode>().isUntraversable);
+            //     Debug.Log("Tile Being Checked X: " + tileXBeingChecked + " Y: " + tileYBeingChecked);
+            //     Debug.Log("Open nodes contain tile being checked: " + openNodesContainTileBeingChecked);
+            //     Debug.Log("Closed nodes contain tile being checked: " + closedNodesContainTileBeingChecked);
+            // }
 
             //If it is not walkable or if it is on the closed list, ignore it. Otherwise do the following.
             if(!closedNodesContainTileBeingChecked

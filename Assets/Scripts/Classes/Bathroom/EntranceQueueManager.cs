@@ -17,9 +17,11 @@ public class EntranceQueueManager : BaseBehavior {
 
     public float debugXMoveSpeed = 1f;
     public float debugYMoveSpeed = 1f;
+
     public Dictionary<BathroomObjectType, float> debugOccupationDuration = new Dictionary<BathroomObjectType, float>();
     public BroType debugBroType = BroType.None;
     public ReliefRequired[] debugReliefRequired = new ReliefRequired[]{};
+
     public float debugFightProbability = 0f;
     public bool debugModifyBroFightProbablityUsingScoreRatio = false;
     public bool debugSkipLineQueue = false;
@@ -86,6 +88,10 @@ public class EntranceQueueManager : BaseBehavior {
 
             PerformDebugButtonPressLogic();
         }
+    }
+
+    public List<GameObject> GetLineQueues() {
+        return lineQueues;
     }
 
     public GameObject GetTileGameObjectFromLineQueueByWorldPosition(float xPosition, float yPosition, bool returnClosestTile, int lineQueueToSelectFrom) {

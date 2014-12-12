@@ -108,6 +108,10 @@ public class TileMap : BaseBehavior {
         }
     }
 
+    public void SetTiles(GameObject[][] newTiles) {
+        tiles = newTiles;
+    }
+
     public GameObject[][] GetTiles() {
         return tiles;
     }
@@ -175,17 +179,26 @@ public class TileMap : BaseBehavior {
     // TODO - This is not the best it could be, if you get a chance some day refactor this section
     public void RotateTileMatrixLeft() {
         tiles = TransposeMatrix(tiles, tilesWide, tilesHigh);
+        int temp = tilesWide;
+        tilesWide = tilesHigh;
+        tilesHigh = temp;
+
         ReverseAllRows(tiles);
         SetPositionsInWorldBasedOnTileMapProperties(tiles);
         UpdateAllTilesIsometricDisplay(tiles);
+
     }
     // -90 - clockwise
     public void RotateTileMatrixRight() {
         tiles = TransposeMatrix(tiles, tilesWide, tilesHigh);
-        ReverseAllColumns(tiles);
+        int temp = tilesWide;
+        tilesWide = tilesHigh;
+        tilesHigh = temp;
+
+        ReverseAllColumns(tiles, tilesWide);
         SetPositionsInWorldBasedOnTileMapProperties(tiles);
         UpdateAllTilesIsometricDisplay(tiles);
-    // public GameObject[][] ReverseColumn(GameObject[][] tileMapToRotate, int columnToRotate) {
+
     }
 
     // This should really be a generic, but whatever
@@ -204,20 +217,19 @@ public class TileMap : BaseBehavior {
         return tempTileMap;
     }
 
-    public GameObject[][] ReverseAllColumns(GameObject[][] tileMapToRotate) {
-        for(int i = 0; i < tileMapToRotate.Length; i++) {
+    public GameObject[][] ReverseAllColumns(GameObject[][] tileMapToRotate, int tilesWide) {
+        for(int i = 0; i < tilesWide; i++) {
+            // Debug.Log(i);
             ReverseColumn(tileMapToRotate, i);
         }
         return tileMapToRotate;
     }
     // This should really be a generic, but whatever
     public GameObject[][] ReverseColumn(GameObject[][] tileMapToRotate, int columnToRotate) {
-        //9/2 = 4, with 5 as the midpoint
-        //10/2 = 5, with 4/5 as the midpoint
-        for(int j = 0; j < tileMapToRotate.Length/2; j++) {
+        for(int j = 0; j < tilesHigh/2; j++) {
             GameObject tempTileGameObject = tileMapToRotate[j][columnToRotate];
-            tileMapToRotate[j][columnToRotate] = tileMapToRotate[tileMapToRotate.Length - 1 - j][columnToRotate];
-            tileMapToRotate[tileMapToRotate.Length - 1 - j][columnToRotate] = tempTileGameObject;
+            tileMapToRotate[j][columnToRotate] = tileMapToRotate[tilesHigh - j - 1][columnToRotate];
+            tileMapToRotate[tileMapToRotate.Length - j - 1][columnToRotate] = tempTileGameObject;
         }
         return tileMapToRotate;
     }

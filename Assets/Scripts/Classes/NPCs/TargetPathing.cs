@@ -37,6 +37,7 @@ public class TargetPathing : BaseBehavior {
         if(movementNodes == null) {
             Debug.Log("lol lol movement nodes of " + this.gameObject.name + " be null.");
         }
+
         PerformLogic();
         UpdateAnimator();
     }
@@ -225,7 +226,6 @@ public class TargetPathing : BaseBehavior {
             movingDown = true;
         }
 
-        //Debug.Log("new position offset: " + newPositionOffset);
         if(newPositionOffset.x != 0
             || newPositionOffset.y != 0) {
             directionBeingLookedAt = CameraManager.Instance.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);

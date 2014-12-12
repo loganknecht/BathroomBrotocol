@@ -82,6 +82,8 @@ public class CameraManager : MonoBehaviour {
     }
 
     public DirectionBeingLookedAt GetDirectionFacingBasedOnCameraAndMovementDirection(bool movingUp, bool movingRight, bool movingDown, bool movingLeft) {
+        // Debug.Log("Moving Up: " + movingUp + "\nMoving Right: " + movingRight + "\nMoving Down: " + movingDown + "\nMoving Left: " + movingLeft);
+
         DirectionBeingLookedAt cameraDirectionBeingLookedAt = rotateCameraReference.directionBeingLookedAt;
         DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
         if(movingRight) {
