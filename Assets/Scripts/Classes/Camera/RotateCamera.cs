@@ -40,11 +40,20 @@ public class RotateCamera : MonoBehaviour {
         }
         return tileIn;
     }
-    public Dictionary<GameObject, GameObject> GetTilesGameObjectsIn(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn) {
+
+    public Dictionary<GameObject, GameObject> GetTilesGameObjectsInByIndex(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn, int tileX, int tileY) {
+        foreach(GameObject gameObj in listToGetTilePositionsFrom) {
+            GameObject tileOccupying = BathroomTileMap.Instance.GetTileGameObjectByIndex(tileX, tileY);
+            tileIn[gameObj] = tileOccupying;
+        }
+        return tileIn;
+    }
+
+    public Dictionary<GameObject, GameObject> GetTilesGameObjectsIn(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn, bool returnClosestTile = false) {
         foreach(GameObject gameObj in listToGetTilePositionsFrom) {
             GameObject tileOccupying = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(gameObj.transform.position.x,
                                                                                                 gameObj.transform.position.y,
-                                                                                                false);
+                                                                                                returnClosestTile);
             tileIn[gameObj] = tileOccupying;
         }
         return tileIn;
@@ -208,33 +217,42 @@ public class RotateCamera : MonoBehaviour {
         // To do: reset target pathing destination correctly for target pathing characters
         Dictionary<GameObject, GameObject> targetPositionTile = new Dictionary<GameObject, GameObject>();
         Dictionary<GameObject, Vector2> targetPositionOffset = new Dictionary<GameObject, Vector2>();
+
         //-------------------
+        // Bathroom Tile Blockers
         GetTilesGameObjectsIn(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn);
         GetGameObjectsTileOffset(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
         //-------------------
+        // Bros
         GetTilesGameObjectsIn(BroManager.Instance.allBros, tileGameObjectIn);
         GetGameObjectsTileOffset(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
 
         GetTilesGameObjectsTargeting(BroManager.Instance.allBros, tileGameObjectTargeting);
         GetGameObjectsTileOffset(BroManager.Instance.allBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
-        // UpdateTargetPathingMovementNodes(BroManager.Instance.allBros);
         //-------------------
-        GetTilesGameObjectsIn(BroManager.Instance.allStandoffBros, tileGameObjectIn);
-        GetGameObjectsTileOffset(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        // Standoff Bros
+        // GetTilesGameObjectsIn(BroManager.Instance.allStandoffBros, tileGameObjectIn);
+        // GetGameObjectsTileOffset(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
 
-        GetTilesGameObjectsTargeting(BroManager.Instance.allStandoffBros, tileGameObjectTargeting);
-        GetGameObjectsTileOffset(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
-        // UpdateTargetPathingMovementNodes(BroManager.Instance.allStandoffBros);
+        // GetTilesGameObjectsTargeting(BroManager.Instance.allStandoffBros, tileGameObjectTargeting);
+        // GetGameObjectsTileOffset(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
         //-------------------
+        // Fighting Bros
         GetTilesGameObjectsIn(BroManager.Instance.allFightingBros, tileGameObjectIn);
         GetGameObjectsTileOffset(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
 
         GetTilesGameObjectsTargeting(BroManager.Instance.allFightingBros, tileGameObjectTargeting);
         GetGameObjectsTileOffset(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
-        // UpdateTargetPathingMovementNodes(BroManager.Instance.allFightingBros);
         //-------------------
+        // Bathroom Objects
         GetTilesGameObjectsIn(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn);
         GetGameObjectsTileOffset(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        //-------------------
+        // Scenery
+        // Resets relative to the first cell of the tile map becuase I don't think I need to do it based on the tile it's actually in.... not really sure.
+        // GetTilesGameObjectsInByIndex(SceneryManager.Instance.GetScenery(), tileGameObjectIn, 0, 0);
+        GetTilesGameObjectsIn(SceneryManager.Instance.GetScenery(), tileGameObjectIn, true);
+        GetGameObjectsTileOffset(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
         //=====================================================================
         if(rotateLeft) {
             // Debug.Log("rotating left");
@@ -260,6 +278,12 @@ public class RotateCamera : MonoBehaviour {
         SetGameObjectOffsets(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset);
+
+        SetGameObjectOffsets(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset);
+
+        // foreach(ManagedSortingLayer managedSortingLayerReference in FindObjectsOfType(typeof(ManagedSortingLayer))) {
+        //     managedSortingLayerReference.PerformSortingLogic();
+        // }
     }
 
     public DirectionBeingLookedAt GetDirectionBeingLookedAt(float amountRotatedAround) {
@@ -291,7 +315,7 @@ public class RotateCamera : MonoBehaviour {
 
     public void RotateBathroomToMatchCamera() {
         // RotateBackground();
-        RotateTileMapTiles();
+        // RotateTileMapTiles();
         // RotateBathroomTileBlockerObjects();
         // RotateBathroomObjects();
         // RotateBroGameObjects();
