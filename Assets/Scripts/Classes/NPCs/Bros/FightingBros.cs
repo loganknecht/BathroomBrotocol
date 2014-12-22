@@ -8,7 +8,7 @@ public class FightingBros : TargetPathing {
     public int numberOfTapsNeededToBreakUp = 0;
     public bool isPaused = false;
 
-    public override void Awake() {
+    protected override void Awake() {
         base.Awake();
 
         brosFighting = new List<GameObject>();

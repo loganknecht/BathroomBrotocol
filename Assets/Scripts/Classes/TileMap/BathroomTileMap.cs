@@ -81,20 +81,44 @@ public class BathroomTileMap : TileMap {
     public GameObject SelectRandomOpenTile() {
         GameObject foundBathroomTile = null;
         bool foundOpenTile = false;
-        while(!foundOpenTile) {
-            foundOpenTile = true;
-            int selectedXIndex = Random.Range(0, tilesWide);
-            int selectedYIndex = Random.Range(0, tilesHigh);
-            foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
+
+        // List<GameObject> openNodes = GetAllUntraversableTiles();
+
+        List<GameObject> tilesToChooseFrom = BathroomTileMap.Instance.GetTilesAsList();
+        while(tilesToChooseFrom.Count > 0
+              && foundOpenTile == false) {
+            foundBathroomTile = tilesToChooseFrom[Random.Range(0, tilesToChooseFrom.Count - 1)];
             foreach(GameObject closedNode in AStarManager.Instance.permanentClosedNodes) {
                 //if tile in closed nodes list reset and try again
                 if(closedNode == foundBathroomTile) {
-                    foundOpenTile = false;
+                    tilesToChooseFrom.Remove(foundBathroomTile);
                     foundBathroomTile = null;
                 }
             }
+            if(foundBathroomTile != null) {
+                foundOpenTile = true;
+            }
         }
 
+        // bool foundOpenTile = false;
+        // while(!foundOpenTile) {
+        //     foundOpenTile = true;
+        //     int selectedXIndex = Random.Range(0, tilesWide);
+        //     int selectedYIndex = Random.Range(0, tilesHigh);
+        //     foundBathroomTile = tiles[selectedYIndex][selectedXIndex];
+        //     foreach(GameObject closedNode in AStarManager.Instance.permanentClosedNodes) {
+        //         //if tile in closed nodes list reset and try again
+        //         if(closedNode == foundBathroomTile) {
+        //             foundOpenTile = false;
+        //             foundBathroomTile = null;
+        //         }
+        //     }
+        // }
+
+        if(foundBathroomTile == null) {
+            Debug.Log("NO OPEN BATHROOM TILE WAS FOUND!!!!");
+        }
+        
         return foundBathroomTile;
     }
 
@@ -115,8 +139,16 @@ public class BathroomTileMap : TileMap {
     }
 
     public List<GameObject> GetAllUntraversableTiles() {
-        // List<GameObject> allUntraversableTiles = new List<GameObject>();
+        List<GameObject> allUntraversableTiles = new List<GameObject>();
 
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tile in row) {
+                AStarNode astarNode = tile.GetComponent<AStarNode>();
+                if(!astarNode.isUntraversable) {
+                    allUntraversableTiles.Add(tile);
+                }
+            }
+        }
         // foreach(GameObject gameObj in tiles) {
         //   BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
         //   if(bathTileRef.isUntraversable) {
@@ -124,9 +156,7 @@ public class BathroomTileMap : TileMap {
         //   }
         // }
 
-        // return allUntraversableTiles;
-
-        return null;
+        return allUntraversableTiles;
     }
 
     public bool CheckIfTileContainsBroInBathroomObject(int tileX, int tileY) {

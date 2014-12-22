@@ -5,9 +5,11 @@ using System.Collections.Generic;
 public class ManagedSortingLayer : MonoBehaviour {
 
     public GameObject gameObjectToBaseSortingOn = null;
+    public IsometricDisplay gameObjectIsometricDisplay = null;
 
     public List<GameObject> gameObjectsToMatchSortingLayer = new List<GameObject>();
     public int sortingLayerOffset = 0;
+    int sortingMagnitudeModifier = 100;
     public bool dontPerformOwnSorting = false;
     public bool debug = false;
     public SortingOrder sortingOrder = SortingOrder.BackToFront;
@@ -18,6 +20,7 @@ public class ManagedSortingLayer : MonoBehaviour {
             && gameObjectToBaseSortingOn == null) {
             Debug.LogError("The gameObject: '" + gameObject.name + "' does not have the 'gameObjectToBaseSortingOn' set to a value. Please set this to the GameObject that sorting will be based on.");
         }
+        // Debug.LogError("The IsometricDisplay reference 'gameObjectIsometricDisplay' is null for "  + gameObject.name + ". Is this intentional?");
     }
 
     // Update is called once per frame
@@ -36,7 +39,7 @@ public class ManagedSortingLayer : MonoBehaviour {
                 Debug.Log("sorting offset: " + sortingLayerOffset);
             }
             foreach(GameObject objectToUpdate in gameObjectsToMatchSortingLayer) {
-                objectToUpdate.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation + objectToUpdate.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
+                objectToUpdate.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation + sortingLayerOffset + objectToUpdate.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
             }
         }
     }
@@ -45,15 +48,19 @@ public class ManagedSortingLayer : MonoBehaviour {
     public int CalculateSortingLayer() {
         int sortingLayerCalculation = 0;
         if(sortingOrder == SortingOrder.BackToFront) {
-            // sortingLayerCalculation = (int)(-this.gameObject.transform.position.y * 100) + sortingLayerOffset;
-            sortingLayerCalculation = (int)(-gameObjectToBaseSortingOn.transform.position.y * 100) + sortingLayerOffset;
+            // sortingLayerCalculation = (int)(-this.gameObject.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
+            sortingLayerCalculation = (int)(-gameObjectToBaseSortingOn.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
+            if(gameObjectIsometricDisplay != null) {
+                // This accounts for the offsets in tile map height displaying game objects
+                sortingLayerCalculation += (int)((sortingMagnitudeModifier * gameObjectIsometricDisplay.tileMapLayerHeight) * gameObjectIsometricDisplay.tileMapLayer);
+            }
         }
         else if(sortingOrder == SortingOrder.FrontToBack) {
-            // sortingLayerCalculation = (int)(this.gameObject.transform.position.y * 100) + sortingLayerOffset;
-            sortingLayerCalculation = (int)(gameObjectToBaseSortingOn.transform.position.y * 100) + sortingLayerOffset;
+            // sortingLayerCalculation = (int)(this.gameObject.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
+            sortingLayerCalculation = (int)(gameObjectToBaseSortingOn.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
         }
         // Front To Back, Left To Right
-        // sortingLayerCalculation = (int)((this.gameObject.transform.position.x * 100) + (this.gameObject.transform.position.y * 100)) + sortingLayerOffset;
+        // sortingLayerCalculation = (int)((this.gameObject.transform.position.x * sortingMagnitudeModifier) + (this.gameObject.transform.position.y * 100)) + sortingLayerOffset;
 
         return sortingLayerCalculation;
     }

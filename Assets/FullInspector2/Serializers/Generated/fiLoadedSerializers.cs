@@ -6,7 +6,7 @@ using System;
 namespace FullInspector.Internal {
     public class fiLoadedSerializers : fiILoadedSerializers {
         public Type DefaultSerializerProvider {
-           get { return typeof(FullInspector.Serializers.FullSerializer.FullSerializerMetadata); }
+           get { return typeof(FullInspector.Serializers.JsonNet.JsonNetMetadata); }
         }
 
         public Type[] AllLoadedSerializerProviders {
@@ -14,6 +14,7 @@ namespace FullInspector.Internal {
                return new Type[] {
                     typeof(FullInspector.Serializers.Formatter.BinaryFormatterMetadata),
                     typeof(FullInspector.Serializers.FullSerializer.FullSerializerMetadata),
+                    typeof(FullInspector.Serializers.JsonNet.JsonNetMetadata),
                     typeof(FullInspector.Serializers.ProtoBufNet.ProtoBufNetMetadata)
                };
            }

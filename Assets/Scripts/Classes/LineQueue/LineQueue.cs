@@ -28,7 +28,7 @@ public class LineQueue : MonoBehaviour {
     }
 
     public void Update() {
-        PerformShuffleLogic();
+        // PerformShuffleLogic();
     }
 
     public List<GameObject> GetQueueTileObjects() {
@@ -58,7 +58,7 @@ public class LineQueue : MonoBehaviour {
         //if not full calculate the position the bro would be in and move him to that location
         if(gameObjectToAdd.GetComponent<Bro>().skipLineQueue) {
             // Don't even add bro to the line for tracking, just use it as a reference point
-            queueObjects.Add(gameObjectToAdd);
+            // queueObjects.Add(gameObjectToAdd);
             gameObjectToAdd.GetComponent<Bro>().SetTargetObjectAndTargetPosition(null, GetQueueMovementNodes());
         }
         else {

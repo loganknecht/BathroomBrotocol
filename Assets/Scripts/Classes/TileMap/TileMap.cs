@@ -116,6 +116,28 @@ public class TileMap : BaseBehavior {
         return tiles;
     }
 
+    public List<GameObject> GetTilesAsList() {
+        List<GameObject> tileList = new List<GameObject>();
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tile in row) {
+                tileList.Add(tile);
+            }
+        }
+        return tileList;
+    }
+
+    public GameObject[] GetTilesAsSingleDimensionalArray() {
+        GameObject[] tilesArray = new GameObject[tilesWide * tilesHigh];
+        int index = 0;
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tile in row) {
+                tilesArray[index] = tile;
+                index++;
+            }
+        }
+        return tilesArray;
+    }
+
     public GameObject GetTileGameObjectByIndex(int tileX, int tileY) {
         if(tiles != null) {
            return tiles[tileY][tileX];

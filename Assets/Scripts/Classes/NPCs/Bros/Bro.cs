@@ -381,9 +381,11 @@ public class Bro : BaseBehavior {
         if(IsAtTargetPosition()) {
             if(skipLineQueue) {
                 if(chooseRandomBathroomObjectOnSkipLineQueue) {
+                    Debug.Log("Setting target object!");
                     SetRandomBathroomObjectTarget(true, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
                 }
                 else {
+                    Debug.Log("Now Roaming!");
                     state = BroState.Roaming;
                 }
 
@@ -1315,7 +1317,6 @@ public virtual void PerformExitOccupationFinishedLogic() {
         // PerformMovementLogic();
 
         if(IsAtTargetPosition()) {
-            bool foundEmptyTile = false;
             GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
 
             // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
@@ -1406,42 +1407,42 @@ public virtual void PerformExitOccupationFinishedLogic() {
         SetRandomBathroomObjectTarget(chooseOpenBathroomObject, AStarManager.Instance.GetListCopyOfAllClosedNodes(), bathroomObjectTypesToTarget);
     }
 
-  public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, List<GameObject> astarClosedNodesToUse, params BathroomObjectType[] bathroomObjectTypesToTarget) {
-    BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
-                                                                                     this.gameObject.transform.position.y,
-                                                                                     true).GetComponent<BathroomTile>();
-    // Debug.Log(broTile);
+    public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, List<GameObject> astarClosedNodesToUse, params BathroomObjectType[] bathroomObjectTypesToTarget) {
+        BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
+                                                                                         this.gameObject.transform.position.y,
+                                                                                         true).GetComponent<BathroomTile>();
+        // Debug.Log(broTile);
 
-    // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
-    // int selectedObject = Random.Range(0, objects.Count);
-    // GameObject randomObject = objects[selectedObject];
-    GameObject randomObject = null;
-    if(chooseOpenBathroomObject) {
-      randomObject = BathroomObjectManager.Instance.GetRandomOpenBathroomObjectOfSpecificType(bathroomObjectTypesToTarget);
-    }
-    else {
-      randomObject = BathroomObjectManager.Instance.GetRandomBathroomObjectOfSpecificType(bathroomObjectTypesToTarget);
-    }
+        // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
+        // int selectedObject = Random.Range(0, objects.Count);
+        // GameObject randomObject = objects[selectedObject];
+        GameObject randomObject = null;
+        if(chooseOpenBathroomObject) {
+          randomObject = BathroomObjectManager.Instance.GetRandomOpenBathroomObjectOfSpecificType(bathroomObjectTypesToTarget);
+        }
+        else {
+          randomObject = BathroomObjectManager.Instance.GetRandomBathroomObjectOfSpecificType(bathroomObjectTypesToTarget);
+        }
 
-    if(randomObject != null) {
-      // BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
-      //                                                                                           randomObject.transform.position.y,
-      //                                                                                           true).GetComponent<BathroomTile>();
-      BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
+        if(randomObject != null) {
+          // BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
+          //                                                                                           randomObject.transform.position.y,
+          //                                                                                           true).GetComponent<BathroomTile>();
+          BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
 
-      List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                astarClosedNodesToUse,
-                                                                                broTile,
-                                                                                randomObjectTile);
-      state = BroState.MovingToTargetObject;
-      SetTargetObjectAndTargetPosition(randomObject, movementNodes);
+          List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                    astarClosedNodesToUse,
+                                                                                    broTile,
+                                                                                    randomObjectTile);
+          state = BroState.MovingToTargetObject;
+          SetTargetObjectAndTargetPosition(randomObject, movementNodes);
 
-      // Debug.Log("number of movementNodes: " + movementNodes.Count);
+          // Debug.Log("number of movementNodes: " + movementNodes.Count);
+        }
+        else {
+          state = BroState.Roaming;
+        }
     }
-    else {
-      state = BroState.Roaming;
-    }
-  }
     public Vector2 GetOffsetFromCurrentTile() {
         if(targetPathingReference.targetTile != null) {
             return new Vector2(targetPathingReference.targetTile.transform.position.x - this.gameObject.transform.position.x,

@@ -23,7 +23,8 @@ public class ScoreTracker : BaseBehavior {
     // public SlobBroScoreType slobBroScore = null;
     // public ShyBroScoreType shyBroScore = null;
 
-    void Awake() {
+    protected override void Awake() {
+        base.Awake();
         InitializeScoreTrackers();
     }
 

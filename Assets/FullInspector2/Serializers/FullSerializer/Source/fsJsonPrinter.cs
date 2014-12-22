@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 
 namespace FullSerializer {
@@ -7,9 +6,9 @@ namespace FullSerializer {
         /// <summary>
         /// Inserts the given number of indents into the builder.
         /// </summary>
-        private static void InsertSpacing(StreamWriter stream, int count) {
+        private static void InsertSpacing(StringBuilder builder, int count) {
             for (int i = 0; i < count; ++i) {
-                stream.Write("    ");
+                builder.Append("    ");
             }
         }
 
@@ -86,52 +85,52 @@ namespace FullSerializer {
             return result.ToString();
         }
 
-        private static void BuildCompressedString(fsData data, StreamWriter stream) {
+        private static void BuildCompressedString(fsData data, StringBuilder builder) {
             switch (data.Type) {
                 case fsDataType.Null:
-                    stream.Write("null");
+                    builder.Append("null");
                     break;
 
                 case fsDataType.Boolean:
-                    if (data.AsBool) stream.Write("true");
-                    else stream.Write("false");
+                    if (data.AsBool) builder.Append("true");
+                    else builder.Append("false");
                     break;
 
                 case fsDataType.Number:
-                    stream.Write(data.AsFloat);
+                    builder.Append(data.AsFloat);
                     break;
 
                 case fsDataType.String:
-                    stream.Write('"');
-                    stream.Write(EscapeString(data.AsString));
-                    stream.Write('"');
+                    builder.Append('"');
+                    builder.Append(EscapeString(data.AsString));
+                    builder.Append('"');
                     break;
 
                 case fsDataType.Object: {
-                        stream.Write('{');
+                        builder.Append('{');
                         bool comma = false;
                         foreach (var entry in data.AsDictionary) {
-                            if (comma) stream.Write(',');
+                            if (comma) builder.Append(',');
                             comma = true;
-                            stream.Write('"');
-                            stream.Write(entry.Key);
-                            stream.Write('"');
-                            stream.Write(":");
-                            BuildCompressedString(entry.Value, stream);
+                            builder.Append('"');
+                            builder.Append(entry.Key);
+                            builder.Append('"');
+                            builder.Append(":");
+                            BuildCompressedString(entry.Value, builder);
                         }
-                        stream.Write('}');
+                        builder.Append('}');
                         break;
                     }
 
                 case fsDataType.Array: {
-                        stream.Write('[');
+                        builder.Append('[');
                         bool comma = false;
                         foreach (var entry in data.AsList) {
-                            if (comma) stream.Write(',');
+                            if (comma) builder.Append(',');
                             comma = true;
-                            BuildCompressedString(entry, stream);
+                            BuildCompressedString(entry, builder);
                         }
-                        stream.Write(']');
+                        builder.Append(']');
                         break;
                     }
             }
@@ -140,124 +139,94 @@ namespace FullSerializer {
         /// <summary>
         /// Formats this data into the given builder.
         /// </summary>
-        private static void BuildPrettyString(fsData data, StreamWriter stream, int depth) {
+        private static void BuildPrettyString(fsData data, StringBuilder builder, int depth) {
             switch (data.Type) {
                 case fsDataType.Null:
-                    stream.Write("null");
+                    builder.Append("null");
                     break;
 
                 case fsDataType.Boolean:
-                    if (data.AsBool) stream.Write("true");
-                    else stream.Write("false");
+                    if (data.AsBool) builder.Append("true");
+                    else builder.Append("false");
                     break;
 
                 case fsDataType.Number:
-                    stream.Write(data.AsFloat);
+                    builder.Append(data.AsFloat);
                     break;
 
                 case fsDataType.String:
-                    stream.Write('"');
-                    stream.Write(EscapeString(data.AsString));
-                    stream.Write('"');
+                    builder.Append('"');
+                    builder.Append(EscapeString(data.AsString));
+                    builder.Append('"');
                     break;
 
                 case fsDataType.Object: {
-                        stream.Write('{');
-                        stream.WriteLine();
+                        builder.Append('{');
+                        builder.AppendLine();
                         bool comma = false;
                         foreach (var entry in data.AsDictionary) {
                             if (comma) {
-                                stream.Write(',');
-                                stream.WriteLine();
+                                builder.Append(',');
+                                builder.AppendLine();
                             }
                             comma = true;
-                            InsertSpacing(stream, depth + 1);
-                            stream.Write('"');
-                            stream.Write(entry.Key);
-                            stream.Write('"');
-                            stream.Write(": ");
-                            BuildPrettyString(entry.Value, stream, depth + 1);
+                            InsertSpacing(builder, depth + 1);
+                            builder.Append('"');
+                            builder.Append(entry.Key);
+                            builder.Append('"');
+                            builder.Append(": ");
+                            BuildPrettyString(entry.Value, builder, depth + 1);
                         }
-                        stream.WriteLine();
-                        InsertSpacing(stream, depth);
-                        stream.Write('}');
+                        builder.AppendLine();
+                        InsertSpacing(builder, depth);
+                        builder.Append('}');
                         break;
                     }
 
                 case fsDataType.Array:
                     // special case for empty lists; we don't put an empty line between the brackets
                     if (data.AsList.Count == 0) {
-                        stream.Write("[]");
+                        builder.Append("[]");
                     }
 
                     else {
                         bool comma = false;
 
-                        stream.Write('[');
-                        stream.WriteLine();
+                        builder.Append('[');
+                        builder.AppendLine();
                         foreach (var entry in data.AsList) {
                             if (comma) {
-                                stream.Write(',');
-                                stream.WriteLine();
+                                builder.Append(',');
+                                builder.AppendLine();
                             }
                             comma = true;
-                            InsertSpacing(stream, depth + 1);
-                            BuildPrettyString(entry, stream, depth + 1);
+                            InsertSpacing(builder, depth + 1);
+                            BuildPrettyString(entry, builder, depth + 1);
                         }
-                        stream.WriteLine();
-                        InsertSpacing(stream, depth);
-                        stream.Write(']');
+                        builder.AppendLine();
+                        InsertSpacing(builder, depth);
+                        builder.Append(']');
                     }
                     break;
             }
         }
 
         /// <summary>
-        /// Writes the pretty JSON output data to the given stream.
-        /// </summary>
-        /// <param name="data">The data to print.</param>
-        /// <param name="outputStream">Where to write the printed data.</param>
-        public static void PrettyJson(fsData data, StreamWriter outputStream) {
-            BuildPrettyString(data, outputStream, 0);
-        }
-
-        /// <summary>
         /// Returns the data in a pretty printed JSON format.
         /// </summary>
         public static string PrettyJson(fsData data) {
-            using (var stream = new MemoryStream()) {
-                var writer = new StreamWriter(stream);
-                BuildPrettyString(data, writer, 0);
-                writer.Flush();
-
-                stream.Position = 0;
-                var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-            }
-        }
-
-        /// <summary>
-        /// Writes the compressed JSON output data to the given stream.
-        /// </summary>
-        /// <param name="data">The data to print.</param>
-        /// <param name="outputStream">Where to write the printed data.</param>
-        public static void CompressedJson(fsData data, StreamWriter outputStream) {
-            BuildCompressedString(data, outputStream);
+            StringBuilder builder = new StringBuilder();
+            BuildPrettyString(data, builder, 0);
+            return builder.ToString();
         }
 
         /// <summary>
         /// Returns the data in a relatively compressed JSON format.
         /// </summary>
         public static string CompressedJson(fsData data) {
-            using (var stream = new MemoryStream()) {
-                var writer = new StreamWriter(stream);
-                BuildCompressedString(data, writer);
-                writer.Flush();
-
-                stream.Position = 0;
-                var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
-            }
+            var builder = new StringBuilder();
+            BuildCompressedString(data, builder);
+            return builder.ToString();
         }
     }
 }

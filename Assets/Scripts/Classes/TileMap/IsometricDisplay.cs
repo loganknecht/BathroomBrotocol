@@ -27,6 +27,7 @@ public class IsometricDisplay : MonoBehaviour {
     public float isometricYOffset = 0f;
     /// <value></value>
     public float tileMapLayer = 0f;
+    public float tileMapLayerHeight = 0.5f;
 
     // Use this for initialization
     void Start () {
@@ -64,12 +65,14 @@ public class IsometricDisplay : MonoBehaviour {
 
         foreach(GameObject gameObjectToDisplay in gameObjectToOffsetFromAnchor) { 
             Vector3 isometricOffset = Vector3.zero;
-            IsometricDisplay isometricReference = gameObjectToDisplay.GetComponent<IsometricDisplay>();
-            if(isometricReference != null) {
-                isometricOffset.x = isometricReference.isometricXOffset;
-                isometricOffset.y = isometricReference.isometricYOffset;
-            }
-            isometricOffset.y += tileMapLayer * 0.5f;
+            // IsometricDisplay isometricReference = gameObjectToDisplay.GetComponent<IsometricDisplay>();
+            // if(isometricReference != null) {
+            //     isometricOffset.x = isometricReference.isometricXOffset;
+            //     isometricOffset.y = isometricReference.isometricYOffset;
+            // }
+            isometricOffset.x += isometricXOffset;
+            isometricOffset.y += isometricYOffset;
+            isometricOffset.y += tileMapLayer * tileMapLayerHeight;
 
 
             gameObjectToDisplay.transform.position = new Vector3((displayPosition.x + isometricOffset.x), (displayPosition.y + isometricOffset.y), gameObjectToDisplay.transform.position.z);
