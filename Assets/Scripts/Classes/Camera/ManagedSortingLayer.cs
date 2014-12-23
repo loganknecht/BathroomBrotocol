@@ -53,12 +53,14 @@ public class ManagedSortingLayer : MonoBehaviour {
             if(gameObjectIsometricDisplay != null) {
                 // This accounts for the offsets in tile map height displaying game objects
                 sortingLayerCalculation += (int)((sortingMagnitudeModifier * gameObjectIsometricDisplay.tileMapLayerHeight) * gameObjectIsometricDisplay.tileMapLayer);
+                sortingLayerCalculation += gameObjectIsometricDisplay.tileMapLayer;
             }
         }
         else if(sortingOrder == SortingOrder.FrontToBack) {
             // sortingLayerCalculation = (int)(this.gameObject.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
             sortingLayerCalculation = (int)(gameObjectToBaseSortingOn.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
         }
+        sortingLayerCalculation += (int)(0.5f * sortingMagnitudeModifier);
         // Front To Back, Left To Right
         // sortingLayerCalculation = (int)((this.gameObject.transform.position.x * sortingMagnitudeModifier) + (this.gameObject.transform.position.y * 100)) + sortingLayerOffset;
 

@@ -26,7 +26,7 @@ public class IsometricDisplay : MonoBehaviour {
     /// <value></value>
     public float isometricYOffset = 0f;
     /// <value></value>
-    public float tileMapLayer = 0f;
+    public int tileMapLayer = 0;
     public float tileMapLayerHeight = 0.5f;
 
     // Use this for initialization
