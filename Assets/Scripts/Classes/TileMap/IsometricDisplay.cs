@@ -28,6 +28,7 @@ public class IsometricDisplay : MonoBehaviour {
     /// <value></value>
     public int tileMapLayer = 0;
     public float tileMapLayerHeight = 0.5f;
+    public bool hideUnderDiagonal = false;
 
     // Use this for initialization
     void Start () {
