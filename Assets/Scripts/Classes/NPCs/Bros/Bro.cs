@@ -381,11 +381,11 @@ public class Bro : BaseBehavior {
         if(IsAtTargetPosition()) {
             if(skipLineQueue) {
                 if(chooseRandomBathroomObjectOnSkipLineQueue) {
-                    Debug.Log("Setting target object!");
+                    // Debug.Log("Setting target object!");
                     SetRandomBathroomObjectTarget(true, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
                 }
                 else {
-                    Debug.Log("Now Roaming!");
+                    // Debug.Log("Now Roaming!");
                     state = BroState.Roaming;
                 }
 
@@ -1317,6 +1317,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         // PerformMovementLogic();
 
         if(IsAtTargetPosition()) {
+            // Debug.Log("setting roaming targetting!");
             GameObject randomBathroomTile = BathroomTileMap.Instance.SelectRandomOpenTile();
 
             // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
@@ -1325,9 +1326,9 @@ public virtual void PerformExitOccupationFinishedLogic() {
             // Debug.Log(startTile);
             // Debug.Log(randomBathroomTile);
             List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                                                                startTile,
-                                                                                randomBathroomTile.GetComponent<BathroomTile>());
+                                                                                      AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                                                                      startTile,
+                                                                                      randomBathroomTile.GetComponent<BathroomTile>());
             SetTargetObjectAndTargetPosition(null, movementNodes);
         }
     }

@@ -132,18 +132,36 @@ public class RotateCamera : MonoBehaviour {
         return tileOffset;
     }
 
-    public void SetGameObjectOffsets(List<GameObject> gameObjectsToSetOffset, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset) {
+    public void HideBathroomIfUnderDiagonal() {
+        HideObjectsIfUnderDiagonal(BathroomTileBlockerManager.Instance.bathroomTileBlockers, null);
+        HideObjectsIfUnderDiagonal(BathroomObjectManager.Instance.allBathroomObjects, null);
+        HideObjectsIfUnderDiagonal(BroManager.Instance.allBros, null);
+        HideObjectsIfUnderDiagonal(BroManager.Instance.allStandoffBros, null);
+        HideObjectsIfUnderDiagonal(BroManager.Instance.allFightingBros, null);
+        foreach(GameObject lineQueue in EntranceQueueManager.Instance.lineQueues) {
+            HideObjectsIfUnderDiagonal(lineQueue.GetComponent<LineQueue>().queueTileObjects, null);
+        }
+        HideObjectsIfUnderDiagonal(SceneryManager.Instance.GetScenery(), null);
+    }
+    
+    public void HideObjectsIfUnderDiagonal(List<GameObject> gameObjectsToSetOffset, Dictionary<GameObject, GameObject> tileContainingGameObjectDict) {
+        if(tileContainingGameObjectDict == null) {
+            tileContainingGameObjectDict = new Dictionary<GameObject, GameObject>();
+        }
         foreach(GameObject gameObj in gameObjectsToSetOffset) {
-            Vector2 tileOffsetValues = Vector2.zero;
-            tileOffsetValues = tileOffset[gameObj];
-            
-            gameObj.transform.position = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
-                                                    tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
-                                                    gameObj.transform.position.z);
-
             if(gameObj.GetComponent<IsometricDisplay>() != null
                 && gameObj.GetComponent<IsometricDisplay>().hideUnderDiagonal) {
-                BathroomTile tileContaining = tileContainingGameObject[gameObj].GetComponent<BathroomTile>();
+
+                GameObject tileContainingGameObject;
+                if(tileContainingGameObjectDict.TryGetValue(gameObj, out tileContainingGameObject)) {
+                    // already assigned in if statement
+                }
+                else
+                {
+                    tileContainingGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(gameObj.transform.position.x, gameObj.transform.position.y, true);
+                }
+
+                BathroomTile tileContaining = tileContainingGameObject.GetComponent<BathroomTile>();
                 float i = 0;
                 float j = 0;
                 float xStepSize = BathroomTileMap.Instance.tilesWide/BathroomTileMap.Instance.tilesHigh;
@@ -177,6 +195,18 @@ public class RotateCamera : MonoBehaviour {
 
                 gameObj.SetActive(gameObjIsAboveDiagonal);
             }
+        }
+    }
+
+    public void SetGameObjectOffsets(List<GameObject> gameObjectsToSetOffset, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset) {
+        foreach(GameObject gameObj in gameObjectsToSetOffset) {
+            Vector2 tileOffsetValues = Vector2.zero;
+            tileOffsetValues = tileOffset[gameObj];
+
+            gameObj.transform.position = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
+                                                    tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
+                                                    gameObj.transform.position.z);
+
         }
     }
 
@@ -321,33 +351,39 @@ public class RotateCamera : MonoBehaviour {
         directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
 
         UpdateBathroomTileMapIndexes();
+
         SetGameObjectOffsets(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BathroomTileBlockerManager.Instance.bathroomTileBlockers);
+        HideObjectsIfUnderDiagonal(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn);
 
         SetGameObjectOffsets(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BathroomObjectManager.Instance.allBathroomObjects);
+        HideObjectsIfUnderDiagonal(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn);
 
         SetGameObjectTargetPositionOffsets(BroManager.Instance.allBros, tileGameObjectTargeting, targetTileOffset);
-        SetGameObjectTargetPositionOffsets(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset);
-        SetGameObjectTargetPositionOffsets(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset);
-
         SetGameObjectOffsets(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allBros);
+        HideObjectsIfUnderDiagonal(BroManager.Instance.allBros, tileGameObjectIn);
+
+        SetGameObjectTargetPositionOffsets(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allStandoffBros);
+        HideObjectsIfUnderDiagonal(BroManager.Instance.allStandoffBros, tileGameObjectIn);
+
+        SetGameObjectTargetPositionOffsets(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allFightingBros);
+        HideObjectsIfUnderDiagonal(BroManager.Instance.allFightingBros, tileGameObjectIn);
 
         foreach(GameObject lineQueue in EntranceQueueManager.Instance.lineQueues) {
             SetGameObjectOffsets(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn, gameObjectTileOffset);
             UpdateDisplayPositions(lineQueue.GetComponent<LineQueue>().queueTileObjects);
+            HideObjectsIfUnderDiagonal(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn);
         }
+
         SetGameObjectOffsets(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(SceneryManager.Instance.GetScenery());
-
-        // foreach(ManagedSortingLayer managedSortingLayerReference in FindObjectsOfType(typeof(ManagedSortingLayer))) {
-        //     managedSortingLayerReference.PerformSortingLogic();
-        // }
+        HideObjectsIfUnderDiagonal(SceneryManager.Instance.GetScenery(), tileGameObjectIn);
     }
 
     public DirectionBeingLookedAt GetDirectionBeingLookedAt(float amountRotatedAround) {

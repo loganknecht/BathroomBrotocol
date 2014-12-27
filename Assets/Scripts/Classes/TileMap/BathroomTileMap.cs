@@ -50,7 +50,8 @@ public class BathroomTileMap : TileMap {
         ConfigureBathroomObjectsWithTileTheyreIn();
         // Needs to be called after bathroom tile map is configured
         AStarManager.Instance.ConfigureAStarPermanentClosedNodes(tiles);
-        // ConfigureBathroomTileBlockersInBathroomTile();
+        // Should be called last because this is just view logic
+        CameraManager.Instance.rotateCameraReference.HideBathroomIfUnderDiagonal();
     }
 
     // Update is called once per frame
