@@ -1350,7 +1350,6 @@ public virtual void PerformExitOccupationFinishedLogic() {
                     Vector2 standoffAnchor = new Vector2(((this.gameObject.transform.position.x + broFightingWith.transform.position.x)/2), ((this.gameObject.transform.position.y + broFightingWith.transform.position.y)/2));
 
                     standoffBroGameObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/StandoffBros") as GameObject);
-                    Debug.Log("Before initialization call");
                     standoffBroGameObject.GetComponent<StandoffBros>().StandoffBrosInit(this.gameObject, broFightingWith, standoffAnchor);
 
                     BroManager.Instance.AddStandOffBros(standoffBroGameObject);

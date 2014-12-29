@@ -34,8 +34,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         TextboxManager.Instance.Hide();
 
         Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-        Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, .5f },
-                                                                                           { 1, .5f } };
+        Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
         BroDistributionObject firstWave = new BroDistributionObject(0, 5, 3, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
         firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)

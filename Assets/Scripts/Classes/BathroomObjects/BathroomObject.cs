@@ -221,7 +221,7 @@ public class BathroomObject : MonoBehaviour {
 
           BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
           BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
-          newFightingBros.GetComponent<FightingBros>().SetTargetObjectAndTargetPosition(null,
+          newFightingBros.GetComponent<TargetPathing>().SetTargetObjectAndTargetPosition(null,
                                                                                         AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
                                                                                                                                  AStarManager.Instance. GetListCopyOfAllClosedNodes(),
                                                                                                                                  startTile,

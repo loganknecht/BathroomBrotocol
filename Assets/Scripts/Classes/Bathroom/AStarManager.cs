@@ -66,13 +66,18 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         // }
     }
 
-    public void ConfigureAStarPermanentClosedNodes(GameObject[][] tiles) {
+    public void ConfigureAStarClosedNodes(GameObject[][] tiles) {
         foreach(GameObject[] row in tiles) {
             foreach(GameObject tileGameObject in row) {
                 // Debug.Log("In tile of: " + tileGameObject.name);
                 if(tileGameObject != null
                    && tileGameObject.GetComponent<Tile>()
-                   && tileGameObject.GetComponent<AStarNode>().isUntraversable) {
+                   && tileGameObject.GetComponent<AStarNode>().isTemporarilyUntraversable) {
+                        AddTemporaryClosedNode(tileGameObject);
+                }
+                if(tileGameObject != null
+                   && tileGameObject.GetComponent<Tile>()
+                   && tileGameObject.GetComponent<AStarNode>().isPermanentlyUntraversable) {
                         AddPermanentClosedNode(tileGameObject);
                 }
             }
@@ -98,14 +103,16 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         }
     }
     public void AddTemporaryClosedNode(GameObject tileGameObject) {
-        if(!temporaryClosedNodes.Contains(tileGameObject)
-            && !permanentClosedNodes.Contains(tileGameObject)) {
+        if(!temporaryClosedNodes.Contains(tileGameObject)) {
             temporaryClosedNodes.Add(tileGameObject);
         }
     }
     public void RemoveTemporaryClosedNode(GameObject tileGameObject) {
         if(temporaryClosedNodes.Contains(tileGameObject)) {
             temporaryClosedNodes.Remove(tileGameObject);
+        }
+        else if(permanentClosedNodes.Contains(tileGameObject)) {
+            permanentClosedNodes.Remove(tileGameObject);
         }
     }
 
@@ -587,7 +594,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         return closedNodes;
     }
 
-    //Closed nodes are actually the reference to the bathroom tile game object
+    //Closed nodes are never to be traversed! 
     public List<GameObject> GetListCopyOfPermanentClosedNodes() {
         List<GameObject> copyOfPermanentNodes = new List<GameObject>();
         foreach(GameObject gameObj in permanentClosedNodes) {
@@ -597,7 +604,7 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         return copyOfPermanentNodes;
     }
 
-    // These are the temporary closed nodes
+    // These are the temporary closed nodes, things that can be cleaned or removed
     public List<GameObject> GetListCopyOfTemporaryClosedNodes() {
         List<GameObject> copyOfTemporaryNodes = new List<GameObject>();
         foreach(GameObject gameObj in temporaryClosedNodes) {

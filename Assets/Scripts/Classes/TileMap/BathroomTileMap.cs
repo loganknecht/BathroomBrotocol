@@ -49,7 +49,7 @@ public class BathroomTileMap : TileMap {
         base.Start();
         ConfigureBathroomObjectsWithTileTheyreIn();
         // Needs to be called after bathroom tile map is configured
-        AStarManager.Instance.ConfigureAStarPermanentClosedNodes(tiles);
+        AStarManager.Instance.ConfigureAStarClosedNodes(tiles);
         // Should be called last because this is just view logic
         CameraManager.Instance.rotateCameraReference.HideBathroomIfUnderDiagonal();
     }
@@ -139,24 +139,44 @@ public class BathroomTileMap : TileMap {
         return allTiles;
     }
 
-    public List<GameObject> GetAllUntraversableTiles() {
+    public List<GameObject> GetAllTemporarilyUntraversableTiles() {
         List<GameObject> allUntraversableTiles = new List<GameObject>();
-
         foreach(GameObject[] row in tiles) {
             foreach(GameObject tile in row) {
                 AStarNode astarNode = tile.GetComponent<AStarNode>();
-                if(!astarNode.isUntraversable) {
+                if(astarNode.isTemporarilyUntraversable) {
                     allUntraversableTiles.Add(tile);
                 }
             }
         }
-        // foreach(GameObject gameObj in tiles) {
-        //   BathroomTile bathTileRef = gameObj.GetComponent<BathroomTile>();
-        //   if(bathTileRef.isUntraversable) {
-        //     allUntraversableTiles.Add(gameObj);
-        //   }
-        // }
+        return allUntraversableTiles;
+    }
 
+    public List<GameObject> GetAllPermanentlyUntraversableTiles() {
+        List<GameObject> allUntraversableTiles = new List<GameObject>();
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tile in row) {
+                AStarNode astarNode = tile.GetComponent<AStarNode>();
+                if(astarNode.isTemporarilyUntraversable) {
+                    allUntraversableTiles.Add(tile);
+                }
+            }
+        }
+        return allUntraversableTiles;
+    }
+
+
+    public List<GameObject> GetAllUntraversableTiles() {
+        List<GameObject> allUntraversableTiles = new List<GameObject>();
+        foreach(GameObject[] row in tiles) {
+            foreach(GameObject tile in row) {
+                AStarNode astarNode = tile.GetComponent<AStarNode>();
+                if(astarNode.isTemporarilyUntraversable
+                    || astarNode.isPermanentlyUntraversable) {
+                    allUntraversableTiles.Add(tile);
+                }
+            }
+        }
         return allUntraversableTiles;
     }
 

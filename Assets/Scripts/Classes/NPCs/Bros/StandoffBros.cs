@@ -55,7 +55,6 @@ public class StandoffBros : MonoBehaviour {
     } 
 
     public void StandoffBrosInit(GameObject newBroOne, GameObject newBroTwo, Vector2 newStandoffAnchor) {
-        Debug.Log("Inside initialization call");
         standoffAnchor = newStandoffAnchor;
         isContracting = true;
         isExpanding = false;
@@ -63,7 +62,6 @@ public class StandoffBros : MonoBehaviour {
         broOne = newBroOne;
         Bro broOneReference = broOne.GetComponent<Bro>();
         broOneReference.standoffBroGameObject = this.gameObject;
-        // broOneReference.colliderReference.enabled = false;
         broOneReference.targetPathingReference.performMovementLogic = false;
         broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broOne.GetComponent<HighlightSelectable>().enabled = false;
@@ -71,7 +69,6 @@ public class StandoffBros : MonoBehaviour {
         broTwo = newBroTwo;
         Bro broTwoReference = broTwo.GetComponent<Bro>();
         broTwoReference.standoffBroGameObject = this.gameObject;
-        // broTwoReference.colliderReference.enabled = false;
         broTwoReference.targetPathingReference.performMovementLogic = false;
         broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broTwo.GetComponent<HighlightSelectable>().enabled = false;
@@ -243,7 +240,7 @@ public class StandoffBros : MonoBehaviour {
             broTwoReference.state = BroState.Fighting;
             broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
 
-            GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
+            GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros1") as GameObject));
             newFightingBros.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, newFightingBros.transform.position.z);
             newFightingBros.GetComponent<FightingBros>().brosFighting.Add(broOne);
             newFightingBros.GetComponent<FightingBros>().brosFighting.Add(broTwo);

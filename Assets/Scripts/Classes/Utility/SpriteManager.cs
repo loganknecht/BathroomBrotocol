@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class SpriteManager : BaseBehavior {
     public Dictionary<string, GameObject> sprites = null; 
 
-    public void Awake() {
+    protected override void Awake() {
         base.Awake();
     }
 

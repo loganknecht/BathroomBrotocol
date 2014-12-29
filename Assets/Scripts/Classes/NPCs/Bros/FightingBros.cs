@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using FullInspector;
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class FightingBros : TargetPathing {
+public class FightingBros : BaseBehavior {
+    public TargetPathing targetPathingReference = null;
     public List<GameObject> brosFighting; 
     public int currentNumberOfTaps = 0;
-    public int numberOfTapsNeededToBreakUp = 0;
+    public int numberOfTapsNeededToBreakUp = 5;
     public bool isPaused = false;
 
     protected override void Awake() {
@@ -15,20 +18,15 @@ public class FightingBros : TargetPathing {
     }
 
     // Use this for initialization
-    public override void Start () {
-        Debug.Log(brosFighting);
-
-        base.Start();
-
+    public void Start () {
         this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
 
         PerformStartedFightScore();
     }
 
     // Update is called once per frame
-    public override void Update () {
+    public void Update () {
         if(!isPaused) {
-            // base.Update();
             PerformLogic();
         }
     }
@@ -45,15 +43,14 @@ public class FightingBros : TargetPathing {
         }
     }
 
-    public override void PerformLogic() {
-        PerformMovementLogic();
+    public void PerformLogic() {
         PerformFightingBroArrivalLogic();
         PerformMaxTapLogic();
     }
 
     // TODO: Fix to use the jagged array access instead
     public void PerformFightingBroArrivalLogic() {
-        if(IsAtTargetPosition()) {
+        if(targetPathingReference.IsAtTargetPosition()) {
             BathroomTile currentBathroomTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
             BathroomTile nextBathroomTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
             foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
@@ -63,7 +60,8 @@ public class FightingBros : TargetPathing {
                     if(tileBathroomObjectIsIn.tileX == currentBathroomTile.tileX
                         && tileBathroomObjectIsIn.tileY == currentBathroomTile.tileY) {
                         BathroomObject bathObjRef = bathroomObject.GetComponent<BathroomObject>();
-                        if(bathObjRef.state != BathroomObjectState.Broken
+                        if(bathObjRef.type != BathroomObjectType.Exit
+                            && bathObjRef.state != BathroomObjectState.Broken
                             && bathObjRef.state != BathroomObjectState.BrokenByPee
                             && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
                             bathObjRef.state = BathroomObjectState.Broken;
@@ -80,9 +78,9 @@ public class FightingBros : TargetPathing {
             // Debug.Log("next node x: " + nextBathroomTile.gameObject.transform.position.x + " y: " + nextBathroomTile.gameObject.transform.position.y);
             // Debug.Log("next node: " + nextBathroomTile.gameObject.name);
             List<GameObject> newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                AStarManager.Instance.GetListCopyOfPermanentClosedNodes(),
-                                                                                currentBathroomTile,
-                                                                                nextBathroomTile);
+                                                                                         AStarManager.Instance.GetListCopyOfPermanentClosedNodes(),
+                                                                                         currentBathroomTile,
+                                                                                         nextBathroomTile);
             SetTargetObjectAndTargetPosition(null, newMovementNodes);
         }
     }
@@ -97,7 +95,6 @@ public class FightingBros : TargetPathing {
                 broReference.baseProbabilityOfFightOnCollisionWithBro = 0f;
                 broReference.state = BroState.MovingToTargetObject;
                 broGameObj.transform.position = this.gameObject.transform.position;
-                broGameObj.renderer.enabled = true;
                 broGameObj.SetActive(true);
 
                 List<GameObject> exits = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(BathroomObjectType.Exit);
@@ -118,10 +115,19 @@ public class FightingBros : TargetPathing {
                 broGameObj.transform.position = new Vector3(this.gameObject.transform.position.x + xPositionOffset,
                                                             this.gameObject.transform.position.y + yPositionOffset,
                                                             broGameObj.transform.position.z);
-                broGameObj.collider.enabled = false;
+                broGameObj.GetComponent<Bro>().colliderReference.enabled = false;
                 broReference.reliefRequired = ReliefRequired.None;
                 broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);
                 broReference.speechBubbleReference.displaySpeechBubble = false;
+                broReference.targetPathingReference.performMovementLogic = true;
+                IsometricDisplay isoDisplay = broGameObj.GetComponent<IsometricDisplay>();
+                if(isoDisplay != null) {
+                    isoDisplay.UpdateDisplayPosition();
+                }
+                ManagedSortingLayer managedSortingLayer = broGameObj.GetComponent<ManagedSortingLayer>();
+                if(managedSortingLayer != null) {
+                    managedSortingLayer.PerformSortingLogic();
+                }
             }
             BroManager.Instance.RemoveFightingBro(this.gameObject, true);
             // Destroy(this.gameObject);
@@ -138,4 +144,8 @@ public class FightingBros : TargetPathing {
             ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStoppedFightScore(broGameObject.GetComponent<Bro>().type);
         }
     }
+
+    public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
+        targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
+    } 
 }

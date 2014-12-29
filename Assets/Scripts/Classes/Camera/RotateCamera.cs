@@ -177,7 +177,7 @@ public class RotateCamera : MonoBehaviour {
                         for(int jj = 0; jj < yTilesMoved; jj++) {
                             int currentXTile = (int)(i + ii);
                             int currentYTile = (int)(BathroomTileMap.Instance.tilesHigh - 1 - (j + jj));
-                            GameObject currentBathroomTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentXTile, currentYTile);
+                            // GameObject currentBathroomTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentXTile, currentYTile);
 
                             // Debug.Log("Current X: " + currentXTile + " Y: " + currentYTile);
 
@@ -292,8 +292,8 @@ public class RotateCamera : MonoBehaviour {
         Dictionary<GameObject, Vector2> gameObjectTileOffset = new Dictionary<GameObject, Vector2>();
 
         // To do: reset target pathing destination correctly for target pathing characters
-        Dictionary<GameObject, GameObject> targetPositionTile = new Dictionary<GameObject, GameObject>();
-        Dictionary<GameObject, Vector2> targetPositionOffset = new Dictionary<GameObject, Vector2>();
+        // Dictionary<GameObject, GameObject> targetPositionTile = new Dictionary<GameObject, GameObject>();
+        // Dictionary<GameObject, Vector2> targetPositionOffset = new Dictionary<GameObject, Vector2>();
 
         //-------------------
         // Bathroom Tile Blockers
