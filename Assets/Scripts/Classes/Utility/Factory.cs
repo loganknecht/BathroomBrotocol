@@ -5,6 +5,7 @@ public class Factory
 	//SINGLETON CONFIGURATION INFORMATION GOES HERE
 	private static volatile Factory _instance;
 	private static object _lock = new object();
+    public int debugObjectInstanceNumber = 0;
 
 	//Stops the lock being created ahead of time if it's not necessary
 	static Factory() {
@@ -117,6 +118,8 @@ public class Factory
       break;
     }
 
+    newBro.name = newBro.name + " " + debugObjectInstanceNumber;
+    debugObjectInstanceNumber++;
     return newBro;
   }
 

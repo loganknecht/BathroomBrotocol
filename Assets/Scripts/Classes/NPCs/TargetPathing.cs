@@ -22,10 +22,13 @@ public class TargetPathing : BaseBehavior {
     public float targetPositionXLockBuffer = 0.05f;
     public float targetPositionYLockBuffer = 0.05f;
 
+    public bool performMovementLogic = false;
+
     protected override void Awake() {
         base.Awake();
 
         movementNodes = new List<GameObject>();
+        performMovementLogic = true;
     }
 
     // Use this for initialization
@@ -121,7 +124,9 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual void PerformLogic() {
-        PerformMovementLogic();
+        if(performMovementLogic) {
+            PerformMovementLogic();
+        }
     }
 
     public virtual void PerformMovementLogic() {

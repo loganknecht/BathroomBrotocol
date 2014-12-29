@@ -43,12 +43,7 @@ public class StandoffBros : MonoBehaviour {
     void Update () {
         if(!isPaused) {
             PerformStandoffBroLogic();
-            if(numberOfTapsNeededToStop <= 0) {
-                PlayerStoppedStandoff();
-            }
-            if(numberOfContractionsBeforeAFight <= 0) {
-                StandoffTurnedIntoFight();
-            }
+            PerformTapLogic();
         }
     }
 
@@ -60,25 +55,33 @@ public class StandoffBros : MonoBehaviour {
     } 
 
     public void StandoffBrosInit(GameObject newBroOne, GameObject newBroTwo, Vector2 newStandoffAnchor) {
-        // Debug.Log("new bro one z: " + newBroOne.transform.position.z);
-        // Debug.Log("new bro two z: " + newBroTwo.transform.position.z);
-        broOne = newBroOne;
-        broTwo = newBroTwo;
+        Debug.Log("Inside initialization call");
         standoffAnchor = newStandoffAnchor;
         isContracting = true;
         isExpanding = false;
 
-        broOne.collider.enabled = true;
+        broOne = newBroOne;
+        Bro broOneReference = broOne.GetComponent<Bro>();
+        broOneReference.standoffBroGameObject = this.gameObject;
+        // broOneReference.colliderReference.enabled = false;
+        broOneReference.targetPathingReference.performMovementLogic = false;
+        broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broOne.GetComponent<HighlightSelectable>().enabled = false;
-        broTwo.collider.enabled = true;
+
+        broTwo = newBroTwo;
+        Bro broTwoReference = broTwo.GetComponent<Bro>();
+        broTwoReference.standoffBroGameObject = this.gameObject;
+        // broTwoReference.colliderReference.enabled = false;
+        broTwoReference.targetPathingReference.performMovementLogic = false;
+        broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broTwo.GetComponent<HighlightSelectable>().enabled = false;
 
         //not doing expanding points, that will be set on first contraction
-        broOneContractingXStepSize = (standoffAnchor.x - broOne.transform.position.x )/(20);
-        broOneContractingYStepSize = (standoffAnchor.y - broOne.transform.position.y )/(20);
+        broOneContractingXStepSize = (standoffAnchor.x - broOne.transform.position.x)/(contractingSteps);
+        broOneContractingYStepSize = (standoffAnchor.y - broOne.transform.position.y)/(contractingSteps);
 
-        broTwoContractingXStepSize = (standoffAnchor.x - broTwo.transform.position.x)/(20);
-        broTwoContractingYStepSize = (standoffAnchor.y - broTwo.transform.position.y)/(20);
+        broTwoContractingXStepSize = (standoffAnchor.x - broTwo.transform.position.x)/(contractingSteps);
+        broTwoContractingYStepSize = (standoffAnchor.y - broTwo.transform.position.y)/(contractingSteps);
     }
 
     public void SetRadiusPositionsRandomly() {
@@ -133,13 +136,19 @@ public class StandoffBros : MonoBehaviour {
           }
         }
         else if(isContracting) {
+          // Debug.Log("--------------------------------");
           // Debug.Log("Contracting");
+          // Debug.Log("Bro One Before: " + broOne.transform.position);
+          // Debug.Log("Bro Two Before: " + broTwo.transform.position);
+
           broOne.transform.position = new Vector3(broOne.transform.position.x + broOneContractingXStepSize,
                                                   broOne.transform.position.y + broOneContractingYStepSize,
                                                   broOne.transform.position.z);
           broTwo.transform.position = new Vector3(broTwo.transform.position.x + broTwoContractingXStepSize,
                                                   broTwo.transform.position.y + broTwoContractingYStepSize,
                                                   broTwo.transform.position.z);
+          // Debug.Log("Bro One after: " + broOne.transform.position);
+          // Debug.Log("Bro Two after: " + broTwo.transform.position);
           //if either bro arrived at their target position
           if((broOne.transform.position.x > (standoffAnchor.x - xLockOnBuffer)
              && broOne.transform.position.x < (standoffAnchor.x + xLockOnBuffer)
@@ -164,39 +173,52 @@ public class StandoffBros : MonoBehaviour {
         }
     }
 
+    public void PerformTapLogic() {
+        if(numberOfTapsNeededToStop <= 0) {
+            PlayerStoppedStandoff();
+        }
+        if(numberOfContractionsBeforeAFight <= 0) {
+            StandoffTurnedIntoFight();
+        }
+    }
+
     public void PlayerStoppedStandoff() {
         PerformStoppedStandoffScore();
 
-        Bro broOneReferece = broOne.GetComponent<Bro>();
-        broOne.collider.enabled = true;
-        broOneReferece.state = BroState.Roaming;
-        broOneReferece.standOffBroGameObject = null;
-        broOneReferece.broFightingWith = null;
-        // broOneReferece.canBeCheckedToFightAgainst = true;
+        Bro broOneReference = broOne.GetComponent<Bro>();
+        // broOne.collider.enabled = true;
+        broOneReference.colliderReference.enabled = true;
+        broOneReference.targetPathingReference.performMovementLogic = true;
+        broOneReference.state = BroState.Roaming;
+        broOneReference.standoffBroGameObject = null;
+        broOneReference.broFightingWith = null;
+        // broOneReference.canBeCheckedToFightAgainst = true;
         broOne.GetComponent<HighlightSelectable>().enabled = true;
         broOne.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
-        broOneReferece.ResetFightLogic();
-        if(broOneReferece.type == BroType.DrunkBro) {
-          broOneReferece.speechBubbleReference.displaySpeechBubble = false;
+        broOneReference.ResetFightLogic();
+        if(broOneReference.type == BroType.DrunkBro) {
+          broOneReference.speechBubbleReference.displaySpeechBubble = false;
         }
         else {
-          broOneReferece.speechBubbleReference.displaySpeechBubble = true;
+          broOneReference.speechBubbleReference.displaySpeechBubble = true;
         }
 
-        Bro broTwoReferece = broTwo.GetComponent<Bro>();
-        broTwo.collider.enabled = true;
-        broTwoReferece.state = BroState.Roaming;
-        broTwoReferece.standOffBroGameObject = null;
-        broTwoReferece.broFightingWith = null;
-        // broTwoReferece.canBeCheckedToFightAgainst = true;
+        Bro broTwoReference = broTwo.GetComponent<Bro>();
+        // broTwo.collider.enabled = true;
+        broTwoReference.colliderReference.enabled = true;
+        broTwoReference.targetPathingReference.performMovementLogic = true;
+        broTwoReference.state = BroState.Roaming;
+        broTwoReference.standoffBroGameObject = null;
+        broTwoReference.broFightingWith = null;
+        // broTwoReference.canBeCheckedToFightAgainst = true;
         broTwo.GetComponent<HighlightSelectable>().enabled = true;
         broTwo.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
-        broTwoReferece.ResetFightLogic();
-        if(broTwoReferece.type == BroType.DrunkBro) {
-          broTwoReferece.speechBubbleReference.displaySpeechBubble = false;
+        broTwoReference.ResetFightLogic();
+        if(broTwoReference.type == BroType.DrunkBro) {
+          broTwoReference.speechBubbleReference.displaySpeechBubble = false;
         }
         else {
-          broTwoReferece.speechBubbleReference.displaySpeechBubble = true;
+          broTwoReference.speechBubbleReference.displaySpeechBubble = true;
         }
 
         // this.Destroy();
@@ -209,14 +231,14 @@ public class StandoffBros : MonoBehaviour {
 
         if(broOneReference.state != BroState.Fighting
             && broTwoReference.state != BroState.Fighting) {
-            broOne.renderer.enabled = false;
-            broOne.collider.enabled = false;
+            // broOne.renderer.enabled = false;
+            // broOne.collider.enabled = false;
             broOne.SetActive(false);
             broOneReference.state = BroState.Fighting;
             broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
 
-            broTwo.renderer.enabled = false;
-            broTwo.collider.enabled = false;
+            // broTwo.renderer.enabled = false;
+            // broTwo.collider.enabled = false;
             broTwo.SetActive(false);
             broTwoReference.state = BroState.Fighting;
             broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();

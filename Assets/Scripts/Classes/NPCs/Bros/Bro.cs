@@ -28,7 +28,7 @@ public class Bro : BaseBehavior {
 
     public bool startRoamingOnArrivalAtBathroomObjectInUse = false;
 
-    public GameObject standOffBroGameObject = null;
+    public GameObject standoffBroGameObject = null;
     public GameObject broFightingWith = null;
     public GameObject lineQueueIn = null;
 
@@ -229,8 +229,8 @@ public class Bro : BaseBehavior {
         // Debug.Log("clicked");
         SelectionManager.Instance.SelectBro(this.gameObject);
         if(state == BroState.Standoff) {
-            if(standOffBroGameObject != null) {
-                standOffBroGameObject.GetComponent<StandoffBros>().IncrementTapsFromPlayer();
+            if(standoffBroGameObject != null) {
+                standoffBroGameObject.GetComponent<StandoffBros>().IncrementTapsFromPlayer();
             }
         }
     }
@@ -239,10 +239,14 @@ public class Bro : BaseBehavior {
     //    Debug.Log("Collision occurred with: " + collision.gameObject.name);
     //  }
 
-    public void OnTriggerEnter(Collider other) {
+    public void OnTriggerEnter2D(Collider2D other) {
         // Debug.Log("Trigger occurred with: " + other.gameObject.name);
-        Bro otherBroRef = other.gameObject.GetComponent<Bro>();
+        GameObject otherBroGameObject = other.transform.parent.transform.parent.gameObject;
+        // Debug.Log("otherBroGameObject: " + otherBroGameObject.name);
+        Bro otherBroRef = otherBroGameObject.GetComponent<Bro>();
+        // Bro otherBroRef = other.gameObject.GetComponent<Bro>();
         if(otherBroRef != null) {
+            // Debug.Log("not null dude!");
             //------------------------------------------------------------
             if((state == BroState.MovingToTargetObject || state == BroState.Roaming)
                 && !IsExiting()
@@ -252,19 +256,21 @@ public class Bro : BaseBehavior {
                 && !otherBroRef.IsExiting()
                 && !otherBroRef.resetFightLogic
                 && otherBroRef.baseProbabilityOfFightOnCollisionWithBro > 0) {
+                // Debug.Log("CHECKING FOR FIGHT");
 
                 float  checkToSeeIfFightOccurs = Random.Range(0.0f, 1f);
                 if(checkToSeeIfFightOccurs < baseProbabilityOfFightOnCollisionWithBro) {
                     if(state != BroState.Fighting) {
-                        broFightingWith = other.gameObject;
+                        // broFightingWith = other.gameObject;
+                        broFightingWith = otherBroGameObject;
                         state = BroState.Standoff;
-                        speechBubbleReference.displaySpeechBubble = false;
                         targetPathingReference.ClearMovementNodes();
+                        speechBubbleReference.displaySpeechBubble = false;
 
-                        otherBroRef.targetPathingReference.ClearMovementNodes();
                         otherBroRef.broFightingWith = this.gameObject;
-                        otherBroRef.speechBubbleReference.displaySpeechBubble = false;
                         otherBroRef.state = BroState.Standoff;
+                        otherBroRef.targetPathingReference.ClearMovementNodes();
+                        otherBroRef.speechBubbleReference.displaySpeechBubble = false;
                     }
                 }
                 else {
@@ -1338,19 +1344,17 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
     public virtual void PerformStandOffLogic() {
         if(state == BroState.Standoff) {
-            if(standOffBroGameObject == null) {
-                colliderReference.enabled = false;
-                broFightingWith.GetComponent<Bro>().colliderReference.enabled = false;
-                broFightingWith.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
+            if(broFightingWith != null) {
+                if(standoffBroGameObject == null
+                   && broFightingWith.GetComponent<Bro>().standoffBroGameObject == null) {
+                    Vector2 standoffAnchor = new Vector2(((this.gameObject.transform.position.x + broFightingWith.transform.position.x)/2), ((this.gameObject.transform.position.y + broFightingWith.transform.position.y)/2));
 
-                selectableReference.ResetHighlightObjectAndSelectedState();
-                Vector2 standoffAnchor = new Vector2(((this.gameObject.transform.position.x + broFightingWith.transform.position.x)/2), ((this.gameObject.transform.position.y + broFightingWith.transform.position.y)/2));
+                    standoffBroGameObject = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/StandoffBros") as GameObject);
+                    Debug.Log("Before initialization call");
+                    standoffBroGameObject.GetComponent<StandoffBros>().StandoffBrosInit(this.gameObject, broFightingWith, standoffAnchor);
 
-                standOffBroGameObject  = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/StandoffBros") as GameObject);
-                broFightingWith.GetComponent<Bro>().standOffBroGameObject = standOffBroGameObject;
-                standOffBroGameObject.GetComponent<StandoffBros>().StandoffBrosInit(this.gameObject, broFightingWith, standoffAnchor);
-
-                BroManager.Instance.AddStandOffBros(standOffBroGameObject);
+                    BroManager.Instance.AddStandOffBros(standoffBroGameObject);
+                }
             }
         }
     }
