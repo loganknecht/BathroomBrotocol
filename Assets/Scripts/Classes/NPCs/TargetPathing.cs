@@ -22,7 +22,7 @@ public class TargetPathing : BaseBehavior {
     public float targetPositionXLockBuffer = 0.05f;
     public float targetPositionYLockBuffer = 0.05f;
 
-    public bool performMovementLogic = false;
+    public bool performMovementLogic = true;
 
     protected override void Awake() {
         base.Awake();

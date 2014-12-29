@@ -4,12 +4,13 @@ using System.Collections.Generic;
 
 public class DrunkBro : Bro {
     public float vomitTimer = 0;
-    public float vomitTimerMax = Random.Range(10, 15);
+    public float vomitTimerMax = 0;
     public bool vomitThrowUpPerformed = false;
 
     protected override void Awake() {
         base.Awake();
 
+        vomitTimerMax = Random.Range(10, 15);
         type = BroType.DrunkBro;
     }
 
@@ -20,8 +21,28 @@ public class DrunkBro : Bro {
 
     // Update is called once per frame
     public override void Update () {
-        base.Update();
-        PerformVomitTimerLogic();
+        if(!isPaused) {
+            PerformFightTimerLogic();
+            PerformLogic();
+            PerformVomitTimerLogic();
+            UpdateAnimator();
+        }
+    }
+
+    public override void InitializeComponents() {
+        if(targetPathingReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'targetPathingReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(animatorReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'animatorReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(selectableReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'selectableReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        if(isometricDisplayReference == null) {
+            Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'isometricDisplayReference', it is NULL. Please fix this by assigned it before use.");
+        }
+        isometricDisplayReference.UpdateDisplayPosition();
     }
 
     public void PerformVomitTimerLogic() {
