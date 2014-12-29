@@ -173,6 +173,34 @@ public class BroDistributionObject : DistributionObject {
         return newDistributionPoints;
     }
 
+    public GameObject ConfigureBroToGenerateReliefType(GameObject broToGenerate) {
+        Bro broRef = broToGenerate.GetComponent<Bro>();
+        // Factory.Instance.SelectRandomReliefType(ReliefRequired.Pee, ReliefRequired.Poop)
+        switch(broDistributionReliefType) {
+          case(BroDistribution.NoBros):
+          break;
+          case(BroDistribution.AllBros):
+            defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
+          break;
+          case(BroDistribution.RandomBros):
+            defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
+            broRef.reliefRequired = defaultReliefRequired;
+          break;
+
+          default:
+            Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
+          break;
+        }
+        
+        broRef.reliefRequired = defaultReliefRequired;
+
+        // if(broRef.type == BroType.ShyBro) {
+        //   broRef.reliefRequired = ReliefRequired.Pee;
+        // }
+
+        return broToGenerate;
+    }
+
     public GameObject ConfigureBroXMoveSpeed(GameObject broToGenerate) {
         Bro broRef = broToGenerate.GetComponent<Bro>();
 
@@ -225,35 +253,6 @@ public class BroDistributionObject : DistributionObject {
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-
-        return broToGenerate;
-    }
-
-    public GameObject ConfigureBroToGenerateReliefType(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
-        // Factory.Instance.SelectRandomReliefType(ReliefRequired.Pee, ReliefRequired.Poop)
-        switch(broDistributionReliefType) {
-          case(BroDistribution.NoBros):
-          break;
-          case(BroDistribution.AllBros):
-            if(defaultReliefRequired == ReliefRequired.None) {
-                defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
-            }
-            broRef.reliefRequired = defaultReliefRequired;
-          break;
-          case(BroDistribution.RandomBros):
-            defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
-            broRef.reliefRequired = defaultReliefRequired;
-          break;
-
-          default:
-            Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
-          break;
-        }
-
-        // if(broRef.type == BroType.ShyBro) {
-        //   broRef.reliefRequired = ReliefRequired.Pee;
-        // }
 
         return broToGenerate;
     }

@@ -44,7 +44,9 @@ public class ShyBro : Bro {
                     PerformOnArrivalBrotocolScoreCheck();
                 }
                 else {
-                    targetObject.collider.enabled = false;
+                    if(bathObjRef.colliderReference != null) {
+                        bathObjRef.colliderReference.enabled = false;
+                    }
                     if(!firstArrivalOccurred) {
                         firstArrivalWasWrongObject = true;
                     }
@@ -64,7 +66,7 @@ public class ShyBro : Bro {
                 state = BroState.OccupyingObject;
             }
             else {
-            state = BroState.Roaming;
+                state = BroState.Roaming;
             }
         }
     }
@@ -96,17 +98,17 @@ public class ShyBro : Bro {
             }
             else {
                 if(targetObject != null
-                    && reliefRequired == ReliefRequired.Pee
+                    // && reliefRequired == ReliefRequired.Pee
+                    && !hasRelievedSelf
                     && (targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Urinal
                     || targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Sink)) {
-                    // Debug.Log("in urinal");
-                    collider.enabled = true;
+                    colliderReference.enabled = true;
                     baseProbabilityOfFightOnCollisionWithBro = 0f;
                     selectableReference.canBeSelected = true;
                 }
                 else {
                     //disables the collider because the bro resides in the object, but the timer is still going
-                    collider.enabled = false;
+                    colliderReference.enabled = false;
                     occupationTimer += Time.deltaTime;
                 }
             }
