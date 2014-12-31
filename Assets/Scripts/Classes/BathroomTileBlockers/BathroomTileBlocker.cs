@@ -16,6 +16,7 @@ public class BathroomTileBlocker : MonoBehaviour {
 
     // Use this for initialization
     public virtual void Start() {
+        InitializeReferences();
     }
 
     // Update is called once per frame

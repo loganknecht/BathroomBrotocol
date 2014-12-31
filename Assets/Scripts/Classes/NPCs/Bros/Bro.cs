@@ -1447,6 +1447,11 @@ public virtual void PerformExitOccupationFinishedLogic() {
           state = BroState.Roaming;
         }
     }
+
+    public void ExitBathroom() {
+       SetRandomBathroomObjectTarget(false, AStarManager.Instance.GetListCopyOfPermanentClosedNodes(), BathroomObjectType.Exit);
+   }
+                
     public Vector2 GetOffsetFromCurrentTile() {
         if(targetPathingReference.targetTile != null) {
             return new Vector2(targetPathingReference.targetTile.transform.position.x - this.gameObject.transform.position.x,

@@ -1,0 +1,223 @@
+fileFormatVersion: 2
+guid: 70ba6db574782445ca56e2df450f72e2
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: FloatingTree_0
+    21300002: FloatingTree_1
+    21300004: FloatingTree_2
+    21300006: FloatingTree_3
+    21300008: FloatingTree_4
+    21300010: FloatingTree_5
+    21300012: FloatingTree_6
+    21300014: FloatingTree_7
+    21300016: FloatingTree_8
+    21300018: FloatingTree_9
+    21300020: FloatingTree_10
+    21300022: FloatingTree_11
+    21300024: FloatingTree_12
+    21300026: FloatingTree_13
+    21300028: FloatingTree_14
+    21300030: FloatingTree_15
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: 1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 200
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: FloatingTree_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 600
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_1
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 600
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_2
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 600
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_3
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 600
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 400
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_5
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 400
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_6
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 400
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_7
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 400
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 200
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_9
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 200
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_10
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 200
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_11
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 200
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_13
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 0
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_14
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 0
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: FloatingTree_15
+      rect:
+        serializedVersion: 2
+        x: 390
+        y: 0
+        width: 130
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

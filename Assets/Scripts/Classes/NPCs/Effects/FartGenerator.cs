@@ -15,6 +15,8 @@ public class FartGenerator : MonoBehaviour {
     public float maxFartDuration = 5f;
 
     public bool isPaused = false;
+    public bool loop = false;
+    public int timesExecuted = 0;
 
     // Use this for initialization
     void Start () {
