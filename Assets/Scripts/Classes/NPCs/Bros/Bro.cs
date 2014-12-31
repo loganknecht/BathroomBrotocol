@@ -388,7 +388,7 @@ public class Bro : BaseBehavior {
             if(skipLineQueue) {
                 if(chooseRandomBathroomObjectOnSkipLineQueue) {
                     // Debug.Log("Setting target object!");
-                    SetRandomBathroomObjectTarget(true, new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
+                    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal });
                 }
                 else {
                     // Debug.Log("Now Roaming!");
@@ -528,7 +528,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         }
 
         if(chooseRandomBathroomObjectAfterRelieved) {
-          SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+          SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         }
         else {
           state = BroState.Roaming;
@@ -558,7 +558,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -576,7 +576,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = false;
         selectableReference.canBeSelected = false;
         speechBubbleReference.displaySpeechBubble = false;
@@ -602,7 +602,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -627,12 +627,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -646,7 +646,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformBathroomObjectUsedScore();
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
@@ -739,7 +739,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -766,12 +766,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -790,7 +790,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
   }
@@ -818,7 +818,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -842,12 +842,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -866,7 +866,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
     reliefRequired = ReliefRequired.None;
@@ -958,7 +958,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -988,7 +988,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1012,7 +1012,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
 
     colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
@@ -1029,7 +1029,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -1055,12 +1055,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
 
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
@@ -1086,7 +1086,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = false;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
@@ -1171,7 +1171,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -1197,12 +1197,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterWashedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1221,12 +1221,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     // if(chooseRandomBathroomObjectAfterDriedHands) {
-    //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+    //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     // }
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = false;
     speechBubbleReference.displaySpeechBubble = false;
@@ -1248,7 +1248,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
     if(chooseRandomBathroomObjectAfterRelieved) {
-      SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+      SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
     }
     else {
       state = BroState.Roaming;
@@ -1278,7 +1278,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     // else {
     //   state = BroState.Roaming;
     // }
-    SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+    SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
     colliderReference.enabled = true;
     selectableReference.canBeSelected = true;
     speechBubbleReference.displaySpeechBubble = true;
@@ -1297,12 +1297,12 @@ public virtual void PerformExitOccupationFinishedLogic() {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterDriedHands) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = false;
         speechBubbleReference.displaySpeechBubble = false;
@@ -1397,7 +1397,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
                                                                                                       true).GetComponent<BathroomTile>();
             //Debug.Log("setting exit tile");
             List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                        new List<GameObject>(),
+                                                                                        AStarManager.Instance.GetListCopyOfAllClosedNodes(), 
                                                                                         broTile,
                                                                                         randomObjectTile);
             state = BroState.MovingToTargetObject;
@@ -1407,9 +1407,9 @@ public virtual void PerformExitOccupationFinishedLogic() {
             state = BroState.Roaming;
         }
     }
-    public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, params BathroomObjectType[] bathroomObjectTypesToTarget) {
-        SetRandomBathroomObjectTarget(chooseOpenBathroomObject, AStarManager.Instance.GetListCopyOfAllClosedNodes(), bathroomObjectTypesToTarget);
-    }
+    // public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, params BathroomObjectType[] bathroomObjectTypesToTarget) {
+    //     SetRandomBathroomObjectTarget(chooseOpenBathroomObject, AStarManager.Instance.GetListCopyOfAllClosedNodes(), bathroomObjectTypesToTarget);
+    // }
 
     public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, List<GameObject> astarClosedNodesToUse, params BathroomObjectType[] bathroomObjectTypesToTarget) {
         BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,

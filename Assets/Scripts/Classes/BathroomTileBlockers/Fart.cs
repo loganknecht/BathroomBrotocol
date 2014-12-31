@@ -4,22 +4,17 @@ using System.Collections;
 public class Fart : BathroomTileBlocker {
     public float fartDurationTimer = 0f;
     public float fartDurationTimerMax = 2f;
-    public bool fartDurationTimerMaxIsStochastic = false;
-    public float minFartDurationTimerMax = 3f;
-    public float maxFartDurationTimerMax = 5f;
 
     public bool triggerFadeOutAndDestroy = false;
 
     public override void Start() {
         base.Start();
 
-        ResetTimer();
         bathroomTileBlockerType = BathroomTileBlockerType.Fart;
     }
 
     public override void Update() {
         base.Update();
-        UpdateAnimator();
         PerformFartTimerLogic();
     }
 
@@ -35,13 +30,6 @@ public class Fart : BathroomTileBlocker {
         fartDurationTimer += Time.deltaTime;
         if(fartDurationTimer > fartDurationTimerMax) {
             triggerFadeOutAndDestroy = true;
-        }
-    }
-
-    public void ResetTimer() {
-        fartDurationTimer = 0f;
-        if(fartDurationTimerMaxIsStochastic) {
-            fartDurationTimerMax = Random.Range(minFartDurationTimerMax, maxFartDurationTimerMax);
         }
     }
 }

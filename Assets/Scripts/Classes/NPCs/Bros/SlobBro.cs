@@ -21,8 +21,8 @@ public class SlobBro : Bro {
     }
 
     public override void PerformOccupyingObjectLogic() {
+        // base.PerformOccupyingObjectLogic();
         GameObject targetObject = GetTargetObject();
-        
         if(targetObject != null
            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
@@ -34,32 +34,26 @@ public class SlobBro : Bro {
                 }
                 else if(bathObjRef.type == BathroomObjectType.HandDryer) {
                     PerformHandDryerOccupationFinishedLogic();
-                    if(!bathObjRef.IsBroken()) {
-                        bathObjRef.state = BathroomObjectState.OutOfOrder;
-                    }
                 }
                 else if(bathObjRef.type == BathroomObjectType.Sink) {
                     PerformSinkOccupationFinishedLogic();
-                    if(!bathObjRef.IsBroken()) {
-                        bathObjRef.state = BathroomObjectState.OutOfOrder;
-                    }
                 }
                 else if(bathObjRef.type == BathroomObjectType.Stall) {
                     PerformStallOccupationFinishedLogic();
-                    if(!bathObjRef.IsBroken()) {
-                        bathObjRef.state = BathroomObjectState.OutOfOrder;
-                    }
                 }
                 else if(bathObjRef.type == BathroomObjectType.Urinal) {
                     PerformUrinalOccupationFinishedLogic();
-                    if(!bathObjRef.IsBroken()) {
-                        bathObjRef.state = BathroomObjectState.OutOfOrder;
-                    }
+                }
+
+                if(bathObjRef.type != BathroomObjectType.Exit
+                    && !bathObjRef.IsBroken()
+                    && bathObjRef.state != BathroomObjectState.OutOfOrder) {
+                    bathObjRef.state = BathroomObjectState.OutOfOrder;
                 }
             }
             else {
                 //disables the collider because the bro resides in the object, but the timer is still going
-                collider.enabled = false;
+                colliderReference.enabled = false;
 
                 occupationTimer += Time.deltaTime;
             }

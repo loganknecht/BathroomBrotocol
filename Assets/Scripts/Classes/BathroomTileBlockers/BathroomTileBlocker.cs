@@ -7,14 +7,27 @@ public class BathroomTileBlocker : MonoBehaviour {
     public Animator animatorReference = null;
     public Selectable selectableReference = null;
     public Tappable tappableReference = null;
+    public BoxCollider2D colliderReference = null;
 
     public BathroomTileBlockerType bathroomTileBlockerType = BathroomTileBlockerType.None;
     // public float repairDuration = 0f;
     public GameObject bathroomTileGameObjectIn = null;
-    public GameObject bathroomTileBlockerSpriteGameObject = null;
+    public GameObject gameObjectToScaleOnTap = null;
 
     // Use this for initialization
     public virtual void Start() {
+    }
+
+    // Update is called once per frame
+    public virtual void Update() {
+        if(tappableReference.IsTapLimitReached()) {
+            SelfDestruct();
+        }
+        PerformSpriteScaling(); 
+        UpdateAnimator();
+    }
+    public void InitializeReferences() {
+        // Tries to self-reference assign
         if(animatorReference == null) {
             animatorReference = this.gameObject.GetComponent<Animator>();
         }
@@ -24,15 +37,25 @@ public class BathroomTileBlocker : MonoBehaviour {
         if(tappableReference == null) {
             tappableReference = this.gameObject.GetComponent<Tappable>();
         }
+        if(colliderReference == null) {
+            colliderReference = this.gameObject.GetComponent<BoxCollider2D>();
+        }
+        // If finally after everything, throw null checks
+        if(animatorReference == null) {
+            Debug.LogError("animatorReference is null for: " + this.gameObject.name + "'. Please make this assigned it before use.");
+        }
+        if(selectableReference == null) {
+            Debug.LogError("selectableReference is null for: " + this.gameObject.name + "'. Please make this assigned it before use.");
+        }
+        if(tappableReference == null) {
+            tappableReference = this.gameObject.GetComponent<Tappable>();
+            Debug.LogError("tappableReference is null for: " + this.gameObject.name + "'. Please make this assigned it before use.");
+        }
+        if(colliderReference == null) {
+            Debug.LogError("colliderReference is null for: " + this.gameObject.name + "'. Please make this assigned it before use.");
+        }
     }
 
-    // Update is called once per frame
-    public virtual void Update() {
-        if(tappableReference.tapLimitReached) {
-            SelfDestruct();
-        }
-        PerformSpriteScaling(); 
-    }
 
     public virtual void OnMouseDown() {
         // SelectionManager.Instance.currentlySelectedBathroomTileBlocker = this.gameObject;
@@ -44,12 +67,12 @@ public class BathroomTileBlocker : MonoBehaviour {
 
 
     public void PerformSpriteScaling() {
-        if(bathroomTileBlockerSpriteGameObject != null) {
+        if(gameObjectToScaleOnTap != null) {
             float currentTapRatio = tappableReference.GetTapRatio();
             float currentSpriteScale = 1 - currentTapRatio;
-            if(bathroomTileBlockerSpriteGameObject.transform.localScale.x != currentSpriteScale
-               && bathroomTileBlockerSpriteGameObject.transform.localScale.y != currentSpriteScale) {
-                bathroomTileBlockerSpriteGameObject.transform.localScale = new Vector3(currentSpriteScale, currentSpriteScale, bathroomTileBlockerSpriteGameObject.transform.localScale.z);
+            if(gameObjectToScaleOnTap.transform.localScale.x != currentSpriteScale
+               && gameObjectToScaleOnTap.transform.localScale.y != currentSpriteScale) {
+                gameObjectToScaleOnTap.transform.localScale = new Vector3(currentSpriteScale, currentSpriteScale, gameObjectToScaleOnTap.transform.localScale.z);
             }
         }
     }
@@ -87,6 +110,7 @@ public class BathroomTileBlocker : MonoBehaviour {
     }
 
     public void SelfDestruct() {
+        colliderReference.enabled = false;
         BathroomTileBlockerManager.Instance.RemoveBathroomTileBlockerGameObject(this.gameObject);
         Destroy(this.gameObject);
     }

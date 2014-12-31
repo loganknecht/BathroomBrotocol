@@ -21,33 +21,33 @@ public class GassyBro : Bro {
 
     //This is being checked on arrival before switching to occupying an object
     public override void PerformOnArrivalBrotocolScoreCheck() {
-        bool brotocolWasSatisfied = false;
+        // bool brotocolWasSatisfied = false;
 
-        GameObject targetObject = GetTargetObject();
+        // GameObject targetObject = GetTargetObject();
 
-        // As long as the target object is not null and it's not a bathroom exit
-        if(targetObject != null
-            && targetObject.GetComponent<BathroomObject>() != null
-            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-            if(!hasRelievedSelf) {
-                //This is being checked on arrival before switching to occupying an object
-                if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-                    // increment correct relief type
-                    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.GassyBroBrotocolCorrectReliefTypeForTargetObject);
-                    brotocolWasSatisfied = true;
-                }
+        // // As long as the target object is not null and it's not a bathroom exit
+        // if(targetObject != null
+        //     && targetObject.GetComponent<BathroomObject>() != null
+        //     && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+        //     if(!hasRelievedSelf) {
+        //         //This is being checked on arrival before switching to occupying an object
+        //         if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+        //             // increment correct relief type
+        //             // ScoreManager.Instance.IncrementScoreTracker(ScoreType.GassyBroBrotocolCorrectReliefTypeForTargetObject);
+        //             brotocolWasSatisfied = true;
+        //         }
                 
-                if(!CheckIfBroInAdjacentBathroomObjects()) {
-                    // increment bro alone bonus
-                    // ScoreManager.Instance.IncrementScoreTracker(ScoreType.GassyBroBrotocolNoAdjacentBro);
-                    brotocolWasSatisfied = true;
-                }
-            }
-        }
+        //         if(!CheckIfBroInAdjacentBathroomObjects()) {
+        //             // increment bro alone bonus
+        //             // ScoreManager.Instance.IncrementScoreTracker(ScoreType.GassyBroBrotocolNoAdjacentBro);
+        //             brotocolWasSatisfied = true;
+        //         }
+        //     }
+        // }
 
-        if(brotocolWasSatisfied) {
-            SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-        }
+        // if(brotocolWasSatisfied) {
+        //     SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+        // }
     }
     //=========================================================================
 }

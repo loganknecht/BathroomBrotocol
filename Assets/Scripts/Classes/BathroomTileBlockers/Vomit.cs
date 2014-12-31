@@ -8,6 +8,7 @@ public class Vomit : BathroomTileBlocker {
         tappableReference.ResetTaps();
 	}
     public override void Update() {
+        base.Update();
     }
 
 	public override void OnMouseDown() {

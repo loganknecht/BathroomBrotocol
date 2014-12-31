@@ -4,7 +4,6 @@ using System.Collections;
 public class Tappable : MonoBehaviour {
 
     public bool canBeTapped = true;
-    public bool tapLimitReached = false;
 
     public float numberOfTaps = 0;
     public float maxNumberOfTaps = 5;
@@ -15,11 +14,6 @@ public class Tappable : MonoBehaviour {
 
     // Update is called once per frame
     public void Update () {
-        if(numberOfTaps >= maxNumberOfTaps) {
-            if(!tapLimitReached) {
-                tapLimitReached = true;
-            }
-        }
     }
 
     public void OnMouseDown() {
@@ -34,5 +28,9 @@ public class Tappable : MonoBehaviour {
 
     public void ResetTaps() {
         numberOfTaps = 0;
+    }
+
+    public bool IsTapLimitReached() {
+        return (numberOfTaps >= maxNumberOfTaps);
     }
 }

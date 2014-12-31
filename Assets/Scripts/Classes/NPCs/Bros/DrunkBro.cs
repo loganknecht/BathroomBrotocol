@@ -108,7 +108,7 @@ public class DrunkBro : Bro {
         // else {
         //     state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
 
         collider.enabled = true;
         selectableReference.canBeSelected = true;
@@ -138,12 +138,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -176,12 +176,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -210,12 +210,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -246,12 +246,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -270,12 +270,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -308,12 +308,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -338,12 +338,12 @@ public class DrunkBro : Bro {
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
         // if(chooseRandomBathroomObjectAfterRelieved) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         // }
         // else {
         //   state = BroState.Roaming;
         // }
-        SetRandomBathroomObjectTarget(true, BathroomObjectType.Exit);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         collider.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
