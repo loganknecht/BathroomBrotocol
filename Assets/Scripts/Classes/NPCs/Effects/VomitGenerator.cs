@@ -6,6 +6,7 @@ public class VomitGenerator : BathroomTileBlockerGenerator {
     public override void Start () {
         base.Start();
         type = BathroomTileBlockerType.Vomit;
+        ResetStochasticVariables();
     }
 
     // Update is called once per frame

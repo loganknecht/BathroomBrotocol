@@ -32,6 +32,9 @@ public class WaveState : MonoBehaviour {
   public void Start() {
   }
 
+  public void Update() {
+  }
+  
   public void ConfigureLogic(WaveStateStartLogic startLogic, WaveStateLogic performingLogic, WaveStateFinishLogic endLogic) {
     if(startLogic != null) {
       playerWaveStateStartLogic = new WaveStateStartLogic(startLogic);

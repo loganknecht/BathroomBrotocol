@@ -3,23 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class DistributionObject {
-  public List<GameObject> distributionPoints = new List<GameObject>();
+    public List<GameObject> distributionPoints = new List<GameObject>();
 
-  public float startTime = 0f;
-  public float endTime = 0f;
+    public float startTime = 0f;
+    public float endTime = 0f;
 
-  public int numberOfPointsToGenerate = 0;
+    public int numberOfPointsToGenerate = 0;
 
-  public DistributionType distributionType = DistributionType.None;
-  public DistributionSpacing distributionSpacing = DistributionSpacing.None;
+    public DistributionType distributionType = DistributionType.None;
+    public DistributionSpacing distributionSpacing = DistributionSpacing.None;
 
-  public DistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, DistributionSpacing newDistributionSpacing) {
-    startTime = newStartTime;
-    endTime = newEndTime;
-    numberOfPointsToGenerate =  newNumberOfPointsToGenerate;
-    distributionType = newDistributionType;
-    distributionSpacing = newDistributionSpacing;
-  }
+    public DistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, DistributionSpacing newDistributionSpacing) {
+        startTime = newStartTime;
+        endTime = newEndTime;
+        numberOfPointsToGenerate =  newNumberOfPointsToGenerate;
+        distributionType = newDistributionType;
+        distributionSpacing = newDistributionSpacing;
+    }
 
   public virtual List<GameObject> CalculateDistributionPoints() {
 

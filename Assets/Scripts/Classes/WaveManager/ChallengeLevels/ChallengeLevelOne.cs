@@ -37,7 +37,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
         BroDistributionObject firstWave = new BroDistributionObject(0, 5, 3, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-        firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+        firstWave.broGenerator.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
             .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
@@ -53,7 +53,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
             .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
         BroDistributionObject secondWave = new BroDistributionObject(15, 30, 2, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-        secondWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+        secondWave.broGenerator.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
             .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
@@ -69,7 +69,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
             .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
         BroDistributionObject thirdWave = new BroDistributionObject(30, 35, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-        thirdWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+        thirdWave.broGenerator.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
             .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
@@ -85,7 +85,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
             .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
         BroDistributionObject fourthWave = new BroDistributionObject(50, 65, 10, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-        fourthWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+        fourthWave.broGenerator.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
             .SetFightProbability(BroDistribution.AllBros, 1f, 1f)

@@ -2,8 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class Fart : BathroomTileBlocker {
-    public float fartDurationTimer = 0f;
-    public float fartDurationTimerMax = 2f;
+    public float durationTimer = 0f;
+    public float duration = 2f;
 
     public bool triggerFadeOutAndDestroy = false;
 
@@ -15,7 +15,7 @@ public class Fart : BathroomTileBlocker {
 
     public override void Update() {
         base.Update();
-        PerformFartTimerLogic();
+        PerformTimerLogic();
     }
 
     public override void OnMouseDown() {
@@ -26,9 +26,9 @@ public class Fart : BathroomTileBlocker {
         animatorReference.SetBool("TriggerFadeOutAndDestroy", triggerFadeOutAndDestroy);
     }
 
-    public void PerformFartTimerLogic() {
-        fartDurationTimer += Time.deltaTime;
-        if(fartDurationTimer > fartDurationTimerMax) {
+    public void PerformTimerLogic() {
+        durationTimer += Time.deltaTime;
+        if(durationTimer > duration) {
             triggerFadeOutAndDestroy = true;
         }
     }

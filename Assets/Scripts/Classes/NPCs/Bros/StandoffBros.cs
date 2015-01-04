@@ -62,14 +62,12 @@ public class StandoffBros : MonoBehaviour {
         broOne = newBroOne;
         Bro broOneReference = broOne.GetComponent<Bro>();
         broOneReference.standoffBroGameObject = this.gameObject;
-        broOneReference.targetPathingReference.performMovementLogic = false;
         broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broOne.GetComponent<HighlightSelectable>().enabled = false;
 
         broTwo = newBroTwo;
         Bro broTwoReference = broTwo.GetComponent<Bro>();
         broTwoReference.standoffBroGameObject = this.gameObject;
-        broTwoReference.targetPathingReference.performMovementLogic = false;
         broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broTwo.GetComponent<HighlightSelectable>().enabled = false;
 
@@ -185,7 +183,6 @@ public class StandoffBros : MonoBehaviour {
         Bro broOneReference = broOne.GetComponent<Bro>();
         // broOne.collider.enabled = true;
         broOneReference.colliderReference.enabled = true;
-        broOneReference.targetPathingReference.performMovementLogic = true;
         broOneReference.state = BroState.Roaming;
         broOneReference.standoffBroGameObject = null;
         broOneReference.broFightingWith = null;
@@ -203,7 +200,6 @@ public class StandoffBros : MonoBehaviour {
         Bro broTwoReference = broTwo.GetComponent<Bro>();
         // broTwo.collider.enabled = true;
         broTwoReference.colliderReference.enabled = true;
-        broTwoReference.targetPathingReference.performMovementLogic = true;
         broTwoReference.state = BroState.Roaming;
         broTwoReference.standoffBroGameObject = null;
         broTwoReference.broFightingWith = null;

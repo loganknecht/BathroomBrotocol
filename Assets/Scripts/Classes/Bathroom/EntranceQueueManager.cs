@@ -1,4 +1,4 @@
-﻿using FullInspector;
+using FullInspector;
 
 using UnityEngine;
 using System.Collections;
@@ -12,25 +12,6 @@ public class EntranceQueueManager : BaseBehavior {
     public GameObject entranceAudioObject = null;
 
     public List<GameObject> lineQueues = new List<GameObject>();
-    //-------------------------------------------------------------
-    public int debugEntranceQueue = 0;
-
-    public float debugXMoveSpeed = 1f;
-    public float debugYMoveSpeed = 1f;
-
-    public Dictionary<BathroomObjectType, float> debugOccupationDuration = new Dictionary<BathroomObjectType, float>();
-    public BroType debugBroType = BroType.None;
-    public ReliefRequired[] debugReliefRequired = new ReliefRequired[]{};
-
-    public float debugFightProbability = 0f;
-    public bool debugModifyBroFightProbablityUsingScoreRatio = false;
-    public bool debugSkipLineQueue = false;
-    public bool debugChooseObjectOnLineSkip = false;
-    public bool debugStartRoamingOnArrivalAtBathroomObjectInUse = false;
-    public bool debugChooseObjectOnRelief = false;
-    public bool debugHasRelievedSelf = false;
-    public bool debugHasWashedHands = false;
-    public bool debugHasDriedHands = false;
 
     //BEGINNING OF SINGLETON CODE CONFIGURATION
     private static volatile EntranceQueueManager _instance;
@@ -85,8 +66,6 @@ public class EntranceQueueManager : BaseBehavior {
                 && entranceAudioObject.GetComponent<AudioSource>().isPlaying == false) {
                 entranceAudioObject = null;
             }
-
-            PerformDebugButtonPressLogic();
         }
     }
 
@@ -105,6 +84,7 @@ public class EntranceQueueManager : BaseBehavior {
 
         return tileGameObjectFound;
     }
+
     public GameObject GetTileGameObjectFromLineQueuesyWorldPosition(float xPosition, float yPosition, bool returnClosestTile) { 
         GameObject lineQueueBathroomTileGameObjectFound = null;
         foreach(GameObject lineQueueGameObject in lineQueues) {
@@ -115,57 +95,6 @@ public class EntranceQueueManager : BaseBehavior {
             }
         }
         return null;
-    }
-
-    public void PerformDebugButtonPressLogic() {
-        if(Input.GetKeyDown(KeyCode.Q)) {
-            // Debug.Log("Generating bro!");
-
-            // GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
-            // int lastLineQueueTileIndex = lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1;
-            // broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.x,
-            //                                                lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.y,
-            //                                                broGameObject.transform.position.z);
-            // Bro broReference = broGameObject.GetComponent<Bro>();
-            // broReference.reliefRequired = debugReliefRequired;
-            // broReference.baseProbabilityOfFightOnCollisionWithBro = debugFightProbability;
-            // broReference.modifyBroFightProbablityUsingScoreRatio = debugModifyBroFightProbablityUsingScoreRatio;
-            // broReference.occupationDuration = debugOccupationDuration;
-            // broReference.skipLineQueue = debugSkipLineQueue;
-            // broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
-            // broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;
-            // broReference.chooseRandomBathroomObjectAfterRelieved = debugChooseObjectOnRelief;
-            // broReference.hasRelievedSelf = debugHasRelievedSelf;
-            // broReference.hasWashedHands = debugHasWashedHands;
-            // broReference.hasDriedHands = debugHasDriedHands;
-            // AddBroToEntranceQueue(broGameObject, debugEntranceQueue);
-            //-------------------------------------------------------------------------------------------------------------------
-            // Alt generation
-            //-------------------------------------------------------------------------------------------------------------------
-            // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
-            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
-
-            BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-            firstWave.SetReliefType(BroDistribution.AllBros, debugReliefRequired);
-            firstWave.SetXMoveSpeed(BroDistribution.AllBros, debugXMoveSpeed, debugXMoveSpeed);
-            firstWave.SetYMoveSpeed(BroDistribution.AllBros , debugYMoveSpeed, debugYMoveSpeed);
-            firstWave.SetFightProbability(BroDistribution.AllBros, debugFightProbability, debugFightProbability);
-            firstWave.SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, debugModifyBroFightProbablityUsingScoreRatio);
-            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, debugOccupationDuration[BathroomObjectType.Exit], debugOccupationDuration[BathroomObjectType.Exit]);
-            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, debugOccupationDuration[BathroomObjectType.HandDryer], debugOccupationDuration[BathroomObjectType.HandDryer]);
-            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, debugOccupationDuration[BathroomObjectType.Sink], debugOccupationDuration[BathroomObjectType.Sink]);
-            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, debugOccupationDuration[BathroomObjectType.Stall], debugOccupationDuration[BathroomObjectType.Stall]);
-            firstWave.SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, debugOccupationDuration[BathroomObjectType.Urinal], debugOccupationDuration[BathroomObjectType.Urinal]);
-            firstWave.SetLineQueueSkipType(BroDistribution.AllBros, debugSkipLineQueue);
-            firstWave.SetChooseObjectOnLineSkip(BroDistribution.AllBros, debugChooseObjectOnLineSkip);
-            firstWave.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, debugStartRoamingOnArrivalAtBathroomObjectInUse);
-            firstWave.SetChooseObjectOnRelief(BroDistribution.AllBros, debugChooseObjectOnRelief);
-
-            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                                     firstWave,
-                                                                                    });
-        }
     }
 
     public GameObject SelectRandomLineQueue() {

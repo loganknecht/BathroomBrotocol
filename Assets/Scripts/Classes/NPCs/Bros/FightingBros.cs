@@ -119,7 +119,6 @@ public class FightingBros : BaseBehavior {
                 broReference.reliefRequired = ReliefRequired.None;
                 broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);
                 broReference.speechBubbleReference.displaySpeechBubble = false;
-                broReference.targetPathingReference.performMovementLogic = true;
                 IsometricDisplay isoDisplay = broGameObj.GetComponent<IsometricDisplay>();
                 if(isoDisplay != null) {
                     isoDisplay.UpdateDisplayPosition();

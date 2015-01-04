@@ -22,13 +22,12 @@ public class TargetPathing : BaseBehavior {
     public float targetPositionXLockBuffer = 0.05f;
     public float targetPositionYLockBuffer = 0.05f;
 
-    public bool performMovementLogic = true;
+    public bool isPaused = false;
 
     protected override void Awake() {
         base.Awake();
 
         movementNodes = new List<GameObject>();
-        performMovementLogic = true;
     }
 
     // Use this for initialization
@@ -40,8 +39,9 @@ public class TargetPathing : BaseBehavior {
         if(movementNodes == null) {
             Debug.Log("lol lol movement nodes of " + this.gameObject.name + " be null.");
         }
-
-        PerformLogic();
+        if(!isPaused) {
+            PerformLogic();
+        }
         UpdateAnimator();
     }
 
@@ -124,9 +124,7 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual void PerformLogic() {
-        if(performMovementLogic) {
-            PerformMovementLogic();
-        }
+        PerformMovementLogic();
     }
 
     public virtual void PerformMovementLogic() {

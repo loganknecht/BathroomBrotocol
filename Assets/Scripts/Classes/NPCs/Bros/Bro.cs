@@ -50,7 +50,6 @@ public class Bro : BaseBehavior {
     // Use this for initialization
     public virtual void Start () {
         // base.Start();
-
         InitializeOccupationDuration();
         InitializeComponents();
     }
