@@ -23,6 +23,7 @@ public class TargetPathing : BaseBehavior {
     public float targetPositionYLockBuffer = 0.05f;
 
     public bool isPaused = false;
+    public bool disableMovementLogic = false;
 
     protected override void Awake() {
         base.Awake();
@@ -124,7 +125,9 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual void PerformLogic() {
-        PerformMovementLogic();
+        if(!disableMovementLogic) {
+            PerformMovementLogic();
+        }
     }
 
     public virtual void PerformMovementLogic() {

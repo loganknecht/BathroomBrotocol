@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class BroDistributionBro {
+public class BroConfigurer {
     //-------------------------------------------------------------------------
     public BroDistribution broDistributionXMoveSpeed = BroDistribution.AllBros;
     public float defaultXMoveSpeed = float.PositiveInfinity;
@@ -48,7 +48,7 @@ public class BroDistributionBro {
     public BathroomObjectType[] defaultBathroomObjectsToChooseFromOnRelief = new BathroomObjectType[]{ BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal };
     //-------------------------------------------------------------------------
 
-    public BroDistributionBro() {
+    public BroConfigurer() {
         defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
         defaultLineSkipBathroomObject = Factory.Instance.SelectRandomBathroomObjectType(defaultBathroomObjectsToChooseFromOnLineQueueSkip);
         defaultOnReliefBathroomObject = Factory.Instance.SelectRandomBathroomObjectType(defaultBathroomObjectsToChooseFromOnRelief);
@@ -83,13 +83,12 @@ public class BroDistributionBro {
         // Debug.Log("RESETTING BRO GENERATOR TO DEFAULT VALUES");
     }
 
-    public BroDistributionBro SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {
+    public BroConfigurer SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {
         broDistributionReliefType = typeOfBroDistribution;
         defaultReliefRequiredToChooseFrom = newReliefRequiredToChooseFrom;
         return this;
     }
-    public GameObject ConfigureBroToGenerateReliefType(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureReliefType(Bro broRef) {
         // Factory.Instance.SelectRandomReliefType(ReliefRequired.Pee, ReliefRequired.Poop)
         switch(broDistributionReliefType) {
           case(BroDistribution.NoBros):
@@ -113,18 +112,16 @@ public class BroDistributionBro {
         //   broRef.reliefRequired = ReliefRequired.Pee;
         // }
 
-        return broToGenerate;
+        return this;
     }
 
-    public BroDistributionBro SetXMoveSpeed(BroDistribution typeOfBroDistribution, float newDefaultMinXMoveSpeed, float newDefaultMaxXMoveSpeed) {
+    public BroConfigurer SetXMoveSpeed(BroDistribution typeOfBroDistribution, float newDefaultMinXMoveSpeed, float newDefaultMaxXMoveSpeed) {
         broDistributionXMoveSpeed = typeOfBroDistribution;
         defaultMinXMoveSpeed = newDefaultMinXMoveSpeed;
         defaultMaxXMoveSpeed = newDefaultMaxXMoveSpeed;
         return this;
     }
-    public GameObject ConfigureBroXMoveSpeed(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
-
+    public BroConfigurer ConfigureXMoveSpeed(Bro broRef) {
         switch(broDistributionReliefType) {
             case(BroDistribution.NoBros):
                 if(defaultXMoveSpeed == float.PositiveInfinity) {
@@ -147,18 +144,16 @@ public class BroDistributionBro {
             break;
         }
 
-        return broToGenerate;
+        return this;
     }
 
-    public BroDistributionBro SetYMoveSpeed(BroDistribution typeOfBroDistribution, float newDefaultMinYMoveSpeed, float newDefaultMaxYMoveSpeed) {
+    public BroConfigurer SetYMoveSpeed(BroDistribution typeOfBroDistribution, float newDefaultMinYMoveSpeed, float newDefaultMaxYMoveSpeed) {
         broDistributionYMoveSpeed = typeOfBroDistribution;
         defaultMinYMoveSpeed = newDefaultMinYMoveSpeed;
         defaultMaxYMoveSpeed = newDefaultMaxYMoveSpeed;
         return this;
     }
-    public GameObject ConfigureBroYMoveSpeed(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
-
+    public BroConfigurer ConfigureYMoveSpeed(Bro broRef) {
         switch(broDistributionReliefType) {
             case(BroDistribution.NoBros):
                 if(defaultYMoveSpeed == float.PositiveInfinity) {
@@ -181,17 +176,16 @@ public class BroDistributionBro {
             break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetFightProbability(BroDistribution newBroDistributionFightCheckType, float newDefaultMinBroFightProbability, float newDefaultMaxBroFightProbability) {
+    public BroConfigurer SetFightProbability(BroDistribution newBroDistributionFightCheckType, float newDefaultMinBroFightProbability, float newDefaultMaxBroFightProbability) {
         broDistributionFightProbability = newBroDistributionFightCheckType;
         defaultMinBroFightProbability = newDefaultMinBroFightProbability;
         defaultMaxBroFightProbability = newDefaultMaxBroFightProbability;
         return this;
     }
-    public GameObject ConfigureBroToGenerateFightCheckType(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureFightCheckType(Bro broRef) {
         switch(broDistributionFightProbability) {
             case(BroDistribution.NoBros):
                 broRef.baseProbabilityOfFightOnCollisionWithBro = 0f;
@@ -211,17 +205,15 @@ public class BroDistributionBro {
             break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetModifyFightProbabilityUsingScoreRatio(BroDistribution newBroDistributionModifyBroFightProbabilityUsingScoreRatio, bool newDefaultModifyBroFightProbablityUsingScoreRatio) {
+    public BroConfigurer SetModifyFightProbabilityUsingScoreRatio(BroDistribution newBroDistributionModifyBroFightProbabilityUsingScoreRatio, bool newDefaultModifyBroFightProbablityUsingScoreRatio) {
         broDistributionModifyBroFightProbabilityUsingScoreRatio = newBroDistributionModifyBroFightProbabilityUsingScoreRatio;
         defaultModifyBroFightProbablityUsingScoreRatio = newDefaultModifyBroFightProbablityUsingScoreRatio;
         return this;
     }
-    public GameObject ConfigureBroToGenerateModifyFightProbabilityUsingScoreRatio(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
-
+    public BroConfigurer ConfigureModifyFightProbabilityUsingScoreRatio(Bro broRef) {
         switch(broDistributionModifyBroFightProbabilityUsingScoreRatio) {
             case(BroDistribution.NoBros):
                 broRef.modifyBroFightProbablityUsingScoreRatio = false;
@@ -245,17 +237,16 @@ public class BroDistributionBro {
             break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetBathroomObjectOccupationDuration(BroDistribution newBroDistributBathroomObjectionOccupationDuration, BathroomObjectType bathroomObjectType, float newDefaultMinBathroomObjectTypeOccupationDuration, float newMaxDefaultBathroomObjectTypeOccupationDuration) {
+    public BroConfigurer SetBathroomObjectOccupationDuration(BroDistribution newBroDistributBathroomObjectionOccupationDuration, BathroomObjectType bathroomObjectType, float newDefaultMinBathroomObjectTypeOccupationDuration, float newMaxDefaultBathroomObjectTypeOccupationDuration) {
         broDistributionBathroomObjectOccupationDuration[bathroomObjectType] = newBroDistributBathroomObjectionOccupationDuration;
         defaultMinBathroomObjectOccupationDuration[bathroomObjectType] = newDefaultMinBathroomObjectTypeOccupationDuration;
         defaultMaxBathroomObjectOccupationDuration[bathroomObjectType] = newMaxDefaultBathroomObjectTypeOccupationDuration;
         return this;
     }
-    public GameObject ConfigureBroToGenerateBathroomObjectOccupationDuration(GameObject broToGenerate, BathroomObjectType bathroomObjectType) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureBathroomObjectOccupationDuration(Bro broRef, BathroomObjectType bathroomObjectType) {
         // Debug.Log(broDistributionBathroomObjectOccupationDuration[bathroomObjectType].ToString());
         // Debug.Log(bathroomObjectType.ToString());
         // Debug.Log(broRef.occupationDuration);
@@ -281,16 +272,15 @@ public class BroDistributionBro {
             break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetLineQueueSkipType(BroDistribution newBroDistributionLineQueueSkipType, bool newBroLineQueueSkip) {
+    public BroConfigurer SetLineQueueSkipType(BroDistribution newBroDistributionLineQueueSkipType, bool newBroLineQueueSkip) {
         broDistributionLineQueueSkipType = newBroDistributionLineQueueSkipType;
         defaultLineQueueSkip = newBroLineQueueSkip;
         return this;
     }
-    public GameObject ConfigureBroToGenerateLineQueueSkipType(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureLineQueueSkipType(Bro broRef) {
         switch(broDistributionLineQueueSkipType) {
           case(BroDistribution.NoBros):
             broRef.skipLineQueue = defaultLineQueueSkip;
@@ -307,17 +297,16 @@ public class BroDistributionBro {
           break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetChooseObjectOnLineSkip(BroDistribution newBroDistributionChooseObjectOnLineSkip, bool newBroChooseObjectOnLineSkip) {
+    public BroConfigurer SetChooseObjectOnLineSkip(BroDistribution newBroDistributionChooseObjectOnLineSkip, bool newBroChooseObjectOnLineSkip) {
         broDistributionChooseObjectOnLineSkip = newBroDistributionChooseObjectOnLineSkip;
         defaultChooseObjectOnLineSkip = newBroChooseObjectOnLineSkip;
         //TO DO SET TYPES OF OBJECTS THAT CAN BE CHOSEN FROM
         return this;
     }
-    public GameObject ConfigureBroToGenerateChooseObjectOnLineSkip(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureChooseObjectOnLineSkip(Bro broRef) {
         switch(broDistributionChooseObjectOnLineSkip) {
           case(BroDistribution.NoBros):
             // do nothing
@@ -334,16 +323,15 @@ public class BroDistributionBro {
           break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse, bool newBroStartRoamingOnArrivalAtBathroomObjectInUse) {
+    public BroConfigurer SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse, bool newBroStartRoamingOnArrivalAtBathroomObjectInUse) {
         broDistributionStartRoamingOnArrivalAtBathroomObjectInUse = newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse;
         defaultStartRoamingOnArrivalAtBathroomObjectInUse = newBroStartRoamingOnArrivalAtBathroomObjectInUse;
         return this;
     }
-    public GameObject ConfigureBroToGenerateStartRoamingOnArrivalAtBathroomObjectInUse(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureStartRoamingOnArrivalAtBathroomObjectInUse(Bro broRef) {
         switch(broDistributionStartRoamingOnArrivalAtBathroomObjectInUse) {
           case(BroDistribution.NoBros):
             // do nothing
@@ -360,17 +348,16 @@ public class BroDistributionBro {
           break;
         }
 
-        return broToGenerate;
+        return this;
     }
     //---------------------
-    public BroDistributionBro SetChooseObjectOnRelief(BroDistribution newBroDistributionChooseObjectOnRelief, bool newBroChooseObjectOnRelief) {
+    public BroConfigurer SetChooseObjectOnRelief(BroDistribution newBroDistributionChooseObjectOnRelief, bool newBroChooseObjectOnRelief) {
         broDistributionChooseObjectOnRelief = newBroDistributionChooseObjectOnRelief;
         defaultChooseObjectOnRelief = newBroChooseObjectOnRelief;
         //TO DO SET TYPES OF OBJECTS THAT CAN BE CHOSEN FROM
         return this;
     }
-    public GameObject ConfigureBroToGenerateChooseObjectOnRelief(GameObject broToGenerate) {
-        Bro broRef = broToGenerate.GetComponent<Bro>();
+    public BroConfigurer ConfigureChooseObjectOnRelief(Bro broRef) {
         switch(broDistributionChooseObjectOnRelief) {
           case(BroDistribution.NoBros):
             // do nothing
@@ -387,6 +374,6 @@ public class BroDistributionBro {
           break;
         }
 
-        return broToGenerate;
+        return this;
     }
 }

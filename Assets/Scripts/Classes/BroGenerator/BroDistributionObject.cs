@@ -1,4 +1,46 @@
-﻿using UnityEngine;
+﻿// Example Usage
+// 
+// Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
+// Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+
+// BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+// firstWave.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequire[] { ReliefRequired.Pee, ReliefRequired.Poop })
+//     .SetXMoveSpeed(BroDistribution.AllBros, 1.5, 1.5)
+//     .SetYMoveSpeed(BroDistribution.AllBros , 1.5, 1.5)
+//     .SetFightProbability(BroDistribution.AllBros, 0.15, 0.15)
+//     .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, false)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0, 0)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2, 2)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2, 2)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2, 2)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2, 2)
+//     .SetLineQueueSkipType(BroDistribution.AllBros, true)
+//     .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+//     .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
+//     .SetChooseObjectOnRelief(BroDistribution.AllBros, true);
+// // Fart Generator if the bro has it (TileBlocker Properties)
+// firstWave.fartGeneratorConfigurer.SetProbability(BroDistribution.AllBros, 2, 2)
+//     .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+//     .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
+// // Fart Properties
+// firstWave.fartGeneratorConfigurer.SetDuration(BroDistribution.AllBros, 2, 2)
+//     .SetDurationIsStochastic(BroDistribution.AllBros, false)
+//     .SetMinDuration(BroDistribution.AllBros, 2, 2)
+//     .SetMaxDuration(BroDistribution.AllBros, 2, 2);
+// // Vomit Generator if the bro has it (TileBlocker Properties)
+// firstWave.vomitGenerator.SetProbability(BroDistribution.AllBros, 1, 1)
+//     .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+//     .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
+
+// BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+//                                                                          firstWave,
+//                                                                         });
+
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,13 +49,15 @@ public class BroDistributionObject : DistributionObject {
     public Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>();
     public Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>();
 
-    public BroDistributionBro broGenerator = null;
+    public BroConfigurer broConfigurer = null;
     // public BroDistributionBathroomTileBlockerGenerator fartGenerator = null;
-    public BroDistributionFartGenerator fartGenerator = null;
+    public FartGeneratorConfigurer fartGeneratorConfigurer = null;
+    public VomitGeneratorConfigurer vomitGeneratorConfigurer = null;
 
     public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, DistributionSpacing newDistributionSpacing, Dictionary<BroType, float> newBroProbabilities, Dictionary<int, float> newEntranceQueueProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType, newDistributionSpacing) {
-        broGenerator = new BroDistributionBro();
-        fartGenerator = new BroDistributionFartGenerator();
+        broConfigurer = new BroConfigurer();
+        fartGeneratorConfigurer = new FartGeneratorConfigurer();
+        vomitGeneratorConfigurer = new VomitGeneratorConfigurer();
 
         if(newBroProbabilities == null) {
           ConfigureUniformBroTypeDistribution();
@@ -93,20 +137,23 @@ public class BroDistributionObject : DistributionObject {
     }
 
     public GameObject ConfigureBro(GameObject broToGenerate) {
-        broGenerator.ConfigureBroToGenerateReliefType(broToGenerate);
-        broGenerator.ConfigureBroXMoveSpeed(broToGenerate);
-        broGenerator.ConfigureBroYMoveSpeed(broToGenerate);
-        broGenerator.ConfigureBroToGenerateFightCheckType(broToGenerate);
-        broGenerator.ConfigureBroToGenerateModifyFightProbabilityUsingScoreRatio(broToGenerate);
-        broGenerator.ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Exit);
-        broGenerator.ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.HandDryer);
-        broGenerator.ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Sink);
-        broGenerator.ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Stall);
-        broGenerator.ConfigureBroToGenerateBathroomObjectOccupationDuration(broToGenerate, BathroomObjectType.Urinal);
-        broGenerator.ConfigureBroToGenerateLineQueueSkipType(broToGenerate);
-        broGenerator.ConfigureBroToGenerateChooseObjectOnLineSkip(broToGenerate);
-        broGenerator.ConfigureBroToGenerateStartRoamingOnArrivalAtBathroomObjectInUse(broToGenerate);
-        broGenerator.ConfigureBroToGenerateChooseObjectOnRelief(broToGenerate);
+        Bro broReference = broToGenerate.GetComponent<Bro>();
+        if(broReference != null) {
+            broConfigurer.ConfigureReliefType(broReference)
+                         .ConfigureXMoveSpeed(broReference)
+                         .ConfigureYMoveSpeed(broReference)
+                         .ConfigureFightCheckType(broReference)
+                         .ConfigureModifyFightProbabilityUsingScoreRatio(broReference)
+                         .ConfigureBathroomObjectOccupationDuration(broReference, BathroomObjectType.Exit)
+                         .ConfigureBathroomObjectOccupationDuration(broReference, BathroomObjectType.HandDryer)
+                         .ConfigureBathroomObjectOccupationDuration(broReference, BathroomObjectType.Sink)
+                         .ConfigureBathroomObjectOccupationDuration(broReference, BathroomObjectType.Stall)
+                         .ConfigureBathroomObjectOccupationDuration(broReference, BathroomObjectType.Urinal)
+                         .ConfigureLineQueueSkipType(broReference)
+                         .ConfigureChooseObjectOnLineSkip(broReference)
+                         .ConfigureStartRoamingOnArrivalAtBathroomObjectInUse(broReference)
+                         .ConfigureChooseObjectOnRelief(broReference);
+        }
 
         return broToGenerate;
     }
@@ -116,16 +163,30 @@ public class BroDistributionObject : DistributionObject {
 
         if(fartGeneratorReference != null) {
             // Bathroom Tile Blocker Properties
-            fartGenerator.ConfigureProbability(fartGeneratorReference);
-            fartGenerator.ConfigureGenerationFrequency(fartGeneratorReference);
-            fartGenerator.ConfigureGenerationFrequencyIsStochastic(fartGeneratorReference);
-            fartGenerator.ConfigureMinGenerationFrequency(fartGeneratorReference);
-            fartGenerator.ConfigureMaxGenerationFrequency(fartGeneratorReference);
+            fartGeneratorConfigurer.ConfigureProbability(fartGeneratorReference)
+                                   .ConfigureGenerationFrequency(fartGeneratorReference)
+                                   .ConfigureGenerationFrequencyIsStochastic(fartGeneratorReference)
+                                   .ConfigureMinGenerationFrequency(fartGeneratorReference)
+                                   .ConfigureMaxGenerationFrequency(fartGeneratorReference);
             // Fart Generator Properties
-            fartGenerator.ConfigureDuration(fartGeneratorReference);
-            fartGenerator.ConfigureDurationIsStochastic(fartGeneratorReference);
-            fartGenerator.ConfigureMinDuration(fartGeneratorReference);
-            fartGenerator.ConfigureMaxDuration(fartGeneratorReference);
+            fartGeneratorConfigurer.ConfigureDuration(fartGeneratorReference)
+                                   .ConfigureDurationIsStochastic(fartGeneratorReference)
+                                   .ConfigureMinDuration(fartGeneratorReference)
+                                   .ConfigureMaxDuration(fartGeneratorReference);
+        }
+        return broToGenerate;
+    }
+    public GameObject ConfigureVomitGenerator(GameObject broToGenerate) {
+        VomitGenerator vomitGeneratorReference = broToGenerate.GetComponent<VomitGenerator>();
+
+        if(vomitGeneratorReference != null) {
+            // Bathroom Tile Blocker Properties
+            vomitGeneratorConfigurer.ConfigureProbability(vomitGeneratorReference)
+                                 .ConfigureGenerationFrequency(vomitGeneratorReference)
+                                 .ConfigureGenerationFrequencyIsStochastic(vomitGeneratorReference)
+                                 .ConfigureMinGenerationFrequency(vomitGeneratorReference)
+                                 .ConfigureMaxGenerationFrequency(vomitGeneratorReference);
+            // Vomit Generator Properties
         }
         return broToGenerate;
     }

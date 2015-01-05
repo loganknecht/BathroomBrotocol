@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BroDistributionBathroomTileBlockerGenerator {
+public class BathroomTileBlockerGeneratorConfigurer {
     public BroDistribution broDistributionDefaultProbability = BroDistribution.AllBros;
     public float defaultProbability = float.PositiveInfinity;
     public float defaultProbabilityMin = 0f;
@@ -26,17 +26,17 @@ public class BroDistributionBathroomTileBlockerGenerator {
     public float defaultMaxGenerationFrequencyMin = 1f;
     public float defaultMaxGenerationFrequencyMax = 5f;
 
-    public BroDistributionBathroomTileBlockerGenerator() {
+    public BathroomTileBlockerGeneratorConfigurer() {
     }
 
-    public BroDistributionBathroomTileBlockerGenerator SetProbability(BroDistribution broDistribution, float newMinProbability, float newMaxProbability) {
+    public BathroomTileBlockerGeneratorConfigurer SetProbability(BroDistribution broDistribution, float newMinProbability, float newMaxProbability) {
         broDistributionDefaultProbability = broDistribution;
         defaultProbabilityMin = newMinProbability;
         defaultProbabilityMax = newMaxProbability;
         return this;
     }
 
-    public BathroomTileBlockerGenerator ConfigureProbability(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
+    public BathroomTileBlockerGeneratorConfigurer ConfigureProbability(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
         switch(broDistributionDefaultProbability) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -57,18 +57,18 @@ public class BroDistributionBathroomTileBlockerGenerator {
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return bathroomTileBlockerGeneratorReference;
+        return this;
     }
 
     //---------------------------------
-    public BroDistributionBathroomTileBlockerGenerator SetGenerationFrequency(BroDistribution broDistribution, float newGenerationFrequencyMin, float newGenerationFrequencyMax) {
+    public BathroomTileBlockerGeneratorConfigurer SetGenerationFrequency(BroDistribution broDistribution, float newGenerationFrequencyMin, float newGenerationFrequencyMax) {
         broDistributionDefaultGenerationFrequency = broDistribution;
         defaultGenerationFrequencyMin = newGenerationFrequencyMin;
         defaultGenerationFrequencyMax = newGenerationFrequencyMax;
         return this;
     }
     
-    public BathroomTileBlockerGenerator ConfigureGenerationFrequency(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
+    public BathroomTileBlockerGeneratorConfigurer ConfigureGenerationFrequency(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
         switch(broDistributionDefaultGenerationFrequency) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -89,16 +89,16 @@ public class BroDistributionBathroomTileBlockerGenerator {
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return bathroomTileBlockerGeneratorReference;
+        return this;
     }
     //---------------------------------
-    public BroDistributionBathroomTileBlockerGenerator SetGenerationFrequencyIsStochastic(BroDistribution broDistribution, bool newGenerationFrequencyIsStochastic) {
+    public BathroomTileBlockerGeneratorConfigurer SetGenerationFrequencyIsStochastic(BroDistribution broDistribution, bool newGenerationFrequencyIsStochastic) {
         broDistributionDefaultGenerationFrequencyIsStochastic = broDistribution;
         defaultGenerationFrequencyIsStochastic = newGenerationFrequencyIsStochastic;
         return this;
     }
 
-    public BathroomTileBlockerGenerator ConfigureGenerationFrequencyIsStochastic(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
+    public BathroomTileBlockerGeneratorConfigurer ConfigureGenerationFrequencyIsStochastic(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
         switch(broDistributionDefaultGenerationFrequencyIsStochastic) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -113,16 +113,16 @@ public class BroDistributionBathroomTileBlockerGenerator {
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return bathroomTileBlockerGeneratorReference;
+        return this;
     }
     //---------------------------------
-    public BroDistributionBathroomTileBlockerGenerator SetMinGenerationFrequency(BroDistribution broDistribution, float newMinGenerationFrequencyMin, float newMinGenerationFrequencyMax) {
+    public BathroomTileBlockerGeneratorConfigurer SetMinGenerationFrequency(BroDistribution broDistribution, float newMinGenerationFrequencyMin, float newMinGenerationFrequencyMax) {
         broDistributionDefaultMinGenerationFrequency = broDistribution;
         defaultMinGenerationFrequencyMin = newMinGenerationFrequencyMin;
         defaultMinGenerationFrequencyMax = newMinGenerationFrequencyMax;
         return this;
     }
-    public BathroomTileBlockerGenerator ConfigureMinGenerationFrequency(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
+    public BathroomTileBlockerGeneratorConfigurer ConfigureMinGenerationFrequency(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
         switch(broDistributionDefaultMinGenerationFrequency) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -143,16 +143,16 @@ public class BroDistributionBathroomTileBlockerGenerator {
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return bathroomTileBlockerGeneratorReference;
+        return this;
     }
     //---------------------------------
-    public BroDistributionBathroomTileBlockerGenerator SetMaxGenerationFrequency(BroDistribution broDistribution, float newMaxGenerationFrequencyMin, float newMaxGenerationFrequencyMax) {
+    public BathroomTileBlockerGeneratorConfigurer SetMaxGenerationFrequency(BroDistribution broDistribution, float newMaxGenerationFrequencyMin, float newMaxGenerationFrequencyMax) {
         broDistributionDefaultMaxGenerationFrequency = broDistribution;
         defaultMaxGenerationFrequencyMin = newMaxGenerationFrequencyMin;
         defaultMaxGenerationFrequencyMax = newMaxGenerationFrequencyMax;
         return this;
     }
-    public BathroomTileBlockerGenerator ConfigureMaxGenerationFrequency(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
+    public BathroomTileBlockerGeneratorConfigurer ConfigureMaxGenerationFrequency(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
         switch(broDistributionDefaultMaxGenerationFrequency) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -173,6 +173,6 @@ public class BroDistributionBathroomTileBlockerGenerator {
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return bathroomTileBlockerGeneratorReference;
+        return this;
     }
 }

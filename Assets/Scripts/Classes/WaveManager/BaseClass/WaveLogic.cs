@@ -24,19 +24,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         if(currentWaveStateGameObject != null) {
             // Debug.Log("performing wave state logic");
             WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
-
-            if(!currentWaveStateRef.hasBeenTriggered) {
-                currentWaveStateRef.hasBeenTriggered = true;
-                currentWaveStateRef.isPlaying = true;
-                currentWaveStateRef.waveStateStartLogic();
-            }
-            else if(currentWaveStateRef.hasBeenTriggered
-                  && !currentWaveStateRef.triggerFinishLogic) {
-                currentWaveStateRef.waveStateLogic();
-            }
-            else if(currentWaveStateRef.triggerFinishLogic) {
-                currentWaveStateRef.waveStateFinishLogic();
-            }
+            currentWaveStateRef.PerformWaveStateLogic();
 
             if(currentWaveStateRef.hasFinished) {
                 if(waveStatesQueue.Count > 0) {

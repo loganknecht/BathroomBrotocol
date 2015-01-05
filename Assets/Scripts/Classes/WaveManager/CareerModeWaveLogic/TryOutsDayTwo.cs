@@ -150,12 +150,12 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                                                        { 1, .5f } };
 
     BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    firstWave.broGenerator.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstWave.broGenerator.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
-    firstWave.broGenerator.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    firstWave.broGenerator.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstWave.broGenerator.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
-    firstWave.broGenerator.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+    firstWave.broConfigurer.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+                          .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+                          .SetLineQueueSkipType(BroDistribution.AllBros, true)
+                          .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+                          .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
+                          .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                              firstWave,
@@ -181,12 +181,12 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
                                                                                        { 1, .5f } };
 
     BroDistributionObject firstBroSet = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-    firstBroSet.broGenerator.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop);
-    firstBroSet.broGenerator.SetFightProbability(BroDistribution.AllBros, 1f, 1f);
-    firstBroSet.broGenerator.SetLineQueueSkipType(BroDistribution.AllBros, true);
-    firstBroSet.broGenerator.SetChooseObjectOnLineSkip(BroDistribution.AllBros, false);
-    firstBroSet.broGenerator.SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true);
-    firstBroSet.broGenerator.SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+    firstBroSet.broConfigurer.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
+                            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+                            .SetLineQueueSkipType(BroDistribution.AllBros, true)
+                            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+                            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, true)
+                            .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
 
     BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                              firstBroSet,

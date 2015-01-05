@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGenerator {
+public class FartGeneratorConfigurer : BathroomTileBlockerGeneratorConfigurer {
     public BroDistribution broDistributionDefaultDuration = BroDistribution.AllBros;
     public float defaultDuration = float.PositiveInfinity;
     public float defaultDurationMin = 2f;
@@ -21,12 +21,12 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
     public float defaultMaxDurationMin = 5f;
     public float defaultMaxDurationMax = 5f;
 
-    public BroDistributionFartGenerator() : base() {
+    public FartGeneratorConfigurer() : base() {
     }
 
     //---------------------------------
     // Move to fart distribution generator
-    public BroDistributionFartGenerator SetDuration(BroDistribution broDistribution, float newDefaultDurationMin, float newDefaultDurationMax) {
+    public FartGeneratorConfigurer SetDuration(BroDistribution broDistribution, float newDefaultDurationMin, float newDefaultDurationMax) {
         broDistributionDefaultDuration = broDistribution;
 
         defaultDurationMin = newDefaultDurationMin;
@@ -34,7 +34,7 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
 
         return this;
     }
-    public FartGenerator ConfigureDuration(FartGenerator fartGeneratorReference) {
+    public FartGeneratorConfigurer ConfigureDuration(FartGenerator fartGeneratorReference) {
         switch(broDistributionDefaultMaxGenerationFrequency) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -55,17 +55,17 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return fartGeneratorReference;
+        return this;
     }
     //---------------------------------
-    public BroDistributionFartGenerator SetDurationIsStochastic(BroDistribution broDistribution, bool durationIsStochastic) {
+    public FartGeneratorConfigurer SetDurationIsStochastic(BroDistribution broDistribution, bool durationIsStochastic) {
         broDistributionDefaultDurationIsStochastic = broDistribution;
 
         defaultDurationIsStochastic = durationIsStochastic;
 
         return this;
     }
-    public FartGenerator ConfigureDurationIsStochastic(FartGenerator fartGeneratorReference) {
+    public FartGeneratorConfigurer ConfigureDurationIsStochastic(FartGenerator fartGeneratorReference) {
         switch(broDistributionDefaultGenerationFrequencyIsStochastic) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -80,10 +80,10 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
                 Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
             break;
         }
-        return fartGeneratorReference;
+        return this;
     }
     //---------------------------------
-    public BroDistributionFartGenerator SetMinDuration(BroDistribution broDistribution, float newMinDurationMin, float newMinDurationMax) {
+    public FartGeneratorConfigurer SetMinDuration(BroDistribution broDistribution, float newMinDurationMin, float newMinDurationMax) {
         broDistributionDefaultMinDuration = broDistribution;
 
         defaultMinDurationMin = newMinDurationMax;
@@ -91,7 +91,7 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
 
         return this;
     }
-    public FartGenerator ConfigureMinDuration(FartGenerator fartGeneratorReference) {
+    public FartGeneratorConfigurer ConfigureMinDuration(FartGenerator fartGeneratorReference) {
         switch(broDistributionDefaultMinDuration) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -113,10 +113,10 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
             break;
         }
 
-        return fartGeneratorReference;
+        return this;
     }
     //---------------------------------
-    public BroDistributionFartGenerator SetMaxDuration(BroDistribution broDistribution, float newMaxDurationMin, float newMaxDurationMax) {
+    public FartGeneratorConfigurer SetMaxDuration(BroDistribution broDistribution, float newMaxDurationMin, float newMaxDurationMax) {
         broDistributionDefaultMaxDuration = broDistribution;
 
         defaultMaxDurationMin = newMaxDurationMin;
@@ -124,7 +124,7 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
 
         return this;
     }
-    public FartGenerator ConfigureMaxDuration(FartGenerator fartGeneratorReference) {
+    public FartGeneratorConfigurer ConfigureMaxDuration(FartGenerator fartGeneratorReference) {
         switch(broDistributionDefaultMaxDuration) {
             case(BroDistribution.NoBros):
                 // Do nothing bruh
@@ -146,7 +146,7 @@ public class BroDistributionFartGenerator : BroDistributionBathroomTileBlockerGe
             break;
         }
 
-        return fartGeneratorReference;
+        return this;
     }
     //---------------------------------
 }

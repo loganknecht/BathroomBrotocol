@@ -63,12 +63,14 @@ public class StandoffBros : MonoBehaviour {
         Bro broOneReference = broOne.GetComponent<Bro>();
         broOneReference.standoffBroGameObject = this.gameObject;
         broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
+        broOneReference.targetPathingReference.disableMovementLogic = true;
         broOne.GetComponent<HighlightSelectable>().enabled = false;
 
         broTwo = newBroTwo;
         Bro broTwoReference = broTwo.GetComponent<Bro>();
         broTwoReference.standoffBroGameObject = this.gameObject;
         broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
+        broTwoReference.targetPathingReference.disableMovementLogic = true;
         broTwo.GetComponent<HighlightSelectable>().enabled = false;
 
         //not doing expanding points, that will be set on first contraction
@@ -190,11 +192,12 @@ public class StandoffBros : MonoBehaviour {
         broOne.GetComponent<HighlightSelectable>().enabled = true;
         broOne.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
         broOneReference.ResetFightLogic();
+        broOneReference.targetPathingReference.disableMovementLogic = false;
         if(broOneReference.type == BroType.DrunkBro) {
-          broOneReference.speechBubbleReference.displaySpeechBubble = false;
+            broOneReference.speechBubbleReference.displaySpeechBubble = false;
         }
         else {
-          broOneReference.speechBubbleReference.displaySpeechBubble = true;
+            broOneReference.speechBubbleReference.displaySpeechBubble = true;
         }
 
         Bro broTwoReference = broTwo.GetComponent<Bro>();
@@ -207,11 +210,12 @@ public class StandoffBros : MonoBehaviour {
         broTwo.GetComponent<HighlightSelectable>().enabled = true;
         broTwo.GetComponent<HighlightSelectable>().ResetHighlightObjectAndSelectedState();
         broTwoReference.ResetFightLogic();
+        broTwoReference.targetPathingReference.disableMovementLogic = false;
         if(broTwoReference.type == BroType.DrunkBro) {
-          broTwoReference.speechBubbleReference.displaySpeechBubble = false;
+            broTwoReference.speechBubbleReference.displaySpeechBubble = false;
         }
         else {
-          broTwoReference.speechBubbleReference.displaySpeechBubble = true;
+            broTwoReference.speechBubbleReference.displaySpeechBubble = true;
         }
 
         // this.Destroy();

@@ -32,24 +32,24 @@ public class BathroomTileBlockerGenerator : MonoBehaviour {
             || this.gameObject.GetComponent<Bro>().state == BroState.Roaming) {
 
             if(amountGenerated == 0 || loop == true) {
-	            if(generationTimer > generationFrequency) {
-	                generationTimer = 0f;
-	                float probabilityRolled = Random.value;
-	                if(probability > probabilityRolled) {
-	                    //generate 
-	                    GameObject newBathroomTileBlocker = Factory.Instance.GenerateBathroomTileBlockerObject(type);
-	                     // Reference = newBathroomTileBlocker.GetComponent<>();
+                if(generationTimer > generationFrequency) {
+                    generationTimer = 0f;
+                    float probabilityRolled = Random.value;
+                    if(probability > probabilityRolled) {
+                        //generate 
+                        GameObject newBathroomTileBlocker = Factory.Instance.GenerateBathroomTileBlockerObject(type);
+                         // Reference = newBathroomTileBlocker.GetComponent<>();
 
-	                    newBathroomTileBlocker.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newBathroomTileBlocker.transform.position.z);
-	                    BathroomTileBlockerManager.Instance.AddBathroomTileBlockerGameObject(newBathroomTileBlocker);
-	                    ResetStochasticVariables();
-	                    amountGenerated++;
-	                }
-	            }
-	            else {
-	                generationTimer += Time.deltaTime;
-	            }
-	        }
+                        newBathroomTileBlocker.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newBathroomTileBlocker.transform.position.z);
+                        BathroomTileBlockerManager.Instance.AddBathroomTileBlockerGameObject(newBathroomTileBlocker);
+                        ResetStochasticVariables();
+                        amountGenerated++;
+                    }
+                }
+                else {
+                    generationTimer += Time.deltaTime;
+                }
+            }
         }
     }
     public virtual void ResetStochasticVariables() {

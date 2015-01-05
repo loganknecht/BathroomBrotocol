@@ -117,6 +117,7 @@ public class FightingBros : BaseBehavior {
                                                             broGameObj.transform.position.z);
                 broGameObj.GetComponent<Bro>().colliderReference.enabled = false;
                 broReference.reliefRequired = ReliefRequired.None;
+                broReference.targetPathingReference.disableMovementLogic = false;
                 broReference.SetTargetObjectAndTargetPosition(exitSelected, newMovementNodes);
                 broReference.speechBubbleReference.displaySpeechBubble = false;
                 IsometricDisplay isoDisplay = broGameObj.GetComponent<IsometricDisplay>();

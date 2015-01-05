@@ -81,8 +81,8 @@ public class DebugBroGenerator : BaseBehavior {
             Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
             Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-            BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-            firstWave.broGenerator.SetReliefType(BroDistribution.AllBros, debugReliefRequired)
+            BroDistributionObject debugWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+            debugWave.broConfigurer.SetReliefType(BroDistribution.AllBros, debugReliefRequired)
                 .SetXMoveSpeed(BroDistribution.AllBros, debugXMoveSpeed.x, debugXMoveSpeed.y)
                 .SetYMoveSpeed(BroDistribution.AllBros , debugYMoveSpeed.x, debugYMoveSpeed.y)
                 .SetFightProbability(BroDistribution.AllBros, debugFightProbability.x, debugFightProbability.y)
@@ -97,19 +97,25 @@ public class DebugBroGenerator : BaseBehavior {
                 .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, debugStartRoamingOnArrivalAtBathroomObjectInUse)
                 .SetChooseObjectOnRelief(BroDistribution.AllBros, debugChooseObjectOnRelief);
             // Fart Generator if the bro has it (TileBlocker Properties)
-            firstWave.fartGenerator.SetProbability(BroDistribution.AllBros, debugFartGeneratorProbability.x, debugFartGeneratorProbability.y)
+            debugWave.fartGeneratorConfigurer.SetProbability(BroDistribution.AllBros, debugFartGeneratorProbability.x, debugFartGeneratorProbability.y)
                 .SetGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorGenerationFrequency.x, debugFartGeneratorGenerationFrequency.y)
                 .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, debugFartGeneratorGenerationFrequencyIsStochastic)
                 .SetMinGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMinGenerationFrequency.x, debugFartGeneratorMinGenerationFrequency.y)
                 .SetMaxGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMaxGenerationFrequency.x, debugFartGeneratorMaxGenerationFrequency.y);
             // Fart Properties
-            firstWave.fartGenerator.SetDuration(BroDistribution.AllBros, debugFartDuration.x, debugFartDuration.y)
+            debugWave.fartGeneratorConfigurer.SetDuration(BroDistribution.AllBros, debugFartDuration.x, debugFartDuration.y)
                 .SetDurationIsStochastic(BroDistribution.AllBros, debugFartDurationIsStochastic)
                 .SetMinDuration(BroDistribution.AllBros, debugFartMinDuration.x, debugFartMinDuration.y)
                 .SetMaxDuration(BroDistribution.AllBros, debugFartMaxDuration.x, debugFartMaxDuration.y);
+            // Vomit Generator if the bro has it (TileBlocker Properties)
+            debugWave.vomitGeneratorConfigurer.SetProbability(BroDistribution.AllBros, 1, 1)
+                .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+                .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+                .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
+                .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
 
             BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                                     firstWave,
+                                                                                     debugWave,
                                                                                     });
         }
     }
