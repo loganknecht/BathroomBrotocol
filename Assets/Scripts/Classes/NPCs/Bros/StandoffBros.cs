@@ -177,7 +177,6 @@ public class StandoffBros : MonoBehaviour {
                 && broTwo.transform.position.x < (standoffAnchor.x + xLockOnBuffer)
                 && broTwo.transform.position.y > (standoffAnchor.y - yLockOnBuffer)
                 && broTwo.transform.position.y < (standoffAnchor.y + yLockOnBuffer))) {
-                Debug.Log("bros arrived at standoff point");
                 broOne.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, broOne.transform.position.z);
                 broTwo.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, broTwo.transform.position.z);
 

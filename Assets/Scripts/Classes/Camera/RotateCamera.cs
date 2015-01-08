@@ -52,84 +52,167 @@ public class RotateCamera : MonoBehaviour {
     public Dictionary<GameObject, GameObject> GetTilesGameObjectsIn(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn, bool returnClosestTile) {
         foreach(GameObject gameObj in listToGetTilePositionsFrom) {
             GameObject tileOccupying = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(gameObj.transform.position.x,
-                                                                                                gameObj.transform.position.y,
-                                                                                                returnClosestTile);
+                                                                                                 gameObj.transform.position.y,
+                                                                                                 returnClosestTile);
             tileIn[gameObj] = tileOccupying;
         }
         return tileIn;
     }
 
-    public Dictionary<GameObject, Vector2> GetGameObjectsTileOffset(List<GameObject> listToGetTileOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
+    public Dictionary<GameObject, GameObject> GetTilesGameObjectsInStandoffAnchor(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn, bool returnClosestTile) {
+        foreach(GameObject gameObj in listToGetTilePositionsFrom) {
+            Vector3 positionToUse = new Vector3(gameObj.GetComponent<StandoffBros>().standoffAnchor.x,
+                                                gameObj.GetComponent<StandoffBros>().standoffAnchor.y,
+                                                gameObj.transform.position.z);
+            GameObject tileOccupying = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(positionToUse.x,
+                                                                                                 positionToUse.y,
+                                                                                                 returnClosestTile);
+            tileIn[gameObj] = tileOccupying;
+        }
+        return tileIn;
+    }
+
+    public Dictionary<GameObject, GameObject> GetTilesGameObjectsInStandoffRadiusOne(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn, bool returnClosestTile) {
+        foreach(GameObject gameObj in listToGetTilePositionsFrom) {
+            Vector3 positionToUse = new Vector3(gameObj.GetComponent<StandoffBros>().broOneRadiusPosition.x,
+                                                gameObj.GetComponent<StandoffBros>().broOneRadiusPosition.y,
+                                                gameObj.transform.position.z);
+            GameObject tileOccupying = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(positionToUse.x,
+                                                                                                 positionToUse.y,
+                                                                                                 returnClosestTile);
+            tileIn[gameObj] = tileOccupying;
+        }
+        return tileIn;
+    }
+
+    public Dictionary<GameObject, GameObject> GetTilesGameObjectsInStandoffRadiusTwo(List<GameObject> listToGetTilePositionsFrom, Dictionary<GameObject, GameObject> tileIn, bool returnClosestTile) {
+        foreach(GameObject gameObj in listToGetTilePositionsFrom) {
+            Vector3 positionToUse = new Vector3(gameObj.GetComponent<StandoffBros>().broTwoRadiusPosition.x,
+                                                gameObj.GetComponent<StandoffBros>().broTwoRadiusPosition.y,
+                                                gameObj.transform.position.z);
+            GameObject tileOccupying = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(positionToUse.x,
+                                                                                                 positionToUse.y,
+                                                                                                 returnClosestTile);
+            tileIn[gameObj] = tileOccupying;
+        }
+        return tileIn;
+    }
+
+    public Dictionary<GameObject, Vector2> GetGameObjectsTileOffsetBaseOnCurrentPosition(List<GameObject> listToGetTileOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
         foreach(GameObject gameObj in listToGetTileOffsetFrom) {
             Vector3 positionToOffsetFrom = Vector3.zero;
-            if(useTargetPathingVector) {
-                positionToOffsetFrom = gameObj.GetComponent<TargetPathing>().targetPosition;
-            }
-            else {
-                positionToOffsetFrom = gameObj.transform.position;
-            }
-            if(rotatingLeft) {
-                switch(directionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.Top):
-                        // Debug.Log("ROTATING LEFT - LOOKING TOP SIDE.");
-                        tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
-                                                            -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
-                    break;
-                    case(DirectionBeingLookedAt.Right):
-                        // Debug.Log("ROTATING LEFT - LOOKING RIGHT SIDE.");
-                        tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
-                                                            -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
-
-                    break;
-                    case(DirectionBeingLookedAt.Bottom):
-                        // Debug.Log("ROTATING LEFT - LOOKING BOTTOM SIDE.");
-                        tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
-                                                            -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
-                    break;
-                    case(DirectionBeingLookedAt.Left):
-                        // Debug.Log("ROTATING LEFT - LOOKING LEFT SIDE.");
-                        tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
-                                                            -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
-                    break;
-                    default:
-                        Debug.LogError("YOU REALLY SHOULDN'T BE SETTING THE VALUE HERE.");
-                        tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x,
-                                                            tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y);
-                    break;
-                }
-            }
-            if(rotatingRight) {
-                switch(directionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.Top):
-                        // Debug.Log("ROTATING RIGHT - LOOKING TOP SIDE.");
-                        tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
-                                                            tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
-                    break;
-                    case(DirectionBeingLookedAt.Right):
-                        // Debug.Log("ROTATING RIGHT - LOOKING RIGHT SIDE.");
-                        tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
-                                                            tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
-
-                    break;
-                    case(DirectionBeingLookedAt.Bottom):
-                        // Debug.Log("ROTATING RIGHT - LOOKING BOTTOM SIDE.");
-                        tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
-                                                            tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
-                    break;
-                    case(DirectionBeingLookedAt.Left):
-                        // Debug.Log("ROTATING RIGHT - LOOKING LEFT SIDE.");
-                        tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
-                                                            tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
-                    break;
-                    default:
-                        Debug.LogError("YOU REALLY SHOULDN'T BE SETTING THE VALUE HERE.");
-                        tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x,
-                                                            tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y);
-                    break;
-                }
-            }
+            positionToOffsetFrom = gameObj.transform.position;
+            GetGameObjectsTileOffset(gameObj, positionToOffsetFrom, tileContainingGameObject, tileOffset, rotatingLeft, rotatingRight, useTargetPathingVector);
         }
         return tileOffset;
+    }
+
+    public Dictionary<GameObject, Vector2> GetGameObjectsTileOffsetBasedOnTargetPathing(List<GameObject> listToGetTileOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
+        foreach(GameObject gameObj in listToGetTileOffsetFrom) {
+            Vector3 positionToOffsetFrom = Vector3.zero;
+            positionToOffsetFrom = gameObj.GetComponent<TargetPathing>().targetPosition;
+            GetGameObjectsTileOffset(gameObj, positionToOffsetFrom, tileContainingGameObject, tileOffset, rotatingLeft, rotatingRight, useTargetPathingVector);
+        }
+        return tileOffset;
+    }
+
+    public Dictionary<GameObject, Vector2> GetGameObjectsTileOffsetBasedOnStandoffAnchor(List<GameObject> listToGetTileOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
+        foreach(GameObject gameObj in listToGetTileOffsetFrom) {
+            Vector3 positionToOffsetFrom = Vector3.zero;
+            // positionToOffsetFrom = gameObj.GetComponent<TargetPathing>().targetPosition;
+            positionToOffsetFrom = new Vector3(gameObj.GetComponent<StandoffBros>().standoffAnchor.x,
+                                               gameObj.GetComponent<StandoffBros>().standoffAnchor.y,
+                                               gameObj.transform.position.z);
+            GetGameObjectsTileOffset(gameObj, positionToOffsetFrom, tileContainingGameObject, tileOffset, rotatingLeft, rotatingRight, useTargetPathingVector);
+        }
+        return tileOffset;
+    }
+
+    public Dictionary<GameObject, Vector2> GetGameObjectsTileOffsetBasedOnStandoffRadiusOne(List<GameObject> listToGetTileOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
+        foreach(GameObject gameObj in listToGetTileOffsetFrom) {
+            Vector3 positionToOffsetFrom = Vector3.zero;
+            // positionToOffsetFrom = gameObj.GetComponent<TargetPathing>().targetPosition;
+            positionToOffsetFrom = new Vector3(gameObj.GetComponent<StandoffBros>().broOneRadiusPosition.x,
+                                               gameObj.GetComponent<StandoffBros>().broOneRadiusPosition.y,
+                                               gameObj.transform.position.z);
+            GetGameObjectsTileOffset(gameObj, positionToOffsetFrom, tileContainingGameObject, tileOffset, rotatingLeft, rotatingRight, useTargetPathingVector);
+        }
+        return tileOffset;
+    }
+
+    public Dictionary<GameObject, Vector2> GetGameObjectsTileOffsetBasedOnStandoffRadiusTwo(List<GameObject> listToGetTileOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
+        foreach(GameObject gameObj in listToGetTileOffsetFrom) {
+            Vector3 positionToOffsetFrom = Vector3.zero;
+            // positionToOffsetFrom = gameObj.GetComponent<TargetPathing>().targetPosition;
+            positionToOffsetFrom = new Vector3(gameObj.GetComponent<StandoffBros>().broTwoRadiusPosition.x,
+                                               gameObj.GetComponent<StandoffBros>().broTwoRadiusPosition.y,
+                                               gameObj.transform.position.z);
+            GetGameObjectsTileOffset(gameObj, positionToOffsetFrom, tileContainingGameObject, tileOffset, rotatingLeft, rotatingRight, useTargetPathingVector);
+        }
+        return tileOffset;
+    }
+
+    public void GetGameObjectsTileOffset(GameObject gameObj, Vector3 positionToOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
+        if(rotatingLeft) {
+            switch(directionBeingLookedAt) {
+                case(DirectionBeingLookedAt.Top):
+                    // Debug.Log("ROTATING LEFT - LOOKING TOP SIDE.");
+                    tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
+                                                        -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
+                break;
+                case(DirectionBeingLookedAt.Right):
+                    // Debug.Log("ROTATING LEFT - LOOKING RIGHT SIDE.");
+                    tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
+                                                        -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
+
+                break;
+                case(DirectionBeingLookedAt.Bottom):
+                    // Debug.Log("ROTATING LEFT - LOOKING BOTTOM SIDE.");
+                    tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
+                                                        -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
+                break;
+                case(DirectionBeingLookedAt.Left):
+                    // Debug.Log("ROTATING LEFT - LOOKING LEFT SIDE.");
+                    tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
+                                                        -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
+                break;
+                default:
+                    Debug.LogError("YOU REALLY SHOULDN'T BE SETTING THE VALUE HERE.");
+                    tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x,
+                                                        tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y);
+                break;
+            }
+        }
+        if(rotatingRight) {
+            switch(directionBeingLookedAt) {
+                case(DirectionBeingLookedAt.Top):
+                    // Debug.Log("ROTATING RIGHT - LOOKING TOP SIDE.");
+                    tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
+                                                        tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
+                break;
+                case(DirectionBeingLookedAt.Right):
+                    // Debug.Log("ROTATING RIGHT - LOOKING RIGHT SIDE.");
+                    tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
+                                                        tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
+
+                break;
+                case(DirectionBeingLookedAt.Bottom):
+                    // Debug.Log("ROTATING RIGHT - LOOKING BOTTOM SIDE.");
+                    tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
+                                                        tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
+                break;
+                case(DirectionBeingLookedAt.Left):
+                    // Debug.Log("ROTATING RIGHT - LOOKING LEFT SIDE.");
+                    tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
+                                                        tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
+                break;
+                default:
+                    Debug.LogError("YOU REALLY SHOULDN'T BE SETTING THE VALUE HERE.");
+                    tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x,
+                                                        tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y);
+                break;
+            }
+        }
     }
 
     public void HideBathroomIfUnderDiagonal() {
@@ -216,13 +299,51 @@ public class RotateCamera : MonoBehaviour {
             if(targetPathing != null) {
                 Vector2 tileOffsetValues = Vector2.zero;
                 tileOffsetValues = tileOffset[gameObj];
-                // Debug.Log(tileOffsetValues);
-                // gameObj.transform.position = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
-                //                                             tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
-                //                                             targetPathing.targetPosition.z);
                 targetPathing.targetPosition = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
                                                             tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
                                                             targetPathing.targetPosition.z);
+            }
+        }
+    }
+
+    public void SetGameObjectStandoffAnchorOffsets(List<GameObject> gameObjectsToSetTargetOffset, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset) {
+        foreach(GameObject gameObj in gameObjectsToSetTargetOffset) {
+            // TargetPathing targetPathing = gameObj.GetComponent<TargetPathing>();
+            StandoffBros standoffBros = gameObj.GetComponent<StandoffBros>();
+            if(standoffBros != null) {
+                Vector2 tileOffsetValues = Vector2.zero;
+                tileOffsetValues = tileOffset[gameObj];
+                standoffBros.standoffAnchor = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
+                                                            tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
+                                                            gameObj.transform.position.z);
+            }
+        }
+    }
+
+    public void SetGameObjectStandoffRadiusOneOffsets(List<GameObject> gameObjectsToSetTargetOffset, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset) {
+        foreach(GameObject gameObj in gameObjectsToSetTargetOffset) {
+            // TargetPathing targetPathing = gameObj.GetComponent<TargetPathing>();
+            StandoffBros standoffBros = gameObj.GetComponent<StandoffBros>();
+            if(standoffBros != null) {
+                Vector2 tileOffsetValues = Vector2.zero;
+                tileOffsetValues = tileOffset[gameObj];
+                standoffBros.broOneRadiusPosition = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
+                                                                tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
+                                                                gameObj.transform.position.z);
+            }
+        }
+    }
+
+    public void SetGameObjectStandoffRadiusTwoOffsets(List<GameObject> gameObjectsToSetTargetOffset, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset) {
+        foreach(GameObject gameObj in gameObjectsToSetTargetOffset) {
+            // TargetPathing targetPathing = gameObj.GetComponent<TargetPathing>();
+            StandoffBros standoffBros = gameObj.GetComponent<StandoffBros>();
+            if(standoffBros != null) {
+                Vector2 tileOffsetValues = Vector2.zero;
+                tileOffsetValues = tileOffset[gameObj];
+                standoffBros.broTwoRadiusPosition = new Vector3(tileContainingGameObject[gameObj].transform.position.x + tileOffsetValues.x,
+                                                                tileContainingGameObject[gameObj].transform.position.y + tileOffsetValues.y,
+                                                                gameObj.transform.position.z);
             }
         }
     }
@@ -280,62 +401,68 @@ public class RotateCamera : MonoBehaviour {
     // This is so bad... but it works so just deal with it for now
     // Refactor this someday, never
     public void Rotate(bool rotateRight, bool rotateLeft) {
-
+        //=========================================================================================
+        // Current Positions
+        Dictionary<GameObject, GameObject> tileGameObjectIn = new Dictionary<GameObject, GameObject>();
+        Dictionary<GameObject, Vector2> gameObjectTileOffset = new Dictionary<GameObject, Vector2>();
+        //--------------------
+        // Target Pathing
         Dictionary<GameObject, GameObject> tileGameObjectTargeting = new Dictionary<GameObject, GameObject>();
         Dictionary<GameObject, Vector2> targetTileOffset = new Dictionary<GameObject, Vector2>();
-
-        //=========================================================================================
-        //-------------------
-        // Game Object, tile game object in
-        Dictionary<GameObject, GameObject> tileGameObjectIn = new Dictionary<GameObject, GameObject>();
-        // uses the target pathing object and the tile it's pathing towards
-        Dictionary<GameObject, Vector2> gameObjectTileOffset = new Dictionary<GameObject, Vector2>();
-
-        // To do: reset target pathing destination correctly for target pathing characters
-        // Dictionary<GameObject, GameObject> targetPositionTile = new Dictionary<GameObject, GameObject>();
-        // Dictionary<GameObject, Vector2> targetPositionOffset = new Dictionary<GameObject, Vector2>();
-
+        //--------------------
+        // Standoff Bros Anchor Position
+        Dictionary<GameObject, GameObject> standoffBroTileIn = new Dictionary<GameObject, GameObject>();
+        Dictionary<GameObject, Vector2> standoffBroTileOffset = new Dictionary<GameObject, Vector2>();
+        // Standoff Bros Radius One Position
+        Dictionary<GameObject, GameObject> standoffBroTileInRadiusOne = new Dictionary<GameObject, GameObject>();
+        Dictionary<GameObject, Vector2> standoffBroRadiusOneTileOffset = new Dictionary<GameObject, Vector2>();
+        // Standoff Bros Radius Two Position
+        Dictionary<GameObject, GameObject> standoffBroTileInRadiusTwo = new Dictionary<GameObject, GameObject>();
+        Dictionary<GameObject, Vector2> standoffBroRadiusTwoTileOffset = new Dictionary<GameObject, Vector2>();
         //-------------------
         // Bathroom Tile Blockers
         GetTilesGameObjectsIn(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, true);
-        GetGameObjectsTileOffset(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        GetGameObjectsTileOffsetBaseOnCurrentPosition(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
         //-------------------
         // Bros
         GetTilesGameObjectsIn(BroManager.Instance.allBros, tileGameObjectIn, true);
-        GetGameObjectsTileOffset(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        GetGameObjectsTileOffsetBaseOnCurrentPosition(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
 
         GetTilesGameObjectsTargeting(BroManager.Instance.allBros, tileGameObjectTargeting, true);
-        GetGameObjectsTileOffset(BroManager.Instance.allBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
+        GetGameObjectsTileOffsetBasedOnTargetPathing(BroManager.Instance.allBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
         //-------------------
         // Standoff Bros
-        // GetTilesGameObjectsIn(BroManager.Instance.allStandoffBros, tileGameObjectIn, true);
-        // GetGameObjectsTileOffset(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        GetTilesGameObjectsInStandoffAnchor(BroManager.Instance.allStandoffBros, standoffBroTileIn, true);
+        GetGameObjectsTileOffsetBasedOnStandoffAnchor(BroManager.Instance.allStandoffBros, standoffBroTileIn, standoffBroTileOffset, rotateLeft, rotateRight, false);
 
-        // GetTilesGameObjectsTargeting(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, true);
-        // GetGameObjectsTileOffset(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
+        GetTilesGameObjectsInStandoffRadiusOne(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusOne, true);
+        GetGameObjectsTileOffsetBasedOnStandoffRadiusOne(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusOne, standoffBroRadiusOneTileOffset, rotateLeft, rotateRight, false);
+
+        GetTilesGameObjectsInStandoffRadiusTwo(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusTwo, true);
+        GetGameObjectsTileOffsetBasedOnStandoffRadiusTwo(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusTwo, standoffBroRadiusTwoTileOffset, rotateLeft, rotateRight, false);
         //-------------------
         // Fighting Bros
         GetTilesGameObjectsIn(BroManager.Instance.allFightingBros, tileGameObjectIn, true);
-        GetGameObjectsTileOffset(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        GetGameObjectsTileOffsetBaseOnCurrentPosition(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
 
         GetTilesGameObjectsTargeting(BroManager.Instance.allFightingBros, tileGameObjectTargeting, true);
-        GetGameObjectsTileOffset(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
+        GetGameObjectsTileOffsetBasedOnTargetPathing(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset, rotateLeft, rotateRight, true);
         //-------------------
         // Bathroom Objects
         GetTilesGameObjectsIn(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, true);
-        GetGameObjectsTileOffset(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        GetGameObjectsTileOffsetBaseOnCurrentPosition(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
         //-------------------
         // LineQueues
         foreach(GameObject lineQueue in EntranceQueueManager.Instance.lineQueues) {
             GetTilesGameObjectsIn(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn, true);
-            GetGameObjectsTileOffset(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+            GetGameObjectsTileOffsetBaseOnCurrentPosition(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
         }
         //-------------------
         // Scenery
         // Resets relative to the first cell of the tile map becuase I don't think I need to do it based on the tile it's actually in.... not really sure.
         // GetTilesGameObjectsInByIndex(SceneryManager.Instance.GetScenery(), tileGameObjectIn, 0, 0);
         GetTilesGameObjectsIn(SceneryManager.Instance.GetScenery(), tileGameObjectIn, true);
-        GetGameObjectsTileOffset(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
+        GetGameObjectsTileOffsetBaseOnCurrentPosition(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset, rotateLeft, rotateRight, false);
         //=====================================================================
         if(rotateLeft) {
             // Debug.Log("rotating left");
@@ -365,10 +492,14 @@ public class RotateCamera : MonoBehaviour {
         UpdateDisplayPositions(BroManager.Instance.allBros);
         HideObjectsIfUnderDiagonal(BroManager.Instance.allBros, tileGameObjectIn);
 
-        SetGameObjectTargetPositionOffsets(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset);
-        SetGameObjectOffsets(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset);
-        UpdateDisplayPositions(BroManager.Instance.allStandoffBros);
-        HideObjectsIfUnderDiagonal(BroManager.Instance.allStandoffBros, tileGameObjectIn);
+        SetGameObjectStandoffAnchorOffsets(BroManager.Instance.allStandoffBros, standoffBroTileIn, standoffBroTileOffset);
+        SetGameObjectStandoffRadiusOneOffsets(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusOne, standoffBroRadiusOneTileOffset);
+        SetGameObjectStandoffRadiusTwoOffsets(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusTwo, standoffBroRadiusTwoTileOffset);
+
+        // SetGameObjectTargetPositionOffsets(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset);
+        // SetGameObjectOffsets(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset);
+        // UpdateDisplayPositions(BroManager.Instance.allStandoffBros);
+        // HideObjectsIfUnderDiagonal(BroManager.Instance.allStandoffBros, tileGameObjectIn);
 
         SetGameObjectTargetPositionOffsets(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset);
