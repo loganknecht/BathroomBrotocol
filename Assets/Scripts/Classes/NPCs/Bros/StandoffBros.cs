@@ -14,24 +14,15 @@ public class StandoffBros : MonoBehaviour {
     public bool isExpanding = false;
 
     public Vector2 broOneRadiusPosition = Vector2.zero;
-    public float broOneContractingXStepSize = 0;
-    public float broOneContractingYStepSize = 0;
-    public float broOneExpandingXStepSize = 0;
-    public float broOneExpandingYStepSize = 0;
-
     public Vector2 broTwoRadiusPosition = Vector2.zero;
-    public float broTwoContractingXStepSize = 0;
-    public float broTwoContractingYStepSize = 0;
-    public float broTwoExpandingXStepSize = 0;
-    public float broTwoExpandingYStepSize = 0;
+    public float contractSpeed = 0.05f;
+    public float expandSpeed = 0.05f;
 
     public int numberOfTapsNeededToStop = 3;
     public int numberOfContractionsBeforeAFight = 5;
-    public int contractingSteps = 25;
-    public int expandingSteps = 100;
 
-    public float xLockOnBuffer = 0.0005f;
-    public float yLockOnBuffer = 0.0005f;
+    public float xLockOnBuffer = 0.005f;
+    public float yLockOnBuffer = 0.005f;
 
     // Use this for initialization
     void Start () {
@@ -72,13 +63,6 @@ public class StandoffBros : MonoBehaviour {
         broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broTwoReference.targetPathingReference.disableMovementLogic = true;
         broTwo.GetComponent<HighlightSelectable>().enabled = false;
-
-        //not doing expanding points, that will be set on first contraction
-        broOneContractingXStepSize = (standoffAnchor.x - broOne.transform.position.x)/(contractingSteps);
-        broOneContractingYStepSize = (standoffAnchor.y - broOne.transform.position.y)/(contractingSteps);
-
-        broTwoContractingXStepSize = (standoffAnchor.x - broTwo.transform.position.x)/(contractingSteps);
-        broTwoContractingYStepSize = (standoffAnchor.y - broTwo.transform.position.y)/(contractingSteps);
     }
 
     public void SetRadiusPositionsRandomly() {
@@ -89,81 +73,122 @@ public class StandoffBros : MonoBehaviour {
 
         broOneRadiusPosition = new Vector2((standoffAnchor.x + broOneXPoint), (standoffAnchor.y + broOneYPoint));
         broTwoRadiusPosition = new Vector2((standoffAnchor.x - broOneXPoint), (standoffAnchor.y - broOneYPoint));
-
-        CalculateStepSizes();
     }
 
-    public void CalculateStepSizes() {
-        broOneExpandingXStepSize = (standoffAnchor.x - broOneRadiusPosition.x )/expandingSteps;
-        broOneExpandingYStepSize = (standoffAnchor.y  - broOneRadiusPosition.y )/expandingSteps;
-        broOneContractingXStepSize = (standoffAnchor.x - broOneRadiusPosition.x )/contractingSteps;
-        broOneContractingYStepSize = (standoffAnchor.y - broOneRadiusPosition.y )/contractingSteps;
+    public Vector3 CalcuateBroVelocity(Vector3 gameObjectPosition, Vector3 targetPosition) {
+        Vector3 velocity = Vector3.zero;
+        float velocitySpeed = 0f;
+        if(isContracting) {
+            velocitySpeed = contractSpeed;
+        }
+        else if(isExpanding) {
+            velocitySpeed = expandSpeed;
+        }
 
-        broTwoExpandingXStepSize = (standoffAnchor.x - broTwoRadiusPosition.x)/expandingSteps;
-        broTwoExpandingYStepSize = (standoffAnchor.y - broTwoRadiusPosition.y)/expandingSteps;
-        broTwoContractingXStepSize = (standoffAnchor.x - broTwoRadiusPosition.x)/contractingSteps;
-        broTwoContractingYStepSize = (standoffAnchor.y - broTwoRadiusPosition.y)/contractingSteps;
+        if(gameObjectPosition.x < targetPosition.x) {
+            velocity.x += velocitySpeed;
+        }
+        else if(gameObjectPosition.x > targetPosition.x) {
+            velocity.x -= velocitySpeed;
+        }
+
+        if(gameObjectPosition.y < targetPosition.y) {
+            velocity.y += velocitySpeed;
+        }
+        else if(gameObjectPosition.y > targetPosition.y) {
+            velocity.y -= velocitySpeed;
+        }
+
+        return velocity;
+    }
+
+    public void UpdateBroPosition(GameObject broToUpdate, Vector3 velocity, Vector3 targetPosition) {
+        broToUpdate.transform.position = new Vector3(broToUpdate.transform.position.x + velocity.x,
+                                                     broToUpdate.transform.position.y + velocity.y,
+                                                     broToUpdate.transform.position.z);
+        // X
+        if(velocity.x < 0
+            && broToUpdate.transform.position.x < targetPosition.x) {
+            broToUpdate.transform.position = new Vector3(targetPosition.x, broToUpdate.transform.position.y, broToUpdate.transform.position.z);
+        }
+        if(velocity.x > 0
+            && broToUpdate.transform.position.x > targetPosition.x) {
+            broToUpdate.transform.position = new Vector3(targetPosition.x, broToUpdate.transform.position.y, broToUpdate.transform.position.z);
+        }
+        // Y
+        if(velocity.y < 0
+            && broToUpdate.transform.position.y < targetPosition.y) {
+            broToUpdate.transform.position = new Vector3(broToUpdate.transform.position.x, targetPosition.y, broToUpdate.transform.position.z);
+        }
+        if(velocity.y > 0
+            && broToUpdate.transform.position.y > targetPosition.y) {
+            broToUpdate.transform.position = new Vector3(broToUpdate.transform.position.x, targetPosition.y, broToUpdate.transform.position.z);
+        }
     }
 
     public void PerformStandoffBroLogic() {
         // Debug.Log("bro one z: " + broOne.transform.position.z);
         // Debug.Log("bro two z: " + broTwo.transform.position.z);
+        Vector3 newBroOneVelocity = Vector3.zero;
+        Vector3 newBroTwoVelocity = Vector3.zero;
         if(isExpanding) {
-          // Debug.Log("Expanding");
-          broOne.transform.position = new Vector3(broOne.transform.position.x - broOneExpandingXStepSize,
-                                                  broOne.transform.position.y - broOneExpandingYStepSize,
-                                                  broOne.transform.position.z);
-          broTwo.transform.position = new Vector3(broTwo.transform.position.x - broTwoExpandingXStepSize,
-                                                  broTwo.transform.position.y - broTwoExpandingYStepSize,
-                                                  broTwo.transform.position.z);
-          //if either bro arrives at their expanding point
-          if((broOne.transform.position.x > (broOneRadiusPosition.x - xLockOnBuffer)
-             && broOne.transform.position.x < (broOneRadiusPosition.x + xLockOnBuffer)
-             && broOne.transform.position.y > (broOneRadiusPosition.y - yLockOnBuffer)
-             && broOne.transform.position.y < (broOneRadiusPosition.y + yLockOnBuffer))
-             || (broTwo.transform.position.x > (broTwoRadiusPosition.x - xLockOnBuffer)
-             && broTwo.transform.position.x < (broTwoRadiusPosition.x + xLockOnBuffer)
-             && broTwo.transform.position.y > (broTwoRadiusPosition.y - yLockOnBuffer)
-             && broTwo.transform.position.y < (broTwoRadiusPosition.y + yLockOnBuffer))) {
-            broOne.transform.position = new Vector3(broOneRadiusPosition.x, broOneRadiusPosition.y, broOne.gameObject.transform.position.z);
-            broTwo.transform.position = new Vector3(broTwoRadiusPosition.x, broTwoRadiusPosition.y, broTwo.gameObject.transform.position.z);
-            // broTwo.transform.position = broTwoRadiusPosition;
-            isExpanding = false;
-            isContracting = true;
-          }
+            // CalcuateBroVelocity(broOne.transform.position,)
+            // Debug.Log("Expanding");
+            newBroOneVelocity = CalcuateBroVelocity(broOne.transform.position, broOneRadiusPosition);
+            newBroTwoVelocity = CalcuateBroVelocity(broTwo.transform.position, broTwoRadiusPosition);
+
+            UpdateBroPosition(broOne, newBroOneVelocity, broOneRadiusPosition); 
+            UpdateBroPosition(broTwo, newBroTwoVelocity, broTwoRadiusPosition); 
+
+            if((broOne.transform.position.x > (broOneRadiusPosition.x - xLockOnBuffer)
+                && broOne.transform.position.x < (broOneRadiusPosition.x + xLockOnBuffer)
+                && broOne.transform.position.y > (broOneRadiusPosition.y - yLockOnBuffer)
+                && broOne.transform.position.y < (broOneRadiusPosition.y + yLockOnBuffer))
+                || (broTwo.transform.position.x > (broTwoRadiusPosition.x - xLockOnBuffer)
+                && broTwo.transform.position.x < (broTwoRadiusPosition.x + xLockOnBuffer)
+                && broTwo.transform.position.y > (broTwoRadiusPosition.y - yLockOnBuffer)
+                && broTwo.transform.position.y < (broTwoRadiusPosition.y + yLockOnBuffer))) {
+                // broOne.transform.position = new Vector3(broOneRadiusPosition.x, broOneRadiusPosition.y, broOne.gameObject.transform.position.z);
+                // broTwo.transform.position = new Vector3(broTwoRadiusPosition.x, broTwoRadiusPosition.y, broTwo.gameObject.transform.position.z);
+
+                isExpanding = false;
+                isContracting = true;
+            }
         }
         else if(isContracting) {
-          // Debug.Log("--------------------------------");
-          // Debug.Log("Contracting");
-          // Debug.Log("Bro One Before: " + broOne.transform.position);
-          // Debug.Log("Bro Two Before: " + broTwo.transform.position);
+            // Debug.Log("--------------------------------");
+            // Debug.Log("Contracting");
+            // Debug.Log("Bro One Before: " + broOne.transform.position);
+            // Debug.Log("Bro Two Before: " + broTwo.transform.position);
+            newBroOneVelocity = CalcuateBroVelocity(broOne.transform.position, standoffAnchor);
+            newBroTwoVelocity = CalcuateBroVelocity(broTwo.transform.position, standoffAnchor);
 
-          broOne.transform.position = new Vector3(broOne.transform.position.x + broOneContractingXStepSize,
-                                                  broOne.transform.position.y + broOneContractingYStepSize,
-                                                  broOne.transform.position.z);
-          broTwo.transform.position = new Vector3(broTwo.transform.position.x + broTwoContractingXStepSize,
-                                                  broTwo.transform.position.y + broTwoContractingYStepSize,
-                                                  broTwo.transform.position.z);
-          // Debug.Log("Bro One after: " + broOne.transform.position);
-          // Debug.Log("Bro Two after: " + broTwo.transform.position);
-          //if either bro arrived at their target position
-          if((broOne.transform.position.x > (standoffAnchor.x - xLockOnBuffer)
-             && broOne.transform.position.x < (standoffAnchor.x + xLockOnBuffer)
-             && broOne.transform.position.y > (standoffAnchor.y - yLockOnBuffer)
-             && broOne.transform.position.y < (standoffAnchor.y + yLockOnBuffer))
-             || (broTwo.transform.position.x > (standoffAnchor.x - xLockOnBuffer)
-             && broTwo.transform.position.x < (standoffAnchor.x + xLockOnBuffer)
-             && broTwo.transform.position.y > (standoffAnchor.y - yLockOnBuffer)
-             && broTwo.transform.position.y < (standoffAnchor.y + yLockOnBuffer))) {
-            // Debug.Log("bro two arrived at standoff point");
-            broOne.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, broOne.transform.position.z);
-            broTwo.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, broTwo.transform.position.z);
-            isExpanding = true;
-            isContracting = false;
-            numberOfContractionsBeforeAFight--;
-            SetRadiusPositionsRandomly();
-          }
+            UpdateBroPosition(broOne, newBroOneVelocity, standoffAnchor); 
+            UpdateBroPosition(broTwo, newBroTwoVelocity, standoffAnchor); 
+
+            // Debug.Log("Bro One after: " + broOne.transform.position);
+            // Debug.Log("Bro Two after: " + broTwo.transform.position);
+            //if either bro arrived at their target position
+            if((broOne.transform.position.x > (standoffAnchor.x - xLockOnBuffer)
+                && broOne.transform.position.x < (standoffAnchor.x + xLockOnBuffer)
+                && broOne.transform.position.y > (standoffAnchor.y - yLockOnBuffer)
+                && broOne.transform.position.y < (standoffAnchor.y + yLockOnBuffer))
+                || (broTwo.transform.position.x > (standoffAnchor.x - xLockOnBuffer)
+                && broTwo.transform.position.x < (standoffAnchor.x + xLockOnBuffer)
+                && broTwo.transform.position.y > (standoffAnchor.y - yLockOnBuffer)
+                && broTwo.transform.position.y < (standoffAnchor.y + yLockOnBuffer))) {
+                Debug.Log("bros arrived at standoff point");
+                broOne.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, broOne.transform.position.z);
+                broTwo.transform.position = new Vector3(standoffAnchor.x, standoffAnchor.y, broTwo.transform.position.z);
+
+                isExpanding = true;
+                isContracting = false;
+
+                numberOfContractionsBeforeAFight--;
+                SetRadiusPositionsRandomly();
+            }
         }
+
 
         else {
           Debug.Log("Wrong standoff logic");
