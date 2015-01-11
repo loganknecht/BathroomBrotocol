@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
+
     GameObject firstWaveGameObject;
     GameObject secondWaveGameObject;
 
@@ -27,38 +28,6 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
     // Update is called once per frame
     public override void Update () {
         base.Update();
-    }
-
-    public void TriggerIntroTextLogic() {
-        // Debug.Log("triggering start animation");
-        PerformWaveStateStartedTrigger();
-
-        // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
-
-        FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
-
-        WaveManager.Instance.isPaused = true;
-        TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -445, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -145, 1, 2, UITweener.Method.BounceIn, null);
-
-        LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
-
-        TweenExecutor.TweenObjectPosition(TextboxManager.Instance.gameObject, TextboxManager.Instance.gameObject.transform.localPosition.x, -600, TextboxManager.Instance.gameObject.transform.localPosition.x, -300, 1, 2, UITweener.Method.BounceIn, null);
-
-        Queue textQueue = new Queue();
-        textQueue.Enqueue("Hey there chief! It looks like you're here to try-out out for the prestigious role of 'Bathroom Bro Czar'.");
-        textQueue.Enqueue("Alright, alright, let's calm your pecs down. I can see you're excited. Yes, it is true. We are looking for a couple of bros to bring on for his broness' cabinet.");
-        textQueue.Enqueue("More specifically, we're looking to bring on a specific a specific bro to replace me, the Head Bathroom Bro Czar.");
-        textQueue.Enqueue("I know. You're impressed. Well keep the clapping down to a minimum. We got some weeding out of the weaker candidates to do, and spoilers you may be one of them.");
-        textQueue.Enqueue("Here's the thing. The first day of try-outs is to weed out those who don't even know how to manage a restroom. I call these guys the schlubs. Are you a schlub? I don't know... You look like a pretty big schlub to me.");
-        textQueue.Enqueue("Prove me wrong. I'm sending in bros into this restroom and you need to send them to the correct location otherwise they're going to destroy the whole restroom...");
-        textQueue.Enqueue("If you manage to survive this exercise then you move on to the next try-outs.");
-        textQueue.Enqueue("Ready... Set...");
-        textQueue.Enqueue("Bro!");
-        TextboxManager.Instance.SetTextboxTextSet(textQueue);
-    }
-    public void PerformIntroTextLogic() {
-    }
-    public void FinishIntroTextLogic() {
     }
 
     //----------------------------------------------------------------------------
@@ -143,7 +112,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
     public void PerformFirstWave() {
         if(BroGenerator.Instance.HasFinishedGenerating()
             && BroManager.Instance.NoBrosInRestroom()) {
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
     }
     public void FinishFirstWave() {

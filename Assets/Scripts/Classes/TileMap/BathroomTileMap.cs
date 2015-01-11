@@ -60,11 +60,11 @@ public class BathroomTileMap : TileMap {
     }
 
     public void ConfigureBathroomObjectsWithTileTheyreIn() {
-        BathroomObject[] allBathroomObjects = Resources.FindObjectsOfTypeAll(typeof(BathroomObject)) as BathroomObject[]; 
+        // BathroomObject[] allBathroomObjects = Resources.FindObjectsOfTypeAll(typeof(BathroomObject)) as BathroomObject[]; 
         foreach(GameObject[] row in tiles) {
             foreach(GameObject tileGameObject in row) {
                 // Debug.Log("In tile of: " + tileGameObject.name);
-                foreach(BathroomObject bathroomObject in allBathroomObjects) {
+                foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
                     GameObject bathroomTileContainingBathroomObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, bathroomObject.transform.position.y, false);
                     if(bathroomTileContainingBathroomObject != null) {
                         // Debug.Log("Bathroom Object is in tile: " + bathroomTileContainingBathroomObject.name);
@@ -72,6 +72,7 @@ public class BathroomTileMap : TileMap {
                     if(bathroomTileContainingBathroomObject == tileGameObject) {
                         // Debug.Log("Found bathroom object " + bathroomObject.name + " in bathroom tile " + bathroomTileContainingBathroomObject.name);
                         bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileContainingBathroomObject;
+                        tileGameObject.GetComponent<BathroomTile>().bathroomObjectInTile = bathroomObject.gameObject;
                     }
                 }
             }

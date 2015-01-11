@@ -111,14 +111,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     waveStatesQueue.AddLast(waveStateGameObjectToAdd);
   }
 
-  public void PerformWaveStateStartedTrigger() {
-    currentWaveStateGameObject.GetComponent<WaveState>().hasBeenTriggered = true;
-    currentWaveStateGameObject.GetComponent<WaveState>().isPlaying = true;
-  }
-  public void PerformWaveStatePlayingFinishedTrigger() {
-    currentWaveStateGameObject.GetComponent<WaveState>().triggerFinishLogic = true;
-  }
-  public void PerformWaveStateHasFinishedTrigger() {
-    currentWaveStateGameObject.GetComponent<WaveState>().hasFinished = true;
+  public void TriggerWaveFinish() {
+    currentWaveStateGameObject.GetComponent<WaveState>().TriggerWaveFinish();
   }
 }

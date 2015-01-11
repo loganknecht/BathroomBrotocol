@@ -60,8 +60,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
   public void TriggerStartAnimation() {
     // Debug.Log("triggering start animation");
-    PerformWaveStateStartedTrigger();
-
     // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
     FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
@@ -88,7 +86,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   public void PerformStartAnimation() {
     // Debug.Log("performing start animation");
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishStartAnimation() {
@@ -118,7 +116,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   public void PerformFirstWave() {
     if(BroGenerator.Instance.HasFinishedGenerating()
        && BroManager.Instance.NoBrosInRestroom()) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishFirstWave() {
@@ -141,7 +139,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   }
   public void PerformEncouragementAnimationWave() {
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishEncouragementAnimationWave() {
@@ -177,15 +175,13 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   public void PerformSecondWave() {
     if(BroGenerator.Instance.HasFinishedGenerating()
        && BroManager.Instance.NoBrosInRestroom()) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishSecondWave() {
   }
 
   public void TriggerEndOfLevelAnimationWave() {
-    PerformWaveStateStartedTrigger();
-
     LevelManager.Instance.ShowJanitorOverlay();
     TextboxManager.Instance.Show();
 
@@ -198,12 +194,12 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
   }
   public void PerformEndOfLevelAnimationWave() {
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishEndOfLevelAnimationWave() {
     waveLogicFinished = true;
-    PerformWaveStateHasFinishedTrigger();
+    TriggerWaveFinish();
   }
   public void PerformFinalEndOfLevelAnimationActions() {
     LevelManager.Instance.HideJanitorOverlay();

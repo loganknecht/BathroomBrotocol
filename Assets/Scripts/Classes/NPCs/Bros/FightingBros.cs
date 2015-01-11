@@ -15,6 +15,8 @@ public class FightingBros : BaseBehavior {
         base.Awake();
 
         brosFighting = new List<GameObject>();
+
+        targetPathingReference.SetOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode);
     }
 
     // Use this for initialization
@@ -46,6 +48,25 @@ public class FightingBros : BaseBehavior {
     public void PerformLogic() {
         PerformFightingBroArrivalLogic();
         PerformMaxTapLogic();
+    }
+
+    public void OnArrivalAtMovementNode() {
+        GameObject bathroomTileIn = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
+                                                                                              this.gameObject.transform.position.y,
+                                                                                              false);
+        if(bathroomTileIn != null) {
+            BathroomTile bathroomTileInRef = bathroomTileIn.GetComponent<BathroomTile>();
+            if(bathroomTileInRef != null) {
+                if(bathroomTileInRef.bathroomObjectInTile != null) {
+                    BathroomObject bathroomObjectInTileRef = bathroomTileInRef.bathroomObjectInTile.GetComponent<BathroomObject>();
+                    if(bathroomObjectInTileRef.type != BathroomObjectType.Exit
+                        && !bathroomObjectInTileRef.IsBroken()) {
+                        Debug.Log("Breaking " + bathroomTileInRef.bathroomObjectInTile.name +  " in " + bathroomTileIn.name);
+                        bathroomObjectInTileRef.state = BathroomObjectState.Broken;
+                    }
+                }
+            }
+        }
     }
 
     // TODO: Fix to use the jagged array access instead

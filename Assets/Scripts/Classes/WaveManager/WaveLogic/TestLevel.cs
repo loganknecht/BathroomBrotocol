@@ -98,7 +98,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   }
   public void PerformStartAnimation() {
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishStartAnimation() {
@@ -111,7 +111,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   }
   public void PerformBroEnoughConfirmation() {
     if(ConfirmationBoxManager.Instance.hasSelectedAnswer) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishBroEnoughConfirmation() {
@@ -137,7 +137,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
       LevelManager.Instance.HideJanitorOverlay();
       TextboxManager.Instance.Hide();
 
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishBroEnoughResponse() {
@@ -163,7 +163,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
     public void PerformFirstWave() {
         if(BroGenerator.Instance.HasFinishedGenerating()
             && BroManager.Instance.NoBrosInRestroom()) {
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
         else if(!BroManager.Instance.NoFightingBrosInRestroom()
                 && !broFightingExplanationOccurred) {
@@ -195,7 +195,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
     public void PerformSecondWave() {
         if(BroGenerator.Instance.HasFinishedGenerating()
             && BroManager.Instance.NoBrosInRestroom()) {
-                PerformWaveStatePlayingFinishedTrigger();
+                TriggerWaveFinish();
                 waveLogicFinished = true;
         }
         // else if(!BroManager.Instance.NoFightingBrosInRestroom()
@@ -227,7 +227,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   public void PerformBroFightingExplanation() {
     if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
       EnqueueWaveStateAtFront(broFightingExplanationConfirmationGameObject);
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishBroFightingExplanation() {
@@ -243,10 +243,10 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   public void PerformBroFightingExplanationConfirmation() {
     if(ConfirmationBoxManager.Instance.selectedYes) {
       EnqueueWaveStateAtFront(broFightingExplanation);
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
     else if(ConfirmationBoxManager.Instance.selectedNo) {
-      PerformWaveStatePlayingFinishedTrigger();
+      TriggerWaveFinish();
     }
   }
   public void FinishBroFightingExplanationConfirmation() {

@@ -125,7 +125,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
     }
     public void PerformStartAnimation() {
         if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
     }
     public void FinishStartAnimation() {
@@ -139,7 +139,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
     }
     public void PerformBroEnoughConfirmation() {
         if(ConfirmationBoxManager.Instance.hasSelectedAnswer) {
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
     }
     public void FinishBroEnoughConfirmation() {
@@ -168,7 +168,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
             LevelManager.Instance.HideJanitorOverlay();
             TextboxManager.Instance.Hide();
 
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
     }
     public void FinishBroEnoughResponse() {
@@ -217,7 +217,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
         if(BroGenerator.Instance.HasFinishedGenerating()
             && BroManager.Instance.NoBrosInRestroom()) {
             //The wave has finished
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
         
         //If the game isn't finished, then we're still playing.
@@ -255,7 +255,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
         //check to see when second part of first wave is finished
         if(BroGenerator.Instance.HasFinishedGenerating()
             && BroManager.Instance.NoBrosInRestroom()) {
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
             waveLogicFinished = true;
         }
         
@@ -293,7 +293,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
     public void PerformBroFightingExplanation() {
         if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
             EnqueueWaveStateAtFront(broFightingExplanationConfirmationGameObject);
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
     }
     public void FinishBroFightingExplanation() {
@@ -310,10 +310,10 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
         if(ConfirmationBoxManager.Instance.selectedNo) {
             broFightingExplanationOccurred = false;
             EnqueueWaveStateAtFront(broFightingExplanation);
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
         else if(ConfirmationBoxManager.Instance.selectedYes) {
-            PerformWaveStatePlayingFinishedTrigger();
+            TriggerWaveFinish();
         }
     }
     public void FinishBroFightingExplanationConfirmation() {

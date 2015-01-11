@@ -62,8 +62,8 @@ public class WaveState : MonoBehaviour {
 
     public void DefaultWaveStateStartedLogic() {
         // Debug.Log("PERFORMING DEFAULT WAVE STATE STARTED LOGIC, PLEASE FIX THIS ISSUE.");
-        playerWaveStateStartLogic();
         TriggerWaveStart();
+        playerWaveStateStartLogic();
     }
     public void DefaultWaveStatePlayingLogic() {
         // Debug.Log("PERFORMING DEFAULT WAVE STATE LOGIC, PLEASE FIX THIS ISSUE.");
@@ -71,8 +71,8 @@ public class WaveState : MonoBehaviour {
     }
     public void DefaultWaveStateFinishedLogic() {
         // Debug.Log("PERFORMING DEFAULT WAVE STATE FINISHED LOGIC, PLEASE FIX THIS ISSUE.");
-        playerWaveStateFinishLogic();
         WaveHasFinished();
+        playerWaveStateFinishLogic();
     }
 
     public void TriggerWaveStart() {

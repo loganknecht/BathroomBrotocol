@@ -6,26 +6,45 @@ using System.Collections.Generic;
 // Think about bolting on features where you can give the distributionobject a boolean that when true says to generate only the first type of bro created.
 
 // Example Usage:
-// public BroDistributionObject(float newStartTime, float newEndTime, int newNumberOfPointsToGenerate, DistributionType newDistributionType, Dictionary<BroType, float> newBroProbabilities) : base(newStartTime, newEndTime, newNumberOfPointsToGenerate, newDistributionType) {
-
-// Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+// Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
 // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-// BroDistributionObject firstWave = new BroDistributionObject(0, 5, 5, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-// firstWave.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
-//     .SetXMoveSpeed(BroDistribution.AllBros, 1, 1)
-//     .SetYMoveSpeed(BroDistribution.AllBros , 1, 1)
-//     .SetFightProbability(BroDistribution.AllBros, 0f, 1f)
-//     .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
-//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 2f, 2f)
-//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
-//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2f, 2f)
-//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2f, 2f)
-//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2f, 2f)
+// BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+// firstWave.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequire[] { ReliefRequired.Pee, ReliefRequired.Poop })
+//     .SetXMoveSpeed(BroDistribution.AllBros, 1.5, 1.5)
+//     .SetYMoveSpeed(BroDistribution.AllBros , 1.5, 1.5)
+//     .SetFightProbability(BroDistribution.AllBros, 0.15, 0.15)
+//     .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, false)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0, 0)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2, 2)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2, 2)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2, 2)
+//     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2, 2)
 //     .SetLineQueueSkipType(BroDistribution.AllBros, true)
 //     .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
 //     .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
-//     .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+//     .SetChooseObjectOnRelief(BroDistribution.AllBros, true);
+// // Fart Generator if the bro has it (TileBlocker Properties)
+// firstWave.fartGeneratorConfigurer.SetProbability(BroDistribution.AllBros, 2, 2)
+//     .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+//     .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
+// // Fart Properties
+// firstWave.fartGeneratorConfigurer.SetDuration(BroDistribution.AllBros, 2, 2)
+//     .SetDurationIsStochastic(BroDistribution.AllBros, false)
+//     .SetMinDuration(BroDistribution.AllBros, 2, 2)
+//     .SetMaxDuration(BroDistribution.AllBros, 2, 2);
+// // Vomit Generator if the bro has it (TileBlocker Properties)
+// firstWave.vomitGenerator.SetProbability(BroDistribution.AllBros, 1, 1)
+//     .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+//     .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
+//     .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
+
+// BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+//                                                                          firstWave,
+//                                                                         });
 
 // TODO
 // SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {

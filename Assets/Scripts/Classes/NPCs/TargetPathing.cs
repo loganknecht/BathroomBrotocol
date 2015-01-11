@@ -25,6 +25,9 @@ public class TargetPathing : BaseBehavior {
     public bool isPaused = false;
     public bool disableMovementLogic = false;
 
+    public delegate void OnArrivalAtMovementNode();
+    public OnArrivalAtMovementNode onArrivalAtMovementNodeLogic = null;
+
     protected override void Awake() {
         base.Awake();
 
@@ -113,6 +116,19 @@ public class TargetPathing : BaseBehavior {
         targetPosition = newTargetPosition;
     }
 
+    public void SetOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode newOnArrivalAtMovementNodeLogic) {
+        onArrivalAtMovementNodeLogic = new OnArrivalAtMovementNode(newOnArrivalAtMovementNodeLogic);
+    }
+
+    public bool IsAtMovementNodePosition() {
+        if(gameObjectToMove.transform.position.x == targetPosition.x
+            && gameObjectToMove.transform.position.y == targetPosition.y) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public bool IsAtTargetPosition() {
         if(movementNodes.Count == 0
             && gameObjectToMove.transform.position.x == targetPosition.x
@@ -136,15 +152,17 @@ public class TargetPathing : BaseBehavior {
         newPositionOffset = (newPositionOffset*Time.deltaTime);
         newPositionOffset = LockNewPositionOffsetToTarget(newPositionOffset);
         UpdateBathroomFacingBasedOnNewPositionOffset(newPositionOffset);
+        transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
 
         //performs check to pop new node from the movemeNodes list
-        if(gameObjectToMove.transform.position.x == targetPosition.x
-            && gameObjectToMove.transform.position.y == targetPosition.y) {
+        if(IsAtMovementNodePosition()) {
+            if(onArrivalAtMovementNodeLogic != null) {
+                onArrivalAtMovementNodeLogic();
+            }
+
             //Debug.Log("object at position");
             PopMovementNode();
         }
-
-        transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
     }
 
     public virtual void PopMovementNode() {

@@ -44,12 +44,12 @@ public class FadeManager : MonoBehaviour {
 	void Update () {
 	}
 
-  public void SetFadeFinishLogic(FadeFinishLogic newFadeFinishLogic) {
-    fadeFinishLogic = new FadeFinishLogic(newFadeFinishLogic);
-  }
-  public void PerformFade(Color startFadeColor, Color endFadeColor, float fadeDuration, bool destroyFullScreenTextureAtFinish) {
-    StartCoroutine(PerformFullScreenFade(startFadeColor, endFadeColor, fadeDuration, destroyFullScreenTextureAtFinish));
-  }
+	public void SetFadeFinishLogic(FadeFinishLogic newFadeFinishLogic) {
+		fadeFinishLogic = new FadeFinishLogic(newFadeFinishLogic);
+	}
+	public void PerformFade(Color startFadeColor, Color endFadeColor, float fadeDuration, bool destroyFullScreenTextureAtFinish) {
+		StartCoroutine(PerformFullScreenFade(startFadeColor, endFadeColor, fadeDuration, destroyFullScreenTextureAtFinish));
+	}
 
 	public IEnumerator PerformFullScreenFade(Color startFadeColor, Color endFadeColor, float fadeDuration, bool destroyFullScreenTextureAtFinish) {
 		Texture2D texture2D = new Texture2D(1,1);
@@ -61,7 +61,7 @@ public class FadeManager : MonoBehaviour {
 		tempGameObj.AddComponent<GUITexture>();
 		tempGameObj.GetComponent<GUITexture>().texture = texture2D;
 		tempGameObj.GetComponent<GUITexture>().pixelInset = new Rect(0f, 0f, Screen.width, Screen.height);
-    tempGameObj.transform.position = new Vector3(tempGameObj.transform.position.x, tempGameObj.transform.position.y, 0);
+	tempGameObj.transform.position = new Vector3(tempGameObj.transform.position.x, tempGameObj.transform.position.y, 0);
 
 		float fadeTimer = 0f;
 		bool fadeFinished = false;
@@ -77,7 +77,7 @@ public class FadeManager : MonoBehaviour {
 			yield return new WaitForEndOfFrame();
 		}
 
-    PerformFadeFinishedLogic();
+	PerformFadeFinishedLogic();
 
 		if(destroyFullScreenTextureAtFinish) {
 			Destroy(tempGameObj);
@@ -125,8 +125,8 @@ public class FadeManager : MonoBehaviour {
 	}
 
   public void PerformFadeFinishedLogic() {
-    if(fadeFinishLogic != null) {
-      fadeFinishLogic();
-    }
+	if(fadeFinishLogic != null) {
+	  fadeFinishLogic();
+	}
   }
 }
