@@ -29,7 +29,6 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
     public override void Update () {
         base.Update();
     }
-
     //----------------------------------------------------------------------------
     public void TriggerFirstWave() {
         TextboxManager.Instance.Hide();
