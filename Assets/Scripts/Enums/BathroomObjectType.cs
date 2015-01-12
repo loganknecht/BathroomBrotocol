@@ -1,11 +1,11 @@
 ﻿public enum BathroomObjectType {
-	None,
-	Exit,
+    None,
+    Exit,
     HandDryer,
     PaperTowelDispenser,
-	Queue,
-	Sink,
-	Stall,
-	Urinal,
+    Queue,
+    Sink,
+    Stall,
+    Urinal,
     Wall
 }

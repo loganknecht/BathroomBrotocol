@@ -80,6 +80,14 @@ public class ScoreTracker : BaseBehavior {
         return broScores[broScoreTypeToReturn];
     }
 
+    public int GetTotalBathroomObjectsBroken() {
+        return 0;
+    }
+    public int GetNumberOfBathroomObjectsBroken(BathroomObjectState bathroomObjectState, BathroomObjectType bathroomObjectType) {
+        return 0;
+    }
+
+    //--------------------------------------------------------------------
     public void PerformBroEnteredScore(BroType broType) {
         broScores[broType].entered++;
     }
@@ -87,69 +95,20 @@ public class ScoreTracker : BaseBehavior {
         broScores[broType].exited++;
     }
     //--------------------------------------------------------------------
-    public void PerformBroRelievedPeeInHandDryerScore(BroType broType) {
-        broScores[broType].relievedPeeInHandDryer++;
+    public void PerformRelievedPeeInBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].relievedPeeIn[bathroomObjectType]++;
     }
-    public void PerformBroRelievedPeeInSinkScore(BroType broType) {
-        broScores[broType].relievedPeeInSink++;
+    public void PerformRelievedPoopInBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].relievedPoopIn[bathroomObjectType]++;
     }
-    public void PerformBroRelievedPeeInStallScore(BroType broType) {
-        broScores[broType].relievedPeeInStall++;
+    public void PerformRelievedVomitInBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].relievedVomitIn[bathroomObjectType]++;
     }
-    public void PerformBroRelievedPeeInUrinalScore(BroType broType) {
-        broScores[broType].relievedPeeInUrinal++;
+    public void PerformWashedHandsInBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].washedHandsIn[bathroomObjectType]++;
     }
-
-    public void PerformBroRelievedPoopInHandDryerScore(BroType broType) {
-        broScores[broType].relievedPoopInHandDryer++;
-    }
-    public void PerformBroRelievedPoopInSinkScore(BroType broType) {
-        broScores[broType].relievedPoopInSink++;
-    }
-    public void PerformBroRelievedPoopInStallScore(BroType broType) {
-        broScores[broType].relievedPoopInStall++;
-    }
-    public void PerformBroRelievedPoopInUrinalScore(BroType broType) {
-        broScores[broType].relievedPoopInUrinal++;
-    }
-
-    public void PerformBroRelievedVomitInHandDryerScore(BroType broType) {
-        broScores[broType].relievedVomitInHandDryer++;
-    }
-    public void PerformBroRelievedVomitInSinkScore(BroType broType) {
-        broScores[broType].relievedVomitInSink++;
-    }
-    public void PerformBroRelievedVomitInStallScore(BroType broType) {
-        broScores[broType].relievedVomitInStall++;
-    }
-    public void PerformBroRelievedVomitInUrinalScore(BroType broType) {
-        broScores[broType].relievedVomitInUrinal++;
-    }
-    //--------------------------------------------------------------------
-    public void PerformBroWashedHandsInHandDryerScore(BroType broType) {
-        broScores[broType].washedHandsInHandDryer++;
-    }
-    public void PerformBroWashedHandsInSinkScore(BroType broType) {
-        broScores[broType].washedHandsInSink++;
-    }
-    public void PerformBroWashedHandsInStallScore(BroType broType) {
-        broScores[broType].washedHandsInInStall++;
-    }
-    public void PerformBroWashedHandsInUrinalScore(BroType broType) {
-        broScores[broType].washedHandsInUrinal++;
-    }
-    //--------------------------------------------------------------------
-    public void PerformBroDriedHandsInHandDryerScore(BroType broType) {
-        broScores[broType].driedHandsInHandDryer++;
-    }
-    public void PerformBroDriedHandsInSinkScore(BroType broType) {
-        broScores[broType].driedHandsInSink++;
-    }
-    public void PerformBroDriedHandsInStallScore(BroType broType) {
-        broScores[broType].driedHandsInStall++;
-    }
-    public void PerformBroDriedHandsInUrinalScore(BroType broType) {
-        broScores[broType].driedHandsInUrinal++;
+    public void PerformDriedHandsInBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].driedHandsIn[bathroomObjectType]++;
     }
     //--------------------------------------------------------------------
     public void PerformBroStartedStandoffScore(BroType broType) {
@@ -165,108 +124,30 @@ public class ScoreTracker : BaseBehavior {
         broScores[broType].stoppedFight++;
     }
     //--------------------------------------------------------------------
-    public void PerformBroCausedOutOfOrderHandDryerScore(BroType broType) {
-        broScores[broType].causedOutOfOrderHandDryer++;
-    }
-    public void PerformBroCausedOutOfOrderSinkScore(BroType broType) {
-        broScores[broType].causedOutOfOrderSink++;
-    }
-    public void PerformBroCausedOutOfOrderStallScore(BroType broType) {
-        broScores[broType].causedOutOfOrderStall++;
-    }
-    public void PerformBroCausedOutOfOrderUrinalScore(BroType broType) {
-        broScores[broType].causedOutOfOrderUrinal++;
+    public void PerformBroCausedOutOfOrderInBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].causedOutOfOrderIn[bathroomObjectType]++;
     }
     //--------------------------------------------------------------------
-    public void PerformBroBrokeHandDryerByOutOfOrderUseScore(BroType broType) {
-        broScores[broType].brokeHandDryerByOutOfOrderUse++;
+    public void PerformBrokeByOutOfOrderUseBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByOutOfOrderUse[bathroomObjectType]++;
     }
-    public void PerformBroBrokeSinkByOutOfOrderUseScore(BroType broType) {
-        broScores[broType].brokeSinkByOutOfOrderUse++;
+    public void PerformBrokeByPeeingBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByPeeing[bathroomObjectType]++;
     }
-    public void PerformBroBrokeStallByOutOfOrderUseScore(BroType broType) {
-        broScores[broType].brokeStallByOutOfOrderUse++;
+    public void PerformBrokeByPoopingBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByPooping[bathroomObjectType]++;
     }
-    public void PerformBroBrokeUrinalByOutOfOrderUseScore(BroType broType) {
-        broScores[broType].brokeUrinalByOutOfOrderUse++;
+    public void PerformBrokeByVomitingBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByVomiting[bathroomObjectType]++;
     }
-
-    public void PerformBroBrokeHandDryerByPeeingScore(BroType broType) {
-        broScores[broType].brokeHandDryerByPeeing++;
+    public void PerformBrokeByFightingBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByFighting[bathroomObjectType]++;
     }
-    public void PerformBroBrokeSinkByPeeingScore(BroType broType) {
-        broScores[broType].brokeSinkByPeeing++;
+    public void PerformBrokeByWashingHandsBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByWashingHands[bathroomObjectType]++;
     }
-    public void PerformBroBrokeStallByPeeingScore(BroType broType) {
-        broScores[broType].brokeStallByPeeing++;
-    }
-    public void PerformBroBrokeUrinalByPeeingScore(BroType broType) {
-        broScores[broType].brokeUrinalByPeeing++;
-    }
-
-    public void PerformBroBrokeHandDryerByPoopingScore(BroType broType) {
-        broScores[broType].brokeHandDryerByPooping++;
-    }
-    public void PerformBroBrokeSinkByPoopingScore(BroType broType) {
-        broScores[broType].brokeSinkByPooping++;
-    }
-    public void PerformBroBrokeStallByPoopingScore(BroType broType) {
-        broScores[broType].brokeStallByPooping++;
-    }
-    public void PerformBroBrokeUrinalByPoopingScore(BroType broType) {
-        broScores[broType].brokeUrinalByPoopin++;
-    }
-
-    public void PerformBroBrokeHandDryerByVomittingScore(BroType broType) {
-        broScores[broType].brokeHandDryerByVomitting++;
-    }
-    public void PerformBroBrokeSinkByVomittingScore(BroType broType) {
-        broScores[broType].brokeSinkByVomitting++;
-    }
-    public void PerformBroBrokeStallByVomittingScore(BroType broType) {
-        broScores[broType].brokeStallByVomitting++;
-    }
-    public void PerformBroBrokeUrinalByVomittingScore(BroType broType) {
-        broScores[broType].brokeUrinalByVomitting++;
-    }
-
-    public void PerformBroBrokeHandDryerByFightingScore(BroType broType) {
-        broScores[broType].brokeHandDryerByFighting++;
-    }
-    public void PerformBroBrokeSinkByFightingScore(BroType broType) {
-        broScores[broType].brokeSinkByFighting++;
-    }
-    public void PerformBroBrokeStallByFightingScore(BroType broType) {
-        broScores[broType].brokeStallByFighting++;
-    }
-    public void PerformBroBrokeUrinalByFightingScore(BroType broType) {
-        broScores[broType].brokeUrinalByFighting++;
-    }
-
-    public void PerformBroBrokeHandDryerByWashingHandsScore(BroType broType) {
-        broScores[broType].brokeHandDryerByWashingHands++;
-    }
-    public void PerformBroBrokeSinkByWashingHandsScore(BroType broType) {
-        broScores[broType].brokeSinkByWashingHands++;
-    }
-    public void PerformBroBrokeStallByWashingHandsScore(BroType broType) {
-        broScores[broType].brokeStallByWashingHands++;
-    }
-    public void PerformBroBrokeUrinalByWashingHandsScore(BroType broType) {
-        broScores[broType].brokeUrinalByWashingHands++;
-    }
-
-    public void PerformBroBrokeHandDryerByDryingHandsScore(BroType broType) {
-        broScores[broType].brokeHandDryerByDryingHands++;
-    }
-    public void PerformBroBrokeSinkByDryingHandsScore(BroType broType) {
-        broScores[broType].brokeSinkByDryingHands++;
-    }
-    public void PerformBroBrokeStallByDryingHandsScore(BroType broType) {
-        broScores[broType].brokeStallByDryingHands++;
-    }
-    public void PerformBroBrokeUrinalByDryingHandsScore(BroType broType) {
-        broScores[broType].brokeUrinalByDryingHands++;
+    public void PerformBrokeByDryingHandsBathroomObjectScore(BroType broType, BathroomObjectType bathroomObjectType) {
+        broScores[broType].brokeByDryingHands[bathroomObjectType]++;
     }
     //-------------------------------------------------------------------------
     public void PerformBroSatisfiedBrotocolNoAdjacentBrosScore(BroType broType) {
@@ -290,23 +171,7 @@ public class ScoreTracker : BaseBehavior {
     }
 
     public void PerformBroBathroomObjectBrokenByFightingScore(BroType broTypeFighting, BathroomObjectType bathroomObjectTypeToBreak) {
-        switch(bathroomObjectTypeToBreak) {
-            case(BathroomObjectType.HandDryer):
-                broScores[broTypeFighting].brokeHandDryerByFighting++;
-            break;
-            case(BathroomObjectType.Sink):
-                broScores[broTypeFighting].brokeSinkByFighting++;
-            break;
-            case(BathroomObjectType.Stall):
-                broScores[broTypeFighting].brokeStallByFighting++;
-            break;
-            case(BathroomObjectType.Urinal):
-                broScores[broTypeFighting].brokeUrinalByFighting++;
-            break;
-            default:
-                Debug.Log("A BROFIGHT HAS OCCURRED IN OBJECT THAT IT SHOULD NOT HAVE BEEN ABLE TO. THIS OBJECT IS THE OBJECT: " + this.gameObject.name);
-            break;
-        }
+        broScores[broTypeFighting].brokeByFighting[bathroomObjectTypeToBreak]++;
     }
 
     public void CalculateCurrentToPerfectScoreRatio() {

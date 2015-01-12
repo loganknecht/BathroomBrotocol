@@ -83,18 +83,18 @@ public class DrunkBro : Bro {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Pee) {
             bathObjRef.state = BathroomObjectState.BrokenByPee;
-            // PerformBrokeHandDryerByPeeingScore();
-            PerformBrokeHandDryerByOutOfOrderUseScore();
+            // PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
+            PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
             bathObjRef.state = BathroomObjectState.BrokenByPoop;
-            // PerformBrokeHandDryerByPoopingScore();
-            PerformBrokeHandDryerByOutOfOrderUseScore();
+            // PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
+            PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
             bathObjRef.state = BathroomObjectState.Broken;
-            // PerformBrokeHandDryerByVomittingScore();
-            PerformBrokeHandDryerByOutOfOrderUseScore();
+            // PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
+            PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
 
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -121,15 +121,15 @@ public class DrunkBro : Bro {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Pee) {
           bathObjRef.state = BathroomObjectState.BrokenByPee;
-          PerformBrokeHandDryerByPeeingScore();
+          PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.BrokenByPoop;
-          PerformBrokeHandDryerByPoopingScore();
+          PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
           bathObjRef.state = BathroomObjectState.Broken;
-          PerformBrokeHandDryerByVomittingScore();
+          PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
         }
 
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -156,18 +156,18 @@ public class DrunkBro : Bro {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Pee) {
           bathObjRef.state = BathroomObjectState.BrokenByPee;
-          // PerformBrokeSinkByPeeingScore();
-          PerformBrokeSinkByOutOfOrderUseScore();
+          // PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.BrokenByPoop;
-          // PerformBrokeSinkByPoopingScore();
-          PerformBrokeSinkByOutOfOrderUseScore();
+          // PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
           bathObjRef.state = BathroomObjectState.Broken;
-          // PerformBrokeSinkByVomittingScore();
-          PerformBrokeSinkByOutOfOrderUseScore();
+          // PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
 
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -193,15 +193,15 @@ public class DrunkBro : Bro {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Pee) {
           bathObjRef.state = BathroomObjectState.BrokenByPee;
-          PerformBrokeSinkByPeeingScore();
+          PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.BrokenByPoop;
-          PerformBrokeSinkByPoopingScore();
+          PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.Broken;
-          PerformBrokeSinkByVomittingScore();
+          PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
         }
 
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -228,15 +228,15 @@ public class DrunkBro : Bro {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Pee) {
             // PerformBrokeStallByPeeingScore();
-            PerformBrokeStallByOutOfOrderUseScore();
+            PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
             // PerformBrokeStallByPoopingScore();
-            PerformBrokeStallByOutOfOrderUseScore();
+            PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
             // PerformBrokeStallByVomittingScore();
-            PerformBrokeStallByOutOfOrderUseScore();
+            PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
 
         bathObjRef.state = BathroomObjectState.Broken;
@@ -291,16 +291,16 @@ public class DrunkBro : Bro {
         if(reliefRequired == ReliefRequired.Pee) {
           bathObjRef.state = BathroomObjectState.BrokenByPee;
           // PerformBrokeUrinalByPeeingScore();
-          PerformBrokeUrinalByOutOfOrderUseScore();
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.BrokenByPoop;
-          // PerformBrokeUrinalByPoopingScore();
-          PerformBrokeUrinalByOutOfOrderUseScore();
+          // PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
           bathObjRef.state = BathroomObjectState.Broken;
-          PerformBrokeUrinalByOutOfOrderUseScore();
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
@@ -327,7 +327,7 @@ public class DrunkBro : Bro {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.BrokenByPoop;
-          PerformBrokeUrinalByPoopingScore();
+          PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
             // do nothing

@@ -56,11 +56,11 @@ public class TestLevel : WaveLogic, WaveLogicContract {
                                               PerformBroFightingExplanationConfirmation,
                                               FinishBroFightingExplanationConfirmation);
     InitializeWaveStates(
-                         // startAnimationWaveGameObject,
-                         // broEnoughConfirmationWaveGameObject,
-                         // broEnoughResponseWaveGameObject,
-                         // firstWaveGameObject,
-                         // secondWaveGameObject
+                         startAnimationWaveGameObject,
+                         broEnoughConfirmationWaveGameObject,
+                         broEnoughResponseWaveGameObject,
+                         firstWaveGameObject,
+                         secondWaveGameObject
                          );
   }
 

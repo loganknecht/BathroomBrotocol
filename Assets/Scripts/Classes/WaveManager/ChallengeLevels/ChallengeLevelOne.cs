@@ -41,7 +41,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         firstWave.broConfigurer.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
-            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetFightProbability(BroDistribution.AllBros, .1f, .2f)
             .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
@@ -57,7 +57,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         secondWave.broConfigurer.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
-            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetFightProbability(BroDistribution.AllBros, .1f, .2f)
             .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
@@ -73,7 +73,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         thirdWave.broConfigurer.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
-            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetFightProbability(BroDistribution.AllBros, .1f, .2f)
             .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
@@ -89,7 +89,7 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
         fourthWave.broConfigurer.SetReliefType(BroDistribution.RandomBros, ReliefRequired.Pee, ReliefRequired.Poop)
             .SetXMoveSpeed(BroDistribution.AllBros, 1.3f, 1.3f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.3f, 1.3f)
-            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetFightProbability(BroDistribution.AllBros, .1f, .2f)
             .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, true)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
@@ -103,9 +103,9 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
 
         BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                                                                                  firstWave,
-                                                                                 // secondWave,
-                                                                                 // thirdWave,
-                                                                                 // fourthWave
+                                                                                 secondWave,
+                                                                                 thirdWave,
+                                                                                 fourthWave
                                                                                 });
     }
 

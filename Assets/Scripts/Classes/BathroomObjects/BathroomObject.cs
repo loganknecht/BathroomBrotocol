@@ -111,20 +111,8 @@ public class BathroomObject : MonoBehaviour {
 
         if(!wasOutOfOrderBeforeRemoval
             && isOutOfOrderAfterRemoval) {
-            switch(type) {
-                case(BathroomObjectType.HandDryer):
-                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderHandDryerScore();
-                break;
-                case(BathroomObjectType.Sink):
-                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderSinkScore();
-                break;
-                case(BathroomObjectType.Stall):
-                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderStallScore();
-                break;
-                case(BathroomObjectType.Urinal):
-                    broGameObjectToRemove.GetComponent<Bro>().PerformCausedOutOfOrderUrinalScore();
-                break;
-            }
+            Bro broRef = broGameObjectToRemove.GetComponent<Bro>();
+            ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderInBathroomObjectScore(broRef.type, type);
         }
     }
 

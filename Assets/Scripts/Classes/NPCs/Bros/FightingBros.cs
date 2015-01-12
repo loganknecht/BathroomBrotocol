@@ -61,7 +61,7 @@ public class FightingBros : BaseBehavior {
                     BathroomObject bathroomObjectInTileRef = bathroomTileInRef.bathroomObjectInTile.GetComponent<BathroomObject>();
                     if(bathroomObjectInTileRef.type != BathroomObjectType.Exit
                         && !bathroomObjectInTileRef.IsBroken()) {
-                        Debug.Log("Breaking " + bathroomTileInRef.bathroomObjectInTile.name +  " in " + bathroomTileIn.name);
+                        // Debug.Log("Breaking " + bathroomTileInRef.bathroomObjectInTile.name +  " in " + bathroomTileIn.name);
                         bathroomObjectInTileRef.state = BathroomObjectState.Broken;
                     }
                 }

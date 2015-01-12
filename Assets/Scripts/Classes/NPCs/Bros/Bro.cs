@@ -512,18 +512,18 @@ public virtual void PerformExitOccupationFinishedLogic() {
         PerformBathroomObjectUsedScore();
         if(reliefRequired == ReliefRequired.Pee) {
           bathObjRef.state = BathroomObjectState.BrokenByPee;
-          // PerformBrokeHandDryerByPeeingScore();
-          PerformBrokeHandDryerByOutOfOrderUseScore();
+          // PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Poop) {
           bathObjRef.state = BathroomObjectState.BrokenByPoop;
-          // PerformBrokeHandDryerByPoopingScore();
-          PerformBrokeHandDryerByOutOfOrderUseScore();
+          // PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
         else if(reliefRequired == ReliefRequired.Vomit) {
           bathObjRef.state = BathroomObjectState.Broken;
-          // PerformBrokeHandDryerByVomittingScore();
-          PerformBrokeHandDryerByOutOfOrderUseScore();
+          // PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
+          PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
         }
 
         if(chooseRandomBathroomObjectAfterRelieved) {
@@ -546,7 +546,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         hasWashedHands = true;
 
         PerformBathroomObjectUsedScore();
-        PerformBrokeHandDryerByOutOfOrderUseScore();
+        PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -570,7 +570,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         hasDriedHands = true;
 
         PerformBathroomObjectUsedScore();
-        PerformBrokeHandDryerByOutOfOrderUseScore();
+        PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -589,15 +589,15 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      PerformBrokeHandDryerByPeeingScore();
+      PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      PerformBrokeHandDryerByPoopingScore();
+      PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Vomit) {
       bathObjRef.state = BathroomObjectState.Broken;
-      PerformBrokeHandDryerByVomittingScore();
+      PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
@@ -723,18 +723,18 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      // PerformBrokeSinkByPeeingScore();
-      PerformBrokeSinkByOutOfOrderUseScore();
+      // PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
+      PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      // PerformBrokeSinkByPoopingScore();
-      PerformBrokeSinkByOutOfOrderUseScore();
+      // PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
+      PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Vomit) {
       bathObjRef.state = BathroomObjectState.Broken;
-      // PerformBrokeSinkByVomittingScore();
-      PerformBrokeSinkByOutOfOrderUseScore();
+      // PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
+      PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
     }
 
     if(chooseRandomBathroomObjectAfterRelieved) {
@@ -758,7 +758,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasWashedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeSinkByOutOfOrderUseScore();
+    PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -784,7 +784,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasDriedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeSinkByOutOfOrderUseScore();
+    PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -802,15 +802,15 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      PerformBrokeSinkByPeeingScore();
+      PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      PerformBrokeSinkByPoopingScore();
+      PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.Broken;
-      PerformBrokeSinkByVomittingScore();
+      PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Vomit) {
         // do nothing
@@ -860,7 +860,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasDriedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeSinkByDryingHandsScore();
+    PerformBrokeByDryingHandsBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -943,13 +943,13 @@ public virtual void PerformExitOccupationFinishedLogic() {
 
     PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
-        PerformBrokeStallByPeeingScore();
+        PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Poop) {
-        PerformBrokeStallByPoopingScore();
+        PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Vomit) {
-        PerformBrokeStallByVomittingScore();
+        PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
     }
 
     bathObjRef.state = BathroomObjectState.Broken;
@@ -976,7 +976,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasWashedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeStallByOutOfOrderUseScore();
+    PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1000,7 +1000,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasDriedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeStallByOutOfOrderUseScore();
+    PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1048,7 +1048,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasWashedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeStallByWashingHandsScore();
+    PerformBrokeByWashingHandsBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1074,7 +1074,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasDriedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeStallByDryingHandsScore();
+    PerformBrokeByDryingHandsBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1161,11 +1161,11 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Pee) {
       bathObjRef.state = BathroomObjectState.BrokenByPee;
-      PerformBrokeUrinalByPeeingScore();
+      PerformBrokeByPeeingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      PerformBrokeUrinalByPoopingScore();
+      PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
@@ -1190,7 +1190,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasWashedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeUrinalByOutOfOrderUseScore();
+    PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1214,7 +1214,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasDriedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeUrinalByOutOfOrderUseScore();
+    PerformBrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1239,10 +1239,10 @@ public virtual void PerformExitOccupationFinishedLogic() {
     PerformBathroomObjectUsedScore();
     if(reliefRequired == ReliefRequired.Poop) {
       bathObjRef.state = BathroomObjectState.BrokenByPoop;
-      PerformBrokeUrinalByPoopingScore();
+      PerformBrokeByPoopingBathroomObjectScore(bathObjRef.type);
     }
     else if(reliefRequired == ReliefRequired.Vomit) {
-      PerformBrokeUrinalByVomittingScore();
+      PerformBrokeByVomitingBathroomObjectScore(bathObjRef.type);
     }
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
 
@@ -1266,7 +1266,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
     hasWashedHands = true;
 
     PerformBathroomObjectUsedScore();
-    PerformBrokeUrinalByWashingHandsScore();
+    PerformBrokeByWashingHandsBathroomObjectScore(bathObjRef.type);
 
     bathObjRef.state = BathroomObjectState.Broken;
     bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1290,7 +1290,7 @@ public virtual void PerformExitOccupationFinishedLogic() {
         hasDriedHands = true;
 
         PerformBathroomObjectUsedScore();
-        PerformBrokeUrinalByDryingHandsScore();
+        PerformBrokeByDryingHandsBathroomObjectScore(bathObjRef.type);
 
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
@@ -1584,70 +1584,71 @@ public virtual void PerformExitOccupationFinishedLogic() {
             if(bathObjRef != null) {
                 if(bathObjRef.type == BathroomObjectType.HandDryer) {
                     if(reliefRequired == ReliefRequired.DryHands) {
-                        PerformDriedHandsInHandDryerScore();
+                        // PerformWashedHandsInBathoomObjectScore(BathroomObjectType bathroomObjectType) {
+                        PerformDriedHandsInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Pee) {
-                        PerformRelievedPeeInHandDryerScore();
+                        PerformRelievedPeeInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Poop) {
-                        PerformRelievedPoopInHandDryerScore();
+                        PerformRelievedPoopInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Vomit) {
-                        PerformRelievedVomitInHandDryerScore();
+                        PerformRelievedVomitInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.WashHands) {
-                        PerformWashedHandsInHandDryerScore();
+                        PerformWashedHandsInBathoomObjectScore(bathObjRef.type);
                     }
                 }
                 else if(bathObjRef.type == BathroomObjectType.Sink) {
                     if(reliefRequired == ReliefRequired.DryHands) {
-                        PerformDriedHandsInSinkScore();
+                        PerformDriedHandsInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Pee) {
-                        PerformRelievedPeeInSinkScore();
+                        PerformRelievedPeeInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Poop) {
-                        PerformRelievedPoopInSinkScore();
+                        PerformRelievedPoopInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Vomit) {
-                        PerformRelievedVomitInSinkScore();
+                        PerformRelievedVomitInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.WashHands) {
-                        PerformWashedHandsInSinkScore();
+                        PerformWashedHandsInBathoomObjectScore(bathObjRef.type);
                     }
                 }
                 else if(bathObjRef.type == BathroomObjectType.Stall) {
                     if(reliefRequired == ReliefRequired.DryHands) {
-                        PerformDriedHandsInStallScore();
+                        PerformDriedHandsInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Pee) {
-                        PerformRelievedPeeInStallScore();
+                        PerformRelievedPeeInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Poop) {
-                        PerformRelievedPoopInStallScore();
+                        PerformRelievedPoopInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Vomit) {
-                        PerformRelievedVomitInStallScore();
+                        PerformRelievedVomitInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.WashHands) {
-                        PerformWashedHandsInStallScore();
+                        PerformWashedHandsInBathoomObjectScore(bathObjRef.type);
                     }
                 }
                 else if(bathObjRef.type == BathroomObjectType.Urinal) {
                     if(reliefRequired == ReliefRequired.DryHands) {
-                        PerformDriedHandsInUrinalScore();
+                        PerformDriedHandsInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Pee) {
-                        PerformRelievedPeeInUrinalScore();
+                        PerformRelievedPeeInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Poop) {
-                        PerformRelievedPoopInUrinalScore();
+                        PerformRelievedPoopInBathoomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.Vomit) {
-                        PerformRelievedVomitInUrinalScore();
+                        PerformRelievedVomitInBathroomObjectScore(bathObjRef.type);
                     }
                     else if(reliefRequired == ReliefRequired.WashHands) {
-                        PerformWashedHandsInUrinalScore();
+                        PerformWashedHandsInBathoomObjectScore(bathObjRef.type);
                     }
                 }
             }
@@ -1660,71 +1661,6 @@ public virtual void PerformExitOccupationFinishedLogic() {
     }
     public virtual void PerformExitedScore() {
         ScoreManager.Instance.GetPlayerScoreTracker().PerformBroExitedScore(type);
-    }
-    //--------------------------------------------------------------------
-    public virtual void PerformRelievedPeeInHandDryerScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInHandDryerScore(type);
-    }
-    public virtual void PerformRelievedPeeInSinkScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInSinkScore(type);
-    }
-    public virtual void PerformRelievedPeeInStallScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInStallScore(type);
-    }
-    public virtual void PerformRelievedPeeInUrinalScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPeeInUrinalScore(type);
-    }
-
-    public virtual void PerformRelievedPoopInHandDryerScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInHandDryerScore(type);
-    }
-    public virtual void PerformRelievedPoopInSinkScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInSinkScore(type);
-    }
-    public virtual void PerformRelievedPoopInStallScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInStallScore(type);
-    }
-    public virtual void PerformRelievedPoopInUrinalScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedPoopInUrinalScore(type);
-    }
-
-    public virtual void PerformRelievedVomitInHandDryerScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInHandDryerScore(type);
-    }
-    public virtual void PerformRelievedVomitInSinkScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInSinkScore(type);
-    }
-    public virtual void PerformRelievedVomitInStallScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInStallScore(type);
-    }
-    public virtual void PerformRelievedVomitInUrinalScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroRelievedVomitInUrinalScore(type);
-    }
-    //--------------------------------------------------------------------
-    public virtual void PerformWashedHandsInHandDryerScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInHandDryerScore(type);
-    }
-    public virtual void PerformWashedHandsInSinkScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInSinkScore(type);
-    }
-    public virtual void PerformWashedHandsInStallScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInStallScore(type);
-    }
-    public virtual void PerformWashedHandsInUrinalScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroWashedHandsInUrinalScore(type);
-    }
-    //--------------------------------------------------------------------
-    public virtual void PerformDriedHandsInHandDryerScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInHandDryerScore(type);
-    }
-    public virtual void PerformDriedHandsInSinkScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInSinkScore(type);
-    }
-    public virtual void PerformDriedHandsInStallScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInStallScore(type);
-    }
-    public virtual void PerformDriedHandsInUrinalScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroDriedHandsInUrinalScore(type);
     }
     //--------------------------------------------------------------------
     public virtual void PerformStartedStandoffScore() {
@@ -1740,108 +1676,42 @@ public virtual void PerformExitOccupationFinishedLogic() {
         ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStoppedFightScore(type);
     }
     //--------------------------------------------------------------------
-    public virtual void PerformCausedOutOfOrderHandDryerScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderHandDryerScore(type);
+    public virtual void PerformDriedHandsInBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformDriedHandsInBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformCausedOutOfOrderSinkScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderSinkScore(type);
+    public virtual void PerformRelievedPeeInBathoomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformRelievedPeeInBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformCausedOutOfOrderStallScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderStallScore(type);
+    public virtual void PerformRelievedPoopInBathoomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformRelievedPoopInBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformCausedOutOfOrderUrinalScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderUrinalScore(type);
+    public virtual void PerformRelievedVomitInBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformRelievedVomitInBathroomObjectScore(type, bathroomObjectType);
     }
-    //--------------------------------------------------------------------
-    public virtual void PerformBrokeHandDryerByOutOfOrderUseScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByOutOfOrderUseScore(type);
+    public virtual void PerformWashedHandsInBathoomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformWashedHandsInBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformBrokeSinkByOutOfOrderUseScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByOutOfOrderUseScore(type);
+    //---------
+    public virtual void PerformBrokeByOutOfOrderUseBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByOutOfOrderUseBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformBrokeStallByOutOfOrderUseScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByOutOfOrderUseScore(type);
+    public virtual void PerformBrokeByPeeingBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByPeeingBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformBrokeUrinalByOutOfOrderUseScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByOutOfOrderUseScore(type);
+    public virtual void PerformBrokeByPoopingBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByPoopingBathroomObjectScore(type, bathroomObjectType);
     }
-
-    public virtual void PerformBrokeHandDryerByPeeingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByPeeingScore(type);
+    public virtual void PerformBrokeByVomitingBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByVomitingBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformBrokeSinkByPeeingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByPeeingScore(type);
+    public virtual void PerformBrokeByWashingHandsBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByWashingHandsBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformBrokeStallByPeeingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByPeeingScore(type);
+    public virtual void PerformBrokeByDryingHandsBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByDryingHandsBathroomObjectScore(type, bathroomObjectType);
     }
-    public virtual void PerformBrokeUrinalByPeeingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByPeeingScore(type);
-    }
-
-    public virtual void PerformBrokeHandDryerByPoopingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByPoopingScore(type);
-    }
-    public virtual void PerformBrokeSinkByPoopingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByPoopingScore(type);
-    }
-    public virtual void PerformBrokeStallByPoopingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByPoopingScore(type);
-    }
-    public virtual void PerformBrokeUrinalByPoopingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByPoopingScore(type);
-    }
-
-    public virtual void PerformBrokeHandDryerByVomittingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByVomittingScore(type);
-    }
-    public virtual void PerformBrokeSinkByVomittingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByVomittingScore(type);
-    }
-    public virtual void PerformBrokeStallByVomittingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByVomittingScore(type);
-    }
-    public virtual void PerformBrokeUrinalByVomittingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByVomittingScore(type);
-    }
-
-    public virtual void PerformBrokeHandDryerByWashingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByWashingHandsScore(type);
-    }
-    public virtual void PerformBrokeSinkByWashingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByWashingHandsScore(type);
-    }
-    public virtual void PerformBrokeStallByWashingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByWashingHandsScore(type);
-    }
-    public virtual void PerformBrokeUrinalByWashingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByWashingHandsScore(type);
-    }
-
-    public virtual void PerformBrokeHandDryerByDryingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByDryingHandsScore(type);
-    }
-    public virtual void PerformBrokeSinkByDryingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByDryingHandsScore(type);
-    }
-    public virtual void PerformBrokeStallByDryingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByDryingHandsScore(type);
-    }
-    public virtual void PerformBrokeUrinalByDryingHandsScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByDryingHandsScore(type);
-    }
-
-    public virtual void PerformBrokeHandDryerByFightingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeHandDryerByFightingScore(type);
-    }
-    public virtual void PerformBrokeSinkByFightingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeSinkByFightingScore(type);
-    }
-    public virtual void PerformBrokeStallByFightingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeStallByFightingScore(type);
-    }
-    public virtual void PerformBrokeUrinalByFightingScore() {
-        ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBrokeUrinalByFightingScore(type);
+    public virtual void PerformBrokeByFightingBathroomObjectScore(BathroomObjectType bathroomObjectType) {
+        ScoreManager.Instance.GetPlayerScoreTracker().PerformBrokeByFightingBathroomObjectScore(type, bathroomObjectType);
     }
     //-------------------------------------------------------------------------
     public virtual void PerformSatisfiedBrotocolNoAdjacentBrosScore() {
