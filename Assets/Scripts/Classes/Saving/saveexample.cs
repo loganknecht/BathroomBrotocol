@@ -6,12 +6,21 @@ using System.Collections;
 
 namespace Assets.Scripts.Classes
 {
-    class GameControl : MonoBehaviour
+    class saveexample : MonoBehaviour
     {
-        public static GameControl control;
+        /*public static GameControl control;
 
+        //Story Mode
         public bool newGame = true;
+
+        //Career Mode
+        public bool one = true;
+        public int oneScore = 0;
         
+        //Settings
+
+        //Etc
+
         void Awake()
         {
             if(control == null)
@@ -27,7 +36,6 @@ namespace Assets.Scripts.Classes
 
         void Update()
         {
-            GUI.Label(new Rect(10, 10, 100, 30), "NewGame: " + newGame.ToString());
         }
         public void Save()
         {
@@ -54,9 +62,10 @@ namespace Assets.Scripts.Classes
                 file.Close();
 
                 //load saved data to singleton GameControl object
+                
                 newGame = data.newGame;
             }
-        }
+        }*/
     }
 
     [Serializable]

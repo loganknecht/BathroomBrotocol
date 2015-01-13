@@ -5,8 +5,8 @@ public class GameMenu : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -15,4 +15,9 @@ public class GameMenu : MonoBehaviour {
             Application.LoadLevel("Title");
         }
 	}
+
+    public void LoadLevel(string name)
+    {
+        Application.LoadLevel(name);
+    }
 }
