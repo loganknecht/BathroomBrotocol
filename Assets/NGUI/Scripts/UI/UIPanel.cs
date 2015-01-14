@@ -620,7 +620,8 @@ public class UIPanel : UIRect
 				mCorners[2] = new Vector3(x1, y1);
 				mCorners[3] = new Vector3(x1, y0);
 
-				if (anchorOffset && mCam == null || mCam.transform.parent != cachedTransform)
+				// if (anchorOffset && mCam == null || mCam.transform.parent != cachedTransform)
+				if (anchorOffset && (mCam == null || mCam.transform.parent != cachedTransform))
 				{
 					Vector3 off = cachedTransform.position;
 					for (int i = 0; i < 4; ++i)
@@ -882,7 +883,7 @@ public class UIPanel : UIRect
 
 		// Only DirectX 9 needs the half-pixel offset
 		if (mHalfPixelOffset) mHalfPixelOffset = (SystemInfo.graphicsShaderLevel < 40 &&
-		                                          SystemInfo.graphicsDeviceVersion.Contains("Direct3D"));
+												  SystemInfo.graphicsDeviceVersion.Contains("Direct3D"));
 	}
 
 	/// <summary>
