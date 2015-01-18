@@ -2,25 +2,29 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// sorting order is for the greater number puts it in front
+// example: 10 < 30 so the object with a sorting order of 30 is drawn on top
 public class ManagedSortingLayer : MonoBehaviour {
 
+    // Public
     public GameObject gameObjectToBaseSortingOn = null;
-    public IsometricDisplay gameObjectIsometricDisplay = null;
-
-    public List<GameObject> gameObjectsToMatchSortingLayer = new List<GameObject>();
+    public GameObject gameObjectToMatchSortingLayer; 
     public int sortingLayerOffset = 0;
-    int sortingMagnitudeModifier = 100;
-    public bool dontPerformOwnSorting = false;
     public bool debug = false;
-    public SortingOrder sortingOrder = SortingOrder.BackToFront;
+    public SortingOrder sortingOrder = SortingOrder.TopToBottom;
+
+    // Private
+    IsometricDisplay gameObjectIsometricDisplay = null;
+    int sortingMagnitudeModifier = 100;
 
     // Use this for initialization
     void Start () {
-        if(!dontPerformOwnSorting
-            && gameObjectToBaseSortingOn == null) {
+        if(gameObjectToBaseSortingOn == null) {
             Debug.LogError("The gameObject: '" + gameObject.name + "' does not have the 'gameObjectToBaseSortingOn' set to a value. Please set this to the GameObject that sorting will be based on.");
         }
-        // Debug.LogError("The IsometricDisplay reference 'gameObjectIsometricDisplay' is null for "  + gameObject.name + ". Is this intentional?");
+        if(gameObjectIsometricDisplay == null) {
+            gameObjectIsometricDisplay = this.gameObject.GetComponent<IsometricDisplay>();
+        }
     }
 
     // Update is called once per frame
@@ -29,80 +33,142 @@ public class ManagedSortingLayer : MonoBehaviour {
     }
 
     public void PerformSortingLogic() {
-        if(!dontPerformOwnSorting) {
-            // int sortingLayerCalculation = CalculateSortingLayerDistanceAwayFromCamera();
-            int sortingLayerCalculation = CalculateSortingLayer();
-            // this.gameObject.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation  + sortingLayerOffset;
-            if(debug) {
-                Debug.Log(this.gameObject.name);
-                Debug.Log("sorting calculation: " + sortingLayerCalculation);
-                Debug.Log("sorting offset: " + sortingLayerOffset);
-            }
-            foreach(GameObject objectToUpdate in gameObjectsToMatchSortingLayer) {
-                objectToUpdate.GetComponent<SpriteRenderer>().sortingOrder = sortingLayerCalculation + sortingLayerOffset + objectToUpdate.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
-            }
-        }
+        CalculateSortingLayer();
     }
 
     // The top right corner is the deepest and the bottom left corner is the front most
-    public int CalculateSortingLayer() {
-        int sortingLayerCalculation = 0;
-        if(sortingOrder == SortingOrder.BackToFront) {
-            // sortingLayerCalculation = (int)(-this.gameObject.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
-            sortingLayerCalculation = (int)(-gameObjectToBaseSortingOn.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
-            if(gameObjectIsometricDisplay != null) {
-                // This accounts for the offsets in tile map height displaying game objects
-                sortingLayerCalculation += (int)((sortingMagnitudeModifier * gameObjectIsometricDisplay.tileMapLayerHeight) * gameObjectIsometricDisplay.tileMapLayer);
-                sortingLayerCalculation += gameObjectIsometricDisplay.tileMapLayer;
-            }
+    public void CalculateSortingLayer() {
+        if(sortingOrder == SortingOrder.TopToBottom) {
+            PerformTopToBottomSorting();
         }
-        else if(sortingOrder == SortingOrder.FrontToBack) {
-            // sortingLayerCalculation = (int)(this.gameObject.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
-            sortingLayerCalculation = (int)(gameObjectToBaseSortingOn.transform.position.y * sortingMagnitudeModifier) + sortingLayerOffset;
+        if(sortingOrder == SortingOrder.TopRightToBottomLeft) {
+            PerformTopRightToBottomLeftSorting();
         }
-        sortingLayerCalculation += (int)(0.5f * sortingMagnitudeModifier);
-        // Front To Back, Left To Right
-        // sortingLayerCalculation = (int)((this.gameObject.transform.position.x * sortingMagnitudeModifier) + (this.gameObject.transform.position.y * 100)) + sortingLayerOffset;
+        else if(sortingOrder == SortingOrder.BottomToTop) {
+            PerformBottomToTopSorting();
+        }
+        else if(sortingOrder == SortingOrder.BottomLeftToTopRight) {
+            PerformBottomLeftToTopRightSorting();
+        }
 
-        return sortingLayerCalculation;
     }
 
-    // The farther you are away from the camera the more hidden you are
-    public int CalculateSortingLayerDistanceAwayFromCamera() {
-        Vector3 cameraPosition = Camera.main.transform.position;
-        Vector3 currentPosition = Vector3.zero;
+    //-------------------------------------------------------------------------
+    // This prioritizes hieght such that the greater y value draws on top
+    public void PerformTopToBottomSorting() {
+        float anchorSortingOrder = gameObjectToBaseSortingOn.transform.position.y;
+        anchorSortingOrder += GetTopToBottomIsometricDisplayOffset(this.gameObject.GetComponent<IsometricDisplay>());
+        anchorSortingOrder *= sortingMagnitudeModifier;
+        anchorSortingOrder += sortingLayerOffset;
 
-        currentPosition = this.gameObject.transform.position;
+        float newSortingOrder = anchorSortingOrder;
+        // Add isometric tile layer location to offset for height
+        newSortingOrder += GetTopToBottomIsometricDisplayOffset(gameObjectToMatchSortingLayer.GetComponent<IsometricDisplay>()) * sortingMagnitudeModifier;
+        // Add personal offset
+        if(gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>() != null) {
+            newSortingOrder += gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
+        }
 
-        float xDifference = currentPosition.x - cameraPosition.x;
-        // float xDifference = cameraPosition.x - currentPosition.x;
+        gameObjectToMatchSortingLayer.GetComponent<SpriteRenderer>().sortingOrder = (int)newSortingOrder;
+    }
 
-        float yDifference = currentPosition.y - cameraPosition.y;
-        // float yDifference = cameraPosition.y - currentPosition.y;
+    // This returns the offset value for an isometric display item is on a different tile map layer
+    // It DOES NOT take into account the sortingMagnitudeModifier
+    public float GetTopToBottomIsometricDisplayOffset(IsometricDisplay isometricDisplayReference) {
+        float isometricDisplayOffset = 0;
+        if(isometricDisplayReference != null) {
+            isometricDisplayOffset += (isometricDisplayReference.tileMapLayerHeight * isometricDisplayReference.tileMapLayer);
+        }
 
-        float distanceFromCamera = Mathf.Sqrt((xDifference * xDifference) + (yDifference * yDifference));
+        return isometricDisplayOffset;
+    }
+    //-------------------------------------------------------------------------
+    // This prioritizes hieght such that the greater y value and the lesser the absolute x value draws on top
+    public void PerformTopRightToBottomLeftSorting() {
+        float anchorSortingOrder = gameObjectToBaseSortingOn.transform.position.y;
+        anchorSortingOrder += Mathf.Abs(gameObjectToBaseSortingOn.transform.position.x);
+        anchorSortingOrder += GetTopRightToBottomLeftIsometricDisplayOffset(this.gameObject.GetComponent<IsometricDisplay>());
+        anchorSortingOrder *= sortingMagnitudeModifier;
+        anchorSortingOrder += sortingLayerOffset;
 
-        int sortingLayerCalculation = Mathf.RoundToInt(distanceFromCamera * 100 * -1);
+        float newSortingOrder = anchorSortingOrder;
+        // Add isometric tile layer location to offset for height
+        newSortingOrder += GetTopRightToBottomLeftIsometricDisplayOffset(gameObjectToMatchSortingLayer.GetComponent<IsometricDisplay>()) * sortingMagnitudeModifier;
+        // Add personal offset
+        if(gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>() != null) {
+            newSortingOrder += gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
+        }
 
-        // bool showDebugLogic = false;
-        // if(this.gameObject.GetComponent<HighlightSelectable>() != null
-        //    || this.gameObject.GetComponent<GenericBro>() != null) {
-        // if(this.gameObject.name == "GenericBro1(Clone)"
-        //    || this.gameObject.name == "HighlightBackground") {
-        //   showDebugLogic =  true;
-        // }
-        // if(showDebugLogic) {
-        //   Debug.Log("---------------------------------");
-        //   Debug.Log("GameObject: " + this.gameObject.name);
-        //   Debug.Log("currentPosition: " + currentPosition);
-        //   Debug.Log("xDifference: " + xDifference);
-        //   Debug.Log("yDifference: " + yDifference);
-        //   Debug.Log("distanceFromCamera: " + distanceFromCamera);
-        //   Debug.Log("sortingLayerCalculation: " + sortingLayerCalculation);
-        // }
+        gameObjectToMatchSortingLayer.GetComponent<SpriteRenderer>().sortingOrder = (int)newSortingOrder;
+    }
 
-        // Debug.Log(sortingLayerCalculation);
+    // This returns the offset value for an isometric display item is on a different tile map layer
+    // It DOES NOT take into account the sortingMagnitudeModifier
+    public float GetTopRightToBottomLeftIsometricDisplayOffset(IsometricDisplay isometricDisplayReference) {
+        float isometricDisplayOffset = 0;
+        if(isometricDisplayReference != null) {
+            isometricDisplayOffset += (isometricDisplayReference.tileMapLayerHeight * isometricDisplayReference.tileMapLayer);
+        }
 
-        return sortingLayerCalculation;
+        return isometricDisplayOffset;
+    }
+    //-------------------------------------------------------------------------
+    // This prioritizes hieght such that the lesser the y position is drawn on top
+    public void PerformBottomToTopSorting() {
+        float anchorSortingOrder = -gameObjectToBaseSortingOn.transform.position.y;
+        anchorSortingOrder += GetBottomToTopIsometricDisplayOffset(this.gameObject.GetComponent<IsometricDisplay>());
+        anchorSortingOrder *= sortingMagnitudeModifier;
+        anchorSortingOrder += sortingLayerOffset;
+
+        float newSortingOrder = anchorSortingOrder;
+        // Add isometric tile layer location to offset for height
+        newSortingOrder += GetBottomToTopIsometricDisplayOffset(gameObjectToMatchSortingLayer.GetComponent<IsometricDisplay>()) * sortingMagnitudeModifier;
+        // Add personal offset
+        if(gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>() != null) {
+            newSortingOrder += gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
+        }
+
+        gameObjectToMatchSortingLayer.GetComponent<SpriteRenderer>().sortingOrder = (int)newSortingOrder;
+    }
+
+    // This returns the offset value for an isometric display item is on a different tile map layer
+    // It DOES NOT take into account the sortingMagnitudeModifier
+    public float GetBottomToTopIsometricDisplayOffset(IsometricDisplay isometricDisplayReference) {
+        float isometricDisplayOffset = 0;
+        if(isometricDisplayReference != null) {
+            isometricDisplayOffset += (-isometricDisplayReference.tileMapLayerHeight * isometricDisplayReference.tileMapLayer);
+        }
+
+        return isometricDisplayOffset;
+    }
+    //-------------------------------------------------------------------------
+    // This prioritizes hieght such that the lesser the y position and the lesser amount of the absolute x value is drawn on top
+    public void PerformBottomLeftToTopRightSorting() {
+        float anchorSortingOrder = -gameObjectToBaseSortingOn.transform.position.y;
+        anchorSortingOrder -= Mathf.Abs(gameObjectToBaseSortingOn.transform.position.x);
+        anchorSortingOrder += GetBottomLeftToTopRightIsometricDisplayOffset(this.gameObject.GetComponent<IsometricDisplay>());
+        anchorSortingOrder *= sortingMagnitudeModifier;
+        anchorSortingOrder += sortingLayerOffset;
+
+        float newSortingOrder = anchorSortingOrder;
+        // Add isometric tile layer location to offset for height
+        newSortingOrder += GetBottomLeftToTopRightIsometricDisplayOffset(gameObjectToMatchSortingLayer.GetComponent<IsometricDisplay>()) * sortingMagnitudeModifier;
+        // Add personal offset
+        if(gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>() != null) {
+            newSortingOrder += gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
+        }
+
+        gameObjectToMatchSortingLayer.GetComponent<SpriteRenderer>().sortingOrder = (int)newSortingOrder;
+    }
+
+    // This returns the offset value for an isometric display item is on a different tile map layer
+    // It DOES NOT take into account the sortingMagnitudeModifier
+    public float GetBottomLeftToTopRightIsometricDisplayOffset(IsometricDisplay isometricDisplayReference) {
+        float isometricDisplayOffset = 0;
+        if(isometricDisplayReference != null) {
+            isometricDisplayOffset += (-isometricDisplayReference.tileMapLayerHeight * isometricDisplayReference.tileMapLayer);
+        }
+
+        return isometricDisplayOffset;
     }
 }
