@@ -44,8 +44,7 @@ public class IsometricDisplay : MonoBehaviour {
     }
 
     void PerformInitialization() {
-        if(!dontPerformOwnIsometricLogic
-            && gameObjectToAnchorTo == null) {
+        if(gameObjectToAnchorTo == null) {
             Debug.LogError("For '" + this.gameObject.name + "' gameObjectToAnchorTo is NULL! Please set this value before calling game logic.");
         }
 
@@ -54,41 +53,38 @@ public class IsometricDisplay : MonoBehaviour {
         }
     }
     public void UpdateDisplayPosition() {
-        if(!dontPerformOwnIsometricLogic) {
-            // Use for images that should be of a 2 to 1 width to height ratio
-            // float halfTileWidth = BathroomTileMap.Instance.singleTileWidth/2;
-            // float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/2;
-            
-            // Use for images that should be of a 1 to 1 width to height ratio
-            float halfTileWidth = BathroomTileMap.Instance.singleTileWidth/2;
-            float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/4;
+        // Use for images that should be of a 2 to 1 width to height ratio
+        // float halfTileWidth = BathroomTileMap.Instance.singleTileWidth/2;
+        // float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/2;
+        
+        // Use for images that should be of a 1 to 1 width to height ratio
+        float halfTileWidth = BathroomTileMap.Instance.singleTileWidth/2;
+        float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/4;
 
-            Vector2 displayPosition = ConvertScreenToIsometricCoordinates(gameObjectToAnchorTo.transform.position.x, gameObjectToAnchorTo.transform.position.y, halfTileWidth, halfTileHeight);
-            displayPosition.x += isometricXOffset;
-            displayPosition.y += isometricYOffset;
-            displayPosition.y += tileMapLayer * tileMapLayerHeight;
+        Vector2 displayPosition = ConvertScreenToIsometricCoordinates(gameObjectToAnchorTo.transform.position.x, gameObjectToAnchorTo.transform.position.y, halfTileWidth, halfTileHeight);
+        displayPosition.x += isometricXOffset;
+        displayPosition.y += isometricYOffset;
+        // displayPosition.y += tileMapLayer * tileMapLayerHeight;
 
-            foreach(GameObject gameObjectToOffsetFromAnchor in gameObjectsToOffsetFromAnchor) { 
-                IsometricDisplay isometricReference = gameObjectToOffsetFromAnchor.GetComponent<IsometricDisplay>();
+        foreach(GameObject gameObjectToOffsetFromAnchor in gameObjectsToOffsetFromAnchor) { 
+            IsometricDisplay isometricReference = gameObjectToOffsetFromAnchor.GetComponent<IsometricDisplay>();
 
-                Vector3 isometricOffset = Vector3.zero;
+            Vector3 isometricOffset = Vector3.zero;
 
-                if(isometricReference != null) {
-                    isometricOffset.x += isometricReference.isometricXOffset;
-                    
-                    isometricOffset.y += isometricReference.isometricYOffset;
-                    isometricOffset.y += (isometricReference.tileMapLayer * isometricReference.tileMapLayerHeight);
-                }
-
-                gameObjectToOffsetFromAnchor.transform.position = new Vector3((displayPosition.x + isometricOffset.x), (displayPosition.y + isometricOffset.y), gameObjectToOffsetFromAnchor.transform.position.z);
+            if(isometricReference != null) {
+                isometricOffset.x += isometricReference.isometricXOffset;
+                
+                isometricOffset.y += isometricReference.isometricYOffset;
+                isometricOffset.y += (isometricReference.tileMapLayer * isometricReference.tileMapLayerHeight);
             }
+
+            gameObjectToOffsetFromAnchor.transform.position = new Vector3((displayPosition.x + isometricOffset.x), (displayPosition.y + isometricOffset.y), gameObjectToOffsetFromAnchor.transform.position.z);
         }
     }
 
     public Vector2 ConvertScreenToIsometricCoordinates(float mapX, float mapY, float halfTileWidth, float halfTileHeight) {
         Vector2 isometricVector = new Vector2((mapX - mapY) * halfTileWidth,
                                               (mapX + mapY) * halfTileHeight);
-
         return isometricVector;
     }
 
