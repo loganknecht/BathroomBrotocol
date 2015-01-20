@@ -62,21 +62,14 @@ public class IsometricDisplay : MonoBehaviour {
         float halfTileHeight = BathroomTileMap.Instance.singleTileHeight/4;
 
         Vector2 displayPosition = ConvertScreenToIsometricCoordinates(gameObjectToAnchorTo.transform.position.x, gameObjectToAnchorTo.transform.position.y, halfTileWidth, halfTileHeight);
-        displayPosition.x += isometricXOffset;
-        displayPosition.y += isometricYOffset;
-        // displayPosition.y += tileMapLayer * tileMapLayerHeight;
 
         foreach(GameObject gameObjectToOffsetFromAnchor in gameObjectsToOffsetFromAnchor) { 
-            IsometricDisplay isometricReference = gameObjectToOffsetFromAnchor.GetComponent<IsometricDisplay>();
-
             Vector3 isometricOffset = Vector3.zero;
 
-            if(isometricReference != null) {
-                isometricOffset.x += isometricReference.isometricXOffset;
-                
-                isometricOffset.y += isometricReference.isometricYOffset;
-                isometricOffset.y += (isometricReference.tileMapLayer * isometricReference.tileMapLayerHeight);
-            }
+            isometricOffset.x += isometricXOffset;
+            
+            isometricOffset.y += isometricYOffset;
+            isometricOffset.y += (tileMapLayer * tileMapLayerHeight);
 
             gameObjectToOffsetFromAnchor.transform.position = new Vector3((displayPosition.x + isometricOffset.x), (displayPosition.y + isometricOffset.y), gameObjectToOffsetFromAnchor.transform.position.z);
         }

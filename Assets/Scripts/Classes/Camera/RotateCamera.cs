@@ -231,52 +231,57 @@ public class RotateCamera : MonoBehaviour {
         if(tileContainingGameObjectDict == null) {
             tileContainingGameObjectDict = new Dictionary<GameObject, GameObject>();
         }
+
         foreach(GameObject gameObj in gameObjectsToSetOffset) {
-            if(gameObj.GetComponent<IsometricDisplay>() != null
-                && gameObj.GetComponent<IsometricDisplay>().hideUnderDiagonal) {
+            IsometricDisplay[] IsometricDisplays = gameObj.GetComponentsInChildren<IsometricDisplay>(true);
+            foreach(IsometricDisplay isometricDisplay in IsometricDisplays) {
+                if(isometricDisplay.hideUnderDiagonal) {
+                    GameObject tileContainingGameObject;
+                    if(tileContainingGameObjectDict.TryGetValue(gameObj, out tileContainingGameObject)) {
+                        // already assigned in if statement
+                    }
+                    else
+                    {
+                        tileContainingGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(gameObj.transform.position.x, gameObj.transform.position.y, true);
+                    }
 
-                GameObject tileContainingGameObject;
-                if(tileContainingGameObjectDict.TryGetValue(gameObj, out tileContainingGameObject)) {
-                    // already assigned in if statement
-                }
-                else
-                {
-                    tileContainingGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(gameObj.transform.position.x, gameObj.transform.position.y, true);
-                }
+                    BathroomTile tileContaining = tileContainingGameObject.GetComponent<BathroomTile>();
+                    float i = 0;
+                    float j = 0;
+                    float xStepSize = BathroomTileMap.Instance.tilesWide/BathroomTileMap.Instance.tilesHigh;
+                    float yStepSize = BathroomTileMap.Instance.tilesHigh/BathroomTileMap.Instance.tilesWide;
+                    bool gameObjIsAboveDiagonal = false;
+                    while(i < BathroomTileMap.Instance.tilesWide
+                          && j < BathroomTileMap.Instance.tilesHigh) {
+                        int newI = (int)(i + xStepSize);
+                        int newJ = (int)(j + yStepSize);
+                        int xTilesMoved = (int)(newI - i); 
+                        int yTilesMoved = (int)(newJ - j);
+                        for(int ii = 0; ii < xTilesMoved; ii++) {
+                            for(int jj = 0; jj < yTilesMoved; jj++) {
+                                int currentXTile = (int)(i + ii);
+                                int currentYTile = (int)(BathroomTileMap.Instance.tilesHigh - 1 - (j + jj));
+                                // GameObject currentBathroomTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentXTile, currentYTile);
 
-                BathroomTile tileContaining = tileContainingGameObject.GetComponent<BathroomTile>();
-                float i = 0;
-                float j = 0;
-                float xStepSize = BathroomTileMap.Instance.tilesWide/BathroomTileMap.Instance.tilesHigh;
-                float yStepSize = BathroomTileMap.Instance.tilesHigh/BathroomTileMap.Instance.tilesWide;
-                bool gameObjIsAboveDiagonal = false;
-                while(i < BathroomTileMap.Instance.tilesWide
-                      && j < BathroomTileMap.Instance.tilesHigh) {
-                    int newI = (int)(i + xStepSize);
-                    int newJ = (int)(j + yStepSize);
-                    int xTilesMoved = (int)(newI - i); 
-                    int yTilesMoved = (int)(newJ - j);
-                    for(int ii = 0; ii < xTilesMoved; ii++) {
-                        for(int jj = 0; jj < yTilesMoved; jj++) {
-                            int currentXTile = (int)(i + ii);
-                            int currentYTile = (int)(BathroomTileMap.Instance.tilesHigh - 1 - (j + jj));
-                            // GameObject currentBathroomTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentXTile, currentYTile);
+                                // Debug.Log("Current X: " + currentXTile + " Y: " + currentYTile);
 
-                            // Debug.Log("Current X: " + currentXTile + " Y: " + currentYTile);
-
-                            // TODO: THIS IS STILL BROKEN, IT WILL BREAK FOR TILES THAT ARE OUTSIDE OF THE TILE MAP BECAUSE THEIR CLOSEST TILE RETURNED IS THE CORNER
-                            // TO FIX THIS YOU'LL HAVE TO FIGURE OUT A WAY TO CALCULATE BASED ON THE DIAGONAL OFFSET FROM THE CORNERS OF THE TILE MAP
-                            if(tileContaining.tileX >= currentXTile
-                                && tileContaining.tileY >= currentYTile) {
-                                gameObjIsAboveDiagonal = true;
+                                // TODO: THIS IS STILL BROKEN, IT WILL BREAK FOR TILES THAT ARE OUTSIDE OF THE TILE MAP BECAUSE THEIR CLOSEST TILE RETURNED IS THE CORNER
+                                // TO FIX THIS YOU'LL HAVE TO FIGURE OUT A WAY TO CALCULATE BASED ON THE DIAGONAL OFFSET FROM THE CORNERS OF THE TILE MAP
+                                if(tileContaining.tileX >= currentXTile
+                                    && tileContaining.tileY >= currentYTile) {
+                                    gameObjIsAboveDiagonal = true;
+                                }
                             }
                         }
+                        i = newI;
+                        j = newJ;
                     }
-                    i = newI;
-                    j = newJ;
-                }
 
-                gameObj.SetActive(gameObjIsAboveDiagonal);
+                    // isometricDisplay.gameObject.SetActive(gameObjIsAboveDiagonal);
+                    // This is used because I can't think of any time I would use the animation controller to tweak the enabled setting of a 
+                    // sprite renderer and because of this it doesn't create a lag between enabling and disabling like the gameobject effect does
+                    isometricDisplay.gameObject.GetComponent<SpriteRenderer>().enabled = gameObjIsAboveDiagonal;
+                }
             }
         }
     }
@@ -481,16 +486,16 @@ public class RotateCamera : MonoBehaviour {
 
         SetGameObjectOffsets(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BathroomTileBlockerManager.Instance.bathroomTileBlockers);
-        HideObjectsIfUnderDiagonal(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn);
+        // HideObjectsIfUnderDiagonal(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn);
 
         SetGameObjectOffsets(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BathroomObjectManager.Instance.allBathroomObjects);
-        HideObjectsIfUnderDiagonal(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn);
+        // HideObjectsIfUnderDiagonal(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn);
 
         SetGameObjectTargetPositionOffsets(BroManager.Instance.allBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allBros);
-        HideObjectsIfUnderDiagonal(BroManager.Instance.allBros, tileGameObjectIn);
+        // HideObjectsIfUnderDiagonal(BroManager.Instance.allBros, tileGameObjectIn);
 
         SetGameObjectStandoffAnchorOffsets(BroManager.Instance.allStandoffBros, standoffBroTileIn, standoffBroTileOffset);
         SetGameObjectStandoffRadiusOneOffsets(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusOne, standoffBroRadiusOneTileOffset);
@@ -504,17 +509,18 @@ public class RotateCamera : MonoBehaviour {
         SetGameObjectTargetPositionOffsets(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allFightingBros);
-        HideObjectsIfUnderDiagonal(BroManager.Instance.allFightingBros, tileGameObjectIn);
+        // HideObjectsIfUnderDiagonal(BroManager.Instance.allFightingBros, tileGameObjectIn);
 
         foreach(GameObject lineQueue in EntranceQueueManager.Instance.lineQueues) {
             SetGameObjectOffsets(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn, gameObjectTileOffset);
             UpdateDisplayPositions(lineQueue.GetComponent<LineQueue>().queueTileObjects);
-            HideObjectsIfUnderDiagonal(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn);
+            // HideObjectsIfUnderDiagonal(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn);
         }
 
         SetGameObjectOffsets(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(SceneryManager.Instance.GetScenery());
-        HideObjectsIfUnderDiagonal(SceneryManager.Instance.GetScenery(), tileGameObjectIn);
+        // HideObjectsIfUnderDiagonal(SceneryManager.Instance.GetScenery(), tileGameObjectIn);
+        HideBathroomIfUnderDiagonal();
     }
 
     public DirectionBeingLookedAt GetDirectionBeingLookedAt(float amountRotatedAround) {
