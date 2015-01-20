@@ -21,6 +21,8 @@ public class IsometricDisplay : MonoBehaviour {
     public GameObject gameObjectToAnchorTo;
     /// <value>gameObjectsToOffsetFromAnchor - These are the game objects to offset for displaying, it should be either the sprite or a parent of the sprite</value>
     public List<GameObject> gameObjectsToOffsetFromAnchor;
+    /// <value>spritesToManage - These are the sprites that need to be disabled when hiding under the diagonal</value>
+    public List<SpriteRenderer> spritesToManage;
     /// <value></value>
     public float isometricXOffset = 0f;
     /// <value></value>
@@ -84,5 +86,17 @@ public class IsometricDisplay : MonoBehaviour {
     public void ConvertIsometricToScreenCoordinates() {
         // screen.x = (map.x - map.y) * TILE_WIDTH_HALF;
         // screen.y = (map.x + map.y) * TILE_HEIGHT_HALF;
+    }
+
+    public void HideSpritesBeingManaged() {
+        foreach(SpriteRenderer spriterRenderer in spritesToManage) {
+            spriterRenderer.enabled = false;
+        }
+    }
+
+    public void ShowSpritesBeingManaged() {
+        foreach(SpriteRenderer spriterRenderer in spritesToManage) {
+            spriterRenderer.enabled = true;
+        }
     }
 }

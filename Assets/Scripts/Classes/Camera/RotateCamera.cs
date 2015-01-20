@@ -280,7 +280,13 @@ public class RotateCamera : MonoBehaviour {
                     // isometricDisplay.gameObject.SetActive(gameObjIsAboveDiagonal);
                     // This is used because I can't think of any time I would use the animation controller to tweak the enabled setting of a 
                     // sprite renderer and because of this it doesn't create a lag between enabling and disabling like the gameobject effect does
-                    isometricDisplay.gameObject.GetComponent<SpriteRenderer>().enabled = gameObjIsAboveDiagonal;
+                    // isometricDisplay.gameObject.GetComponent<SpriteRenderer>().enabled = gameObjIsAboveDiagonal;
+                    if(gameObjIsAboveDiagonal) {
+                        isometricDisplay.ShowSpritesBeingManaged();
+                    }
+                    else {
+                        isometricDisplay.HideSpritesBeingManaged();
+                    }
                 }
             }
         }
