@@ -5,19 +5,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public class DuplicateHelper {
-    // Use this for initialization
-    void Start () {
-    
-    }
-    
-    // Update is called once per frame
-    void Update () {
-    
-    }
-
-    void OnGUI() {
-    }
-
     // This duplicates a game object and increments any number that is a part of its name
     [MenuItem("Tools/Duplicate/Duplicate And Increment Name %#d")]
     public static void DuplicateAndIncrementName() {

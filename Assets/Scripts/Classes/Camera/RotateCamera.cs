@@ -227,6 +227,13 @@ public class RotateCamera : MonoBehaviour {
         HideObjectsIfUnderDiagonal(SceneryManager.Instance.GetScenery(), null);
     }
     
+
+    // THIS WAS GRABBED FROM HERE!!!
+    // http://stackoverflow.com/questions/1560492/how-to-tell-whether-a-point-is-to-the-right-or-left-side-of-a-line
+    // TODO! WARNING!!! I think this still needs to be fixed, but I'm not quite sure how. For congruent tile maps the corner 
+    // // tiles will be displayed, however on incongruent tile maps there will be on corner that is detected wrong
+    // // To fix this you will need to make it so that point A and b are calculated on some hypothetical congruent tile map based
+    // // on the incongruent indices. This will then create the perception of an equivalent check
     public void HideObjectsIfUnderDiagonal(List<GameObject> gameObjectsToSetOffset, Dictionary<GameObject, GameObject> tileContainingGameObjectDict) {
         if(tileContainingGameObjectDict == null) {
             tileContainingGameObjectDict = new Dictionary<GameObject, GameObject>();
@@ -236,51 +243,31 @@ public class RotateCamera : MonoBehaviour {
             IsometricDisplay[] IsometricDisplays = gameObj.GetComponentsInChildren<IsometricDisplay>(true);
             foreach(IsometricDisplay isometricDisplay in IsometricDisplays) {
                 if(isometricDisplay.hideUnderDiagonal) {
-                    GameObject tileContainingGameObject;
-                    if(tileContainingGameObjectDict.TryGetValue(gameObj, out tileContainingGameObject)) {
-                        // already assigned in if statement
-                    }
-                    else
-                    {
-                        tileContainingGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(gameObj.transform.position.x, gameObj.transform.position.y, true);
-                    }
+                    Vector3 pointToCheck = isometricDisplay.gameObjectToAnchorTo.transform.position;
 
-                    BathroomTile tileContaining = tileContainingGameObject.GetComponent<BathroomTile>();
-                    float i = 0;
-                    float j = 0;
-                    float xStepSize = BathroomTileMap.Instance.tilesWide/BathroomTileMap.Instance.tilesHigh;
-                    float yStepSize = BathroomTileMap.Instance.tilesHigh/BathroomTileMap.Instance.tilesWide;
+                    // This is the top left corner of the tile map
+                    Vector3 pointA = BathroomTileMap.Instance.GetTileGameObjectByIndex(0, BathroomTileMap.Instance.tilesHigh - 1).transform.position;
+                    // This is the bottom right corner of the tile map
+                    Vector3 pointB = BathroomTileMap.Instance.GetTileGameObjectByIndex(BathroomTileMap.Instance.tilesWide - 1, 0).transform.position;
+
+                    // position = sign((Bx-Ax)*(Y-Ay) - (By-Ay)*(X-Ax))
+                    float position = (((pointB.x - pointA.x) * (pointToCheck.y - pointA.y)) - ((pointB.y - pointA.y) * (pointToCheck.x - pointA.x)));
                     bool gameObjIsAboveDiagonal = false;
-                    while(i < BathroomTileMap.Instance.tilesWide
-                          && j < BathroomTileMap.Instance.tilesHigh) {
-                        int newI = (int)(i + xStepSize);
-                        int newJ = (int)(j + yStepSize);
-                        int xTilesMoved = (int)(newI - i); 
-                        int yTilesMoved = (int)(newJ - j);
-                        for(int ii = 0; ii < xTilesMoved; ii++) {
-                            for(int jj = 0; jj < yTilesMoved; jj++) {
-                                int currentXTile = (int)(i + ii);
-                                int currentYTile = (int)(BathroomTileMap.Instance.tilesHigh - 1 - (j + jj));
-                                // GameObject currentBathroomTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(currentXTile, currentYTile);
 
-                                // Debug.Log("Current X: " + currentXTile + " Y: " + currentYTile);
-
-                                // TODO: THIS IS STILL BROKEN, IT WILL BREAK FOR TILES THAT ARE OUTSIDE OF THE TILE MAP BECAUSE THEIR CLOSEST TILE RETURNED IS THE CORNER
-                                // TO FIX THIS YOU'LL HAVE TO FIGURE OUT A WAY TO CALCULATE BASED ON THE DIAGONAL OFFSET FROM THE CORNERS OF THE TILE MAP
-                                if(tileContaining.tileX >= currentXTile
-                                    && tileContaining.tileY >= currentYTile) {
-                                    gameObjIsAboveDiagonal = true;
-                                }
-                            }
-                        }
-                        i = newI;
-                        j = newJ;
+                    // It is 0 on the line, and +1 on one side, -1 on the other side.
+                    if(position == 0) {
+                        // Debug.Log(isometricDisplay.gameObjectToAnchorTo.name + " is on the line.");
+                        gameObjIsAboveDiagonal = true;
+                    }
+                    else if(position > 0) {
+                        // Debug.Log(isometricDisplay.gameObjectToAnchorTo.name + " is above the line.");
+                        gameObjIsAboveDiagonal = true;
+                    }
+                    else if(position < 0) {
+                        // Debug.Log(isometricDisplay.gameObjectToAnchorTo.name + " is below the line.");
+                        gameObjIsAboveDiagonal = false;
                     }
 
-                    // isometricDisplay.gameObject.SetActive(gameObjIsAboveDiagonal);
-                    // This is used because I can't think of any time I would use the animation controller to tweak the enabled setting of a 
-                    // sprite renderer and because of this it doesn't create a lag between enabling and disabling like the gameobject effect does
-                    // isometricDisplay.gameObject.GetComponent<SpriteRenderer>().enabled = gameObjIsAboveDiagonal;
                     if(gameObjIsAboveDiagonal) {
                         isometricDisplay.ShowSpritesBeingManaged();
                     }
