@@ -96,9 +96,14 @@ public class DuplicateHelper {
     }
 
     private static GameObject DuplicateAndIncrementGameObject(GameObject gameObjectToDuplicate, string newGameObjectName) {
+        GameObject newGameObject = null;
+        // Do not use this version of the duplication because it doesn't copy over all settings of the
+        // item being duplicated from
         // Object prefabRoot = PrefabUtility.GetPrefabParent(gameObjectToDuplicate);
-        // GameObject newGameObject = (GameObject)PrefabUtility.InstantiatePrefab(prefabRoot);
-        GameObject newGameObject = (GameObject)Object.Instantiate(gameObjectToDuplicate);
+        // newGameObject = (GameObject)PrefabUtility.InstantiatePrefab(prefabRoot);
+        if(newGameObject == null) {
+            newGameObject = (GameObject)Object.Instantiate(gameObjectToDuplicate);
+        }
 
         newGameObject.name = newGameObjectName;
         newGameObject.transform.parent = gameObjectToDuplicate.transform.parent;

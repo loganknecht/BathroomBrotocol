@@ -106,6 +106,13 @@ public class BroGenerator : MonoBehaviour {
         PerformGenerationTimerLogic();
     }
 
+    public void Pause() {
+        isPaused = true;
+    }
+
+    public void Unpause() {
+        isPaused = false;
+    }
     public void SetDistributionLogic(DistributionObject[] distributionObjects) {
         broGenerationTimer = 0;
 

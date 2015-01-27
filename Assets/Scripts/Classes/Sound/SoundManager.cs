@@ -137,6 +137,7 @@ public class SoundManager : MonoBehaviour {
   }
 
   public GameObject Play(AudioType audioToPlay, bool loop = false, float delay = 0) {
+    // Debug.Log("Playing: " + audioToPlay.ToString());
     GameObject audioGameObject = null;
     // AudioSource audioSourceReference = null;
     AudioSourceManager audioSourceManager = null;

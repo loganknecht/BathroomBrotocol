@@ -24,11 +24,19 @@ public class TileMap : BaseBehavior {
 
     // Use this for initialization
     protected virtual void Start () {
+        ConfigureRows();
         ConfigureTileMap();
     }
 
     // Update is called once per frame
     public virtual void Update () {
+    }
+
+    // TO DO: probably move this over to bathroom tile map
+    public void ConfigureRows() {
+        foreach(Transform child in this.gameObject.transform) {
+            rowContainers.Add(child.gameObject);
+        }
     }
 
     // TO DO: probably move this over to bathroom tile map

@@ -46,7 +46,8 @@ public class BathroomTileMap : TileMap {
         if(AStarManager.Instance.permanentClosedNodes == null) {
            AStarManager.Instance.permanentClosedNodes = new List<GameObject>(); 
         }
-        base.Start();
+        ConfigureRows();
+        ConfigureTileMap();
         ConfigureBathroomObjectsWithTileTheyreIn();
         // Needs to be called after bathroom tile map is configured
         AStarManager.Instance.ConfigureAStarClosedNodes(tiles);
