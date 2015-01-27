@@ -12,7 +12,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     public override void Start () {
         base.Start();
 
-        // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
+        SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
         foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
             BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
