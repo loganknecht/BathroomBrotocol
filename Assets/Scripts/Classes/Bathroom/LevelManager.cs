@@ -82,17 +82,17 @@ public class LevelManager : MonoBehaviour {
         if(isPaused) {
             pausePanel.GetComponent<UIPanel>().alpha = 1;
 
-            ScoreManager.Instance.isPaused = true;
-            BroGenerator.Instance.isPaused = true;
-            WaveManager.Instance.isPaused = true;
+            ScoreManager.Instance.Pause();
+            BroGenerator.Instance.Pause();
+            WaveManager.Instance.Pause();
             SoundManager.Instance.TogglePause(true, AudioType.GreendogIntroAztecTemples);
         }
         else {
             pausePanel.GetComponent<UIPanel>().alpha = 0;
 
-            ScoreManager.Instance.isPaused = false;
-            BroGenerator.Instance.isPaused = false;
-            WaveManager.Instance.isPaused = false;
+            ScoreManager.Instance.Unpause();
+            BroGenerator.Instance.Unpause();
+            WaveManager.Instance.Unpause();
             SoundManager.Instance.TogglePause(false);
         }
     }
@@ -185,8 +185,8 @@ public class LevelManager : MonoBehaviour {
 
       HideUI();
 
-      BroGenerator.Instance.isPaused = true;
-      ScoreManager.Instance.isPaused = true;
+      BroGenerator.Instance.Pause();
+      ScoreManager.Instance.Pause();
     }
   }
 

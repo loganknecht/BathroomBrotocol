@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
+public class ChallengeLevelTwo : WaveLogic, WaveLogicContract {
 
     public override void Awake() {
         base.Awake();
@@ -35,16 +35,9 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
 
     public override void PerformLevelFailCheck() {
         base.PerformLevelFailCheck();
-
-        foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
-            BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
-            // Basically if any bathroom object is broken
-            if(bathObjRef != null
-                && (bathObjRef.state == BathroomObjectState.Broken
-                    || bathObjRef.state == BathroomObjectState.BrokenByPee
-                    || bathObjRef.state == BathroomObjectState.BrokenByPoop)) {
-                LevelManager.Instance.TriggerFailedLevel();
-            }
+        
+        if(BroManager.Instance.allFightingBros.Count > 0) {
+            LevelManager.Instance.TriggerFailedLevel();
         }
     }
 

@@ -58,20 +58,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         base.Update();
     }
 
-    public override void PerformLevelFailCheck() {
-        //     LevelManager.Instance.TriggerFailedLevel();
-        foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
-            BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
-            // Basically if any bathroom object is broken
-            if(bathObjRef != null
-                && (bathObjRef.state == BathroomObjectState.Broken
-                    || bathObjRef.state == BathroomObjectState.BrokenByPee
-                    || bathObjRef.state == BathroomObjectState.BrokenByPoop)) {
-
-            }
-        }
-    }
-
     public void TriggerStartAnimation() {
         // Debug.Log("triggering start animation");
         // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);

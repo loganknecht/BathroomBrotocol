@@ -51,6 +51,14 @@ public class ScoreManager : MonoBehaviour {
     public void Update() {
     }
 
+    public void Pause() {
+       isPaused = true; 
+    }
+
+    public void Unpause() {
+       isPaused = false; 
+    }
+
     // TODO: Create an enum that represents the player, then return the score tracker based on the respective enum
     public ScoreTracker GetPlayerScoreTracker() {
         return playerOneScoreTracker;

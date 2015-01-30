@@ -102,8 +102,10 @@ public class BroGenerator : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        PerformGenerationLogic();
-        PerformGenerationTimerLogic();
+        if(!isPaused) {
+            PerformGenerationLogic();
+            PerformGenerationTimerLogic();
+        }
     }
 
     public void Pause() {
@@ -158,12 +160,10 @@ public class BroGenerator : MonoBehaviour {
     }
 
     public void PerformGenerationTimerLogic() {
-        if(!isPaused) {
-            broGenerationTimer += Time.deltaTime;
-            // if(broGenerationTimer > broGenerationTimerMax) {
-            //   PerformGenerationTimerResetLogic();
-            // }
-        }
+        broGenerationTimer += Time.deltaTime;
+        // if(broGenerationTimer > broGenerationTimerMax) {
+        //   PerformGenerationTimerResetLogic();
+        // }
     }
 
     public void PerformGenerationTimerResetLogic() {
