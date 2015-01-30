@@ -73,7 +73,8 @@ public class FightingBros : BaseBehavior {
     public void PerformFightingBroArrivalLogic() {
         if(targetPathingReference.IsAtTargetPosition()) {
             BathroomTile currentBathroomTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
-            BathroomTile nextBathroomTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
+            // BathroomTile nextBathroomTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
+            BathroomTile nextBathroomTile = BathroomObjectManager.Instance.GetRandomBathroomObjectOfSpecificType(BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal).GetComponent<BathroomObject>().bathroomTileIn.GetComponent<BathroomTile>();
             foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
                 BathroomTile tileBathroomObjectIsIn = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, bathroomObject.transform.position.y, true).GetComponent<BathroomTile>();
 

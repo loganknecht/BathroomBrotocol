@@ -48,9 +48,14 @@ public class BathroomTileMap : TileMap {
         }
         ConfigureRows();
         ConfigureTileMap();
+
+        BathroomObjectManager.Instance.AddAllBathroomContainerChildren();
+        // BathroomObjectManager.Instance.ConfigureBathroomObjectsWithTileTheyreIn();
         ConfigureBathroomObjectsWithTileTheyreIn();
+
         // Needs to be called after bathroom tile map is configured
         AStarManager.Instance.ConfigureAStarClosedNodes(tiles);
+
         // Should be called last because this is just view logic
         CameraManager.Instance.rotateCameraReference.HideBathroomIfUnderDiagonal();
     }
@@ -61,21 +66,15 @@ public class BathroomTileMap : TileMap {
     }
 
     public void ConfigureBathroomObjectsWithTileTheyreIn() {
-        // BathroomObject[] allBathroomObjects = Resources.FindObjectsOfTypeAll(typeof(BathroomObject)) as BathroomObject[]; 
-        foreach(GameObject[] row in tiles) {
-            foreach(GameObject tileGameObject in row) {
-                // Debug.Log("In tile of: " + tileGameObject.name);
-                foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
-                    GameObject bathroomTileContainingBathroomObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, bathroomObject.transform.position.y, false);
-                    if(bathroomTileContainingBathroomObject != null) {
-                        // Debug.Log("Bathroom Object is in tile: " + bathroomTileContainingBathroomObject.name);
-                    }
-                    if(bathroomTileContainingBathroomObject == tileGameObject) {
-                        // Debug.Log("Found bathroom object " + bathroomObject.name + " in bathroom tile " + bathroomTileContainingBathroomObject.name);
-                        bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileContainingBathroomObject;
-                        tileGameObject.GetComponent<BathroomTile>().bathroomObjectInTile = bathroomObject.gameObject;
-                    }
-                }
+        foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
+            GameObject bathroomTileIn = GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, 
+                                                                            bathroomObject.transform.position.y,
+                                                                            false);
+            if(bathroomTileIn == null) {
+                Debug.LogError("There is a bathroom object that is not occupying a bathroom tile");
+            }
+            else {
+                bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileIn;
             }
         }
     }

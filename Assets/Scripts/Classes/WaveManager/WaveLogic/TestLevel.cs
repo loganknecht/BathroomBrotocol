@@ -97,7 +97,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
     TextboxManager.Instance.SetTextboxTextSet(textQueue);
   }
   public void PerformStartAnimation() {
-    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+    if(TextboxManager.Instance.HasFinished()) {
       TriggerWaveFinish();
     }
   }
@@ -133,7 +133,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
   }
   public void PerformBroEnoughResponse() {
 
-    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+    if(TextboxManager.Instance.HasFinished()) {
       LevelManager.Instance.HideJanitorOverlay();
       TextboxManager.Instance.Hide();
 
@@ -225,7 +225,7 @@ public class TestLevel : WaveLogic, WaveLogicContract {
     TextboxManager.Instance.SetTextboxTextSet(textQueue);
   }
   public void PerformBroFightingExplanation() {
-    if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+    if(TextboxManager.Instance.HasFinished()) {
       EnqueueWaveStateAtFront(broFightingExplanationConfirmationGameObject);
       TriggerWaveFinish();
     }

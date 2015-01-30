@@ -16,8 +16,7 @@ public class TimeWasterBro : Bro {
 
     protected override void Awake() {
         base.Awake();
-        
-        type = BroType.TimeWasterBro;
+        // type = BroType.TimeWasterBro;
 
         if(randomizeRoamingTime) {
             timeInRoamingSpotMax = Random.Range(minTimeInRoamingSpotMax, maxTimeInRoamingSpotMax);

@@ -6,8 +6,7 @@ public class CuttingBro : Bro {
 
     protected override void Awake() {
         base.Awake();
-        
-        type = BroType.CuttingBro;
+        // type = BroType.CuttingBro;
     }
 
     // Use this for initialization

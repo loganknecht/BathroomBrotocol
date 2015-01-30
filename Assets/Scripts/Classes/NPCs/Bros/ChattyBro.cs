@@ -5,8 +5,7 @@ public class ChattyBro : Bro {
 
     protected override void Awake() {
         base.Awake();
-        
-        type = BroType.ChattyBro;
+        // type = BroType.ChattyBro;
     }
     
     // Use this for initialization

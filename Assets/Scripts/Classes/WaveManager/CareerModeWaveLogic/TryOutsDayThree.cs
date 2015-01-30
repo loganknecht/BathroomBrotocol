@@ -124,7 +124,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
         TextboxManager.Instance.SetTextboxTextSet(textQueue);
     }
     public void PerformStartAnimation() {
-        if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+        if(TextboxManager.Instance.HasFinished()) {
             TriggerWaveFinish();
         }
     }
@@ -164,7 +164,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
     }
     public void PerformBroEnoughResponse() {
         //hide the janitor
-        if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+        if(TextboxManager.Instance.HasFinished()) {
             LevelManager.Instance.HideJanitorOverlay();
             TextboxManager.Instance.Hide();
 
@@ -291,7 +291,7 @@ public class TryOutsDayThree : WaveLogic, WaveLogicContract
         TextboxManager.Instance.SetTextboxTextSet(textQueue);
     }
     public void PerformBroFightingExplanation() {
-        if(TextboxManager.Instance.HasFinishedTextboxTextSet()) {
+        if(TextboxManager.Instance.HasFinished()) {
             EnqueueWaveStateAtFront(broFightingExplanationConfirmationGameObject);
             TriggerWaveFinish();
         }

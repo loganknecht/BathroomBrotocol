@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class BroDistributionPoint : DistributionPoint {
 
-    public BroType broTypeToDistribute = BroType.None;
+    public BroType broTypeToDistribute;
     public GameObject broToDistribute = null;
     public int selectedEntrance = 0;
 

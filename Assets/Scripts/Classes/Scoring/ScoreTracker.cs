@@ -42,37 +42,24 @@ public class ScoreTracker : BaseBehavior {
     void InitializeScoreTrackers() {
         broScores = new Dictionary<BroType, BaseBroScoreType>();
 
-        broScores[BroType.DrunkBro] = this.gameObject.GetComponent<DrunkBroScoreType>();
-        if(broScores[BroType.DrunkBro]== null) {
-            broScores[BroType.DrunkBro]= this.gameObject.AddComponent<DrunkBroScoreType>().GetComponent<DrunkBroScoreType>();
-        }
-
-        broScores[BroType.GassyBro] = this.gameObject.GetComponent<GassyBroScoreType>();
-        if(broScores[BroType.GassyBro] == null) {
-            broScores[BroType.GassyBro] = this.gameObject.AddComponent<GassyBroScoreType>().GetComponent<GassyBroScoreType>();
-        }
-
-        broScores[BroType.GenericBro] = this.gameObject.GetComponent<GenericBroScoreType>();
-        if(broScores[BroType.GenericBro] == null) {
-            broScores[BroType.GenericBro] = this.gameObject.AddComponent<GenericBroScoreType>().GetComponent<GenericBroScoreType>();
-        }
-
-        broScores[BroType.ShyBro] = this.gameObject.GetComponent<ShyBroScoreType>();
-        if(broScores[BroType.ShyBro] == null) {
-            broScores[BroType.ShyBro] = this.gameObject.AddComponent<ShyBroScoreType>().GetComponent<ShyBroScoreType>();
-        }
-
-        broScores[BroType.SlobBro] = this.gameObject.GetComponent<SlobBroScoreType>();
-        if(broScores[BroType.SlobBro] == null) {
-            broScores[BroType.SlobBro] = this.gameObject.AddComponent<SlobBroScoreType>().GetComponent<SlobBroScoreType>();
-        }
-
-        if(broScores[BroType.DrunkBro] == null
-           || broScores[BroType.GassyBro] == null
-           || broScores[BroType.GenericBro] == null
-           || broScores[BroType.ShyBro] == null
-           || broScores[BroType.SlobBro] == null) {
-            Debug.LogError("ScoreTracker is missing one of the score scripts.");
+        foreach(BroType broType in BroType.GetValues(typeof(BroType))) {
+            switch(broType) {
+                case(BroType.DrunkBro):
+                    broScores[BroType.DrunkBro]= this.gameObject.AddComponent<DrunkBroScoreType>().GetComponent<DrunkBroScoreType>();
+                break;
+                case(BroType.GassyBro):
+                    broScores[BroType.GassyBro] = this.gameObject.AddComponent<GassyBroScoreType>().GetComponent<GassyBroScoreType>();
+                break;
+                case(BroType.GenericBro):
+                    broScores[BroType.GenericBro] = this.gameObject.AddComponent<GenericBroScoreType>().GetComponent<GenericBroScoreType>();
+                break;
+                case(BroType.ShyBro):
+                    broScores[BroType.ShyBro] = this.gameObject.AddComponent<ShyBroScoreType>().GetComponent<ShyBroScoreType>();
+                break;
+                case(BroType.SlobBro):
+                    broScores[BroType.SlobBro] = this.gameObject.AddComponent<SlobBroScoreType>().GetComponent<SlobBroScoreType>();
+                break;
+            }
         }
     }
 

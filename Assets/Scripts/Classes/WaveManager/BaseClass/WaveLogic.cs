@@ -15,11 +15,13 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     }
 
     public virtual void Update() {
-        PerformLevelFailCheck();
-        PerformLevelFinishCheck();
     }
 
+    // Think of this as the main update loop
     public virtual void PerformWaveLogic() {
+        PerformLevelFailCheck();
+        PerformLevelFinishCheck();
+
         //this assumes that the paused state is already managed by the wave manager
         if(currentWaveStateGameObject != null) {
             // Debug.Log("performing wave state logic");

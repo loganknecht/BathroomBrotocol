@@ -41,7 +41,7 @@ public class TestLevelFiveLogic : WaveLogic, WaveLogicContract {
     if(startAnimationFinished
        && !generatedFirstWave) {
       Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() {
-                                                                                      { BroType.ChattyBro, 0.45f },
+                                                                                      // { BroType.ChattyBro, 0.45f },
                                                                                       { BroType.DrunkBro, 0.10f },
                                                                                       { BroType.GenericBro, 0.45f }
                                                                                     };

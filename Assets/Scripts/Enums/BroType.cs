@@ -2,16 +2,16 @@
 using System.Collections;
 
 public enum BroType {
-    None,
-    BluetoothBro,
-    ChattyBro,
-    CuttingBro,
+    // None,
+    // BluetoothBro,
+    // ChattyBro,
+    // CuttingBro,
     DrunkBro,
     GassyBro,
     GenericBro,
-    Hobro,
-    RichBro,
+    // Hobro,
+    // RichBro,
     ShyBro,
     SlobBro,
-    TimeWasterBro
+    // TimeWasterBro
 }

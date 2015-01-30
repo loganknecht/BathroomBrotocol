@@ -193,20 +193,16 @@ public class BroDistributionObject : DistributionObject {
 
     public void ConfigureUniformBroTypeDistribution() {
         // float uniformDistributionStepSizeForAllBros = 0f;
-        float uniformBroTypeDistribution = 1/11;
+        BroType[] broTypes = (BroType[])BroType.GetValues(typeof(BroType));
+        float uniformBroTypeDistribution = 0;
+        if(broTypes.Length > 0) {
+            uniformBroTypeDistribution = 1/broTypes.Length;
+        }
 
         // broProbabilities[BroType.None] = uniformBroTypeDistribution;
-        broProbabilities[BroType.BluetoothBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.ChattyBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.CuttingBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.DrunkBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.GassyBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.GenericBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.Hobro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.RichBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.ShyBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.SlobBro] = uniformBroTypeDistribution;
-        broProbabilities[BroType.TimeWasterBro] = uniformBroTypeDistribution;
+        foreach(BroType broType in broTypes) {
+            broProbabilities[broType] = uniformBroTypeDistribution;
+        }
     }
 
     // Default of enum is zero

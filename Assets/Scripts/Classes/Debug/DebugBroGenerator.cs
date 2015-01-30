@@ -11,7 +11,7 @@ public class DebugBroGenerator : BaseBehavior {
     public Vector2 debugYMoveSpeed;
 
     public Dictionary<BathroomObjectType, float> debugOccupationDuration = new Dictionary<BathroomObjectType, float>();
-    public BroType debugBroType = BroType.None;
+    public BroType debugBroType;
     public ReliefRequired[] debugReliefRequired = new ReliefRequired[]{};
 
     // Bro
@@ -55,7 +55,7 @@ public class DebugBroGenerator : BaseBehavior {
     public void PerformDebugButtonPressLogic() {
         if(Input.GetKeyDown(KeyCode.Q)) {
             // Debug.Log("Generating bro!");
-
+            
             // GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
             // int lastLineQueueTileIndex = lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1;
             // broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.x,

@@ -12,7 +12,7 @@ public class Bro : BaseBehavior {
     public IsometricDisplay isometricDisplayReference = null;
     public BoxCollider2D colliderReference = null;
 
-    public BroType type = BroType.None;
+    public BroType type;
     public BroState state = BroState.None;
 
     public float occupationTimer = 0f;

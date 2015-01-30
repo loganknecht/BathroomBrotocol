@@ -5,13 +5,13 @@ public class BluetoothBro : Bro {
 
     protected override void Awake() {
         base.Awake();
-        type = BroType.BluetoothBro;
+        // type = BroType.BluetoothBro;
     }
 
     // Use this for initialization
     public override void Start () {
         base.Start();
-        type = BroType.BluetoothBro;
+        // type = BroType.BluetoothBro;
     }
 
     // Update is called once per frame

@@ -28,10 +28,24 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
     // Update is called once per frame
     public override void Update () {
         base.Update();
+
+        if(BroGenerator.Instance.HasFinishedGenerating()
+            && BroManager.Instance.NoBrosInRestroom()) {
+            waveLogicFinished = true;
+        }
     }
     //----------------------------------------------------------------------------
     public void TriggerFirstWave() {
-        TextboxManager.Instance.Hide();
+        BroGenerator.Instance.Pause();
+
+        LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
+
+        TweenExecutor.TweenObjectPosition(TextboxManager.Instance.gameObject, TextboxManager.Instance.gameObject.transform.localPosition.x, -600, TextboxManager.Instance.gameObject.transform.localPosition.x, -300, 1, 2, UITweener.Method.BounceIn, null);
+
+        Queue textQueue = new Queue();
+        textQueue.Enqueue("Don't let any object be broken!!!");
+        TextboxManager.Instance.SetTextboxTextSet(textQueue);
+        //----------------------------------------------------------------------------
 
         Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
@@ -109,13 +123,15 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
     }
 
     public void PerformFirstWave() {
-        if(BroGenerator.Instance.HasFinishedGenerating()
-            && BroManager.Instance.NoBrosInRestroom()) {
+        if(TextboxManager.Instance.HasFinished()) {
             TriggerWaveFinish();
         }
     }
     public void FinishFirstWave() {
-        waveLogicFinished = true;
+        BroGenerator.Instance.Unpause();
+        LevelManager.Instance.HideJanitorOverlay();
+        LevelManager.Instance.ShowPauseButton();
+        TextboxManager.Instance.Hide();
     }
   //----------------------------------------------------------------------------
 } 
