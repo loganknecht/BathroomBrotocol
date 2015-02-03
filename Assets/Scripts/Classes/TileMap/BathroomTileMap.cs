@@ -57,7 +57,9 @@ public class BathroomTileMap : TileMap {
         AStarManager.Instance.ConfigureAStarClosedNodes(tiles);
 
         // Should be called last because this is just view logic
-        CameraManager.Instance.rotateCameraReference.HideBathroomIfUnderDiagonal();
+        CameraManager.Instance.rotateReference.HideBathroomIfUnderDiagonal();
+        CameraManager.Instance.rotateReference.UpdateBathroomDirectionFacing();
+        // CameraManager.Instance.rotateReference.Rotate(false, false);
     }
 
     // Update is called once per frame

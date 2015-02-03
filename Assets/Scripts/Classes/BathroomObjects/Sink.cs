@@ -19,7 +19,7 @@ public class Sink : BathroomObject {
         base.OnMouseDown();
     }
 
-    public override void UpdateBathroomObjectAnimator() {
-        base.UpdateBathroomObjectAnimator();
+    public override void UpdateAnimator() {
+        base.UpdateAnimator();
     }
 }

@@ -2,5 +2,7 @@
 using System.Collections;
 
 public class BathroomFacing : MonoBehaviour {
-	public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
+	public DirectionBeingLookedAt directionBeingLookedAt;
+    // In degress
+    public float rotationOffset = 0f;
 }

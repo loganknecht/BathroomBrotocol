@@ -252,51 +252,7 @@ public class TargetPathing : BaseBehavior {
 
         if(newPositionOffset.x != 0
             || newPositionOffset.y != 0) {
-            directionBeingLookedAt = CameraManager.Instance.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);
-
-            //Debug.Log("moving");
-            //state = BroState.MovingToTargetObject;
-            // DirectionBeingLookedAt cameraDirectionBeingLookedAt = CameraManager.Instance.rotateCameraReference.directionBeingLookedAt;
-            // DirectionBeingLookedAt cameraDirectionBeingLookedAt = CameraManager.Instance.rotateCameraReference.directionBeingLookedAt;
-
-            // if(movingRight) {
-            // 	// moving up right
-            // 	if(movingUp) {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.TopRight;
-            // 	}
-            // 	// moving down right
-            // 	else if(movingDown) {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.BottomRight;
-            // 	}
-            // 	// moving right
-            // 	else {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Right;
-            // 	}
-            // }
-            // else if(movingLeft) {
-            // 	// moving up left
-            // 	if(movingUp) {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.TopLeft;
-            // 	}
-            // 	// moving down left
-            // 	else if(movingDown) {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.BottomLeft;
-            // 	}
-            // 	// moving left
-            // 	else {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Left;
-            // 	}
-            // }
-            // else {
-            // 	// moving up
-            // 	if(movingUp) {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Top;
-            // 	}
-            // 	// moving down 
-            // 	if(movingDown) {
-            // 		bathroomFacingReference.directionBeingLookedAt = DirectionBeingLookedAt.Bottom;
-            // 	}
-            // }
+            directionBeingLookedAt = CameraManager.Instance.rotateReference.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);
         }
         else {
             if(movementNodes.Count == 0) {

@@ -2,7 +2,7 @@
 using System.Collections;
 
 public enum DirectionBeingLookedAt {
-	None,
+    None,
 	TopLeft,
 	Top,
 	TopRight,

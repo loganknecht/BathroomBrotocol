@@ -37,9 +37,20 @@ public class BathroomObject : MonoBehaviour {
     }
 
     public virtual void Update() {
-        UpdateBathroomObjectAnimator();
         PerformMoreThanTwoOccupantsCheck();
     }
+
+    public virtual void UpdateAnimator() {
+        foreach(DirectionBeingLookedAt bathroomFacing in DirectionBeingLookedAt.GetValues(typeof(DirectionBeingLookedAt))) {
+            animatorReference.SetBool(bathroomFacing.ToString(), false);
+        }
+        foreach(BathroomObjectState BathroomObjectState in BathroomObjectState.GetValues(typeof(BathroomObjectState))) {
+            animatorReference.SetBool(BathroomObjectState.ToString(), false);
+        }
+        animatorReference.SetBool(bathroomFacingReference.directionBeingLookedAt.ToString(), true);
+        animatorReference.SetBool(state.ToString(), true);
+    }
+
 
     public virtual void OnMouseDown() {
         SelectionManager.Instance.currentlySelectedBathroomObject = this.gameObject;
@@ -52,32 +63,6 @@ public class BathroomObject : MonoBehaviour {
             }
         }
         // Debug.Log("Derp down");
-    }
-
-    public virtual void UpdateBathroomObjectAnimator() {
-        if(animatorReference != null) {
-            //animatorReference.SetBool(DirectionBeingLookedAt.None.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
-
-            animatorReference.SetBool(BathroomObjectState.BeingRepaired.ToString(), false);
-            animatorReference.SetBool(BathroomObjectState.Broken.ToString(), false);
-            animatorReference.SetBool(BathroomObjectState.BrokenByPoop.ToString(), false);
-            animatorReference.SetBool(BathroomObjectState.Idle.ToString(), false);
-            animatorReference.SetBool(BathroomObjectState.InUse.ToString(), false);
-            animatorReference.SetBool(BathroomObjectState.OutOfOrder.ToString(), false);
-
-            animatorReference.SetBool(bathroomFacingReference.directionBeingLookedAt.ToString(), true);
-            animatorReference.SetBool(state.ToString(), true);
-
-            animatorReference.SetBool("None", false);
-        }
     }
 
     public void ResetColliderAndSelectableReference() {

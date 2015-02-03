@@ -1,13 +1,22 @@
 ﻿// Example Usage
-// 
-// Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
-// Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
-
-// BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
-// firstWave.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequire[] { ReliefRequired.Pee, ReliefRequired.Poop })
-//     .SetXMoveSpeed(BroDistribution.AllBros, 1.5, 1.5)
-//     .SetYMoveSpeed(BroDistribution.AllBros , 1.5, 1.5)
-//     .SetFightProbability(BroDistribution.AllBros, 0.15, 0.15)
+// Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { 
+//                                                                                     { BroType.GenericBro, 1f } 
+//                                                                                 };
+// Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { 
+//                                                                                     { 0, .5f },
+//                                                                                     { 1, .5f } 
+//                                                                                 };
+// BroDistributionObject firstWave = new BroDistributionObject(0,                              // Start Time
+//                                                             5,                              // End Time
+//                                                             1,                              // Number to Generate
+//                                                             DistributionType.LinearIn,      // DistributionType
+//                                                             DistributionSpacing.Uniform,    // DistributionSpacing
+//                                                             broProbabilities,               // broProbabilities
+//                                                             entranceQueueProbabilities);    // entranceQueueProbabilities
+// firstWave.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
+//     .SetXMoveSpeed(BroDistribution.AllBros, 1.5f, 1.5f)
+//     .SetYMoveSpeed(BroDistribution.AllBros , 1.5f, 1.5f)
+//     .SetFightProbability(BroDistribution.AllBros, 0.15f, 0.15f)
 //     .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, false)
 //     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0, 0)
 //     .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2, 2)
@@ -30,16 +39,14 @@
 //     .SetMinDuration(BroDistribution.AllBros, 2, 2)
 //     .SetMaxDuration(BroDistribution.AllBros, 2, 2);
 // // Vomit Generator if the bro has it (TileBlocker Properties)
-// firstWave.vomitGenerator.SetProbability(BroDistribution.AllBros, 1, 1)
-//     .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+// firstWave.vomitGeneratorConfigurer.SetProbability(BroDistribution.AllBros, 1f, 1f)
+//     .SetGenerationFrequency(BroDistribution.AllBros, 2f, 2f)
 //     .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
-//     .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
-//     .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
-
+//     .SetMinGenerationFrequency(BroDistribution.AllBros, 2f, 2f)
+//     .SetMaxGenerationFrequency(BroDistribution.AllBros, 2f, 2f);
 // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
 //                                                                          firstWave,
 //                                                                         });
-
 using UnityEngine;
 using System;
 using System.Collections;

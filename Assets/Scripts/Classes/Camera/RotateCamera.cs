@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿/// <summary>
+/// I am so ashamed of this rotation rework to 2D. It is so bad :(
+/// So... So, bad...
+/// </summary>
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 // TO DO: FIX ROTATE LOGIC SCRIPT SO THAT WHEN IT ROTATES IT BASES THE CAMERA'S DIRECTION BEING LOOKED IT USES WORLD COORDINATES TO CALCULATE IT... OR SOMETHING
 public class RotateCamera : MonoBehaviour {
     public GameObject cameraGameObject = null;
-    public GameObject objectToRotateAround = null;
     public float amountRotated = 0f;
     public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
 
@@ -13,7 +16,6 @@ public class RotateCamera : MonoBehaviour {
     void Start () {
         // Sets the rotated view correctly
         directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
-        RotateBathroomToMatchCamera();
     }
 
     // Update is called once per frame
@@ -215,6 +217,18 @@ public class RotateCamera : MonoBehaviour {
         }
     }
 
+    public void UpdateBathroomDirectionFacing() {
+        UpdateRotationFacing();
+        UpdateDirectionFacingBasedOnCamera(BathroomTileBlockerManager.Instance.bathroomTileBlockers, amountRotated);
+        UpdateDirectionFacingBasedOnCamera(BathroomObjectManager.Instance.allBathroomObjects, amountRotated);
+        UpdateDirectionFacingBasedOnCamera(BroManager.Instance.allBros, amountRotated);
+        UpdateDirectionFacingBasedOnCamera(BroManager.Instance.allFightingBros, amountRotated);
+        foreach(GameObject lineQueue in EntranceQueueManager.Instance.lineQueues) {
+            UpdateDirectionFacingBasedOnCamera(lineQueue.GetComponent<LineQueue>().queueTileObjects, amountRotated);
+        }
+        UpdateDirectionFacingBasedOnCamera(SceneryManager.Instance.GetScenery(), amountRotated);
+    }
+
     public void HideBathroomIfUnderDiagonal() {
         HideObjectsIfUnderDiagonal(BathroomTileBlockerManager.Instance.bathroomTileBlockers, null);
         HideObjectsIfUnderDiagonal(BathroomObjectManager.Instance.allBathroomObjects, null);
@@ -396,6 +410,12 @@ public class RotateCamera : MonoBehaviour {
     public void RotateRight() {
         Rotate(false, true);
     }
+
+    public void UpdateRotationFacing() {
+        amountRotated = amountRotated%360;
+        directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
+    }
+
     // This is so bad... but it works so just deal with it for now
     // Refactor this someday, never
     public void Rotate(bool rotateRight, bool rotateLeft) {
@@ -472,46 +492,48 @@ public class RotateCamera : MonoBehaviour {
             amountRotated += -90;
             BathroomTileMap.Instance.RotateTileMatrixRight();
         }
-        amountRotated = amountRotated%360;
-        directionBeingLookedAt = GetDirectionBeingLookedAt(amountRotated);
+        UpdateRotationFacing();
 
         UpdateBathroomTileMapIndexes();
 
         SetGameObjectOffsets(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BathroomTileBlockerManager.Instance.bathroomTileBlockers);
+        UpdateDirectionFacingBasedOnCamera(BathroomTileBlockerManager.Instance.bathroomTileBlockers, amountRotated);
         // HideObjectsIfUnderDiagonal(BathroomTileBlockerManager.Instance.bathroomTileBlockers, tileGameObjectIn);
 
         SetGameObjectOffsets(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BathroomObjectManager.Instance.allBathroomObjects);
+        UpdateDirectionFacingBasedOnCamera(BathroomObjectManager.Instance.allBathroomObjects, amountRotated);
         // HideObjectsIfUnderDiagonal(BathroomObjectManager.Instance.allBathroomObjects, tileGameObjectIn);
 
         SetGameObjectTargetPositionOffsets(BroManager.Instance.allBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allBros);
+        UpdateDirectionFacingBasedOnCamera(BroManager.Instance.allBros, amountRotated);
         // HideObjectsIfUnderDiagonal(BroManager.Instance.allBros, tileGameObjectIn);
 
         SetGameObjectStandoffAnchorOffsets(BroManager.Instance.allStandoffBros, standoffBroTileIn, standoffBroTileOffset);
         SetGameObjectStandoffRadiusOneOffsets(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusOne, standoffBroRadiusOneTileOffset);
         SetGameObjectStandoffRadiusTwoOffsets(BroManager.Instance.allStandoffBros, standoffBroTileInRadiusTwo, standoffBroRadiusTwoTileOffset);
-
-        // SetGameObjectTargetPositionOffsets(BroManager.Instance.allStandoffBros, tileGameObjectTargeting, targetTileOffset);
-        // SetGameObjectOffsets(BroManager.Instance.allStandoffBros, tileGameObjectIn, gameObjectTileOffset);
         // UpdateDisplayPositions(BroManager.Instance.allStandoffBros);
         // HideObjectsIfUnderDiagonal(BroManager.Instance.allStandoffBros, tileGameObjectIn);
 
         SetGameObjectTargetPositionOffsets(BroManager.Instance.allFightingBros, tileGameObjectTargeting, targetTileOffset);
         SetGameObjectOffsets(BroManager.Instance.allFightingBros, tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(BroManager.Instance.allFightingBros);
+        UpdateDirectionFacingBasedOnCamera(BroManager.Instance.allFightingBros, amountRotated);
         // HideObjectsIfUnderDiagonal(BroManager.Instance.allFightingBros, tileGameObjectIn);
 
         foreach(GameObject lineQueue in EntranceQueueManager.Instance.lineQueues) {
             SetGameObjectOffsets(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn, gameObjectTileOffset);
             UpdateDisplayPositions(lineQueue.GetComponent<LineQueue>().queueTileObjects);
+            UpdateDirectionFacingBasedOnCamera(lineQueue.GetComponent<LineQueue>().queueTileObjects, amountRotated);
             // HideObjectsIfUnderDiagonal(lineQueue.GetComponent<LineQueue>().queueTileObjects, tileGameObjectIn);
         }
 
         SetGameObjectOffsets(SceneryManager.Instance.GetScenery(), tileGameObjectIn, gameObjectTileOffset);
         UpdateDisplayPositions(SceneryManager.Instance.GetScenery());
+        UpdateDirectionFacingBasedOnCamera(SceneryManager.Instance.GetScenery(), amountRotated);
         // HideObjectsIfUnderDiagonal(SceneryManager.Instance.GetScenery(), tileGameObjectIn);
         HideBathroomIfUnderDiagonal();
     }
@@ -519,23 +541,23 @@ public class RotateCamera : MonoBehaviour {
     public DirectionBeingLookedAt GetDirectionBeingLookedAt(float amountRotatedAround) {
         DirectionBeingLookedAt dirBeingLookedAt = DirectionBeingLookedAt.None;
 
-        if((amountRotated >= 0 && amountRotated < 90)
-            || (amountRotated > -90 && amountRotated <= 0)) {
+        if((amountRotatedAround >= 0 && amountRotatedAround < 90)
+            || (amountRotatedAround > -90 && amountRotatedAround <= 0)) {
             // Debug.Log("Top");
             dirBeingLookedAt = DirectionBeingLookedAt.Top;
         }
-        else if((amountRotated >= 90 && amountRotated < 180)
-                || (amountRotated > -360 && amountRotated <= -270)) {
-            // Debug.Log("Left");
-            dirBeingLookedAt = DirectionBeingLookedAt.Left;
-        }
-        else if((amountRotated >= 270 && amountRotated < 360)
-                || (amountRotated > -180 && amountRotated <= -90)) {
+        else if((amountRotatedAround >= 90 && amountRotatedAround < 180)
+                || (amountRotatedAround > -360 && amountRotatedAround <= -270)) {
             // Debug.Log("Right");
             dirBeingLookedAt = DirectionBeingLookedAt.Right;
         }
-        else if((amountRotated >= 180 && amountRotated < 270)
-                || (amountRotated > -270 && amountRotated <= -180)) {
+        else if((amountRotatedAround >= 270 && amountRotatedAround < 360)
+                || (amountRotatedAround > -180 && amountRotatedAround <= -90)) {
+            // Debug.Log("Left");
+            dirBeingLookedAt = DirectionBeingLookedAt.Left;
+        }
+        else if((amountRotatedAround >= 180 && amountRotatedAround < 270)
+                || (amountRotatedAround > -270 && amountRotatedAround <= -180)) {
             // Debug.Log("Bottom");
             dirBeingLookedAt = DirectionBeingLookedAt.Bottom;
         }
@@ -543,72 +565,197 @@ public class RotateCamera : MonoBehaviour {
         return dirBeingLookedAt;
     }
 
-    public void RotateBathroomToMatchCamera() {
-        // RotateBackground();
-        // RotateTileMapTiles();
-        // RotateBathroomTileBlockerObjects();
-        // RotateBathroomObjects();
-        // RotateBroGameObjects();
-        // RotateFightingBroGameObjects();
-    }
-
-    //THIS IS NOT WORKING CORRECTLY, NEED TO FIX IT BUT BACKGROUND DOESN'T DO CORRECT ROTATION BECAUSE THE BACKGROUND APPEARS REVERSED
-    public void RotateBackground() {
-        // Vector3 newBackgroundRotation = Vector3.zero;
-        // newBackgroundRotation = new Vector3(cameraGameObject.transform.eulerAngles.x, cameraGameObject.transform.eulerAngles.y, cameraGameObject.transform.eulerAngles.z);
-        // LevelManager.Instance.backgroundImage.transform.eulerAngles = newBackgroundRotation;
-    }
-
-    public void RotateTileMapTiles() {
-        // foreach(GameObject bathroomTileGameObject in BathroomTileMap.Instance.tiles) {
-        GameObject[][] bathroomTiles = BathroomTileMap.Instance.GetTiles();
-        if(bathroomTiles != null) {
-            foreach(GameObject[] row in bathroomTiles) {
-                foreach(GameObject tile in row) {
-                    // tile.transform.rotation = Quaternion.Euler(new Vector3(tile.transform.rotation.x, tile.transform.rotation.y, this.gameObject.transform.rotation.z));
-                    tile.transform.rotation = Quaternion.Euler(new Vector3(tile.transform.rotation.x, tile.transform.rotation.y, amountRotated));
-                }
-            }
+    // Updates the rotated object to match the camera's facing
+    public void UpdateDirectionFacingBasedOnCamera(List<GameObject> gameObjects, float cameraRotation) {
+        foreach(GameObject gameObj in gameObjects) {
+            UpdateDirectionFacingBasedOnCamera(gameObj, cameraRotation);
         }
     }
 
-    public void RotateBathroomTileBlockerObjects() {
-        foreach(GameObject bathroomTileBlockerGameObject in BathroomTileBlockerManager.Instance.bathroomTileBlockers) {
-            BathroomTileBlocker bathroomTileBlocker = bathroomTileBlockerGameObject.GetComponent<BathroomTileBlocker>();
-            if(bathroomTileBlocker != null) {
-                if(bathroomTileBlocker.bathroomTileBlockerType == BathroomTileBlockerType.Fart) {
-                    bathroomTileBlocker.transform.eulerAngles = this.gameObject.transform.eulerAngles;
-                }
-                else {
-                    bathroomTileBlockerGameObject.transform.rotation = Quaternion.Euler(new Vector3(bathroomTileBlockerGameObject.transform.rotation.x, bathroomTileBlockerGameObject.transform.rotation.y, this.gameObject.transform.rotation.z));
-                }
-            }
+    public void UpdateDirectionFacingBasedOnCamera(GameObject gameObjToUpdate, float cameraRotation) {
+        BathroomFacing bathroomFacingReference = gameObjToUpdate.GetComponent<BathroomFacing>();
+        if(bathroomFacingReference != null) {
+            // Debug.Log(gameObjToUpdate.name + " not null");
+            // bathroomFacingReference.directionBeingLookedAt = cameraDirectionBeingLookedAt;
+            float calculatedRotation = (cameraRotation + bathroomFacingReference.rotationOffset)%360;
+            // Debug.Log(gameObjToUpdate.name + " rotation: " + calculatedRotation);
+            DirectionBeingLookedAt directionBeingLookedAtToSet = GetDirectionBeingLookedAt(calculatedRotation);
+            // Debug.Log(gameObjToUpdate.name + " direction: " + directionBeingLookedAtToSet.ToString());
+            bathroomFacingReference.directionBeingLookedAt = directionBeingLookedAtToSet;
         }
     }
 
-    public void RotateBathroomObjects() {
-        foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
-            if(bathroomObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
-                bathroomObject.transform.rotation = Quaternion.Euler(new Vector3(bathroomObject.transform.rotation.x, bathroomObject.transform.rotation.y, this.gameObject.transform.rotation.z));
+    public DirectionBeingLookedAt GetDirectionFacingBasedOnCameraAndMovementDirection(bool movingUp, bool movingRight, bool movingDown, bool movingLeft) {
+        // Debug.Log("Moving Up: " + movingUp + "\nMoving Right: " + movingRight + "\nMoving Down: " + movingDown + "\nMoving Left: " + movingLeft);
+
+        DirectionBeingLookedAt cameraDirectionBeingLookedAt = directionBeingLookedAt;
+        DirectionBeingLookedAt directionToReturn = DirectionBeingLookedAt.None;
+        if(movingRight) {
+            // moving up right
+            if(movingUp) {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.Top;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.Right;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.Left;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    break;
+                }
             }
+            // moving down right
+            else if(movingDown) {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.Right;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.Top;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.Left;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.Right;
+                    break;
+                } 
+            }
+            // moving right
             else {
-                bathroomObject.transform.eulerAngles = this.gameObject.transform.eulerAngles;
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.Right;
+                    break;
+                }  
             }
         }
-    }
-
-    public void RotateBroGameObjects() {
-        foreach(GameObject broGameObject in BroManager.Instance.allBros) {
-            RotateBroGameObject(broGameObject);
+        else if(movingLeft) {
+            // moving up left
+            if(movingUp) {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.Left;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.Top;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.Right;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    break;
+                } 
+            }
+            // moving down left
+            else if(movingDown) {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.Left;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.Top;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.Right;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    break;
+                } 
+            }
+            // moving left
+            else {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.Left;
+                    break;
+                } 
+            }
         }
-    }
-    public void RotateBroGameObject(GameObject broGameObjectToRotate) {
-        broGameObjectToRotate.transform.eulerAngles = this.gameObject.transform.eulerAngles;
-    }
-
-    public void RotateFightingBroGameObjects() {
-        foreach(GameObject fightingBroGameObject in BroManager.Instance.allFightingBros) {
-            fightingBroGameObject.transform.eulerAngles = this.gameObject.transform.eulerAngles;
+        else {
+            // moving up
+            if(movingUp) {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.Top;
+                    break;
+                } 
+            }
+            // moving down 
+            if(movingDown) {
+                switch(cameraDirectionBeingLookedAt) {
+                    case(DirectionBeingLookedAt.TopRight):
+                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    break;
+                    case(DirectionBeingLookedAt.TopLeft):
+                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    break;
+                    case(DirectionBeingLookedAt.BottomRight):
+                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    break;
+                    case(DirectionBeingLookedAt.BottomLeft):
+                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    break;
+                    default:
+                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    break;
+                } 
+            }
         }
+        return directionToReturn;
     }
 }
