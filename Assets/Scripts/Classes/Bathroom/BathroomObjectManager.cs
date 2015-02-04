@@ -88,6 +88,42 @@ public class BathroomObjectManager : MonoBehaviour {
         }
     }
 
+    public int GetNumberOfAllBrokenBathroomObjects() {
+       return GetNumberOfBrokenBathroomObjects(allBathroomObjects, (BathroomObjectType[])BathroomObjectType.GetValues(typeof(BathroomObjectType)));
+    }
+
+    public int GetNumberOfBrokenBathroomObjects(List<GameObject> bathroomObjects, params BathroomObjectType[] bathroomObjectTypes) {
+        List<GameObject> listToReturn = GetBathroomObjectsByType(bathroomObjects, bathroomObjectTypes);
+        listToReturn = GetBathroomObjectsByState(listToReturn, BathroomObjectState.Broken, BathroomObjectState.BrokenByPee, BathroomObjectState.BrokenByPoop);
+        return listToReturn.Count;
+    }
+
+    public List<GameObject> GetBathroomObjectsByType(List<GameObject> bathroomObjects, params BathroomObjectType[] bathroomObjectTypes) {
+        List<GameObject> newBathroomObjectsList = new List<GameObject>();
+        foreach(GameObject bathroomObject in bathroomObjects) {
+            BathroomObject bathObjRef = bathroomObject.GetComponent<BathroomObject>();
+            foreach(BathroomObjectType bathroomObjectType in bathroomObjectTypes) {
+                if(bathroomObjectType == bathObjRef.type) {
+                    newBathroomObjectsList.Add(bathroomObject);
+                }
+            }
+        }
+        return newBathroomObjectsList;
+    }
+
+    public List<GameObject> GetBathroomObjectsByState(List<GameObject> bathroomObjects, params BathroomObjectState[] bathroomObjectStates) {
+        List<GameObject> newBathroomObjectsList = new List<GameObject>();
+        foreach(GameObject bathroomObject in bathroomObjects) {
+            BathroomObject bathObjRef = bathroomObject.GetComponent<BathroomObject>();
+            foreach(BathroomObjectState bathroomObjectState in bathroomObjectStates) {
+                if(bathroomObjectState == bathObjRef.state) {
+                    newBathroomObjectsList.Add(bathroomObject);
+                }
+            }
+        }
+        return newBathroomObjectsList;
+    }
+
     public int GetCountOfSpecificObjectType(BathroomObjectType bathroomObjectTypeToCount){
         int numberOfObjectTypeCounted = 0;
         foreach(GameObject gameObj in allBathroomObjects) {

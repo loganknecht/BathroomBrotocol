@@ -577,7 +577,7 @@ public class RotateCamera : MonoBehaviour {
         if(bathroomFacingReference != null) {
             // Debug.Log(gameObjToUpdate.name + " not null");
             // bathroomFacingReference.directionBeingLookedAt = cameraDirectionBeingLookedAt;
-            float calculatedRotation = (cameraRotation + bathroomFacingReference.rotationOffset)%360;
+            float calculatedRotation = (cameraRotation - bathroomFacingReference.rotationOffset)%360;
             // Debug.Log(gameObjToUpdate.name + " rotation: " + calculatedRotation);
             DirectionBeingLookedAt directionBeingLookedAtToSet = GetDirectionBeingLookedAt(calculatedRotation);
             // Debug.Log(gameObjToUpdate.name + " direction: " + directionBeingLookedAtToSet.ToString());
