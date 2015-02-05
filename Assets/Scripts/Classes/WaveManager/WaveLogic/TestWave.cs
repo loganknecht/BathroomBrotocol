@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TestWave : WaveLogic, WaveLogicContract {
-    GameObject startAnimationWaveGameObject;
-    GameObject firstWaveGameObject;
 
     public override void Awake() {
         base.Awake();
@@ -12,20 +10,27 @@ public class TestWave : WaveLogic, WaveLogicContract {
 
     // Use this for initialization
     public override void Start () {
-    base.Start();
-        startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
-                                                                    TriggerStartAnimation,
-                                                                    PerformStartAnimation,
-                                                                    FinishStartAnimation);
+        base.Start();
 
-        firstWaveGameObject = CreateWaveState("FirstWave Game Object",
-                                                          TriggerFirstWave,
-                                                          PerformFirstWave,
-                                                          FinishFirstWave);
+        GameObject startAnimationWaveGameObject = CreateWaveState("Start Animation Game Object",
+                                                                  TriggerStartAnimation,
+                                                                  PerformStartAnimation,
+                                                                  FinishStartAnimation);
+
+        GameObject firstWaveGameObject = CreateWaveState("FirstWave Game Object",
+                                                         TriggerFirstWave,
+                                                         PerformFirstWave,
+                                                         FinishFirstWave);
+
+        GameObject secondWaveGameObject = CreateWaveState("SecondWave Game Object",
+                                                          TriggerSecondWave,
+                                                          PerformSecondWave,
+                                                          FinishSecondWave);
 
         InitializeWaveStates(
                              startAnimationWaveGameObject,
-                             firstWaveGameObject
+                             firstWaveGameObject,
+                             secondWaveGameObject
                              );
     }
 

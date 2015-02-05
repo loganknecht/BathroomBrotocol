@@ -38,6 +38,7 @@ public class BathroomObject : MonoBehaviour {
 
     public virtual void Update() {
         PerformMoreThanTwoOccupantsCheck();
+        UpdateAnimator();
     }
 
     public virtual void UpdateAnimator() {
@@ -57,7 +58,9 @@ public class BathroomObject : MonoBehaviour {
 
         if(state == BathroomObjectState.OutOfOrder) {
             numberOfTaps++;
+            // eeeehhhh probably take this out and make it its own function
             if(numberOfTaps >= numberOfTapsNeededToRestoreToOrder) {
+                Debug.Log("maxed out taps");
                 state = BathroomObjectState.Idle;
                 timesUsed = 0;
             }
