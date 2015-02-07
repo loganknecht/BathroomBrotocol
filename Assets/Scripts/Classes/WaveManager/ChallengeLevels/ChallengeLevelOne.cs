@@ -35,16 +35,9 @@ public class ChallengeLevelOne : WaveLogic, WaveLogicContract {
 
     public override void PerformLevelFailCheck() {
         base.PerformLevelFailCheck();
-
-        foreach(GameObject gameObj in BathroomObjectManager.Instance.allBathroomObjects) {
-            BathroomObject bathObjRef = gameObj.GetComponent<BathroomObject>();
-            // Basically if any bathroom object is broken
-            if(bathObjRef != null
-                && (bathObjRef.state == BathroomObjectState.Broken
-                    || bathObjRef.state == BathroomObjectState.BrokenByPee
-                    || bathObjRef.state == BathroomObjectState.BrokenByPoop)) {
-                LevelManager.Instance.TriggerFailedLevel();
-            }
+        
+        if(BathroomObjectManager.Instance.GetNumberOfAllBrokenBathroomObjects() > 0) {
+            LevelManager.Instance.TriggerFailedLevel();
         }
     }
 
