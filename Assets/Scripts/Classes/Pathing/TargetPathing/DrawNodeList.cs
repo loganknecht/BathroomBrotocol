@@ -9,23 +9,44 @@ public class DrawNodeList : MonoBehaviour {
     public List<GameObject> drawNodePool;
 
     void Start () {
-        drawNodes = new List<GameObject>();
-        drawNodePool = new List<GameObject>();
+        if(drawNodes == null) {
+            drawNodes = new List<GameObject>();
+        }
+        if(drawNodePool == null) {
+            drawNodePool = new List<GameObject>();
+        }
 
-        GameObject firstNode = new GameObject("data node");
-        firstNode.transform.position = new Vector3(0, 0, 0);
-        GameObject secondNode = new GameObject("data node");
-        secondNode.transform.position = new Vector3(1, 0, 0);
-        GameObject thirdNode = new GameObject("data node");
-        thirdNode.transform.position = new Vector3(1, 1, 0);
-        GameObject fourthNode = new GameObject("data node");
-        fourthNode.transform.position = new Vector3(1, 2, 0);
-        List<GameObject> newDrawNodes = new List<GameObject>();
-        newDrawNodes.Add(firstNode);
-        newDrawNodes.Add(secondNode);
-        newDrawNodes.Add(thirdNode);
-        newDrawNodes.Add(fourthNode);
-        SetDrawNodes(newDrawNodes);
+        // GameObject firstNode = new GameObject("data node");
+        // firstNode.transform.position = new Vector3(0, 0, 0);
+
+        // GameObject secondNode = new GameObject("data node");
+        // secondNode.transform.position = new Vector3(1, 0, 0);
+
+        // GameObject thirdNode = new GameObject("data node");
+        // thirdNode.transform.position = new Vector3(1, 1, 0);
+
+        // GameObject fourthNode = new GameObject("data node");
+        // fourthNode.transform.position = new Vector3(1, 2, 0);
+
+        // GameObject fifthNode = new GameObject("data node");
+        // fifthNode.transform.position = new Vector3(2, 2, 0);
+
+        // GameObject sixthNode = new GameObject("data node");
+        // sixthNode.transform.position = new Vector3(2, 1, 0);
+
+        // GameObject seventhNode = new GameObject("data node");
+        // seventhNode.transform.position = new Vector3(2, 0, 0);
+
+        // List<GameObject> newDrawNodes = new List<GameObject>();
+
+        // newDrawNodes.Add(firstNode);
+        // newDrawNodes.Add(secondNode);
+        // newDrawNodes.Add(thirdNode);
+        // newDrawNodes.Add(fourthNode);
+        // newDrawNodes.Add(fifthNode);
+        // newDrawNodes.Add(sixthNode);
+        // newDrawNodes.Add(seventhNode);
+        // SetDrawNodes(newDrawNodes);
     }
     
     void Update () {
@@ -36,20 +57,33 @@ public class DrawNodeList : MonoBehaviour {
             if(!drawNodePool.Contains(drawNode)) {
                 drawNodePool.Add(drawNode);
             }
-            drawNodes.Clear();
         }
+        drawNodes.Clear();
 
         foreach(GameObject drawNode in drawNodePool) {
             drawNode.GetComponent<DrawNode>().Reset();
+            // Resets alpha value
+            // foreach(KeyValuePair<ConnectedDirection, GameObject> dictEntry in drawNode.GetComponent<DrawNode>().connectedDirectionSprites) {
+            //     SpriteRenderer spriteRendererRef = dictEntry.Value.GetComponent<SpriteRenderer>();
+            //     dictEntry.Value.GetComponent<SpriteRenderer>().color = new Color(spriteRendererRef.color.r,
+            //                                                                      spriteRendererRef.color.g,
+            //                                                                      spriteRendererRef.color.b,
+            //                                                                      1f);
+            // }
         }
+
     }
 
     public void SetDrawNodes(List<GameObject> movementNodes) {
-        Debug.Log("setting draw nodes");
+        // Debug.Log("setting draw nodes");
+        // Debug.Log("MovementNodes Length: " + movementNodes.Count);
+
         Reset();
+
         GameObject previousMovementNode = null;
         GameObject currentMovementNode = null;
         GameObject nextMovementNode = null;
+
         for(int i = 0; i < movementNodes.Count; i++) {
             if(currentMovementNode != null) {
                 previousMovementNode = currentMovementNode;
@@ -65,19 +99,25 @@ public class DrawNodeList : MonoBehaviour {
                                                              currentMovementNode.transform.position.y,
                                                              currentDrawNode.transform.position.z);
 
-            drawNodes.Add(currentDrawNode);
             ConfigureNodeConnections(currentDrawNode, previousMovementNode, nextMovementNode);
+            // Sets alpha value
+            // if(i == 0) {
+            //     foreach(KeyValuePair<ConnectedDirection, GameObject> dictEntry in currentDrawNode.GetComponent<DrawNode>().connectedDirectionSprites) {
+            //         SpriteRenderer spriteRendererRef = dictEntry.Value.GetComponent<SpriteRenderer>();
+            //         dictEntry.Value.GetComponent<SpriteRenderer>().color = new Color(spriteRendererRef.color.r,
+            //                                                                          spriteRendererRef.color.g,
+            //                                                                          spriteRendererRef.color.b,
+            //                                                                          0.5f);
+            //     }
+            // }
         }
-
-        // foreach movement node
-        // get previous node and next node
-            // get a draw node
-        // set connection directions based on those
+        // Debug.Log(drawNodes.Count);
     }
 
     public void ConfigureNodeConnections(GameObject currentNode, GameObject previousNode, GameObject nextNode) {
         DrawNode currentDrawNode = currentNode.GetComponent<DrawNode>();
         currentDrawNode.Reset();
+        currentDrawNode.AddConnectedDirections(ConnectedDirection.Center);
         if(previousNode != null) {
             ConnectedDirection newConnectedDirection = GetConnectedDirection(currentNode, previousNode);
             if(newConnectedDirection != ConnectedDirection.None) {
@@ -143,9 +183,11 @@ public class DrawNodeList : MonoBehaviour {
         // create a new draw node
         else {
             newDrawNode = Factory.Instance.GenerateDrawNode();
-            newDrawNode.transform.parent = this.gameObject.transform;
+            // newDrawNode.transform.parent = this.gameObject.transform;
+            // newDrawNode.transform.SetParent(this.gameObject.transform, false);
         }
         newDrawNode.GetComponent<DrawNode>().Reset();
+        drawNodes.Add(newDrawNode);
 
         return newDrawNode;
     }

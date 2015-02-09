@@ -11,6 +11,7 @@ public class Bro : BaseBehavior {
     public SpeechBubble speechBubbleReference = null;
     public IsometricDisplay isometricDisplayReference = null;
     public BoxCollider2D colliderReference = null;
+    public DrawNodeList drawNodeList = null;
 
     public BroType type;
     public BroState state = BroState.None;
@@ -52,6 +53,11 @@ public class Bro : BaseBehavior {
         // base.Start();
         InitializeOccupationDuration();
         InitializeComponents();
+
+        // Sets the on pop movement logic to redraw the draw nodes every time
+        // targetPathingReference.SetOnArrivalAtMovementNodeLogic(() => drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes()));
+        // drawNodeList.
+        targetPathingReference.SetOnPopMovementNodeLogic(() => drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes()));
     }
 
     // Update is called once per frame
@@ -82,16 +88,19 @@ public class Bro : BaseBehavior {
         }
         isometricDisplayReference.UpdateDisplayPosition();
     }
+
     public virtual void InitializeOccupationDuration() {
-        float defaultOccupationDuration = 2f;
+        if(occupationDuration == null) {
+            float defaultOccupationDuration = 2f;
 
-        occupationDuration = new Dictionary<BathroomObjectType, float>();
+            occupationDuration = new Dictionary<BathroomObjectType, float>();
 
-        occupationDuration[BathroomObjectType.Exit] = 0;
-        occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
-        occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
-        occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
-        occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
+            occupationDuration[BathroomObjectType.Exit] = 0;
+            occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
+            occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
+            occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
+            occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
+        }
     }
 
     public void SetColliderActive(bool isActive) {
@@ -120,6 +129,7 @@ public class Bro : BaseBehavior {
     public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
         occupationTimer = 0;
         targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
+        drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes());
     }
 
     public List<GameObject> GetMovementNodes() {

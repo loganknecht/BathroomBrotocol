@@ -28,6 +28,9 @@ public class TargetPathing : BaseBehavior {
     public delegate void OnArrivalAtMovementNode();
     public OnArrivalAtMovementNode onArrivalAtMovementNodeLogic = null;
 
+    public delegate void OnPopMovementNode();
+    public OnPopMovementNode onPopMovementNodeLogic = null;
+
     protected override void Awake() {
         base.Awake();
 
@@ -120,6 +123,10 @@ public class TargetPathing : BaseBehavior {
         onArrivalAtMovementNodeLogic = new OnArrivalAtMovementNode(newOnArrivalAtMovementNodeLogic);
     }
 
+    public void SetOnPopMovementNodeLogic(OnPopMovementNode newOnPopMovementNodeLogic) {
+        onPopMovementNodeLogic = new OnPopMovementNode(newOnPopMovementNodeLogic);
+    }
+
     public bool IsAtMovementNodePosition() {
         if(gameObjectToMove.transform.position.x == targetPosition.x
             && gameObjectToMove.transform.position.y == targetPosition.y) {
@@ -176,6 +183,9 @@ public class TargetPathing : BaseBehavior {
             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
             //Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
             movementNodes.RemoveAt(0);
+            if(onPopMovementNodeLogic != null) {
+                onPopMovementNodeLogic();
+            }
             // Destroy(nextNode);
             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
         }

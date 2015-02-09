@@ -9,6 +9,8 @@ using System.Collections.Generic;
 // order they occur. Direction is determined by the preceding node in the list 
 // and the following node in the list, once position is identified relative to th
 public class DrawNode : BaseBehavior {
+    public GameObject gameObjectToBaseTweenOffOf;
+    
     // These are the connections that the node object has
     public List<ConnectedDirection> connectedDirections;
     public Dictionary<ConnectedDirection, GameObject> connectedDirectionSprites;
@@ -19,6 +21,15 @@ public class DrawNode : BaseBehavior {
 
     // Use this for initialization
     void Start () {
+        Initialize();
+    }
+
+    // Update is called once per frame
+    void Update () {
+        UpdateAnimator();
+    }
+
+    public void Initialize() {
         if(connectedDirections == null) {
             connectedDirections = new List<ConnectedDirection>();
         }
@@ -40,11 +51,6 @@ public class DrawNode : BaseBehavior {
                 }
             }
         }
-    }
-
-    // Update is called once per frame
-    void Update () {
-        UpdateAnimator();
     }
 
     public void Reset() {
