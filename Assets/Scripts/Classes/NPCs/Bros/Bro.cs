@@ -57,7 +57,8 @@ public class Bro : BaseBehavior {
         // Sets the on pop movement logic to redraw the draw nodes every time
         // targetPathingReference.SetOnArrivalAtMovementNodeLogic(() => drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes()));
         // drawNodeList.
-        targetPathingReference.SetOnPopMovementNodeLogic(() => drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes()));
+        // targetPathingReference.SetOnPopMovementNodeLogic(() => drawNodeList.SetDrawNodes(new Vector2(this.gameObject.transform.position.x,
+        //                                                                                              this.gameObject.transform.position.y), targetPathingReference.GetMovementNodes()));
     }
 
     // Update is called once per frame
@@ -129,7 +130,9 @@ public class Bro : BaseBehavior {
     public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
         occupationTimer = 0;
         targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
-        drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes());
+        drawNodeList.SetDrawNodes(new Vector2(this.gameObject.transform.position.x,
+                                                this.gameObject.transform.position.y),
+                                    targetPathingReference.GetMovementNodes());
     }
 
     public List<GameObject> GetMovementNodes() {

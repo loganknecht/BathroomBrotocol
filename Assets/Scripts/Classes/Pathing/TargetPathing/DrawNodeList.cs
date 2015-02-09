@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class DrawNodeList : MonoBehaviour {
+    public GameObject gameObjectMoving;
+
     /// <value="drawNodes">The draw nodes to be drawn</value>
     public List<GameObject> drawNodes;
     /// <value="drawNodes">The draw nodes that are recycled for drawing</value>
     public List<GameObject> drawNodePool;
+
+    public int numberOfDrawNodesBetweenPoint = 1;
 
     void Start () {
         if(drawNodes == null) {
@@ -50,126 +54,78 @@ public class DrawNodeList : MonoBehaviour {
     }
     
     void Update () {
+        PerformDrawNodeCleanUpOnMovement();
     }
 
     public void Reset() {
         foreach(GameObject drawNode in drawNodes) {
-            if(!drawNodePool.Contains(drawNode)) {
-                drawNodePool.Add(drawNode);
-            }
         }
         drawNodes.Clear();
 
         foreach(GameObject drawNode in drawNodePool) {
             drawNode.GetComponent<DrawNode>().Reset();
-            // Resets alpha value
-            // foreach(KeyValuePair<ConnectedDirection, GameObject> dictEntry in drawNode.GetComponent<DrawNode>().connectedDirectionSprites) {
-            //     SpriteRenderer spriteRendererRef = dictEntry.Value.GetComponent<SpriteRenderer>();
-            //     dictEntry.Value.GetComponent<SpriteRenderer>().color = new Color(spriteRendererRef.color.r,
-            //                                                                      spriteRendererRef.color.g,
-            //                                                                      spriteRendererRef.color.b,
-            //                                                                      1f);
-            // }
         }
-
     }
 
-    public void SetDrawNodes(List<GameObject> movementNodes) {
-        // Debug.Log("setting draw nodes");
-        // Debug.Log("MovementNodes Length: " + movementNodes.Count);
+    public void Show() {
+        foreach(GameObject gameObj in drawNodes) {
+            gameObj.GetComponent<DrawNode>().Show();
+        }
+        foreach(GameObject gameObj in drawNodePool) {
+            gameObj.GetComponent<DrawNode>().Show();
+        }
+    }
 
+    public void Hide() {
+        foreach(GameObject gameObj in drawNodes) {
+            gameObj.GetComponent<DrawNode>().Hide();
+        }
+        foreach(GameObject gameObj in drawNodePool) {
+            gameObj.GetComponent<DrawNode>().Hide();
+        }
+    }
+
+    public void AddToDrawNodePool(GameObject newDrawNodePoolItem) {
+        if(!drawNodePool.Contains(newDrawNodePoolItem)) {
+            drawNodePool.Add(newDrawNodePoolItem);
+        }
+    }
+
+    public void SetDrawNodes(Vector2 startPosition, List<GameObject> movementNodes) {
         Reset();
 
-        GameObject previousMovementNode = null;
-        GameObject currentMovementNode = null;
+        Vector2 currentMovementNode = Vector2.zero;
         GameObject nextMovementNode = null;
 
         for(int i = 0; i < movementNodes.Count; i++) {
-            if(currentMovementNode != null) {
-                previousMovementNode = currentMovementNode;
-            }
-            if(i + 1 < movementNodes.Count) {
-                nextMovementNode = movementNodes[i + 1];
-            }
-            currentMovementNode = movementNodes[i];
-
-            GameObject currentDrawNode = GetNewDrawNode();
-            // DrawNode currentDrawNodeReference = currentDrawNode.GetComponent<DrawNode>();
-            currentDrawNode.transform.position = new Vector3(currentMovementNode.transform.position.x,
-                                                             currentMovementNode.transform.position.y,
-                                                             currentDrawNode.transform.position.z);
-
-            ConfigureNodeConnections(currentDrawNode, previousMovementNode, nextMovementNode);
-            // Sets alpha value
-            // if(i == 0) {
-            //     foreach(KeyValuePair<ConnectedDirection, GameObject> dictEntry in currentDrawNode.GetComponent<DrawNode>().connectedDirectionSprites) {
-            //         SpriteRenderer spriteRendererRef = dictEntry.Value.GetComponent<SpriteRenderer>();
-            //         dictEntry.Value.GetComponent<SpriteRenderer>().color = new Color(spriteRendererRef.color.r,
-            //                                                                          spriteRendererRef.color.g,
-            //                                                                          spriteRendererRef.color.b,
-            //                                                                          0.5f);
-            //     }
-            // }
-        }
-        // Debug.Log(drawNodes.Count);
-    }
-
-    public void ConfigureNodeConnections(GameObject currentNode, GameObject previousNode, GameObject nextNode) {
-        DrawNode currentDrawNode = currentNode.GetComponent<DrawNode>();
-        currentDrawNode.Reset();
-        currentDrawNode.AddConnectedDirections(ConnectedDirection.Center);
-        if(previousNode != null) {
-            ConnectedDirection newConnectedDirection = GetConnectedDirection(currentNode, previousNode);
-            if(newConnectedDirection != ConnectedDirection.None) {
-                currentDrawNode.AddConnectedDirections(newConnectedDirection);
-            }
-        }
-        if(nextNode != null) {
-            ConnectedDirection newConnectedDirection = GetConnectedDirection(currentNode, nextNode);
-            if(newConnectedDirection != ConnectedDirection.None) {
-                currentDrawNode.AddConnectedDirections(newConnectedDirection);
-            }
-        }
-    }
-
-    public ConnectedDirection GetConnectedDirection(GameObject anchorNode, GameObject nodeToCompare) {
-        ConnectedDirection directionToReturn = ConnectedDirection.None;
-
-        if(nodeToCompare.transform.position.x < anchorNode.transform.position.x) {
-            if(nodeToCompare.transform.position.y < anchorNode.transform.position.y) {
-                directionToReturn = ConnectedDirection.BottomLeft;
-            }
-            else if(nodeToCompare.transform.position.y > anchorNode.transform.position.y) {
-                directionToReturn = ConnectedDirection.TopLeft;
+            if(i == 0) {
+                currentMovementNode = startPosition;
             }
             else {
-                directionToReturn = ConnectedDirection.Left;
+                currentMovementNode = new Vector2(nextMovementNode.transform.position.x, nextMovementNode.transform.position.y);
             }
-        }
-        else if(nodeToCompare.transform.position.x > anchorNode.transform.position.x) {
-            if(nodeToCompare.transform.position.y < anchorNode.transform.position.y) {
-                directionToReturn = ConnectedDirection.BottomRight;
-            }
-            else if(nodeToCompare.transform.position.y > anchorNode.transform.position.y) {
-                directionToReturn = ConnectedDirection.TopRight;
-            }
-            else {
-                directionToReturn = ConnectedDirection.Right;
-            }
-        }
-        else {
-            if(nodeToCompare.transform.position.y < anchorNode.transform.position.y) {
-                directionToReturn = ConnectedDirection.Bottom;
-            }
-            else if(nodeToCompare.transform.position.y > anchorNode.transform.position.y) {
-                directionToReturn = ConnectedDirection.Top;
-            }
-            else {
-                // No direction set
+            nextMovementNode = movementNodes[i];
+            for(int j = 0; j < numberOfDrawNodesBetweenPoint; j++) {
+                float newDrawNodeXPosition = currentMovementNode.x + ((nextMovementNode.transform.position.x - currentMovementNode.x)/numberOfDrawNodesBetweenPoint)*j;
+                float newDrawNodeYPosition = currentMovementNode.y + ((nextMovementNode.transform.position.y - currentMovementNode.y)/numberOfDrawNodesBetweenPoint)*j;
+
+                GameObject newDrawNode = GetNewDrawNode();
+                newDrawNode.transform.position = new Vector3(newDrawNodeXPosition,
+                                                             newDrawNodeYPosition,
+                                                             newDrawNode.transform.position.z);
             }
         }
 
-        return directionToReturn;
+        // Shows the draw node
+        foreach(GameObject drawNode in drawNodes) {
+            DrawNode drawNodeRef = drawNode.GetComponent<DrawNode>();
+            drawNodeRef.Reset();
+
+            foreach(GameObject spriteToManage in drawNodeRef.spritesToManage) {
+                SpriteRenderer spriteRendererRef = spriteToManage.GetComponent<SpriteRenderer>();
+                spriteRendererRef.enabled = true;
+            }
+        }
     }
 
     public GameObject GetNewDrawNode() {
@@ -190,5 +146,24 @@ public class DrawNodeList : MonoBehaviour {
         drawNodes.Add(newDrawNode);
 
         return newDrawNode;
+    }
+
+    public void PerformDrawNodeCleanUpOnMovement() {
+        List<GameObject> gameObjectsToRemove = new List<GameObject>();
+
+        foreach(GameObject drawNode in drawNodes) {
+            if(gameObjectMoving.transform.position.x > (drawNode.transform.position.x - 0.05f)
+               && gameObjectMoving.transform.position.x < (drawNode.transform.position.x + 0.05f)
+               && gameObjectMoving.transform.position.y > (drawNode.transform.position.y - 0.05f)
+               && gameObjectMoving.transform.position.y < (drawNode.transform.position.y + 0.05f)) {
+                gameObjectsToRemove.Add(drawNode);
+            }
+        }
+
+        foreach(GameObject gameObj in gameObjectsToRemove) {
+            drawNodes.Remove(gameObj);
+            AddToDrawNodePool(gameObj);
+            gameObj.GetComponent<DrawNode>().Reset();
+        }
     }
 }
