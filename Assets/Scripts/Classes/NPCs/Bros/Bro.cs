@@ -44,21 +44,32 @@ public class Bro : BaseBehavior {
 
     public bool isPaused = false;
 
+    public Color selectionColor = Color.white;
 
     protected override void Awake() {
         base.Awake();
     }
+
     // Use this for initialization
     public virtual void Start () {
         // base.Start();
         InitializeOccupationDuration();
         InitializeComponents();
-
+    
+        float newSelectionColor = Random.Range(0, 10000) + (0.618033988749895f * Random.Range(0f, 1f)) % 1;
+        selectionColor = CustomColor.HSVToRGB(new Vector3(newSelectionColor, 0.75f, 0.95f));
+        Debug.Log("Color: " + selectionColor.ToString());
+        //----------------------------------------------------------------------
         // Sets the on pop movement logic to redraw the draw nodes every time
         // targetPathingReference.SetOnArrivalAtMovementNodeLogic(() => drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes()));
-        // drawNodeList.
         // targetPathingReference.SetOnPopMovementNodeLogic(() => drawNodeList.SetDrawNodes(new Vector2(this.gameObject.transform.position.x,
-        //                                                                                              this.gameObject.transform.position.y), targetPathingReference.GetMovementNodes()));
+        //----------------------------------------------------------------------
+        if(drawNodeList != null) {
+            drawNodeList.SetColor(selectionColor);
+        }
+        if(selectableReference != null) {
+            selectableReference.SetColor(selectionColor);
+        }
     }
 
     // Update is called once per frame
@@ -130,9 +141,11 @@ public class Bro : BaseBehavior {
     public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
         occupationTimer = 0;
         targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
-        drawNodeList.SetDrawNodes(new Vector2(this.gameObject.transform.position.x,
-                                                this.gameObject.transform.position.y),
-                                    targetPathingReference.GetMovementNodes());
+        if(drawNodeList != null) {
+            drawNodeList.SetDrawNodes(new Vector2(this.gameObject.transform.position.x,
+                                                    this.gameObject.transform.position.y),
+                                        targetPathingReference.GetMovementNodes());
+        }
     }
 
     public List<GameObject> GetMovementNodes() {

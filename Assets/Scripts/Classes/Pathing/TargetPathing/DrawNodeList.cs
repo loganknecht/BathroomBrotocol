@@ -11,6 +11,7 @@ public class DrawNodeList : MonoBehaviour {
     public List<GameObject> drawNodePool;
 
     public int numberOfDrawNodesBetweenPoint = 1;
+    public Color colorToTint = Color.white;
 
     void Start () {
         if(drawNodes == null) {
@@ -19,46 +20,19 @@ public class DrawNodeList : MonoBehaviour {
         if(drawNodePool == null) {
             drawNodePool = new List<GameObject>();
         }
-
-        // GameObject firstNode = new GameObject("data node");
-        // firstNode.transform.position = new Vector3(0, 0, 0);
-
-        // GameObject secondNode = new GameObject("data node");
-        // secondNode.transform.position = new Vector3(1, 0, 0);
-
-        // GameObject thirdNode = new GameObject("data node");
-        // thirdNode.transform.position = new Vector3(1, 1, 0);
-
-        // GameObject fourthNode = new GameObject("data node");
-        // fourthNode.transform.position = new Vector3(1, 2, 0);
-
-        // GameObject fifthNode = new GameObject("data node");
-        // fifthNode.transform.position = new Vector3(2, 2, 0);
-
-        // GameObject sixthNode = new GameObject("data node");
-        // sixthNode.transform.position = new Vector3(2, 1, 0);
-
-        // GameObject seventhNode = new GameObject("data node");
-        // seventhNode.transform.position = new Vector3(2, 0, 0);
-
-        // List<GameObject> newDrawNodes = new List<GameObject>();
-
-        // newDrawNodes.Add(firstNode);
-        // newDrawNodes.Add(secondNode);
-        // newDrawNodes.Add(thirdNode);
-        // newDrawNodes.Add(fourthNode);
-        // newDrawNodes.Add(fifthNode);
-        // newDrawNodes.Add(sixthNode);
-        // newDrawNodes.Add(seventhNode);
-        // SetDrawNodes(newDrawNodes);
     }
     
     void Update () {
         PerformDrawNodeCleanUpOnMovement();
     }
 
+    public void SetColor(Color newColor) {
+        colorToTint = newColor;
+    }
+
     public void Reset() {
         foreach(GameObject drawNode in drawNodes) {
+            AddToDrawNodePool(drawNode);
         }
         drawNodes.Clear();
 
@@ -138,24 +112,30 @@ public class DrawNodeList : MonoBehaviour {
         }
         // create a new draw node
         else {
-            newDrawNode = Factory.Instance.GenerateDrawNode();
+
+            newDrawNode = DrawNodeManager.Instance.GenerateDrawNode();
+            // newDrawNode = Factory.Instance.GenerateDrawNode();
             // newDrawNode.transform.parent = this.gameObject.transform;
             // newDrawNode.transform.SetParent(this.gameObject.transform, false);
         }
         newDrawNode.GetComponent<DrawNode>().Reset();
+
+        // Debug.Log("ColorToTint: " + colorToTint.ToString());
+        newDrawNode.GetComponent<DrawNode>().SetSpritesColor(colorToTint);
         drawNodes.Add(newDrawNode);
 
         return newDrawNode;
     }
 
+    // This isn't super stellar, but i'm not sure how else to achieve it with my crappy programming going on here
     public void PerformDrawNodeCleanUpOnMovement() {
         List<GameObject> gameObjectsToRemove = new List<GameObject>();
 
         foreach(GameObject drawNode in drawNodes) {
-            if(gameObjectMoving.transform.position.x > (drawNode.transform.position.x - 0.05f)
-               && gameObjectMoving.transform.position.x < (drawNode.transform.position.x + 0.05f)
-               && gameObjectMoving.transform.position.y > (drawNode.transform.position.y - 0.05f)
-               && gameObjectMoving.transform.position.y < (drawNode.transform.position.y + 0.05f)) {
+            if(gameObjectMoving.transform.position.x > (drawNode.transform.position.x - 0.15f)
+               && gameObjectMoving.transform.position.x < (drawNode.transform.position.x + 0.15f)
+               && gameObjectMoving.transform.position.y > (drawNode.transform.position.y - 0.15f)
+               && gameObjectMoving.transform.position.y < (drawNode.transform.position.y + 0.15f)) {
                 gameObjectsToRemove.Add(drawNode);
             }
         }

@@ -3,30 +3,33 @@ using System.Collections;
 
 public class HighlightSelectable : Selectable {
 
-	//THIS IS COUPLED WITH THE SELECTABLE CLASS
-	public GameObject highlightObject = null;
+    //THIS IS COUPLED WITH THE SELECTABLE CLASS
+    public GameObject highlightObject = null;
 
-	void Awake() {
-	}
-	// Use this for initialization
-	void Start () {
-		ResetHighlightObjectAndSelectedState();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if(isSelected) {
-			highlightObject.SetActive(true);
-		}
-		else {
-			highlightObject.SetActive(false);
-		}
-	}
+    void Awake() {
+    }
+    // Use this for initialization
+    void Start () {
+        ResetHighlightObjectAndSelectedState();
+    }
+    
+    // Update is called once per frame
+    void Update () {
+        SetHighlightSpriteState(isSelected);
+    }
 
-	public void ResetHighlightObjectAndSelectedState() {
-		isSelected = false;
-		if(highlightObject != null) {
-			highlightObject.SetActive(false);
-		}
-	}
+    public void SetHighlightSpriteState(bool isShowing) {
+        if(highlightObject != null) {
+            highlightObject.GetComponent<SpriteRenderer>().enabled = isShowing;
+        }
+    }
+
+    public void ResetHighlightObjectAndSelectedState() {
+        isSelected = false;
+        SetHighlightSpriteState(false);
+    }
+
+    public void SetColor(Color newColor) {
+        highlightObject.GetComponent<SpriteRenderer>().color = newColor;
+    }
 }

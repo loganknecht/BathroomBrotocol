@@ -49,4 +49,11 @@ public class DrawNode : BaseBehavior {
             spriteRendererRef.enabled = newEnabledState;
         }
     }
+
+    public void SetSpritesColor(Color newColor) {
+        foreach(GameObject spriteToManage in spritesToManage) {
+            SpriteRenderer spriteRendererRef = spriteToManage.GetComponent<SpriteRenderer>();
+            spriteRendererRef.color = new Color(newColor.r, newColor.g, newColor.b, spriteRendererRef.color.a);
+        }
+    }
 }

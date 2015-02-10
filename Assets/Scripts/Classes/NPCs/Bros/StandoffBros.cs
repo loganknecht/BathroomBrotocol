@@ -55,6 +55,9 @@ public class StandoffBros : MonoBehaviour {
         broOneReference.standoffBroGameObject = this.gameObject;
         broOneReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broOneReference.targetPathingReference.disableMovementLogic = true;
+        if(broOneReference.drawNodeList != null) {
+            broOneReference.drawNodeList.Hide();
+        }
         broOne.GetComponent<HighlightSelectable>().enabled = false;
 
         broTwo = newBroTwo;
@@ -62,6 +65,9 @@ public class StandoffBros : MonoBehaviour {
         broTwoReference.standoffBroGameObject = this.gameObject;
         broTwoReference.selectableReference.ResetHighlightObjectAndSelectedState();
         broTwoReference.targetPathingReference.disableMovementLogic = true;
+        if(broTwoReference.drawNodeList != null) {
+            broTwoReference.drawNodeList.Hide();
+        }
         broTwo.GetComponent<HighlightSelectable>().enabled = false;
     }
 

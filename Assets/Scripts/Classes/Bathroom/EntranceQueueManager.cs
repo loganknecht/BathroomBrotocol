@@ -116,7 +116,9 @@ public class EntranceQueueManager : BaseBehavior {
         lineQueueSelected.AddGameObjectToLineQueue(broToAdd);
 
         broReference.PerformEnteredScore();
-        broReference.drawNodeList.Hide();
+        if(broReference.drawNodeList != null) {
+            broReference.drawNodeList.Hide();
+        }
 
         if(entranceAudioObject == null) {
             entranceAudioObject = SoundManager.Instance.Play(AudioType.EntranceQueueDoorOpenClubMusic);
