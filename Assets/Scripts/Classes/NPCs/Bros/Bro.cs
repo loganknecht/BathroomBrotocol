@@ -58,7 +58,7 @@ public class Bro : BaseBehavior {
     
         float newSelectionColor = Random.Range(0, 10000) + (0.618033988749895f * Random.Range(0f, 1f)) % 1;
         selectionColor = CustomColor.HSVToRGB(new Vector3(newSelectionColor, 0.75f, 0.95f));
-        Debug.Log("Color: " + selectionColor.ToString());
+        // Debug.Log("Color: " + selectionColor.ToString());
         //----------------------------------------------------------------------
         // Sets the on pop movement logic to redraw the draw nodes every time
         // targetPathingReference.SetOnArrivalAtMovementNodeLogic(() => drawNodeList.SetDrawNodes(targetPathingReference.GetMovementNodes()));

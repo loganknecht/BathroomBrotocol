@@ -10,7 +10,7 @@ using System.Collections.Generic;
 public class RotateCamera : MonoBehaviour {
     public GameObject cameraGameObject = null;
     public float amountRotated = 0f;
-    public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
+    public Facing directionBeingLookedAt = Facing.None;
 
     // Use this for initialization
     void Start () {
@@ -157,23 +157,23 @@ public class RotateCamera : MonoBehaviour {
     public void GetGameObjectsTileOffset(GameObject gameObj, Vector3 positionToOffsetFrom, Dictionary<GameObject, GameObject> tileContainingGameObject, Dictionary<GameObject, Vector2> tileOffset, bool rotatingLeft, bool rotatingRight, bool useTargetPathingVector) {
         if(rotatingLeft) {
             switch(directionBeingLookedAt) {
-                case(DirectionBeingLookedAt.Top):
+                case(Facing.Top):
                     // Debug.Log("ROTATING LEFT - LOOKING TOP SIDE.");
                     tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
                                                         -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
                 break;
-                case(DirectionBeingLookedAt.Right):
+                case(Facing.Right):
                     // Debug.Log("ROTATING LEFT - LOOKING RIGHT SIDE.");
                     tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
                                                         -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
 
                 break;
-                case(DirectionBeingLookedAt.Bottom):
+                case(Facing.Bottom):
                     // Debug.Log("ROTATING LEFT - LOOKING BOTTOM SIDE.");
                     tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
                                                         -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
                 break;
-                case(DirectionBeingLookedAt.Left):
+                case(Facing.Left):
                     // Debug.Log("ROTATING LEFT - LOOKING LEFT SIDE.");
                     tileOffset[gameObj]  = new Vector2(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y,
                                                         -(tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x));
@@ -187,23 +187,23 @@ public class RotateCamera : MonoBehaviour {
         }
         if(rotatingRight) {
             switch(directionBeingLookedAt) {
-                case(DirectionBeingLookedAt.Top):
+                case(Facing.Top):
                     // Debug.Log("ROTATING RIGHT - LOOKING TOP SIDE.");
                     tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
                                                         tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
                 break;
-                case(DirectionBeingLookedAt.Right):
+                case(Facing.Right):
                     // Debug.Log("ROTATING RIGHT - LOOKING RIGHT SIDE.");
                     tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
                                                         tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
 
                 break;
-                case(DirectionBeingLookedAt.Bottom):
+                case(Facing.Bottom):
                     // Debug.Log("ROTATING RIGHT - LOOKING BOTTOM SIDE.");
                     tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
                                                         tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
                 break;
-                case(DirectionBeingLookedAt.Left):
+                case(Facing.Left):
                     // Debug.Log("ROTATING RIGHT - LOOKING LEFT SIDE.");
                     tileOffset[gameObj]  = new Vector2(-(tileContainingGameObject[gameObj].transform.position.y - positionToOffsetFrom.y),
                                                         tileContainingGameObject[gameObj].transform.position.x - positionToOffsetFrom.x);
@@ -538,28 +538,28 @@ public class RotateCamera : MonoBehaviour {
         HideBathroomIfUnderDiagonal();
     }
 
-    public DirectionBeingLookedAt GetDirectionBeingLookedAt(float amountRotatedAround) {
-        DirectionBeingLookedAt dirBeingLookedAt = DirectionBeingLookedAt.None;
+    public Facing GetDirectionBeingLookedAt(float amountRotatedAround) {
+        Facing dirBeingLookedAt = Facing.None;
 
         if((amountRotatedAround >= 0 && amountRotatedAround < 90)
             || (amountRotatedAround > -90 && amountRotatedAround <= 0)) {
             // Debug.Log("Top");
-            dirBeingLookedAt = DirectionBeingLookedAt.Top;
+            dirBeingLookedAt = Facing.Top;
         }
         else if((amountRotatedAround >= 90 && amountRotatedAround < 180)
                 || (amountRotatedAround > -360 && amountRotatedAround <= -270)) {
             // Debug.Log("Right");
-            dirBeingLookedAt = DirectionBeingLookedAt.Right;
+            dirBeingLookedAt = Facing.Right;
         }
         else if((amountRotatedAround >= 270 && amountRotatedAround < 360)
                 || (amountRotatedAround > -180 && amountRotatedAround <= -90)) {
             // Debug.Log("Left");
-            dirBeingLookedAt = DirectionBeingLookedAt.Left;
+            dirBeingLookedAt = Facing.Left;
         }
         else if((amountRotatedAround >= 180 && amountRotatedAround < 270)
                 || (amountRotatedAround > -270 && amountRotatedAround <= -180)) {
             // Debug.Log("Bottom");
-            dirBeingLookedAt = DirectionBeingLookedAt.Bottom;
+            dirBeingLookedAt = Facing.Bottom;
         }
 
         return dirBeingLookedAt;
@@ -576,78 +576,78 @@ public class RotateCamera : MonoBehaviour {
         BathroomFacing bathroomFacingReference = gameObjToUpdate.GetComponent<BathroomFacing>();
         if(bathroomFacingReference != null) {
             // Debug.Log(gameObjToUpdate.name + " not null");
-            // bathroomFacingReference.directionBeingLookedAt = cameraDirectionBeingLookedAt;
+            // bathroomFacingReference.facing = cameraDirectionBeingLookedAt;
             float calculatedRotation = (cameraRotation - bathroomFacingReference.rotationOffset)%360;
             // Debug.Log(gameObjToUpdate.name + " rotation: " + calculatedRotation);
-            DirectionBeingLookedAt directionBeingLookedAtToSet = GetDirectionBeingLookedAt(calculatedRotation);
+            Facing directionBeingLookedAtToSet = GetDirectionBeingLookedAt(calculatedRotation);
             // Debug.Log(gameObjToUpdate.name + " direction: " + directionBeingLookedAtToSet.ToString());
-            bathroomFacingReference.directionBeingLookedAt = directionBeingLookedAtToSet;
+            bathroomFacingReference.facing = directionBeingLookedAtToSet;
         }
     }
 
-    public DirectionBeingLookedAt GetDirectionFacingBasedOnCameraAndMovementDirection(bool movingUp, bool movingRight, bool movingDown, bool movingLeft) {
+    public Facing GetDirectionFacingBasedOnCameraAndMovementDirection(bool movingUp, bool movingRight, bool movingDown, bool movingLeft) {
         // Debug.Log("Moving Up: " + movingUp + "\nMoving Right: " + movingRight + "\nMoving Down: " + movingDown + "\nMoving Left: " + movingLeft);
 
-        DirectionBeingLookedAt cameraDirectionBeingLookedAt = directionBeingLookedAt;
-        DirectionBeingLookedAt directionToReturn = DirectionBeingLookedAt.None;
+        Facing cameraDirectionBeingLookedAt = directionBeingLookedAt;
+        Facing directionToReturn = Facing.None;
         if(movingRight) {
             // moving up right
             if(movingUp) {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.Top;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.Top;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.Right;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.Right;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.Left;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.Left;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.Bottom;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                        directionToReturn = Facing.TopRight;
                     break;
                 }
             }
             // moving down right
             else if(movingDown) {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.Right;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.Right;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.Bottom;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.Top;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.Top;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.Left;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.Left;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.Right;
+                        directionToReturn = Facing.Right;
                     break;
                 } 
             }
             // moving right
             else {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.TopRight;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.BottomRight;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.TopLeft;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.BottomLeft;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.Right;
+                        directionToReturn = Facing.Right;
                     break;
                 }  
             }
@@ -656,60 +656,60 @@ public class RotateCamera : MonoBehaviour {
             // moving up left
             if(movingUp) {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.Left;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.Left;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.Top;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.Top;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.Bottom;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.Right;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.Right;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                        directionToReturn = Facing.TopLeft;
                     break;
                 } 
             }
             // moving down left
             else if(movingDown) {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.Bottom;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.Left;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.Left;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.Top;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.Top;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.Right;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.Right;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                        directionToReturn = Facing.BottomLeft;
                     break;
                 } 
             }
             // moving left
             else {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.BottomLeft;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.TopLeft;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.BottomRight;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.TopRight;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.Left;
+                        directionToReturn = Facing.Left;
                     break;
                 } 
             }
@@ -718,40 +718,40 @@ public class RotateCamera : MonoBehaviour {
             // moving up
             if(movingUp) {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.TopLeft;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.TopRight;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.BottomLeft;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.BottomRight;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.Top;
+                        directionToReturn = Facing.Top;
                     break;
                 } 
             }
             // moving down 
             if(movingDown) {
                 switch(cameraDirectionBeingLookedAt) {
-                    case(DirectionBeingLookedAt.TopRight):
-                        directionToReturn = DirectionBeingLookedAt.BottomRight;
+                    case(Facing.TopRight):
+                        directionToReturn = Facing.BottomRight;
                     break;
-                    case(DirectionBeingLookedAt.TopLeft):
-                        directionToReturn = DirectionBeingLookedAt.BottomLeft;
+                    case(Facing.TopLeft):
+                        directionToReturn = Facing.BottomLeft;
                     break;
-                    case(DirectionBeingLookedAt.BottomRight):
-                        directionToReturn = DirectionBeingLookedAt.TopRight;
+                    case(Facing.BottomRight):
+                        directionToReturn = Facing.TopRight;
                     break;
-                    case(DirectionBeingLookedAt.BottomLeft):
-                        directionToReturn = DirectionBeingLookedAt.TopLeft;
+                    case(Facing.BottomLeft):
+                        directionToReturn = Facing.TopLeft;
                     break;
                     default:
-                        directionToReturn = DirectionBeingLookedAt.Bottom;
+                        directionToReturn = Facing.Bottom;
                     break;
                 } 
             }

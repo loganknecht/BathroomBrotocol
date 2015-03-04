@@ -42,13 +42,13 @@ public class BathroomObject : MonoBehaviour {
     }
 
     public virtual void UpdateAnimator() {
-        foreach(DirectionBeingLookedAt bathroomFacing in DirectionBeingLookedAt.GetValues(typeof(DirectionBeingLookedAt))) {
+        foreach(Facing bathroomFacing in Facing.GetValues(typeof(Facing))) {
             animatorReference.SetBool(bathroomFacing.ToString(), false);
         }
         foreach(BathroomObjectState BathroomObjectState in BathroomObjectState.GetValues(typeof(BathroomObjectState))) {
             animatorReference.SetBool(BathroomObjectState.ToString(), false);
         }
-        animatorReference.SetBool(bathroomFacingReference.directionBeingLookedAt.ToString(), true);
+        animatorReference.SetBool(bathroomFacingReference.facing.ToString(), true);
         animatorReference.SetBool(state.ToString(), true);
     }
 
@@ -60,7 +60,7 @@ public class BathroomObject : MonoBehaviour {
             numberOfTaps++;
             // eeeehhhh probably take this out and make it its own function
             if(numberOfTaps >= numberOfTapsNeededToRestoreToOrder) {
-                Debug.Log("maxed out taps");
+                // Debug.Log("maxed out taps");
                 state = BathroomObjectState.Idle;
                 timesUsed = 0;
             }

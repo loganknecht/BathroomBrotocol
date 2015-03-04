@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TargetPathing : BaseBehavior {
-    public DirectionBeingLookedAt directionBeingLookedAt = DirectionBeingLookedAt.None;
+    public Facing directionBeingLookedAt = Facing.None;
 
     public Animator animatorReference = null;
 
@@ -54,14 +54,14 @@ public class TargetPathing : BaseBehavior {
 
     public virtual void UpdateAnimator() {
         if(animatorReference != null) {
-            animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
-            animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
+            animatorReference.SetBool(Facing.TopLeft.ToString(), false);
+            animatorReference.SetBool(Facing.Top.ToString(), false);
+            animatorReference.SetBool(Facing.TopRight.ToString(), false);
+            animatorReference.SetBool(Facing.Left.ToString(), false);
+            animatorReference.SetBool(Facing.Right.ToString(), false);
+            animatorReference.SetBool(Facing.BottomLeft.ToString(), false);
+            animatorReference.SetBool(Facing.Bottom.ToString(), false);
+            animatorReference.SetBool(Facing.BottomRight.ToString(), false);
 
             animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
 
@@ -266,7 +266,7 @@ public class TargetPathing : BaseBehavior {
         }
         else {
             if(movementNodes.Count == 0) {
-                directionBeingLookedAt = DirectionBeingLookedAt.None;
+                directionBeingLookedAt = Facing.None;
             }
         }
     }

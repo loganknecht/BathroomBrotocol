@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
-  public override void Awake() {
-    base.Awake();
-  }
+    public override void Awake() {
+        base.Awake();
+    }
 
-  // Use this for initialization
+    // Use this for initialization
     public override void Start () {
         base.Start();
 

@@ -42,7 +42,7 @@ public class TestWave : WaveLogic, WaveLogicContract {
     public override void PerformLevelFailCheck() {
         base.PerformLevelFailCheck();
         
-        if(BathroomObjectManager.Instance.GetNumberOfAllBrokenBathroomObjects() > 0) {
+        if(BathroomObjectManager.Instance.GetNumberOfAllBrokenBathroomObjects() > 3) {
             LevelManager.Instance.TriggerFailedLevel();
         }
     }
@@ -63,7 +63,7 @@ public class TestWave : WaveLogic, WaveLogicContract {
         TextboxManager.Instance.Show();
 
         Queue textQueue = new Queue();
-        textQueue.Enqueue("TODO: FILL IN");
+        textQueue.Enqueue("Don't Let More Than 3 Bathroom Objects Get Broken!!!");
         TextboxManager.Instance.SetTextboxTextSet(textQueue);
     }
     public void PerformStartAnimation() {
@@ -80,13 +80,13 @@ public class TestWave : WaveLogic, WaveLogicContract {
     public void TriggerFirstWave() {
         Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { 
                                                                                             { BroType.GenericBro, 0.75f },
-                                                                                            { BroType.SlobBro, 0.25f } 
+                                                                                            { BroType.SlobBro, 0.25f },
                                                                                         };
         Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { 
                                                                                             { 0, .5f },
-                                                                                            { 1, .5f } 
+                                                                                            { 1, .5f },
                                                                                         };
-        BroDistributionObject waveOne = new BroDistributionObject(0,                              // Start Time
+        BroDistributionObject waveOne = new BroDistributionObject(0,                                // Start Time
                                                                     60,                             // End Time
                                                                     5,                              // Number to Generate
                                                                     DistributionType.LinearIn,      // DistributionType
@@ -96,7 +96,8 @@ public class TestWave : WaveLogic, WaveLogicContract {
         waveOne.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
             .SetXMoveSpeed(BroDistribution.AllBros, 1.5f, 2f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.5f, 2f)
-            .SetFightProbability(BroDistribution.AllBros, 0.5f, 0.5f)
+            .SetFightProbability(BroDistribution.AllBros, 1f, 1f)
+            // .SetFightProbability(BroDistribution.AllBros, 0.5f, 0.5f)
             .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, false)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0, 0)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2, 2)
@@ -157,7 +158,7 @@ public class TestWave : WaveLogic, WaveLogicContract {
         waveOne.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
             .SetXMoveSpeed(BroDistribution.AllBros, 1.5f, 2f)
             .SetYMoveSpeed(BroDistribution.AllBros , 1.5f, 2f)
-            .SetFightProbability(BroDistribution.AllBros, 0.5f, 0.5f)
+            .SetFightProbability(BroDistribution.AllBros, 0f, 0f)
             .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, false)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0, 0)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2, 2)
@@ -165,7 +166,7 @@ public class TestWave : WaveLogic, WaveLogicContract {
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2, 2)
             .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2, 2)
             .SetLineQueueSkipType(BroDistribution.AllBros, true)
-            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, true)
+            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
             .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
             .SetChooseObjectOnRelief(BroDistribution.AllBros, true);
         // Fart Generator if the bro has it (TileBlocker Properties)

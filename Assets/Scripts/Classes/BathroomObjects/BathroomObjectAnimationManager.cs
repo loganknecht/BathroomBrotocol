@@ -32,16 +32,16 @@ public class BathroomObjectAnimationManager : MonoBehaviour {
 		animatorReference.SetBool(BathroomObjectState.Idle.ToString(), false);
 		animatorReference.SetBool(BathroomObjectState.InUse.ToString(), false);
 
-		animatorReference.SetBool(DirectionBeingLookedAt.TopLeft.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.Top.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.TopRight.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.Left.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.Right.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.BottomLeft.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.Bottom.ToString(), false);
-		animatorReference.SetBool(DirectionBeingLookedAt.BottomRight.ToString(), false);
+		animatorReference.SetBool(Facing.TopLeft.ToString(), false);
+		animatorReference.SetBool(Facing.Top.ToString(), false);
+		animatorReference.SetBool(Facing.TopRight.ToString(), false);
+		animatorReference.SetBool(Facing.Left.ToString(), false);
+		animatorReference.SetBool(Facing.Right.ToString(), false);
+		animatorReference.SetBool(Facing.BottomLeft.ToString(), false);
+		animatorReference.SetBool(Facing.Bottom.ToString(), false);
+		animatorReference.SetBool(Facing.BottomRight.ToString(), false);
 
-		animatorReference.SetBool(bathroomFacing.directionBeingLookedAt.ToString(), true);
+		animatorReference.SetBool(bathroomFacing.facing.ToString(), true);
 		animatorReference.SetBool(bathroomObjectReference.state.ToString(), true);
 	}
 }
