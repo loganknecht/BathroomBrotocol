@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public class BathroomTileHelper {
-	[MenuItem ("Tools/Sprite Renderer/Enable SpriteRenderer %#o")]
+	[MenuItem ("Tools/Bathroom Tile/Enable BathroomTile %#o")]
 	public static void EnableBathroomTile() {
 		GameObject[] selections = Selection.gameObjects;
 		foreach(GameObject selection in selections) {
