@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public class BathroomTileHelper {
-	[MenuItem ("Tools/Bathroom Tile/Enable BathroomTile %#o")]
+	[MenuItem ("Tools/Bathroom Tile/Enable BathroomTile %#[")]
 	public static void EnableBathroomTile() {
 		GameObject[] selections = Selection.gameObjects;
 		foreach(GameObject selection in selections) {
@@ -14,7 +14,7 @@ public class BathroomTileHelper {
 			ToggleAStarNode(EditorHelper.GetFirstParentOfType<AStarNode>(selection), false);
 		}
 	}
-	[MenuItem ("Tools/Bathroom Tile/Disable BathroomTile %#p")]
+	[MenuItem ("Tools/Bathroom Tile/Disable BathroomTile %#]")]
 	public static void DisableBathroomTile() {
 		GameObject[] selections = Selection.gameObjects;
 		foreach(GameObject selection in selections) {

@@ -5,87 +5,66 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public class DuplicateHelper {
-	// This duplicates a game object and increments any number that is a part of its name
-	[MenuItem("Tools/Duplicate/Duplicate And Increment Name %#d")]
-	public static void DuplicateAndIncrementName() {
+	public static void DuplicateAndIncrementNameAndMove(float xOffset, float yOffset) {
 		List<GameObject> newGameObjects = new List<GameObject>();
 		foreach(GameObject gameObj in Selection.gameObjects) {
 			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObj, GetIncrementedString(gameObj.name));
-			newGameObjects.Add(newGameObject);
-		}
-		Selection.objects = newGameObjects.ToArray();
-	}
-
-	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Right %#RIGHT")]
-	public static void DuplicateAndIncrementNameAndMoveRight() {
-		List<GameObject> newGameObjects = new List<GameObject>();
-		foreach(GameObject gameObj in Selection.gameObjects) {
-			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObj, GetIncrementedString(gameObj.name));
-			newGameObject.transform.position = new Vector3(newGameObject.transform.position.x + 1,
-														   newGameObject.transform.position.y,
+			newGameObject.transform.position = new Vector3(newGameObject.transform.position.x + xOffset,
+														   newGameObject.transform.position.y + yOffset,
 														   newGameObject.transform.position.z);
 			newGameObjects.Add(newGameObject);
 
 			Tile[] tiles = newGameObject.GetComponentsInChildren<Tile>(true);
 			foreach(Tile tile in tiles) {
-				tile.tileX++;
+				tile.tileX += (int)Mathf.Floor(xOffset);
+				tile.tileY += (int)Mathf.Floor(yOffset);
 			}
 		}
 		Selection.objects = newGameObjects.ToArray();
 	}
-
-	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Left %#LEFT")]
-	public static void DuplicateAndIncrementNameAndMoveLeft() {
-		List<GameObject> newGameObjects = new List<GameObject>();
-		foreach(GameObject gameObj in Selection.gameObjects) {
-			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObj, GetIncrementedString(gameObj.name));
-			newGameObject.transform.position = new Vector3(newGameObject.transform.position.x - 1,
-														   newGameObject.transform.position.y,
-														   newGameObject.transform.position.z);
-			newGameObjects.Add(newGameObject);
-
-			Tile[] tiles = newGameObject.GetComponentsInChildren<Tile>(true);
-			foreach(Tile tile in tiles) {
-				tile.tileX--;
-			}
-		}
-		Selection.objects = newGameObjects.ToArray();
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Up-Left %#u")]
+	public static void DuplicateAndIncrementNameAndMoveUpLeft() {
+		DuplicateAndIncrementNameAndMove(-1, 1);
 	}
 
-	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Up %#UP")]
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Up %#i")]
 	public static void DuplicateAndIncrementNameAndMoveUp() {
-		List<GameObject> newGameObjects = new List<GameObject>();
-		foreach(GameObject gameObj in Selection.gameObjects) {
-			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObj, GetIncrementedString(gameObj.name));
-			newGameObject.transform.position = new Vector3(newGameObject.transform.position.x,
-														   newGameObject.transform.position.y + 1,
-														   newGameObject.transform.position.z);
-			newGameObjects.Add(newGameObject);
-
-			Tile[] tiles = newGameObject.GetComponentsInChildren<Tile>(true);
-			foreach(Tile tile in tiles) {
-				tile.tileY++;
-			}
-		}
-		Selection.objects = newGameObjects.ToArray();
+		DuplicateAndIncrementNameAndMove(0, 1);
 	}
 
-	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Down %#DOWN")]
-	public static void DuplicateAndIncrementNameAndMoveDown() {
-		List<GameObject> newGameObjects = new List<GameObject>();
-		foreach(GameObject gameObj in Selection.gameObjects) {
-			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObj, GetIncrementedString(gameObj.name));
-			newGameObject.transform.position = new Vector3(newGameObject.transform.position.x,
-														   newGameObject.transform.position.y - 1,
-														   newGameObject.transform.position.z);
-			newGameObjects.Add(newGameObject);
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Up-Right %#o")]
+	public static void DuplicateAndIncrementNameAndMoveUpRight() {
+		DuplicateAndIncrementNameAndMove(1, 1);
+	}
 
-			Tile[] tiles = newGameObject.GetComponentsInChildren<Tile>(true);
-			foreach(Tile tile in tiles) {
-				tile.tileY--;
-			}
-		}
-		Selection.objects = newGameObjects.ToArray();
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Left %#j")]
+	public static void DuplicateAndIncrementNameAndMoveLeft() {
+		DuplicateAndIncrementNameAndMove(-1, 0);
+	}
+
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name %#k")]
+	public static void DuplicateAndIncrementName() {
+		DuplicateAndIncrementNameAndMove(0, 0);
+	}
+
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Right %#l")]
+	public static void DuplicateAndIncrementNameAndMoveRight() {
+		DuplicateAndIncrementNameAndMove(1, 0);
+	}
+
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Down-Left %#m")]
+	public static void DuplicateAndIncrementNameAndMoveDownLeft() {
+		DuplicateAndIncrementNameAndMove(-1, -1);
+	}
+
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Down %#,")]
+	public static void DuplicateAndIncrementNameAndMoveDown() {
+		DuplicateAndIncrementNameAndMove(0, -1);
+	}
+
+	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Down-Right %#.")]
+	public static void DuplicateAndIncrementNameAndMoveDownRight() {
+		DuplicateAndIncrementNameAndMove(1, -1);
 	}
 
 	// This is a brilliant solution using lamda functions and regex, but it's not mine, it was taken from here:
