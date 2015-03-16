@@ -5,6 +5,18 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public static class EditorHelper {
+	[MenuItem("Tools/Selection/Select Base Object %#e")]
+	public static void SelectBaseObject() {
+		List<GameObject> newSelectedGameObjects = new List<GameObject>();
+		foreach(GameObject gameObj in Selection.gameObjects) {
+			GameObject newSelectedGameObjectToAdd = EditorHelper.GetBathroomGameObject(gameObj);
+			if(!newSelectedGameObjects.Contains(newSelectedGameObjectToAdd)) {
+				newSelectedGameObjects.Add(newSelectedGameObjectToAdd);
+			}
+		}
+		Selection.objects = newSelectedGameObjects.ToArray();
+	}
+
 	public static GameObject GetFirstParentOfType<T>(GameObject gameObjectToGetRootFrom) {
 		if(gameObjectToGetRootFrom.transform.parent == null) {
 			return null;
@@ -28,7 +40,7 @@ public static class EditorHelper {
 
 	public static GameObject  GetBathroomGameObject(GameObject gameObject) {
 		GameObject bathroomObjectToReturn = null;
-		
+
 		if (bathroomObjectToReturn == null) {
 			// Debug.Log("Searching for BathroomTile");
 			bathroomObjectToReturn = EditorHelper.GetFirstParentOfType<BathroomTile>(gameObject);

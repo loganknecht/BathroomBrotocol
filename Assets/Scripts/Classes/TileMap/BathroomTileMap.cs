@@ -74,6 +74,10 @@ public class BathroomTileMap : TileMap {
                                                                          false);
             if(bathroomTileIn == null) {
                 Debug.LogWarning("There is a bathroom object that is not occupying a bathroom tile");
+
+                // This is a kludgy fix to give bathroom objects their own tile 
+                // to path to. However the bro logic wans't constructured with 
+                // that in mind. 
                 GameObject placeholderBathroomTile = new GameObject("PlaceholderBathroomTileIn");
                 BathroomTile placeholderBathroomTileRef = placeholderBathroomTile.AddComponent<BathroomTile>().GetComponent<BathroomTile>();
 
