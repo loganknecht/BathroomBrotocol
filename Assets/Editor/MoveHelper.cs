@@ -4,57 +4,52 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-public class MoveHelper {
-	public static void MoveSelections(float xOffset, float yOffset) {
-		Debug.Log("Moving");
-		GameObject[] selections = Selection.gameObjects;
-		foreach (GameObject selection in selections) {
-			// Debug.Log(EditorHelper.GetFirstParentOfType<BathroomTile>(selection));
-			Debug.Log(EditorHelper.GetFirstParentOfType<BathroomObject>(selection));
-			// Debug.Log(EditorHelper.GetFirstParentOfType<Scenery>(selection));
+public static class MoveHelper {
+	public static void MoveGameObjects(GameObject[] selections, float xOffset, float yOffset) {
+		// Debug.Log("Moving");
+		foreach (GameObject gameObject in selections) {
+			// Debug.Log(EditorHelper.GetFirstParentOfType<BathroomTile>(gameObject));
+			// Debug.Log(EditorHelper.GetFirstParentOfType<BathroomObject>(gameObject));
+			// Debug.Log(EditorHelper.GetFirstParentOfType<Scenery>(gameObject));
+			GameObject objectToBeMoved = EditorHelper.GetBathroomGameObject(gameObject);
 
-			GameObject objectToBeMoved = null;
-			if (objectToBeMoved == null) {
-				Debug.Log("Searching for BathroomTile");
-				objectToBeMoved = EditorHelper.GetFirstParentOfType<BathroomTile>(selection);
-			}
-			if (objectToBeMoved == null) {
-				Debug.Log("Searching for BathroomObject");
-				objectToBeMoved = EditorHelper.GetFirstParentOfType<BathroomObject>(selection);
-			}
-			if (objectToBeMoved == null) {
-				Debug.Log("Searching for Scenery");
-				objectToBeMoved = EditorHelper.GetFirstParentOfType<Scenery>(selection);
+			// defaults to the object
+			if(objectToBeMoved == null) {
+				objectToBeMoved = gameObject;
 			}
 
-			Debug.Log("objectToBeMoved: " + objectToBeMoved);
+			// Debug.Log("objectToBeMoved: " + objectToBeMoved);
 			if (objectToBeMoved != null) {
 				objectToBeMoved.transform.position = new Vector3(objectToBeMoved.transform.position.x + xOffset,
 																 objectToBeMoved.transform.position.y + yOffset,
 																 objectToBeMoved.transform.position.z) ;
 			}
-			// ToggleSpriteRenderer(EditorHelper.GetFirstParentOfType<BathroomTile>(selection), true);
-			// ToggleAStarNode(EditorHelper.GetFirstParentOfType<AStarNode>(selection), false);
+
+			// BathroomTile bathroomTileRef = objectToBeMoved.GetComponent<BathroomTile>();
+			// if(objectToBeMoved.GetComponent<BathroomTile>() != null) {
+			// 	bathroomTileRef.tileX += (int)xOffset;
+			// 	bathroomTileRef.tileY += (int)yOffset;
+			// }
 		}
 	}
 
 	[MenuItem ("Tools/Move Helper/Move Left %#LEFT")]
-	public static void MoveSelectionsLeft() {
-		MoveSelections(-1, 0);
+	public static void MoveGameObjectsLeft() {
+		MoveGameObjects(Selection.gameObjects, -1, 0);
 	}
 
 	[MenuItem ("Tools/Move Helper/Move Right %#RIGHT")]
-	public static void MoveSelectionsRight() {
-		MoveSelections(1, 0);
+	public static void MoveGameObjectsRight() {
+		MoveGameObjects(Selection.gameObjects, 1, 0);
 	}
 
 	[MenuItem ("Tools/Move Helper/Move Up %#UP")]
-	public static void MoveSelectionsUp() {
-		MoveSelections(0, 1);
+	public static void MoveGameObjectsUp() {
+		MoveGameObjects(Selection.gameObjects, 0, 1);
 	}
 
 	[MenuItem ("Tools/Move Helper/Move Down %#DOWN")]
-	public static void MoveSelectionsDown() {
-		MoveSelections(0, -1);
+	public static void MoveGameObjectsDown() {
+		MoveGameObjects(Selection.gameObjects, 0, -1);
 	}
 }

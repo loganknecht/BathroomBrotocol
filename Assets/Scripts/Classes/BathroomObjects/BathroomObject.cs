@@ -86,6 +86,10 @@ public class BathroomObject : MonoBehaviour {
         }
     }
 
+    public GameObject GetBathroomTileIn() {
+        return bathroomTileIn; 
+    }
+
     public void RemoveBro(GameObject broGameObjectToRemove) {
         objectsOccupyingBathroomObject.Remove(broGameObjectToRemove);
     }
@@ -141,81 +145,81 @@ public class BathroomObject : MonoBehaviour {
         }
     }
 
-  public void TriggerOutOfOrderState() {
-  }
+    public void TriggerOutOfOrderState() {
+    }
 
-  public void PerformMoreThanTwoOccupantsCheck() {
-    if(objectsOccupyingBathroomObject.Count >= 2
-       && destroyObjectIfMoreThanTwoOccupants
-       && type != BathroomObjectType.Exit) { 
-      GameObject firstBroFound = null;
-      GameObject secondBroFound = null;
-      List<GameObject> objectOccupyingBathroomObjectToRemove = new List<GameObject>();
-      for(int i = 0; i < objectsOccupyingBathroomObject.Count; i++) {
-        GameObject gameObj = objectsOccupyingBathroomObject[i];
+    public void PerformMoreThanTwoOccupantsCheck() {
+        if(objectsOccupyingBathroomObject.Count >= 2
+         && destroyObjectIfMoreThanTwoOccupants
+         && type != BathroomObjectType.Exit) { 
+          GameObject firstBroFound = null;
+          GameObject secondBroFound = null;
+          List<GameObject> objectOccupyingBathroomObjectToRemove = new List<GameObject>();
+          for(int i = 0; i < objectsOccupyingBathroomObject.Count; i++) {
+            GameObject gameObj = objectsOccupyingBathroomObject[i];
 
-        if(gameObj.GetComponent<Bro>() != null) {
-          if(firstBroFound == null) {
-            firstBroFound = gameObj;
-          }
-          else {
-            secondBroFound = gameObj;
-          }
+            if(gameObj.GetComponent<Bro>() != null) {
+              if(firstBroFound == null) {
+                firstBroFound = gameObj;
+            }
+            else {
+                secondBroFound = gameObj;
+            }
         }
         // TODO!! - Change this logic to send him to the exit.
         if(i == objectsOccupyingBathroomObject.Count - 1) {
           if(firstBroFound == null
-             && secondBroFound == null) {
+           && secondBroFound == null) {
             Bro broRef = gameObj.GetComponent<Bro>();
             broRef.state = BroState.Roaming;
             broRef.selectableReference.ResetHighlightObjectAndSelectedState();
             broRef.SetRandomOpenBathroomObjectTarget(BathroomObjectType.Exit);
-          }
         }
-        if(firstBroFound != null
-           && secondBroFound != null) {
-          state = BathroomObjectState.Broken;
-
-          firstBroFound.renderer.enabled = false;
-          firstBroFound.collider.enabled = false;
-          firstBroFound.SetActive(false);
-          Bro firstBroFoundReference = firstBroFound.GetComponent<Bro>();
-          firstBroFoundReference.state = BroState.Fighting;
-          firstBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
-
-          secondBroFound.renderer.enabled = false;
-          secondBroFound.collider.enabled = false;
-          secondBroFound.SetActive(false);
-          Bro secondBroFoundReference = secondBroFound.GetComponent<Bro>();
-          secondBroFoundReference.state = BroState.Fighting;
-          secondBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
-
-          GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
-          newFightingBros.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newFightingBros.transform.position.z);
-          newFightingBros.GetComponent<FightingBros>().brosFighting.Add(firstBroFound);
-          newFightingBros.GetComponent<FightingBros>().brosFighting.Add(secondBroFound);
-
-          BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
-          BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
-          newFightingBros.GetComponent<TargetPathing>().SetTargetObjectAndTargetPosition(null,
-                                                                                        AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                                                                 AStarManager.Instance. GetListCopyOfAllClosedNodes(),
-                                                                                                                                 startTile,
-                                                                                                                                 targetTile));
-          objectOccupyingBathroomObjectToRemove.Add(firstBroFound);
-          objectOccupyingBathroomObjectToRemove.Add(secondBroFound);
-
-          firstBroFound = null;
-          secondBroFound = null;
-
-          ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBathroomObjectBrokenByFightingScore(firstBroFoundReference.type, type);
-          ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(firstBroFoundReference.type);
-          ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(secondBroFoundReference.type);
-        }
-      }
-      foreach(GameObject gameObj in objectOccupyingBathroomObjectToRemove) {
-        objectsOccupyingBathroomObject.Remove(gameObj);
-      }
     }
+    if(firstBroFound != null
+     && secondBroFound != null) {
+      state = BathroomObjectState.Broken;
+
+      firstBroFound.renderer.enabled = false;
+      firstBroFound.collider.enabled = false;
+      firstBroFound.SetActive(false);
+      Bro firstBroFoundReference = firstBroFound.GetComponent<Bro>();
+      firstBroFoundReference.state = BroState.Fighting;
+      firstBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
+
+      secondBroFound.renderer.enabled = false;
+      secondBroFound.collider.enabled = false;
+      secondBroFound.SetActive(false);
+      Bro secondBroFoundReference = secondBroFound.GetComponent<Bro>();
+      secondBroFoundReference.state = BroState.Fighting;
+      secondBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
+
+      GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
+      newFightingBros.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newFightingBros.transform.position.z);
+      newFightingBros.GetComponent<FightingBros>().brosFighting.Add(firstBroFound);
+      newFightingBros.GetComponent<FightingBros>().brosFighting.Add(secondBroFound);
+
+      BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newFightingBros.transform.position.x, newFightingBros.transform.position.y, true).GetComponent<BathroomTile>();
+      BathroomTile targetTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
+      newFightingBros.GetComponent<TargetPathing>().SetTargetObjectAndTargetPosition(null,
+        AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+           AStarManager.Instance. GetListCopyOfAllClosedNodes(),
+           startTile,
+           targetTile));
+      objectOccupyingBathroomObjectToRemove.Add(firstBroFound);
+      objectOccupyingBathroomObjectToRemove.Add(secondBroFound);
+
+      firstBroFound = null;
+      secondBroFound = null;
+
+      ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBathroomObjectBrokenByFightingScore(firstBroFoundReference.type, type);
+      ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(firstBroFoundReference.type);
+      ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(secondBroFoundReference.type);
   }
+}
+foreach(GameObject gameObj in objectOccupyingBathroomObjectToRemove) {
+    objectsOccupyingBathroomObject.Remove(gameObj);
+}
+}
+}
 }

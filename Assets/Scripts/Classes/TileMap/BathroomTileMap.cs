@@ -70,17 +70,24 @@ public class BathroomTileMap : TileMap {
     public void ConfigureBathroomObjectsWithTileTheyreIn() {
         foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
             GameObject bathroomTileIn = GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x, 
-                                                                            bathroomObject.transform.position.y,
-                                                                            false);
+                                                                         bathroomObject.transform.position.y,
+                                                                         false);
             if(bathroomTileIn == null) {
-                Debug.LogError("There is a bathroom object that is not occupying a bathroom tile");
+                Debug.LogWarning("There is a bathroom object that is not occupying a bathroom tile");
+                GameObject placeholderBathroomTile = new GameObject("PlaceholderBathroomTileIn");
+                BathroomTile placeholderBathroomTileRef = placeholderBathroomTile.AddComponent<BathroomTile>().GetComponent<BathroomTile>();
+
+                placeholderBathroomTile.transform.parent = bathroomObject.transform;
+                placeholderBathroomTileRef.tileX = -1;
+                placeholderBathroomTileRef.tileY = -1;
+
+                bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = placeholderBathroomTile;
             }
             else {
                 bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileIn;
             }
         }
     }
-
 
     public GameObject SelectRandomOpenTile() {
         GameObject foundBathroomTile = null;

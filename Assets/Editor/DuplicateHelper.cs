@@ -8,7 +8,9 @@ public class DuplicateHelper {
 	public static void DuplicateAndIncrementNameAndMove(float xOffset, float yOffset) {
 		List<GameObject> newGameObjects = new List<GameObject>();
 		foreach(GameObject gameObj in Selection.gameObjects) {
-			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObj, GetIncrementedString(gameObj.name));
+			GameObject gameObjToDuplicate = EditorHelper.GetBathroomGameObject(gameObj);
+			Debug.Log(gameObjToDuplicate);
+			GameObject newGameObject = DuplicateAndIncrementGameObject(gameObjToDuplicate, EditorHelper.GetIncrementedString(gameObjToDuplicate.name));
 			newGameObject.transform.position = new Vector3(newGameObject.transform.position.x + xOffset,
 														   newGameObject.transform.position.y + yOffset,
 														   newGameObject.transform.position.z);
@@ -65,13 +67,6 @@ public class DuplicateHelper {
 	[MenuItem("Tools/Duplicate/Duplicate And Increment Name And Move Down-Right %#.")]
 	public static void DuplicateAndIncrementNameAndMoveDownRight() {
 		DuplicateAndIncrementNameAndMove(1, -1);
-	}
-
-	// This is a brilliant solution using lamda functions and regex, but it's not mine, it was taken from here:
-	// http://stackoverflow.com/questions/15268931/increment-a-string-with-both-letters-and-numbers
-	public static string GetIncrementedString(string stringToIncrement) {
-		string newString = Regex.Replace(stringToIncrement, "\\d+", m => (int.Parse(m.Value) + 1).ToString(new string('0', m.Value.Length)));
-		return newString;
 	}
 
 	private static GameObject DuplicateAndIncrementGameObject(GameObject gameObjectToDuplicate, string newGameObjectName) {
