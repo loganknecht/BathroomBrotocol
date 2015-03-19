@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
+    public GameObject broCzarGameObject = null;
+
     public override void Awake() {
         base.Awake();
     }
@@ -65,11 +67,27 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
 
         BroGenerator.Instance.Pause();
-        TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -445, LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, -145, 1, 2, UITweener.Method.BounceIn, null);
+        TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, 
+                                          LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, 
+                                          -595, 
+                                          LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, 
+                                          -250,
+                                          1, 
+                                          2, 
+                                          UITweener.Method.BounceIn, 
+                                          null);
 
         LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
 
-        TweenExecutor.TweenObjectPosition(TextboxManager.Instance.gameObject, TextboxManager.Instance.gameObject.transform.localPosition.x, -600, TextboxManager.Instance.gameObject.transform.localPosition.x, -300, 1, 2, UITweener.Method.BounceIn, null);
+        TweenExecutor.TweenObjectPosition(TextboxManager.Instance.gameObject, 
+                                          TextboxManager.Instance.gameObject.transform.localPosition.x,
+                                          -600,
+                                          TextboxManager.Instance.gameObject.transform.localPosition.x,
+                                          -300,
+                                          1,
+                                          2,
+                                          UITweener.Method.BounceIn,
+                                          null);
 
         Queue textQueue = new Queue();
         textQueue.Enqueue("Hey there chief! It looks like you're here to try-out out for the prestigious role of 'Bathroom Bro Czar'.");
