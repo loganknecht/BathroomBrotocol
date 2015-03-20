@@ -21,22 +21,8 @@ public class Scenery : MonoBehaviour {
     }
 
     void UpdateAnimator() {
-        if(animatorReference != null) {
-            animatorReference.SetBool(Facing.TopLeft.ToString(), false);
-            animatorReference.SetBool(Facing.Top.ToString(), false);
-            animatorReference.SetBool(Facing.TopRight.ToString(), false);
-            animatorReference.SetBool(Facing.Left.ToString(), false);
-            animatorReference.SetBool(Facing.Right.ToString(), false);
-            animatorReference.SetBool(Facing.BottomLeft.ToString(), false);
-            animatorReference.SetBool(Facing.Bottom.ToString(), false);
-            animatorReference.SetBool(Facing.BottomRight.ToString(), false);
-
-            animatorReference.SetBool(bathroomFacing.facing.ToString(), true);
-
-            // If there were more states, do that enum
-            animatorReference.SetBool("Default", true);
-
-            // animatorReference.SetBool("None", false);
-        }
+        bathroomFacing.UpdateAnimatorWithFacing(animatorReference);
+        // If there were more states, do that enum
+        animatorReference.SetBool("Default", true);
     }
 }
