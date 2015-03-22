@@ -359,7 +359,7 @@ public class Bro : BaseBehavior {
                && targetObject.GetComponent<BathroomObject>() != null) {
                 // Debug.Log("target object is not null");
                 BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
-                BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, false).GetComponent<BathroomTile>();
+                BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, true).GetComponent<BathroomTile>();
 
                 if(broTile.tileX == targetObjectTile.tileX 
                     && broTile.tileY == targetObjectTile.tileY) {

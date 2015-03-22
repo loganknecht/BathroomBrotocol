@@ -28,7 +28,7 @@ public class IsometricDisplay : MonoBehaviour {
     /// <value></value>
     public float isometricYOffset = 0f;
     /// <value></value>
-    public int tileMapLayer = 0;
+    public float tileMapLayer = 0;
     public float tileMapLayerHeight = 0.5f;
     public bool dontPerformOwnIsometricLogic = false;
     public bool hideUnderDiagonal = false;
