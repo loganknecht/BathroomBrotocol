@@ -38,7 +38,14 @@ public class SceneryManager : MonoBehaviour {
         //another call to it, so that you don't need to worry if it exists or not.
         _instance = this;
 
+        //----------------------------------------------------------------------
+        //TODO: Replace the implementation to not rely on tags and instead rely on the component attached.
+        // Scenery[] sceneryObjects = Resources.FindObjectsOfTypeAll(typeof(Scenery)) as Scenery[];
+        // Debug.Log("Scenery Components Found: " + sceneryObjects.Length);
+        // Debug.Log("Scenery Tag Found: " + GameObject.FindGameObjectsWithTag("Scenery").Length);
         // sceneryGameObjects = GameObject.FindGameObjectsWithTag("Scenery");
+        //----------------------------------------------------------------------
+
         foreach(GameObject gameObj in GameObject.FindGameObjectsWithTag("Scenery")) {
             sceneryGameObjects.Add(gameObj);
         }
