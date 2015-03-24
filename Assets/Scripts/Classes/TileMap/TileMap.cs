@@ -170,10 +170,10 @@ public class TileMap : BaseBehavior {
                 float bottomBound = tile.transform.position.y - singleTileHeight/2;
                 float topBound = tile.transform.position.y + singleTileHeight/2;
 
-                if(leftBound < xPosition
-                    && rightBound > xPosition
-                    && bottomBound < yPosition
-                    && topBound > yPosition) {
+                if(leftBound <= xPosition
+                    && rightBound >= xPosition
+                    && bottomBound <= yPosition
+                    && topBound >= yPosition) {
                     return tile;
                 }
 
