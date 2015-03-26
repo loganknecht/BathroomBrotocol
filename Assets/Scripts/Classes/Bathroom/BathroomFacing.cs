@@ -13,7 +13,9 @@ public class BathroomFacing : MonoBehaviour {
                     animatorReference.SetBool(bathroomFacing.ToString(), false);
                 }
             }
-            animatorReference.SetBool(facing.ToString(), true);
+            if(facing != Facing.None) {
+                animatorReference.SetBool(facing.ToString(), true);
+            }
             // animatorReference.SetBool("None", false);
         }
         return animatorReference;
