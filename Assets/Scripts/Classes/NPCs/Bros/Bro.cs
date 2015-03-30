@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class Bro : BaseBehavior {
     public TargetPathing targetPathingReference = null;
     public Animator animatorReference = null;
+    public BathroomFacing bathroomFacing;
     public HighlightSelectable selectableReference = null;
     public SpeechBubble speechBubbleReference = null;
     public IsometricDisplay isometricDisplayReference = null;
@@ -143,7 +144,7 @@ public class Bro : BaseBehavior {
         targetPathingReference.SetTargetObjectAndTargetPosition(newTargetObject, newMovementNodes);
         if(drawNodeList != null) {
             drawNodeList.SetDrawNodes(new Vector2(this.gameObject.transform.position.x,
-                this.gameObject.transform.position.y),
+                                                  this.gameObject.transform.position.y),
             targetPathingReference.GetMovementNodes());
         }
     }
@@ -307,16 +308,30 @@ public class Bro : BaseBehavior {
 
     public virtual void UpdateAnimator() {
         if(animatorReference != null) {
+            //------------------------------------------------------------------
             // base.UpdateAnimator();
+            //------------------------------------------------------------------
 
-            animatorReference.SetBool(BroState.Fighting.ToString(), false);
-            animatorReference.SetBool(BroState.InAQueue.ToString(), false);
-            animatorReference.SetBool(BroState.MovingToTargetObject.ToString(), false);
-            animatorReference.SetBool(BroState.OccupyingObject.ToString(), false);
-            animatorReference.SetBool(BroState.Roaming.ToString(), false);
-            animatorReference.SetBool(BroState.Standing.ToString(), false);
-            animatorReference.SetBool(BroState.Standoff.ToString(), false);
+            // Sets bathroom facing state flags
+            if(state != BroState.Standing
+                && targetPathingReference.directionBeingLookedAt != Facing.None) {
+                bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
+            }
+            bathroomFacing.UpdateAnimatorWithFacing(animatorReference);
 
+            //------------------------------------------------------------------
+            // animatorReference.SetBool(BroState.Fighting.ToString(), false);
+            // animatorReference.SetBool(BroState.InAQueue.ToString(), false);
+            // animatorReference.SetBool(BroState.MovingToTargetObject.ToString(), false);
+            // animatorReference.SetBool(BroState.OccupyingObject.ToString(), false);
+            // animatorReference.SetBool(BroState.Roaming.ToString(), false);
+            // animatorReference.SetBool(BroState.Standing.ToString(), false);
+            // animatorReference.SetBool(BroState.Standoff.ToString(), false);
+            //------------------------------------------------------------------
+            //Sets bro state flags
+            foreach (BroState broState in BroState.GetValues(typeof(BroState))) {
+                animatorReference.SetBool(broState.ToString(), false);
+            }
             animatorReference.SetBool(state.ToString(), true);
 
             animatorReference.SetBool("None", false);
@@ -330,22 +345,22 @@ public class Bro : BaseBehavior {
             case(BroState.Fighting):
             break;
             case(BroState.InAQueue):
-            PerformInAQueueLogic();
+                PerformInAQueueLogic();
             break;
             case(BroState.MovingToTargetObject):
-            PerformMovingToTargetObjectLogic();
+                PerformMovingToTargetObjectLogic();
             break;
             case(BroState.OccupyingObject):
-            PerformOccupyingObjectLogic();
+                PerformOccupyingObjectLogic();
             break;
             case(BroState.Roaming):
-            PerformRoamingLogic();
+                PerformRoamingLogic();
             break;
             case(BroState.Standing):
-            PerformStandingLogic();
+                PerformStandingLogic();
             break;
             case(BroState.Standoff):
-            PerformStandOffLogic();
+                PerformStandOffLogic();
             break;
             default:
             break;

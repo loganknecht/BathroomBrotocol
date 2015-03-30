@@ -49,25 +49,25 @@ public class TargetPathing : BaseBehavior {
         if(!isPaused) {
             PerformLogic();
         }
-        UpdateAnimator();
+        // UpdateAnimator();
     }
 
-    public virtual void UpdateAnimator() {
-        if(animatorReference != null) {
-            animatorReference.SetBool(Facing.TopLeft.ToString(), false);
-            animatorReference.SetBool(Facing.Top.ToString(), false);
-            animatorReference.SetBool(Facing.TopRight.ToString(), false);
-            animatorReference.SetBool(Facing.Left.ToString(), false);
-            animatorReference.SetBool(Facing.Right.ToString(), false);
-            animatorReference.SetBool(Facing.BottomLeft.ToString(), false);
-            animatorReference.SetBool(Facing.Bottom.ToString(), false);
-            animatorReference.SetBool(Facing.BottomRight.ToString(), false);
+    // public virtual void UpdateAnimator() {
+    //     if(animatorReference != null) {
+    //         animatorReference.SetBool(Facing.TopLeft.ToString(), false);
+    //         animatorReference.SetBool(Facing.Top.ToString(), false);
+    //         animatorReference.SetBool(Facing.TopRight.ToString(), false);
+    //         animatorReference.SetBool(Facing.Left.ToString(), false);
+    //         animatorReference.SetBool(Facing.Right.ToString(), false);
+    //         animatorReference.SetBool(Facing.BottomLeft.ToString(), false);
+    //         animatorReference.SetBool(Facing.Bottom.ToString(), false);
+    //         animatorReference.SetBool(Facing.BottomRight.ToString(), false);
 
-            animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
+    //         animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
 
-            animatorReference.SetBool("None", false);
-        }
-    }
+    //         animatorReference.SetBool("None", false);
+    //     }
+    // }
 
     public void SetXMoveSpeed(float newMoveSpeed) {
         xMoveSpeed = newMoveSpeed;
@@ -260,14 +260,14 @@ public class TargetPathing : BaseBehavior {
             movingDown = true;
         }
 
-        if(newPositionOffset.x != 0
-            || newPositionOffset.y != 0) {
-            directionBeingLookedAt = CameraManager.Instance.rotateReference.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);
-        }
-        else {
-            if(movementNodes.Count == 0) {
-                directionBeingLookedAt = Facing.None;
-            }
-        }
+        // if(newPositionOffset.x != 0
+            // || newPositionOffset.y != 0) {
+        directionBeingLookedAt = CameraManager.Instance.rotateReference.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);
+        // }
+        // else {
+        //     if(movementNodes.Count == 0) {
+        //         directionBeingLookedAt = Facing.None;
+        //     }
+        // }
     }
 }
