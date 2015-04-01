@@ -119,7 +119,6 @@ public class TileMap : BaseBehavior {
     public void SetTiles(GameObject[][] newTiles) {
         tiles = newTiles;
     }
-
     public GameObject[][] GetTiles() {
         return tiles;
     }
@@ -146,6 +145,35 @@ public class TileMap : BaseBehavior {
         return tilesArray;
     }
 
+
+    // Helper functions to get some key points in the tile map
+    public GameObject GetTopLeftTileGameObject() {
+        return GetTileGameObjectByIndex(0, tilesHigh);
+    }
+    public GameObject GetTopCenterTileGameObject() {
+        return GetTileGameObjectByIndex(tilesWide/2, tilesHigh);
+    }
+    public GameObject GetTopRightTileGameObject() {
+        return GetTileGameObjectByIndex(tilesWide, tilesHigh);
+    }
+    public GameObject GetMiddleLeftTileGameObject() {
+        return GetTileGameObjectByIndex(0, tilesHigh/2);
+    }
+    public GameObject GetMiddleTileGameObject() {
+        return GetTileGameObjectByIndex(tilesWide/2, tilesHigh/2);
+    }
+    public GameObject GetMiddleRightTileGameObject() {
+        return GetTileGameObjectByIndex(tilesWide, tilesHigh/2);
+    }
+    public GameObject GetBottomLeftTileGameObject() {
+        return GetTileGameObjectByIndex(0, 0);
+    }
+    public GameObject GetBottomCenterTileGameObject() {
+        return GetTileGameObjectByIndex(tilesWide/2, 0);
+    }
+    public GameObject GetBottomRightTileGameObject() {
+        return GetTileGameObjectByIndex(tilesWide, 0);
+    }
     public GameObject GetTileGameObjectByIndex(int tileX, int tileY) {
         if(tiles != null) {
            return tiles[tileY][tileX];

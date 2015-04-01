@@ -15,11 +15,12 @@ public class GenericBroScenery : Scenery {
 	}
 	
 	public override void UpdateAnimator() {
-		facing.UpdateAnimatorWithFacing(animatorReference);
-		foreach (BroState broState in BroState.GetValues(typeof(BroState))) {
-			animatorReference.SetBool(broState.ToString(), false);
-		}
-		animatorReference.SetBool(state.ToString(), true);
+		base.UpdateAnimator();
+		// facing.UpdateAnimatorWithFacing(animatorReference);
+		// foreach (BroState broState in BroState.GetValues(typeof(BroState))) {
+		// 	animatorReference.SetBool(broState.ToString(), false);
+		// }
+		// animatorReference.SetBool(state.ToString(), true);
 		// If there were more states, do that enum
 		// animatorReference.SetBool("Default", true);
 	}

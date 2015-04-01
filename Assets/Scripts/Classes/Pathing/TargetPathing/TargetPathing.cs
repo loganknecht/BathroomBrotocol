@@ -28,6 +28,10 @@ public class TargetPathing : BaseBehavior {
     public delegate void OnArrivalAtMovementNode();
     public OnArrivalAtMovementNode onArrivalAtMovementNodeLogic = null;
 
+    public delegate void OnArrivalAtTargetPosition();
+    public OnArrivalAtTargetPosition onArrivalAtTargetPositionLogic = null;
+    public bool performedOnArrivalAtTargetPosition = false;
+
     public delegate void OnPopMovementNode();
     public OnPopMovementNode onPopMovementNodeLogic = null;
 
@@ -49,55 +53,37 @@ public class TargetPathing : BaseBehavior {
         if(!isPaused) {
             PerformLogic();
         }
-        // UpdateAnimator();
     }
 
-    // public virtual void UpdateAnimator() {
-    //     if(animatorReference != null) {
-    //         animatorReference.SetBool(Facing.TopLeft.ToString(), false);
-    //         animatorReference.SetBool(Facing.Top.ToString(), false);
-    //         animatorReference.SetBool(Facing.TopRight.ToString(), false);
-    //         animatorReference.SetBool(Facing.Left.ToString(), false);
-    //         animatorReference.SetBool(Facing.Right.ToString(), false);
-    //         animatorReference.SetBool(Facing.BottomLeft.ToString(), false);
-    //         animatorReference.SetBool(Facing.Bottom.ToString(), false);
-    //         animatorReference.SetBool(Facing.BottomRight.ToString(), false);
-
-    //         animatorReference.SetBool(directionBeingLookedAt.ToString(), true);
-
-    //         animatorReference.SetBool("None", false);
-    //     }
-    // }
-
-    public void SetXMoveSpeed(float newMoveSpeed) {
-        xMoveSpeed = newMoveSpeed;
-    }
     public float GetXMoveSpeed() {
         return xMoveSpeed;
     }
-
-    public void SetYMoveSpeed(float newMoveSpeed) {
-        yMoveSpeed = newMoveSpeed;
+    public void SetXMoveSpeed(float newMoveSpeed) {
+        xMoveSpeed = newMoveSpeed;
     }
+
     public float GetYMoveSpeed() {
         return yMoveSpeed;
     }
-
-    public void SetTargetObject(GameObject newTargetObject) {
-        targetObject = newTargetObject;
+    public void SetYMoveSpeed(float newMoveSpeed) {
+        yMoveSpeed = newMoveSpeed;
     }
 
     public GameObject GetTargetObject() {
         return targetObject;
     }
-
-    public void SetMovementNodes(List<GameObject> newMovementNodes) {
-        movementNodes = newMovementNodes;
+    public void SetTargetObject(GameObject newTargetObject) {
+        targetObject = newTargetObject;
     }
 
     public List<GameObject> GetMovementNodes() {
         return movementNodes;
     }
+    public void SetMovementNodes(List<GameObject> newMovementNodes) {
+        movementNodes = newMovementNodes;
+        performedOnArrivalAtTargetPosition = false;
+    }
+
     public void ClearMovementNodes() {
         movementNodes.Clear();
     }
@@ -107,6 +93,7 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual void SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
+        performedOnArrivalAtTargetPosition = false;
         SetTargetObject(newTargetObject);
         SetMovementNodes(newMovementNodes);
         PopMovementNode();
@@ -117,6 +104,10 @@ public class TargetPathing : BaseBehavior {
     }
     public void SetTargetPosition(Vector3 newTargetPosition) {
         targetPosition = newTargetPosition;
+    }
+
+    public void SetOnArrivalAtTargetPosition(OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
+        onArrivalAtTargetPositionLogic = new OnArrivalAtTargetPosition(newOnArrivalAtTargetPositionLogic);
     }
 
     public void SetOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode newOnArrivalAtMovementNodeLogic) {
@@ -169,6 +160,14 @@ public class TargetPathing : BaseBehavior {
 
             //Debug.Log("object at position");
             PopMovementNode();
+        }
+
+        if(!performedOnArrivalAtTargetPosition
+           && IsAtTargetPosition()) {
+            performedOnArrivalAtTargetPosition = true;
+            if(onArrivalAtTargetPositionLogic != null) {
+                onArrivalAtTargetPositionLogic();
+            }
         }
     }
 

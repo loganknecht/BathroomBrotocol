@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class LineQueue : MonoBehaviour {
 
@@ -45,6 +46,14 @@ public class LineQueue : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public GameObject GetFirstQueueTile() {
+        return queueTileObjects.First();
+    }
+
+    public GameObject GetLastQueueTile() {
+        return queueTileObjects.Last();
     }
 
     public void AddGameObjectToLineQueue(GameObject gameObjectToAdd) {

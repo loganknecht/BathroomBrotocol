@@ -73,6 +73,10 @@ public class EntranceQueueManager : BaseBehavior {
         return lineQueues;
     }
 
+    public GameObject GetLineQueue(int lineQueueToSelect) {
+        return lineQueues[lineQueueToSelect];
+    }
+
     public GameObject GetTileGameObjectFromLineQueueByWorldPosition(float xPosition, float yPosition, bool returnClosestTile, int lineQueueToSelectFrom) {
         GameObject tileGameObjectFound = null;
         if(lineQueueToSelectFrom < lineQueues.Count) {
