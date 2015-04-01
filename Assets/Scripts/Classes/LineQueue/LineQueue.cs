@@ -264,7 +264,7 @@ public class LineQueue : MonoBehaviour {
 
     public void ToggleQueueObjectColliders(bool newColliderState) {
         foreach(GameObject gameObj in queueObjects) {
-            gameObj.collider.enabled = newColliderState;
+            gameObj.GetComponent<Collider>().enabled = newColliderState;
         }
     }
 }

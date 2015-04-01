@@ -23,7 +23,7 @@ public class BathroomObjectAnimationManager : MonoBehaviour {
 	}
 
 	public void UpdateAnimatorReferenceExposedParameters() {
-		animatorReference.SetBool("None", false);
+		// animatorReference.SetBool("None", false);
 
 		animatorReference.SetBool(BathroomObjectState.BeingRepaired.ToString(), false);
 		animatorReference.SetBool(BathroomObjectState.Broken.ToString(), false);

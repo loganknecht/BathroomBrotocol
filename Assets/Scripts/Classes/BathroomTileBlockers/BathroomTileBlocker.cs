@@ -79,7 +79,7 @@ public class BathroomTileBlocker : MonoBehaviour {
     }
 
     public void ResetColliderAndSelectableReference() {
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.isSelected = false;
         selectableReference.canBeSelected = true;
     }

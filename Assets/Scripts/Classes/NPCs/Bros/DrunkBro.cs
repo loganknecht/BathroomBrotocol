@@ -107,7 +107,7 @@ public class DrunkBro : Bro {
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
 
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -141,7 +141,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -179,7 +179,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -213,7 +213,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -249,7 +249,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -273,7 +273,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -311,7 +311,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
@@ -341,7 +341,7 @@ public class DrunkBro : Bro {
         //   state = BroState.Roaming;
         // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
         reliefRequired = ReliefRequired.WashHands;

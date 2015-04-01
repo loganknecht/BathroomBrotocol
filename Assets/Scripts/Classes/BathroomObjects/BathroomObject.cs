@@ -43,11 +43,15 @@ public class BathroomObject : MonoBehaviour {
 
     public virtual void UpdateAnimator() {
         bathroomFacingReference.UpdateAnimatorWithFacing(animatorReference);
-        foreach (BathroomObjectState BathroomObjectState in BathroomObjectState.GetValues(typeof(BathroomObjectState))) {
-            animatorReference.SetBool(BathroomObjectState.ToString(), false);
+        foreach (BathroomObjectState bathroomObjectState in BathroomObjectState.GetValues(typeof(BathroomObjectState))) {
+            if(bathroomObjectState != BathroomObjectState.None) {
+                animatorReference.SetBool(bathroomObjectState.ToString(), false);
+            }
         }
         animatorReference.SetBool(bathroomFacingReference.facing.ToString(), true);
-        animatorReference.SetBool(state.ToString(), true);
+        if(state != BathroomObjectState.None) {
+            animatorReference.SetBool(state.ToString(), true);
+        }
     }
 
 
@@ -67,7 +71,7 @@ public class BathroomObject : MonoBehaviour {
     }
 
     public void ResetColliderAndSelectableReference() {
-        collider.enabled = true;
+        GetComponent<Collider>().enabled = true;
         selectableReference.isSelected = false;
         selectableReference.canBeSelected = true;
     }
@@ -178,15 +182,15 @@ public class BathroomObject : MonoBehaviour {
                         && secondBroFound != null) {
                     state = BathroomObjectState.Broken;
 
-                    firstBroFound.renderer.enabled = false;
-                    firstBroFound.collider.enabled = false;
+                    firstBroFound.GetComponent<Renderer>().enabled = false;
+                    firstBroFound.GetComponent<Collider>().enabled = false;
                     firstBroFound.SetActive(false);
                     Bro firstBroFoundReference = firstBroFound.GetComponent<Bro>();
                     firstBroFoundReference.state = BroState.Fighting;
                     firstBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
 
-                    secondBroFound.renderer.enabled = false;
-                    secondBroFound.collider.enabled = false;
+                    secondBroFound.GetComponent<Renderer>().enabled = false;
+                    secondBroFound.GetComponent<Collider>().enabled = false;
                     secondBroFound.SetActive(false);
                     Bro secondBroFoundReference = secondBroFound.GetComponent<Bro>();
                     secondBroFoundReference.state = BroState.Fighting;

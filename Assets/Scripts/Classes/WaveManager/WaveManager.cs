@@ -87,6 +87,10 @@ public class WaveManager : MonoBehaviour {
         }
     }
 
+    public void InitializeWave() {
+        waveLogicReference.Initialize();
+    }
+
     public void Pause() {
         isPaused = true;
     }

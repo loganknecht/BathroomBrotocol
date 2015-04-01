@@ -60,6 +60,8 @@ public class BathroomTileMap : TileMap {
         CameraManager.Instance.rotateReference.HideBathroomIfUnderDiagonal();
         CameraManager.Instance.rotateReference.UpdateBathroomDirectionFacing();
         // CameraManager.Instance.rotateReference.Rotate(false, false);
+
+        // WaveManager.Instance.InitializeWave();
     }
 
     // Update is called once per frame

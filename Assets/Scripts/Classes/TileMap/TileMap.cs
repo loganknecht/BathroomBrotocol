@@ -180,6 +180,10 @@ public class TileMap : BaseBehavior {
         }
         return null;
     }
+    
+    public GameObject GetTileGameObjectByWorldPosition(Vector3 position, bool returnClosestTile) {
+        return GetTileGameObjectByWorldPosition(position.x, position.y, returnClosestTile);
+    }
 
     public GameObject GetTileGameObjectByWorldPosition(Vector2 position, bool returnClosestTile) {
         return GetTileGameObjectByWorldPosition(position.x, position.y, returnClosestTile);

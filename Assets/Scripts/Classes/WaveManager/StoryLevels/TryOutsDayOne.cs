@@ -13,7 +13,11 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     // Use this for initialization
     public override void Start () {
         base.Start();
+        // Initialize();
+    }
 
+    public override void Initialize() {
+        Debug.Log("initialization");
         SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
         GameObject broCzarEnterWaveGameObject = CreateWaveState("Start Animation Game Object",
@@ -22,8 +26,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                                    FinishBroCzarEnterAnimation);
 
         InitializeWaveStates(
-                         broCzarEnterWaveGameObject
-                         );
+                             broCzarEnterWaveGameObject
+                            );
     }
 
     // Update is called once per frame
@@ -35,9 +39,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // Debug.Log("triggering start animation");
         // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
-        FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
-
-        BroGenerator.Instance.Pause();
         // TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, 
         //                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, 
         //                                   -595, 
@@ -48,15 +49,28 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //                                   UITweener.Method.BounceIn, 
         //                                   null);
 
-        // Tweening not used because of start of level
+        FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
+
+        BroGenerator.Instance.Pause();
+
         broCzarGameObject.SetActive(true);
         TargetPathing broCzarTargetPathing = broCzarGameObject.GetComponent<TargetPathing>();
+
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
         GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
+
         broCzarGameObject.transform.position = new Vector3(lastQueueTile.transform.position.x,
                                                            lastQueueTile.transform.position.y,
                                                            broCzarGameObject.transform.position.z);
-        broCzarTargetPathing.SetTargetObjectAndTargetPosition(null, entranceLineQueue.GetQueueMovementNodes());
+        List<GameObject> entranceToCenterMovementNodes = entranceLineQueue.GetQueueMovementNodes();
+        entranceToCenterMovementNodes.AddRange(AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                                        AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                                                                        BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(lastQueueTile.transform.position, true).GetComponent<BathroomTile>(),
+                                                                                        BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
+
+        // SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
+
+        broCzarTargetPathing.SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
         // broCzarTargetPathing.SetOnArrivalAtTargetPosition(() => { 
         //                                                             Debug.Log("lol at target position"); 
         //                                                          });

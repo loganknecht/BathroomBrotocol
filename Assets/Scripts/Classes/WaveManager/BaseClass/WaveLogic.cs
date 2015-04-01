@@ -17,6 +17,9 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public virtual void Update() {
     }
 
+    public virtual void Initialize() {
+    }
+
     // Think of this as the main update loop
     public virtual void PerformWaveLogic() {
         PerformLevelFailCheck();
