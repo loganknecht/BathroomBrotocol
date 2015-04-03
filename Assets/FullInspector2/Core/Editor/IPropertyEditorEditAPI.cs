@@ -43,10 +43,9 @@ namespace FullInspector {
         object OnSceneGUI(object element);
 
         /// <summary>
-        /// If true, then this editor properly supports indentation by adding whitespace before the label. This is
-        /// true for almost every editor except the Rotorz ones.
+        /// Does this editor display a standard label that can instead be rendered with EditorGUI.Foldout?
         /// </summary>
-        bool CanIndentLabelForDropdown {
+        bool DisplaysStandardLabel {
             get;
         }
     }

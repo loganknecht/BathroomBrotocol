@@ -1,18 +1,22 @@
-﻿using FullInspector.Internal;
-using System;
+﻿using System;
+using FullInspector.Internal;
 using UnityEditor;
 using UnityEngine;
 
 namespace FullInspector.Modules.StaticInspector {
     public class StaticInspectorWindow : EditorWindow {
-        public static int MyStaticInt;
-
-        [MenuItem("Window/Full Inspector/Static Inspector")]
+        [MenuItem("Window/Full Inspector/Static Inspector &i")]
         public static void Activate() {
             StaticInspectorWindow window = EditorWindow.GetWindow<StaticInspectorWindow>();
-
-            window.position = new Rect(window.position.x, window.position.y, 400, 400);
             window.title = "Static Inspector";
+        }
+
+        protected void OnEnable() {
+            fiEditorUtility.RepaintableEditorWindows.Add(this);
+        }
+
+        protected void OnDestroy() {
+            fiEditorUtility.RepaintableEditorWindows.Remove(this);
         }
 
         /// <summary>
@@ -28,7 +32,7 @@ namespace FullInspector.Modules.StaticInspector {
         private string _serializedInspectedType;
         private Type _inspectedType {
             get {
-                return TypeCache.FindType(_serializedInspectedType, null, /*willThrow:*/false);
+                return TypeCache.FindType(_serializedInspectedType);
             }
             set {
                 if (value == null) {
@@ -44,9 +48,8 @@ namespace FullInspector.Modules.StaticInspector {
 
         public void OnGUI() {
             try {
+                EditorGUIUtility.hierarchyMode = true;
                 Type updatedType = _inspectedType;
-
-                fiEditorUtility.Repaint = false;
 
                 GUILayout.Label("Static Inspector", EditorStyles.boldLabel);
 
@@ -54,7 +57,7 @@ namespace FullInspector.Modules.StaticInspector {
                     var label = new GUIContent("Inspected Type");
                     var typeEditor = PropertyEditor.Get(typeof(Type), null);
 
-                    updatedType = typeEditor.FirstEditor.EditWithGUILayout(label, _inspectedType, Metadata.Enter("StaticInspector"));
+                    updatedType = typeEditor.FirstEditor.EditWithGUILayout(label, _inspectedType, Metadata.Enter("TypeSelector"));
                 }
 
                 fiEditorGUILayout.Splitter(2);
@@ -70,11 +73,18 @@ namespace FullInspector.Modules.StaticInspector {
                         GUIContent label = new GUIContent(staticProperty.Name);
                         object currentValue = staticProperty.Read(null);
 
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.GetControlRect(GUILayout.Width(8));
+                        EditorGUILayout.BeginVertical();
+
                         GUI.enabled = staticProperty.CanWrite;
-                        object updatedValue = editor.EditWithGUILayout(label, currentValue, Metadata.Enter("StaticInspector"));
+                        object updatedValue = editor.EditWithGUILayout(label, currentValue, Metadata.Enter(staticProperty.Name));
                         if (staticProperty.CanWrite) {
                             staticProperty.Write(null, updatedValue);
                         }
+
+                        EditorGUILayout.EndVertical();
+                        EditorGUILayout.EndHorizontal();
                     }
 
                     EditorGUILayout.EndScrollView();
@@ -83,8 +93,7 @@ namespace FullInspector.Modules.StaticInspector {
                 // For some reason, the type selection popup window cannot force the rest of the
                 // Unity GUI to redraw. We do it here instead -- this removes any delay after
                 // selecting the type in the popup window and the type actually being displayed.
-                if (fiEditorUtility.ShouldInspectorRedraw.Enabled || fiEditorUtility.Repaint) {
-                    fiEditorUtility.Repaint = false;
+                if (fiEditorUtility.ShouldInspectorRedraw.Enabled) {
                     Repaint();
                 }
 
@@ -92,6 +101,8 @@ namespace FullInspector.Modules.StaticInspector {
                     _inspectedType = updatedType;
                     Repaint();
                 }
+
+                EditorGUIUtility.hierarchyMode = false;
             }
             catch (ExitGUIException) { }
             catch (Exception e) {

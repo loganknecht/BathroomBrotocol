@@ -44,13 +44,21 @@ namespace FullInspector.Internal {
             }
 
             if (CanEdit(usedEditedType,
-                editorType.GetAttribute<CustomBehaviorEditorAttribute>()) == false) {
+                fsPortableReflection.GetAttribute<CustomBehaviorEditorAttribute>(editorType)) == false) {
 
                 editor = null;
                 return false;
             }
 
-            editor = (IBehaviorEditor)Activator.CreateInstance(editorType);
+            try {
+                editor = (IBehaviorEditor)Activator.CreateInstance(editorType);
+            }
+            catch (Exception e) {
+                Debug.LogException(e);
+                editor = null;
+                return false;
+            }
+
             return true;
         }
 
@@ -136,7 +144,7 @@ namespace FullInspector.Internal {
         /// <returns>A behavior editor that can edit the given edited type.</returns>
         public static IBehaviorEditor TryCreateEditor(Type editedType, Type editorType) {
             // If our editor isn't inherited, then we only want to create a specific editor
-            var customBehaviorEditorAttribute = editorType.GetAttribute<CustomBehaviorEditorAttribute>();
+            var customBehaviorEditorAttribute = fsPortableReflection.GetAttribute<CustomBehaviorEditorAttribute>(editorType);
             if (customBehaviorEditorAttribute == null || customBehaviorEditorAttribute.Inherit == false) {
                 return TryCreateSpecificEditor(editedType, editedType, editorType);
             }

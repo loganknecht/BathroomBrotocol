@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,14 +11,14 @@ namespace FullInspector.Internal {
     //       the moment they cause an internal compiler error within the Mono C# compiler. The
     //       potential error point is the constructor where we fetch the struct type.
     public class NullablePropertyEditor : IPropertyEditor, IPropertyEditorEditAPI {
-        public bool CanIndentLabelForDropdown {
+        public bool DisplaysStandardLabel {
             get { return true; }
         }
 
         private InspectedType _elementType;
 
-        public NullablePropertyEditor(Type type) {
-            _elementType = InspectedType.Get(type.GetGenericArguments()[0]);
+        public NullablePropertyEditor(Type elementType) {
+            _elementType = InspectedType.Get(elementType);
         }
 
         public object Edit(Rect region, GUIContent label, object element, fiGraphMetadata metadata) {
@@ -33,6 +34,7 @@ namespace FullInspector.Internal {
                 if (EditorGUI.Toggle(toggleRegion, label, element != null)) {
                     if (element == null) {
                         element = _elementType.CreateInstance();
+                        GUI.changed = true;
                     }
                 }
                 else {
@@ -48,7 +50,7 @@ namespace FullInspector.Internal {
             // we have a value for the nullable type; draw the property editor
             {
                 Rect selectedRegion = new Rect(region);
-                selectedRegion = RectTools.IndentedRect(selectedRegion);
+                selectedRegion = fiRectUtility.IndentedRect(selectedRegion);
                 region.y += selectedRegion.height;
                 region.height -= selectedRegion.height;
 
@@ -67,7 +69,7 @@ namespace FullInspector.Internal {
                 PropertyEditorChain chain = PropertyEditor.Get(element.GetType(), null);
                 IPropertyEditor editor = chain.SkipUntilNot(typeof(NullablePropertyEditor));
 
-                height += RectTools.IndentVertical;
+                height += fiRectUtility.IndentVertical;
                 height += editor.GetElementHeight(GUIContent.none, element, metadata.Enter("NullableEditor"));
             }
 
@@ -75,7 +77,7 @@ namespace FullInspector.Internal {
         }
 
         public GUIContent GetFoldoutHeader(GUIContent label, object element) {
-            return new GUIContent(label.text + " (" + fiReflectionUtilitity.GetObjectTypeNameSafe(element) + ")");
+            return new GUIContent(label.text + " (" + fiReflectionUtility.GetObjectTypeNameSafe(element) + ")");
         }
 
         public object OnSceneGUI(object element) {
@@ -89,8 +91,13 @@ namespace FullInspector.Internal {
         }
 
 
-        public static IPropertyEditor TryCreate(Type type) {
+        public static IPropertyEditor TryCreate(Type type, ICustomAttributeProvider attributes) {
             if (type.IsNullableType()) {
+                return new NullablePropertyEditor(type.GetGenericArguments()[0]);
+            }
+
+            if (attributes != null &&
+                type.IsClass && attributes.IsDefined(typeof(InspectorNullableAttribute), /*inherit:*/true)) {
                 return new NullablePropertyEditor(type);
             }
 

@@ -1,6 +1,7 @@
 ﻿using FullInspector.Internal;
 using System;
 using System.Reflection;
+using FullSerializer.Internal;
 using UnityEngine;
 
 namespace FullInspector {
@@ -10,16 +11,37 @@ namespace FullInspector {
     public class InspectedMethod {
         public InspectedMethod(MethodInfo method) {
             Method = method;
-            HasArguments = method.GetParameters().Length > 0;
 
-            var attr = method.GetAttribute<InspectorNameAttribute>();
-            if (attr != null) {
-                DisplayName = attr.DisplayName;
+            // We can consider methods with all-default parameters as no parameter methods
+            foreach (var param in method.GetParameters()) {
+                if (param.IsOptional) continue;
+                HasArguments = true;
+                break;
             }
 
-            if (string.IsNullOrEmpty(DisplayName)) {
-                DisplayName = DisplayNameMapper.Map(method.Name);
+            DisplayLabel = new GUIContent();
+
+            // DisplayLabel.text
+            {
+                var attr = fsPortableReflection.GetAttribute<InspectorNameAttribute>(method);
+                if (attr != null) {
+                    DisplayLabel.text = attr.DisplayName;
+                }
+
+                if (string.IsNullOrEmpty(DisplayLabel.text)) {
+                    DisplayLabel.text = fiDisplayNameMapper.Map(method.Name);
+                }
             }
+
+            // DisplayLabel.tooltip
+            {
+                var attr = fsPortableReflection.GetAttribute<InspectorTooltipAttribute>(method);
+                if (attr != null) {
+                    DisplayLabel.tooltip = attr.Tooltip;
+                }
+            }
+
+
         }
 
         /// <summary>
@@ -34,7 +56,7 @@ namespace FullInspector {
         /// The name that should be used when displaying the method. This value defaults to
         /// Method.Name but can be overridden with a InspectorButtonAttribute.
         /// </summary>
-        public string DisplayName {
+        public GUIContent DisplayLabel {
             get;
             private set;
         }
@@ -52,11 +74,26 @@ namespace FullInspector {
         /// </summary>
         public void Invoke(object instance) {
             try {
-                Method.Invoke(instance, null);
+                object[] args = null;
+
+                // support default parameter methods
+                var methodParams = Method.GetParameters();
+                if (methodParams.Length != 0) {
+                    args = new object[methodParams.Length];
+
+                    // NOTE: Based on documentation, it looks like the value you're actually
+                    // supposed to use to get default arguments is Type.Missing, but
+                    // there appears to be an issue in mono where that is not supported. Instead
+                    // we will just fetch the default parameter values and send them.
+                    for (int i = 0; i < args.Length; ++i) {
+                        args[i] = methodParams[i].DefaultValue;
+                    }
+                }
+
+                Method.Invoke(instance, args);
             }
             catch (Exception e) {
-                Debug.LogWarning("When invoking method " + Method + ", caught " +
-                    "exception:\n" + e);
+                Debug.LogException(e);
             }
         }
     }

@@ -1,6 +1,6 @@
-﻿using FullInspector.Internal;
-using System;
+﻿using System;
 using System.Reflection;
+using FullSerializer.Internal;
 
 namespace FullInspector {
     /// <summary>
@@ -30,7 +30,7 @@ namespace FullInspector {
         /// member does not have an [InspectorOrder] attribute, then the default order is returned.
         /// </summary>
         public static double GetInspectorOrder(MemberInfo memberInfo) {
-            var attr = memberInfo.GetAttribute<InspectorOrderAttribute>();
+            var attr = fsPortableReflection.GetAttribute<InspectorOrderAttribute>(memberInfo);
             if (attr != null) {
                 return attr.Order;
             }

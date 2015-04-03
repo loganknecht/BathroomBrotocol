@@ -28,7 +28,7 @@ namespace FullInspector.Internal {
         private static void SaveAllUpdate() {
             if (!_saved && EditorApplication.isCompiling) {
                 _saved = true;
-                FullInspectorSaveManager.SaveAll();
+                fiSaveManager.SaveAll();
             }
         }
 
@@ -42,7 +42,7 @@ namespace FullInspector.Internal {
         private static void RestoreAllUpdate() {
             if (_restored == false) {
                 _restored = true;
-                FullInspectorSaveManager.RestoreAll();
+                fiSaveManager.RestoreAll();
             }
         }
     }

@@ -19,7 +19,7 @@ namespace FullInspector {
             // are using for serialization. We do this via reflection and not statically so that we
             // don't generate compiler errors complaining about a missing type.
             Type serializer = TypeCache.FindType(ProtoBufNetSettings.PrecompiledSerializerTypeName,
-                ProtoBufNetSettings.PrecompiledSerializerTypeName, /*willThrow:*/false);
+                ProtoBufNetSettings.PrecompiledSerializerTypeName);
             if (serializer == null) {
                 Debug.LogError(string.Format("Unable to load precompiled protobuf-net serializer " +
                     "(searched for type {0}); have you compiled it using " +
@@ -42,6 +42,17 @@ namespace FullInspector {
         /// </summary>
         private static TypeModel _serializer;
 
+        /// <summary>
+        /// Return the internal protocol buffer schema, useful for external compilation
+        /// </summary>
+        public static string GetSchema(Type type) {
+            if (_serializer == null) {
+                throw new InvalidOperationException("No protobuf-net serializer is loaded");
+            }
+
+            return _serializer.GetSchema(type);
+        }
+
         public override string Serialize(MemberInfo storageType, object value,
             ISerializationOperator serializationOperator) {
 
@@ -60,7 +71,11 @@ namespace FullInspector {
 
                 UnityObjectReferenceHack.ActiveOperator = null;
 
+#if !UNITY_EDITOR && UNITY_WINRT
+                return Convert.ToBase64String(stream.ToArray(), 0, (int)stream.Length);
+#else
                 return Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length);
+#endif
             }
         }
 

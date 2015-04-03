@@ -7,10 +7,12 @@ namespace FullInspector.Internal {
     /// provides some extra data protection.
     /// </summary>
     internal class SceneSaveProcessor : UnityEditor.AssetModificationProcessor {
-        protected static void OnWillSaveAssets(string[] assets) {
+        protected static string[] OnWillSaveAssets(string[] assets) {
             if (fiSettings.ForceSaveAllAssetsOnSceneSave) {
-                FullInspectorSaveManager.SaveAll();
+                fiSaveManager.SaveAll();
             }
+
+            return assets;
         }
     }
 }

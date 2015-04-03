@@ -1,7 +1,8 @@
-﻿using FullInspector.LayoutToolkit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using FullSerializer.Internal;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +12,11 @@ namespace FullInspector.Internal {
     /// reflection to discover what values to edit.
     /// </summary>
     internal class ReflectedPropertyEditor : IPropertyEditor, IPropertyEditorEditAPI {
-        public bool CanIndentLabelForDropdown {
+        private class SelectedCategoryMetadata : IGraphMetadataItemNotPersistent {
+            public int SelectedCategoryIndex;
+        }
+
+        public bool DisplaysStandardLabel {
             get { return true; }
         }
 
@@ -31,7 +36,7 @@ namespace FullInspector.Internal {
         /// gets disabled after the reflected editor has gone a x calls deep into itself in an
         /// attempt to prevent infinite recursion.
         /// </summary>
-        private static bool ShouldAutoInstantiate() {
+        private bool ShouldAutoInstantiate() {
             if (_cycleEdit != null && _cycleEdit.Depth >= MaximumNestingDepth) return false;
             if (_cycleHeight != null && _cycleHeight.Depth >= MaximumNestingDepth) return false;
             if (_cycleScene != null && _cycleScene.Depth >= MaximumNestingDepth) return false;
@@ -65,6 +70,11 @@ namespace FullInspector.Internal {
         private const float DividerHeight = 2f;
 
         /// <summary>
+        /// The height of the category toolbar.
+        /// </summary>
+        private const float CategoryToolbarHeight = 18f;
+
+        /// <summary>
         /// Returns true if the given GUIContent element contains any content.
         /// </summary>
         private static bool HasLabel(GUIContent label) {
@@ -84,7 +94,7 @@ namespace FullInspector.Internal {
             region.height -= TitleHeight;
 
             EditorGUI.LabelField(titleRect, label);
-            return RectTools.IndentedRect(region);
+            return fiRectUtility.IndentedRect(region);
         }
 
         public object OnSceneGUI(object element) {
@@ -139,20 +149,23 @@ namespace FullInspector.Internal {
         /// </summary>
         private void EditProperty(ref Rect region, object element, InspectedProperty property, fiGraphMetadata metadata) {
             bool hasPrefabDiff = fiPrefabTools.HasPrefabDiff(element, property);
-            if (hasPrefabDiff) UnityInternalReflection.SetBoldDefaultFont(true);
+            if (hasPrefabDiff) fiUnityInternalReflection.SetBoldDefaultFont(true);
 
             // edit the property
             {
+                var childMetadata = metadata.Enter(property.Name);
+                fiGraphMetadataCallbacks.PropertyMetadataCallback(childMetadata.Metadata, property);
+
                 Rect propertyRect = region;
-                float propertyHeight = fiEditorGUI.EditPropertyHeight(element, property, metadata.Enter(property.Name));
+                float propertyHeight = fiEditorGUI.EditPropertyHeight(element, property, childMetadata);
                 propertyRect.height = propertyHeight;
 
-                fiEditorGUI.EditProperty(propertyRect, element, property, metadata.Enter(property.Name));
+                fiEditorGUI.EditProperty(propertyRect, element, property, childMetadata);
 
                 region.y += propertyHeight;
             }
 
-            if (hasPrefabDiff) UnityInternalReflection.SetBoldDefaultFont(false);
+            if (hasPrefabDiff) fiUnityInternalReflection.SetBoldDefaultFont(false);
         }
 
         /// <summary>
@@ -162,13 +175,16 @@ namespace FullInspector.Internal {
             Rect buttonRect = region;
             buttonRect.height = ButtonHeight;
 
-            string buttonName = method.DisplayName;
+            GUIContent buttonLabel = method.DisplayLabel;
 
             // Disable the button if invoking it will cause an exception
-            if (method.HasArguments) buttonName += " (Remove method parameters to enable this button)";
+            if (method.HasArguments) {
+                buttonLabel = new GUIContent(buttonLabel);
+                buttonLabel.text += " (Remove method parameters to enable this button)";
+            }
 
             EditorGUI.BeginDisabledGroup(method.HasArguments);
-            if (GUI.Button(buttonRect, buttonName)) {
+            if (GUI.Button(buttonRect, buttonLabel)) {
                 method.Invoke(element);
             }
             EditorGUI.EndDisabledGroup();
@@ -176,23 +192,108 @@ namespace FullInspector.Internal {
             region.y += ButtonHeight;
         }
 
+        // TODO: move this into fiRuntimeReflection
+        private static bool GetBooleanReflectedMember(object element, string memberName, bool defaultValue) {
+            MemberInfo[] members = element.GetType().GetFlattenedMember(memberName);
+            if (members == null || members.Length == 0) {
+                Debug.LogError("Could not find a member with name " + memberName + " on object type " + element.GetType());
+                return true;
+            }
+
+            MemberInfo member = members[0];
+
+            object result = defaultValue;
+
+            try {
+                if (member is FieldInfo) {
+                    result = ((FieldInfo)member).GetValue(element);
+                }
+                else if (member is PropertyInfo) {
+                    result = ((PropertyInfo)member).GetValue(element, null);
+                }
+                else if (member is MethodInfo) {
+                    result = ((MethodInfo)member).Invoke(element, null);
+                }
+            }
+            catch (Exception e) {
+                Debug.LogError("When running " + member.ReflectedType + "::" + member.Name + ", caught exception " + e);
+                Debug.LogException(e);
+                result = defaultValue;
+            }
+
+            if (result.GetType() != typeof(bool)) {
+                Debug.LogError(member.ReflectedType + "::" + member.Name + " needs to return a bool to be used with [InspectorDisplayIf]");
+                result = defaultValue;
+            }
+
+            return (bool)result;
+        }
+        private static bool ShouldShowMemberDynamic(object element, MemberInfo member) {
+            var showIf = fsPortableReflection.GetAttribute<InspectorShowIfAttribute>(member);
+            if (showIf != null) {
+                return GetBooleanReflectedMember(element, showIf.ConditionalMemberName, /*defaultValue:*/true);
+            }
+
+            return true;
+        }
+
+        private void EditInspectedMember(ref Rect region, object element, InspectedMember member, fiGraphMetadata metadata) {
+            // requested skip
+            if (ShouldShowMemberDynamic(element, member.MemberInfo) == false) {
+                return;
+            }
+
+            if (member.IsMethod) {
+                EditButton(ref region, element, member.Method);
+            }
+            else {
+                EditProperty(ref region, element, member.Property, metadata);
+            }
+
+            region.y += DividerHeight;
+        }
+
         /// <summary>
         /// Draws the actual property editors.
         /// </summary>
-        private object EditPropertiesButtons(Rect region, object element, fiGraphMetadata metadata) {
-            var orderedMembers = _metadata.GetMembers(InspectedMemberFilters.InspectableMembers);
-            for (int i = 0; i < orderedMembers.Count; ++i) {
-                InspectedMember member = orderedMembers[i];
+        private object EditPropertiesButtons(GUIContent label, Rect region, object element, fiGraphMetadata metadata) {
+            // If we have a label, then our properties block is indented and we should use hierarchy mode. Otherwise
+            // we do not have a label so our properties block is *not* indented so we should *not* use hierarchy mode.
+            //
+            // HACK: We also check the nesting depth - if we're the top-level editor, then we want to enable hierarchy
+            //       mode
+            fiEditorGUI.PushHierarchyMode(_cycleEdit.Depth == 1 || string.IsNullOrEmpty(label.text) == false);
 
-                if (member.IsMethod) {
-                    EditButton(ref region, element, member.Method);
+            var categories = _metadata.GetCategories(InspectedMemberFilters.InspectableMembers);
+            if (categories.Count > 0) {
+                var selectedCategoryMetadata = metadata.GetMetadata<SelectedCategoryMetadata>();
+
+                Rect toolbarRect = region;
+                toolbarRect.height = CategoryToolbarHeight;
+                region.y += CategoryToolbarHeight + EditorGUIUtility.standardVerticalSpacing;
+                region.height -= CategoryToolbarHeight + EditorGUIUtility.standardVerticalSpacing;
+
+                int index = selectedCategoryMetadata.SelectedCategoryIndex;
+                selectedCategoryMetadata.SelectedCategoryIndex = GUI.Toolbar(toolbarRect, index, categories.Keys.ToArray());
+
+                foreach (var member in categories.Values.ElementAt(index)) {
+                    EditInspectedMember(ref region, element, member, metadata);
                 }
-                else {
-                    EditProperty(ref region, element, member.Property, metadata);
+
+                // Make sure we don't prune metadata
+                foreach (var member in _metadata.GetMembers(InspectedMemberFilters.InspectableMembers)) {
+                    metadata.Enter(member.Name);
                 }
-                
-                region.y += DividerHeight;
             }
+
+            else {
+                var orderedMembers = _metadata.GetMembers(InspectedMemberFilters.InspectableMembers);
+                for (int i = 0; i < orderedMembers.Count; ++i) {
+                    EditInspectedMember(ref region, element, orderedMembers[i], metadata);
+                }
+            }
+
+            fiEditorGUI.PopHierarchyMode();
 
             return element;
         }
@@ -222,6 +323,7 @@ namespace FullInspector.Internal {
                         ShouldAutoInstantiate()) {
 
                         element = _metadata.CreateInstance();
+                        GUI.changed = true;
                     }
 
                     // otherwise we show a button to create an instance
@@ -232,13 +334,14 @@ namespace FullInspector.Internal {
                         }
                         if (fiEditorGUI.LabeledButton(region, _metadata.ReflectedType.Name, buttonMessage)) {
                             element = _metadata.CreateInstance();
+                            GUI.changed = true;
                         }
 
                         return element;
                     }
                 }
 
-                return EditPropertiesButtons(region, element, metadata);
+                return EditPropertiesButtons(label, region, element, metadata);
 
             }
             finally {
@@ -260,7 +363,7 @@ namespace FullInspector.Internal {
                     return EditorStyles.label.CalcHeight(GUIContent.none, 100);
                 }
 
-                float height = HasLabel(label) ? TitleHeight + RectTools.IndentVertical : 0;
+                float height = HasLabel(label) ? TitleHeight + fiRectUtility.IndentVertical : 0;
 
                 if (element == null) {
                     // if the user want's an instance, we'll create one right away. We also check to
@@ -271,6 +374,7 @@ namespace FullInspector.Internal {
                         ShouldAutoInstantiate()) {
 
                         element = _metadata.CreateInstance();
+                        GUI.changed = true;
                     }
 
                     // otherwise we show a button to create an instance
@@ -280,18 +384,42 @@ namespace FullInspector.Internal {
                 }
 
                 if (element != null) {
-                    height += (ButtonHeight + DividerHeight) * _metadata.GetMethods(InspectedMemberFilters.ButtonMembers).Count;
+                    // figure out which members we should display
+                    List<InspectedMember> displayableMembers;
+                    var categories = _metadata.GetCategories(InspectedMemberFilters.InspectableMembers);
+                    if (categories.Count > 0) {
+                        var selectedCategoryMetadata = metadata.GetMetadata<SelectedCategoryMetadata>();
+                        height += CategoryToolbarHeight + EditorGUIUtility.standardVerticalSpacing;
+                        displayableMembers = categories.Values.ElementAt(selectedCategoryMetadata.SelectedCategoryIndex);
+                    }
+                    else {
+                        displayableMembers = _metadata.GetMembers(InspectedMemberFilters.InspectableMembers);
+                    }
 
-                    var inspectedProperties = _metadata.GetProperties(InspectedMemberFilters.InspectableMembers);
-                    for (int i = 0; i < inspectedProperties.Count; ++i) {
-                        var property = inspectedProperties[i];
+                    // compute the height of the members we will display
+                    for (int i = 0; i < displayableMembers.Count; ++i) {
+                        var member = displayableMembers[i];
 
-                        height += fiEditorGUI.EditPropertyHeight(element, property, metadata.Enter(property.Name));
+                        // requested skip
+                        if (ShouldShowMemberDynamic(element, member.MemberInfo) == false) {
+                            continue;
+                        }
+
+                        var childMetadata = metadata.Enter(member.Name);
+
+                        if (member.IsMethod) {
+                            height += ButtonHeight;
+                        }
+                        else {
+                            fiGraphMetadataCallbacks.PropertyMetadataCallback(childMetadata.Metadata, member.Property);
+                            height += fiEditorGUI.EditPropertyHeight(element, member.Property, childMetadata);
+                        }
+
                         height += DividerHeight;
                     }
 
                     // Remove the last divider
-                    if (inspectedProperties.Count > 0) height -= DividerHeight;
+                    if (displayableMembers.Count > 0) height -= DividerHeight;
                 }
 
                 return height;
@@ -308,7 +436,7 @@ namespace FullInspector.Internal {
             return label;
         }
 
-        public static IPropertyEditor TryCreate(Type dataType) {
+        public static IPropertyEditor TryCreate(Type dataType, ICustomAttributeProvider attributes) {
             // The reflected property editor is applicable to *every* type except collections, where
             // it is expected that the ICollectionPropertyEditor will take over (or something more
             // specific than that, such as the IListPropertyEditor).

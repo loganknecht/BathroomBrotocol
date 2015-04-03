@@ -7,7 +7,7 @@ namespace FullInspector.Internal {
     /// Provides a property editor for enums.
     /// </summary>
     internal class EnumPropertyEditor : IPropertyEditor, IPropertyEditorEditAPI {
-        public bool CanIndentLabelForDropdown {
+        public bool DisplaysStandardLabel {
             get { return true; }
         }
 
@@ -23,7 +23,7 @@ namespace FullInspector.Internal {
         public object Edit(Rect region, GUIContent label, object element, fiGraphMetadata metadata) {
             Enum selected = (Enum)element;
 
-            if (selected.GetType().IsDefined(typeof(FlagsAttribute), inherit: true)) {
+            if (selected.GetType().IsDefined(typeof(FlagsAttribute), /*inherit:*/ true)) {
                 return EditorGUI.EnumMaskField(region, label, selected);
             }
 

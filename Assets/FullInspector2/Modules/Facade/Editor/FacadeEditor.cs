@@ -17,7 +17,7 @@ namespace FullInspector {
         /// </summary>
         /// <param name="baseType">The base facade type.</param>
         public FacadeTypeManager(Type baseType) {
-            Types = fiReflectionUtilitity.GetCreatableTypesDeriving(baseType).ToArray();
+            Types = fiReflectionUtility.GetCreatableTypesDeriving(baseType).ToArray();
             DisplayedOptions = (from type in Types
                                 let name = type.CSharpName()
                                 select new GUIContent(name)).ToArray();
@@ -111,7 +111,7 @@ namespace FullInspector {
             Rect labelRect = region;
             labelRect.height = LabelHeight;
             region.y += LabelHeight;
-            region = RectTools.IndentedRect(region);
+            region = fiRectUtility.IndentedRect(region);
 
             if (TypeOptions.Types.Length == 1) {
                 EditorGUI.LabelField(labelRect, label);
@@ -147,7 +147,7 @@ namespace FullInspector {
 
             InspectedType inspectedType = InspectedType.Get(element.InstanceType);
 
-            var serializer = (BaseSerializer)fiSingletons.Get(fiSerializerProxy.DefaultMetadata.SerializerType);
+            var serializer = (BaseSerializer)fiSingletons.Get(fiInstalledSerializerManager.DefaultMetadata.SerializerType);
             var deserializationOp = new ListSerializationOperator() {
                 SerializedObjects = element.ObjectReferences
             };
@@ -160,7 +160,7 @@ namespace FullInspector {
             var anim = metadata.GetMetadata<fiAnimationMetadata>();
             if (anim.IsAnimating) {
                 fiEditorGUI.BeginFadeGroupHeight(LabelHeight, ref region, anim.AnimationHeight);
-                fiEditorUtility.Repaint = true;
+                fiEditorUtility.RepaintAllEditors();
             }
 
             var properties = inspectedType.GetProperties(InspectedMemberFilters.InspectableMembers);
@@ -192,7 +192,7 @@ namespace FullInspector {
             element.ObjectReferences = facadeReferences;
 
             if (changedTypes && anim.UpdateHeight(usedHeight)) {
-                fiEditorUtility.Repaint = true;
+                fiEditorUtility.RepaintAllEditors();
             }
 
             return element;
@@ -220,7 +220,7 @@ namespace FullInspector {
 
             InspectedType inspectedType = InspectedType.Get(element.InstanceType);
 
-            var serializer = (BaseSerializer)fiSingletons.Get(fiSerializerProxy.DefaultMetadata.SerializerType);
+            var serializer = (BaseSerializer)fiSingletons.Get(fiInstalledSerializerManager.DefaultMetadata.SerializerType);
             var deserializationOp = new ListSerializationOperator() {
                 SerializedObjects = element.ObjectReferences
             };

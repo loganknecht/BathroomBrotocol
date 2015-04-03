@@ -19,6 +19,12 @@ namespace FullInspector {
         void SaveState();
 
         /// <summary>
+        /// Used to determine if the given object has been restored. This value should *not*
+        /// be persisted by Unity.
+        /// </summary>
+        bool IsRestored { get; set; }
+
+        /// <summary>
         /// This list contains a set of object references that were encountered during the
         /// serialization process in this object graph. These need to persist through a Unity
         /// serialization cycle.

@@ -1,6 +1,5 @@
-﻿using FullInspector.Internal;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using FullInspector.Internal;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
@@ -24,8 +23,8 @@ namespace FullInspector {
     /// use.</typeparam>
     public abstract class BaseBehavior<TSerializer> :
         CommonBaseBehavior, ISerializedObject
-#if UNITY_EDITOR
-        , ISerializationCallbackReceiver
+#if !UNITY_4_3
+        ,ISerializationCallbackReceiver
 #endif
         where TSerializer : BaseSerializer {
 
@@ -40,6 +39,16 @@ namespace FullInspector {
         /// </summary>
         protected virtual void Awake() {
             RestoreState();
+        }
+
+        /// <summary>
+        /// This base method ensures that the object is fully deserialized before running actual
+        /// validation code.
+        /// </summary>
+        protected virtual void OnValidate() {
+            if (((ISerializedObject)this).IsRestored == false) { 
+                RestoreState();
+            }
         }
 
         /// <summary>
@@ -119,7 +128,9 @@ namespace FullInspector {
             }
         }
 
-#if UNITY_EDITOR
+        bool ISerializedObject.IsRestored { get; set; }
+
+        #if !UNITY_4_3
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
             fiEditorSerializationManager.SubmitDeserializeRequest(this);
         }
@@ -127,6 +138,6 @@ namespace FullInspector {
         void ISerializationCallbackReceiver.OnBeforeSerialize() {
             fiEditorSerializationManager.SubmitSerializeRequest(this);
         }
-#endif
+        #endif
     }
 }

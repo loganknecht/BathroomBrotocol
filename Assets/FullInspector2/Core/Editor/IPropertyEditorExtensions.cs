@@ -1,7 +1,6 @@
 ﻿using FullInspector.Internal;
 using System;
 using UnityEditor;
-using UnityEditor.AnimatedValues;
 using UnityEngine;
 
 namespace FullInspector {
@@ -11,7 +10,7 @@ namespace FullInspector {
     /// GetElementHeight from Edit, then GetElementHeight will short-circuit and just return a
     /// cached height.
     /// </summary>
-    public class CachedHeightMedatadata : IGraphMetadataItem {
+    public class CachedHeightMedatadata : IGraphMetadataItemNotPersistent {
         public float CachedHeight;
     }
 
@@ -85,7 +84,7 @@ namespace FullInspector {
             try {
 
                 float labelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = fiEditorUtility.GetLabelWidth(region.width);
+                EditorGUIUtility.labelWidth = fiUtility.GetLabelWidth(region.width);
 
                 var result = DoEdit2(api, region, label, element, metadata);
 
@@ -98,63 +97,81 @@ namespace FullInspector {
             }
         }
 
-
         private static T DoEdit2<T>(IPropertyEditorEditAPI api, Rect region, GUIContent label, T element, fiGraphMetadata metadata) {
-            var dropdown = metadata.GetMetadata<DropdownMetadata>();
+            var dropdown = metadata.GetPersistentMetadata<fiDropdownMetadata>();
 
             // Activate the foldout if we're above the minimum foldout height
-            dropdown.ShowDropdown =
-                dropdown.ShowDropdown ||
-                region.height > fiSettings.MinimumFoldoutHeight;
-
-            // Has the foldout been activated? Should we skip rendering the entire item?
-            if (dropdown.ShowDropdown && dropdown.IsActive == false) {
-                // Some editors don't always supply a label (for example, the collection editors),
-                // so instead of showing nothing we'll show a handy "Collapsed value" instead
-                if (string.IsNullOrEmpty(label.text)) {
-                    label = new GUIContent("Collapsed value");
-                }
-                label = api.GetFoldoutHeader(label, element);
-
-                region.x += 8;
-                region.width -= 8;
-                region.height = FoldoutHeight;
-
-                // note: we don't use dropdown.IsActive = ... because we can be animating, and doing
-                // that direct-assign toggle will cause the animation to flip-flop infinitely
-                if (EditorGUI.Foldout(region, false, label, toggleOnLabelClick: false) == true) {
-                    dropdown.IsActive = true;
-                }
-
-                return element;
+            if (dropdown.ShouldDisplayDropdownArrow == false) {
+                dropdown.ShouldDisplayDropdownArrow = region.height > fiSettings.MinimumFoldoutHeight;
             }
 
-            // Should we show the foldout arrow?
-            if (dropdown.ShowDropdown) {
-                Rect foldoutRegion = region;
-                foldoutRegion.height = FoldoutHeight;
-                foldoutRegion.width = 4;
-                foldoutRegion.x += 10;
+            // We're rendering dropdown logic
+            if (dropdown.ShouldDisplayDropdownArrow) {
 
-                // note: We don't use dropdown.IsActive = ... because we can be animating, and doing
-                // that direct-assign toggle will cause the animation to flip-flop infinitely
-                if (EditorGUI.Foldout(foldoutRegion, true, GUIContent.none, toggleOnLabelClick: false) == false) {
-                    dropdown.IsActive = false;
+                // The foldout is hidden. Just draw the collapsed arrow and return.
+                if (dropdown.IsActive == false) {
+
+                    // Some editors don't always supply a label (for example, the collection editors),
+                    // so instead of showing nothing we'll show a handy "Collapsed value" instead
+                    if (string.IsNullOrEmpty(label.text)) {
+                        label = new GUIContent("Collapsed value");
+                    }
+                    label = api.GetFoldoutHeader(label, element);
+
+                    region.width = EditorStyles.foldout.CalcSize(label).x;
+                    region.height = FoldoutHeight;
+
+                    // note: we don't use dropdown.IsActive = ... because we can be animating, and doing
+                    // that direct-assign toggle will cause the animation to flip-flop infinitely
+                    if (EditorGUI.Foldout(region, false, label, /*toggleOnLabelClick:*/ true) == true) {
+                        dropdown.IsActive = true;
+                    }
+
+                    return element;
                 }
 
-                // Indent the actual edited content so that it doesn't overlap with the arrow
-                // TODO: This *could* change the height of the edited content, but I don't think it
-                //       will be a big deal for now... Besides, fixing it would require quite a bit
-                //       of re-architecturing (GetElementHeight needs to take a width).
-                if (CanShowPrettyDropdown(label, api)) {
-                    label.text = "  " + label.text;
+
+                // Okay, we're going to be rendering the content of the body. We want to figure out how to
+                // actually render the dropdown arrow. We do it in one of two ways:
+                //  1. Draw using EditorGUI.Foldout with the full label
+                //  2. Draw just the foldout and indent the rect if we're not in hierarchy mode
+                
+                // We have a couple of special cases to handle:
+                //  1. We don't have a label
+                //  2. The editor has non-standard label rendering
+                // In these scenarioes, we will just draw the foldout arrow by itself and indent the contents of
+                // the region.
+                if (string.IsNullOrEmpty(label.text) || api.DisplaysStandardLabel == false) {
+
+                    Rect foldoutRegion = region;
+                    foldoutRegion.width = EditorStyles.foldout.CalcSize(GUIContent.none).x;
+                    foldoutRegion.height = FoldoutHeight;
+
+                    // note: We don't use dropdown.IsActive = ... because we can be animating, and doing
+                    // that direct-assign toggle will cause the animation to flip-flop infinitely
+                    if (EditorGUI.Foldout(foldoutRegion, true, label, /*toggleOnLabelClick:*/ true) == false) {
+                        dropdown.IsActive = false;
+                    }
+
+                    // Indent the body if we're not in hierarchy mode
+                    if (EditorGUIUtility.hierarchyMode == false) {
+                        region.x += foldoutRegion.width;
+                        region.width -= foldoutRegion.width;
+                    }
                 }
 
+                // We will render the foldout including the label
                 else {
-                    float regionIndent = 10;
-                    if (string.IsNullOrEmpty(label.text) || dropdown.ExtraIndent) regionIndent += 3;
-                    region.x += regionIndent;
-                    region.width -= regionIndent;
+                    Rect foldoutRegion = region;
+                    foldoutRegion.width = EditorStyles.foldout.CalcSize(label).x;
+                    foldoutRegion.height = FoldoutHeight;
+
+                    // note: We don't use dropdown.IsActive = ... because we can be animating, and doing
+                    // that direct-assign toggle will cause the animation to flip-flop infinitely
+                    if (EditorGUI.Foldout(foldoutRegion, true, label, /*toggleOnLabelClick:*/ true) == false) {
+                        dropdown.IsActive = false;
+                    }
+                    label = new GUIContent(" ");
                 }
             }
 
@@ -171,10 +188,6 @@ namespace FullInspector {
             return result;
         }
 
-        private static bool CanShowPrettyDropdown(GUIContent content, IPropertyEditorEditAPI api) {
-            return api.CanIndentLabelForDropdown && string.IsNullOrEmpty(content.text) == false;
-        }
-
         /// <summary>
         /// Returns the height of the region that needs editing.
         /// </summary>
@@ -182,21 +195,26 @@ namespace FullInspector {
         /// <param name="element">The element that will be edited.</param>
         /// <returns>The height of the region that needs editing.</returns>
         public static float GetElementHeight<T>(this IPropertyEditor editor, GUIContent label, T element, fiGraphMetadataChild metadata) {
-            if (BaseMethod == BaseMethodCall.Edit) {
-                CachedHeightMedatadata cachedHeight;
-                if (metadata.Metadata.TryGetMetadata(out cachedHeight) == false) {
-                    cachedHeight = metadata.Metadata.GetMetadata<CachedHeightMedatadata>();
-                }
+            bool hasCachedHeight;
+            CachedHeightMedatadata cachedHeight = metadata.Metadata.GetMetadata<CachedHeightMedatadata>(out hasCachedHeight);
+            hasCachedHeight = !hasCachedHeight;
+
+            // If we're calling from an Edit method, just reuse the last height computation (if we have a previous height computation).
+            if (hasCachedHeight && BaseMethod == BaseMethodCall.Edit) {
                 return cachedHeight.CachedHeight;
             }
 
-            var dropdown = metadata.Metadata.GetMetadata<DropdownMetadata>();
-            if (dropdown.ShowDropdown && dropdown.IsAnimating == false && dropdown.IsActive == false) {
+            // If we're a dropdown that is not active, show the general foldout height
+            var dropdown = metadata.Metadata.GetPersistentMetadata<fiDropdownMetadata>();
+            if (dropdown.ShouldDisplayDropdownArrow && dropdown.IsAnimating == false && dropdown.IsActive == false) {
+                cachedHeight.CachedHeight = FoldoutHeight;
                 return FoldoutHeight;
             }
 
-            bool setBaseMethod;
-            BeginMethodSet(BaseMethodCall.GetElementHeight, out setBaseMethod);
+            bool setBaseMethod = false;
+            if (hasCachedHeight) {
+                BeginMethodSet(BaseMethodCall.GetElementHeight, out setBaseMethod);
+            }
 
             try {
                 // We begin (but do not end) the cull zone here. The cull zone is terminated inside
@@ -206,19 +224,16 @@ namespace FullInspector {
 
                 var api = GetEditingAPI(editor);
                 float height = api.GetElementHeight(label, element, metadata.Metadata);
-
                 if (dropdown.IsAnimating) {
-                    fiEditorUtility.Repaint = true;
+                    fiEditorUtility.RepaintAllEditors();
                     fiEditorGUI.UpdateFadeGroupHeight(ref height, FoldoutHeight, dropdown.AnimPercentage);
                 }
-
-                metadata.Metadata.GetMetadata<CachedHeightMedatadata>().CachedHeight = height;
-
-
-                return height;
+                return metadata.Metadata.GetMetadata<CachedHeightMedatadata>().CachedHeight = height;
             }
             finally {
-                EndMethodSet(setBaseMethod);
+                if (hasCachedHeight) {
+                    EndMethodSet(setBaseMethod);
+                }
             }
         }
 

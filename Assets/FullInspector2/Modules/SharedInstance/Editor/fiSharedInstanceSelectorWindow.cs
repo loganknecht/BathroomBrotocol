@@ -16,7 +16,7 @@ namespace FullInspector.Modules.SharedInstance {
         /// <param name="onSelected">Method to invoke when a new SharedInstance has been selected.</param>
         public static void Show(Type instanceType, Type sharedInstanceType, Action<UnityObject> onSelected) {
             var window = EditorWindow.GetWindowWithRect<fiSharedInstanceSelectorWindow>(new Rect(0, 0, 600, 315),
-                utility: true, title: "Shared Instance Selector (" + instanceType.CSharpName() + ")", focus: true);
+                /*utility:*/ true, /*title:*/ "Shared Instance Selector (" + instanceType.CSharpName() + ")", /*focus:*/ true);
 
             window._instanceType = instanceType;
             window._sharedInstanceType = sharedInstanceType;
@@ -51,7 +51,6 @@ namespace FullInspector.Modules.SharedInstance {
         }
 
         private void CreateNewScriptableObject() {
-            fiSharedInstanceScriptGenerator.GenerateScript(_instanceType);
             Type actualInstanceType = fiSharedInstanceUtility.GetSerializableType(_sharedInstanceType);
             if (actualInstanceType != null) {
                 string assetPath =

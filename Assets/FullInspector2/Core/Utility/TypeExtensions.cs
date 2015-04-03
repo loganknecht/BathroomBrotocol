@@ -17,12 +17,10 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using FullSerializer.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using FullSerializer.Internal;
 
 namespace FullInspector.Internal {
     /// <summary>
@@ -30,9 +28,17 @@ namespace FullInspector.Internal {
     /// </summary>
     public static class TypeExtensions {
         /// <summary>
-        /// Returns a pretty name for the type in the style of one that you'd see in C#.
+        /// Returns a pretty name for the type in the style of one that you'd see in C# without the namespace.
         /// </summary>
         public static string CSharpName(this Type type) {
+            return CSharpName(type, /*includeNamespace:*/false);
+        }
+
+        /// <summary>
+        /// Returns a pretty name for the type in the style of one that you'd see in C#.
+        /// </summary>
+        /// <parparam name="includeNamespace">Should the name include namespaces?</parparam>
+        public static string CSharpName(this Type type, bool includeNamespace) {
             // we special case some of the common type names
             if (type == typeof(void)) return "void";
             if (type == typeof(int)) return "int";
@@ -41,28 +47,42 @@ namespace FullInspector.Internal {
             if (type == typeof(double)) return "double";
             if (type == typeof(string)) return "string";
 
-            // original code taken from http://stackoverflow.com/a/17376472
-            string name = type.FullName;
-            if (string.IsNullOrEmpty(type.Namespace) == false) {
-                name = name.Substring(type.Namespace.Length + 1);
+            // Generic parameter, ie, T in Okay<T>
+            // We special-case this logic otherwise we will recurse on the T
+            if (type.IsGenericParameter) {
+                return type.ToString();
             }
 
-            if (type.Resolve().IsGenericParameter) name = type.Name;
+            string name = "";
 
-            if (type.Resolve().IsGenericType == false || name.IndexOf('`') < 0) {
-                return name;
+            var genericArguments = (IEnumerable<Type>)type.GetGenericArguments();
+            if (type.IsNested) {
+                name += type.DeclaringType.CSharpName() + ".";
+
+                // The declaring type generic parameters are considered part of the nested types generic
+                // parameters so we need to remove them, otherwise it will get included again.
+                //
+                // Say we have type `class Parent<T> { class Child {} }`
+                // If we did not do the removal, then we would output Parent<T>.Child<T>, but we really want
+                // to output Parent<T>.Child
+                if (type.DeclaringType.GetGenericArguments().Length > 0) {
+                    genericArguments = genericArguments.Skip(type.DeclaringType.GetGenericArguments().Length);
+                }
             }
 
-            var sb = new StringBuilder();
+            if (genericArguments.Any() == false) {
+                name += type.Name;
+            }
+            else {
+                name += type.Name.Substring(0, type.Name.IndexOf('`'));
+                name += "<" + String.Join(",", genericArguments.Select(t => CSharpName(t, includeNamespace)).ToArray()) + ">";
+            }
 
-            sb.Append(name.Substring(0, name.IndexOf('`')));
-            sb.Append("<");
-            sb.Append(string.Join(", ", type.GetGenericArguments()
-                                            .Select(t => t.CSharpName())
-                                            .ToArray()));
-            sb.Append(">");
+            if (includeNamespace && type.Namespace != null) {
+                name = type.Namespace + "." + name;
+            }
 
-            return sb.ToString();
+            return name;
         }
 
         /// <summary>
@@ -179,7 +199,7 @@ namespace FullInspector.Internal {
         public static bool IsImplementationOf(this Type type, Type interfaceType) {
             if (interfaceType.Resolve().IsGenericType &&
                 interfaceType.Resolve().IsGenericTypeDefinition == false) {
-                
+
                 throw new ArgumentException("IsImplementationOf requires that if the interface " +
                     "type is generic, then it must be the generic type definition, not a " +
                     "specific generic type instantiation");
@@ -206,75 +226,6 @@ namespace FullInspector.Internal {
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Returns true if the given attribute is defined on the given element.
-        /// </summary>
-        public static bool HasAttribute(this MemberInfo element, Type attributeType) {
-            return GetAttribute(element, attributeType) != null;
-        }
-
-        /// <summary>
-        /// Returns true if the given attribute is defined on the given element.
-        /// </summary>
-        public static bool HasAttribute<TAttribute>(this MemberInfo element) {
-            return HasAttribute(element, typeof(TAttribute));
-        }
-
-        /// <summary>
-        /// Fetches the given attribute from the given MemberInfo. This method applies caching
-        /// and is allocation free (after caching has been performed).
-        /// </summary>
-        /// <param name="element">The MemberInfo the get the attribute from.</param>
-        /// <param name="attributeType">The type of attribute to fetch.</param>
-        /// <returns>The attribute or null.</returns>
-        public static Attribute GetAttribute(this MemberInfo element, Type attributeType) {
-            var query = new AttributeQuery {
-                MemberInfo = element,
-                AttributeType = attributeType
-            };
-
-            Attribute attribute;
-            if (_cachedAttributeQueries.TryGetValue(query, out attribute) == false) {
-                var attributes = element.GetCustomAttributes(attributeType, inherit: true);
-                attribute = (Attribute)attributes.FirstOrDefault();
-                _cachedAttributeQueries[query] = attribute;
-            }
-
-            return attribute;
-        }
-
-        /// <summary>
-        /// Fetches the given attribute from the given MemberInfo.
-        /// </summary>
-        /// <typeparam name="TAttribute">The type of attribute to fetch.</typeparam>
-        /// <param name="element">The MemberInfo to get the attribute from.</param>
-        /// <returns>The attribute or null.</returns>
-        public static TAttribute GetAttribute<TAttribute>(this MemberInfo element)
-            where TAttribute : Attribute {
-
-            return (TAttribute)GetAttribute(element, typeof(TAttribute));
-        }
-        private struct AttributeQuery {
-            public MemberInfo MemberInfo;
-            public Type AttributeType;
-        }
-        private static IDictionary<AttributeQuery, Attribute> _cachedAttributeQueries =
-            new Dictionary<AttributeQuery, Attribute>(new AttributeQueryComparator());
-
-        private class AttributeQueryComparator : IEqualityComparer<AttributeQuery> {
-            public bool Equals(AttributeQuery x, AttributeQuery y) {
-                return
-                    x.MemberInfo == y.MemberInfo &&
-                    x.AttributeType == y.AttributeType;
-            }
-
-            public int GetHashCode(AttributeQuery obj) {
-                return
-                    obj.MemberInfo.GetHashCode() +
-                    (17 * obj.AttributeType.GetHashCode());
-            }
         }
     }
 }

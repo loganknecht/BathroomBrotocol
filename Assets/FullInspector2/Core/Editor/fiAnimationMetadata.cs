@@ -5,7 +5,7 @@ namespace FullInspector.Internal {
     /// <summary>
     /// A wrapper around AnimFloat that makes it easier to use.
     /// </summary>
-    public class fiAnimationMetadata : IGraphMetadataItem {
+    public class fiAnimationMetadata : IGraphMetadataItemNotPersistent {
         [SerializeField]
         private AnimFloat _animator;
 
@@ -24,7 +24,13 @@ namespace FullInspector.Internal {
             }
 
             if (_animator.target != height) {
-                _animator.target = height;
+                if (fiSettings.EnableAnimation) {
+                    _animator.target = height;
+                }
+                else {
+                    _animator = new AnimFloat(height);
+                }
+
                 return true;
             }
 

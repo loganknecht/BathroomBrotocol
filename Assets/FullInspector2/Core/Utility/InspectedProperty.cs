@@ -21,6 +21,7 @@ using FullInspector.Internal;
 using FullSerializer.Internal;
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace FullInspector {
@@ -45,6 +46,7 @@ namespace FullInspector {
         /// The cached display name of the property/field. This may be overriden
         /// by the user.
         /// </summary>
+        // TODO: convert this to a GUIContent instance w/ tooltip info
         public string DisplayName;
 
         /// <summary>
@@ -60,8 +62,8 @@ namespace FullInspector {
 
                     PropertyInfo property = MemberInfo as PropertyInfo;
                     if (property != null) {
-                        _isPublicCache = property.GetGetMethod(nonPublic: false) != null ||
-                            property.GetSetMethod(nonPublic: false) != null;
+                        _isPublicCache = property.GetGetMethod(/*nonPublic:*/ false) != null ||
+                            property.GetSetMethod(/*nonPublic:*/ false) != null;
                     }
 
                     if (_isPublicCache.HasValue == false) {
@@ -73,6 +75,39 @@ namespace FullInspector {
             }
         }
         private bool? _isPublicCache;
+
+        /// <summary>
+        /// Returns true if this InspectedProperty is both a *property* and an *auto-property*. Otherwise
+        /// this will return false.
+        /// </summary>
+        public bool IsAutoProperty {
+            get {
+                if (_isAutoPropertyCache == null) {
+                    if (MemberInfo is PropertyInfo == false) {
+                        _isAutoPropertyCache = false;
+                    }
+                    else {
+                        string expectedName = string.Format("<{0}>k__BackingField", MemberInfo.Name);
+                        bool found = false;
+
+                        FieldInfo[] fields = MemberInfo.DeclaringType.GetDeclaredFields();
+                        for (int i = 0; i < fields.Length; ++i) {
+                            FieldInfo field = fields[i];
+                            if (fsPortableReflection.HasAttribute<CompilerGeneratedAttribute>(field) &&
+                                field.Name == expectedName) {
+
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        _isAutoPropertyCache = found;
+                    }
+                }
+                return _isAutoPropertyCache.Value;
+            }
+        }
+        private bool? _isAutoPropertyCache;
 
         /// <summary>
         /// Is this property static?
@@ -119,10 +154,9 @@ namespace FullInspector {
             }
 
             catch (Exception e) {
-                if (fiSettings.EmitWarnings) {
-                    Debug.LogWarning("Caught exception when writing property " + Name +
-                        " with context=" + context + " and value=" + value + "\nException: " + e);
-                }
+                Debug.LogWarning("Caught exception when writing property " + Name +
+                    " with context=" + context + " and value=" + value);
+                Debug.LogException(e);
             }
         }
 
@@ -141,10 +175,24 @@ namespace FullInspector {
                 }
             }
             catch (Exception e) {
-                if (fiSettings.EmitWarnings) {
-                    Debug.LogWarning("Caught exception when reading property " + Name + " with " +
-                                        " context=" + context + "; returning null\nException:" + e);
+                Debug.LogWarning("Caught exception when reading property " + Name + " with " +
+                                    " context=" + context + "; returning default value for " +
+                                    StorageType.CSharpName());
+                Debug.LogException(e);
+
+                return DefaultValue;
+            }
+        }
+
+        /// <summary>
+        /// The default value for the storage type. The default value is not always null as structs need special support.
+        /// </summary>
+        public object DefaultValue {
+            get {
+                if (StorageType.Resolve().IsValueType) {
+                    return InspectedType.Get(StorageType).CreateInstance();
                 }
+
                 return null;
             }
         }
@@ -161,8 +209,8 @@ namespace FullInspector {
         public InspectedProperty(PropertyInfo property) {
             MemberInfo = property;
             StorageType = property.PropertyType;
-            CanWrite = property.GetSetMethod(nonPublic: true) != null;
-            IsStatic = (property.GetGetMethod(nonPublic: true) ?? property.GetSetMethod(nonPublic: true)).IsStatic;
+            CanWrite = property.GetSetMethod(/*nonPublic:*/ true) != null;
+            IsStatic = (property.GetGetMethod(/*nonPublic:*/ true) ?? property.GetSetMethod(/*nonPublic:*/ true)).IsStatic;
 
             SetupNames();
         }
@@ -183,12 +231,12 @@ namespace FullInspector {
             Name = MemberInfo.Name;
 
             // Setup the display name. Allow the user to override it.
-            var attr = MemberInfo.GetAttribute<InspectorNameAttribute>();
+            var attr = fsPortableReflection.GetAttribute<InspectorNameAttribute>(MemberInfo);
             if (attr != null) {
                 DisplayName = attr.DisplayName;
             }
             if (string.IsNullOrEmpty(DisplayName)) {
-                DisplayName = DisplayNameMapper.Map(Name);
+                DisplayName = fiDisplayNameMapper.Map(Name);
             }
         }
 

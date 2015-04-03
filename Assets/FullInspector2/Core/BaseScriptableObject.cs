@@ -8,13 +8,13 @@ namespace FullInspector.Internal {
     /// A common class that derives from ScriptableObject so that we can provide a custom editor for
     /// BaseScriptableObject{TSerializer}
     /// </summary>
-    public class CommonBaseScriptableObject : ScriptableObject { }
+    public abstract class CommonBaseScriptableObject : ScriptableObject { }
 }
 
 namespace FullInspector {
     public abstract class BaseScriptableObject<TSerializer> :
         CommonBaseScriptableObject, ISerializedObject
-#if UNITY_EDITOR
+#if !UNITY_4_3
         , ISerializationCallbackReceiver
 #endif
         where TSerializer : BaseSerializer {
@@ -30,6 +30,16 @@ namespace FullInspector {
         /// </summary>
         protected virtual void OnEnable() {
             RestoreState();
+        }
+
+        /// <summary>
+        /// This base method ensures that the object is fully deserialized before running actual
+        /// validation code.
+        /// </summary>
+        protected virtual void OnValidate() {
+            if (((ISerializedObject)this).IsRestored == false) {
+                RestoreState();
+            }
         }
 
         /// <summary>
@@ -101,7 +111,9 @@ namespace FullInspector {
             }
         }
 
-#if UNITY_EDITOR
+        bool ISerializedObject.IsRestored { get; set; }
+
+#if !UNITY_4_3
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
             fiEditorSerializationManager.SubmitDeserializeRequest(this);
         }

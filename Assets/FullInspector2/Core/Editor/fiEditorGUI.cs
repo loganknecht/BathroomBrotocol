@@ -1,10 +1,25 @@
 ﻿using System;
+using FullSerializer.Internal;
 using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
+using System.Collections.Generic;
 
 namespace FullInspector.Internal {
     public class fiEditorGUI {
+        #region Hierarchy Mode Utilities
+        private static readonly Stack<bool> _hierarchyMode = new Stack<bool>();
+
+        public static void PushHierarchyMode(bool state) {
+            _hierarchyMode.Push(EditorGUIUtility.hierarchyMode);
+            EditorGUIUtility.hierarchyMode = state;
+        }
+
+        public static void PopHierarchyMode() {
+            EditorGUIUtility.hierarchyMode = _hierarchyMode.Pop();
+        }
+        #endregion
+
         #region Splitters
         // see http://answers.unity3d.com/questions/216584/horizontal-line.html
 
@@ -128,7 +143,7 @@ namespace FullInspector.Internal {
             if (updateHeight) anim.UpdateHeight(currentHeight);
 
             if (anim.IsAnimating) {
-                fiEditorUtility.Repaint = true;
+                fiEditorUtility.RepaintAllEditors();
                 return anim.AnimationHeight;
             }
 
@@ -164,6 +179,78 @@ namespace FullInspector.Internal {
         }
         #endregion
 
+        #region Toolkit Editing
+        private static readonly GUIContent tkControl_DebugControl_Label = new GUIContent("Control");
+        private static readonly PropertyEditorChain tkControl_PropertyEditor = PropertyEditor.Get(typeof(tkIControl), null);
+        private const string tkControl_Metadata_Layout = "Layout";
+        private const string tkControl_Metadata_DebugControl = "DebugControl";
+
+        private const float tkControl_MarginBeforeHelp = 15f;
+        private const float tkControl_HelpRectHeight = 38f;
+
+        /// <summary>
+        /// Draws an editor for the given control at the given rect.
+        /// </summary>
+        /// <param name="rect">The rect to draw the editor within.</param>
+        /// <param name="element">The element to edit.</param>
+        /// <param name="metadata">The metadata to use when editing.</param>
+        /// <param name="control">The actual control that will be used for the editor.</param>
+        /// <returns>The updated element instance.</returns>
+        public static object tkControl(Rect rect, object element, fiGraphMetadata metadata, tkControlEditor control) {
+            fiLateBindingsBinder.EnsureLoaded();
+
+            Rect layoutRect = rect;
+            Rect helpRect = rect;
+            Rect tweakerRect = rect;
+
+            if (control.Debug) {
+                float tweakerRectHeight = tkControl_PropertyEditor.FirstEditor.GetElementHeight(tkControl_DebugControl_Label, control, metadata.Enter(tkControl_Metadata_DebugControl));
+
+                layoutRect.height -= tkControl_MarginBeforeHelp + tkControl_HelpRectHeight +
+                                     fiLateBindings.EditorGUIUtility.standardVerticalSpacing + tweakerRectHeight;
+
+                helpRect = layoutRect;
+                helpRect.y += layoutRect.height + tkControl_MarginBeforeHelp;
+                helpRect.height = tkControl_HelpRectHeight;
+
+                tweakerRect = helpRect;
+                tweakerRect.y += tweakerRect.height + fiLateBindings.EditorGUIUtility.standardVerticalSpacing;
+                tweakerRect.height = tweakerRectHeight;
+            }
+
+            element = control.Control.Edit(layoutRect, element, control.Context, metadata.Enter(tkControl_Metadata_Layout).Metadata);
+
+            if (control.Debug) {
+                EditorGUI.HelpBox(helpRect, "The layout below should be used for visualizing the runtime layout structure or for tweaking layout values like minimum width. Changes will *not* persist - you need to modify the code itself.", MessageType.Info);
+                tkControl_PropertyEditor.FirstEditor.Edit(tweakerRect, tkControl_DebugControl_Label, control, metadata.Enter(tkControl_Metadata_DebugControl));
+            }
+
+            return element;
+        }
+
+        /// <summary>
+        /// Draws an editor for the given control at the given rect.
+        /// </summary>
+        /// <param name="element">The element to edit.</param>
+        /// <param name="metadata">The metadata to use when editing.</param>
+        /// <param name="control">The actual control that will be used for the editor.</param>
+        /// <returns>The height that is needed to fully display this control.</returns>
+        public static float tkControlHeight(object element, fiGraphMetadata metadata, tkControlEditor control) {
+            fiLateBindingsBinder.EnsureLoaded();
+
+            var height = control.Control.GetHeight(element, control.Context, metadata.Enter(tkControl_Metadata_Layout).Metadata);
+
+            if (control.Debug) {
+                height += tkControl_MarginBeforeHelp;
+                height += tkControl_HelpRectHeight;
+                height += fiLateBindings.EditorGUIUtility.standardVerticalSpacing;
+                height += tkControl_PropertyEditor.FirstEditor.GetElementHeight(tkControl_DebugControl_Label, control, metadata.Enter(tkControl_Metadata_DebugControl));
+            }
+
+            return height;
+        }
+        #endregion
+
         #region Property Editing
         private static void RevertPrefabContextMenu(Rect region, object context, InspectedProperty property) {
             if (Event.current.type == EventType.ContextClick &&
@@ -190,8 +277,16 @@ namespace FullInspector.Internal {
         /// Draws a GUI for editing the given property and returns the updated value. This does
         /// *not* write the updated value to a container.
         /// </summary>
+        public static object EditPropertyDirect(Rect region, InspectedProperty property, object propertyValue, fiGraphMetadataChild metadataChild) {
+            return EditPropertyDirect(region, property, propertyValue, metadataChild, null);
+        }
+
+        /// <summary>
+        /// Draws a GUI for editing the given property and returns the updated value. This does
+        /// *not* write the updated value to a container.
+        /// </summary>
         /// <param name="context">An optional context that the property value came from. If this is not given, then a prefab context menu will not be displayable.</param>
-        public static object EditPropertyDirect(Rect region, InspectedProperty property, object propertyValue, fiGraphMetadataChild metadataChild, object context = null) {
+        public static object EditPropertyDirect(Rect region, InspectedProperty property, object propertyValue, fiGraphMetadataChild metadataChild, object context) {
             fiGraphMetadata metadata = metadataChild.Metadata;
 
             // Show a "revert to prefab" value context-menu if possible
@@ -200,7 +295,7 @@ namespace FullInspector.Internal {
             }
 
             // get the label / tooltip
-            var tooltip = property.MemberInfo.GetAttribute<InspectorTooltipAttribute>();
+            var tooltip = fsPortableReflection.GetAttribute<InspectorTooltipAttribute>(property.MemberInfo);
             GUIContent label = new GUIContent(property.DisplayName, tooltip != null ? tooltip.Tooltip : "");
 
             var editorChain = PropertyEditor.Get(property.StorageType, property.MemberInfo);

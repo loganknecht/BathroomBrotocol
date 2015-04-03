@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace FullInspector.Internal {
@@ -44,6 +45,16 @@ namespace FullInspector.Internal {
 
         public static void Splitter(float thickness) {
             Splitter(thickness, splitter);
+        }
+
+
+        public static void WithIndent(float pixels, Action code) {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(pixels);
+            GUILayout.BeginVertical();
+            code();
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
         }
     }
 }

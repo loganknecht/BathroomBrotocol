@@ -76,7 +76,7 @@ namespace FullInspector {
         object IPropertyEditorEditAPI.OnSceneGUI(object element) {
             return OnSceneGUI((TElement)element, _attribute);
         }
-        public virtual bool CanIndentLabelForDropdown {
+        public virtual bool DisplaysStandardLabel {
             get { return true; }
         }
         #endregion

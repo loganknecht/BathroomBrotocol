@@ -37,7 +37,7 @@ namespace FullInspector.Internal {
             }
 
             // No custom serializer, use the default one
-            return fiSerializerProxy.DefaultMetadata.SerializerType;
+            return fiInstalledSerializerManager.DefaultMetadata.SerializerType;
         }
     }
 }

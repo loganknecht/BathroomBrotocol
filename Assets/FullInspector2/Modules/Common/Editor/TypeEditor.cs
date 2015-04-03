@@ -14,7 +14,7 @@ namespace FullInspector.Modules.Common {
             Rect labelRect, buttonRect = region;
 
             if (string.IsNullOrEmpty(label.text) == false) {
-                RectTools.SplitHorizontalPercentage(region, .3f, 2, out labelRect, out buttonRect);
+                fiRectUtility.SplitHorizontalPercentage(region, .3f, 2, out labelRect, out buttonRect);
                 GUI.Label(labelRect, label);
             }
 

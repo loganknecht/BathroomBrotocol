@@ -9,25 +9,56 @@ namespace FullInspector.Internal {
     /// Manages the options that are displayed to the user in the instance selection drop-down.
     /// </summary>
     internal class AbstractTypeInstanceOptionManager {
-        private Type[] _options;
-        private string[] _comments;
+        #region Derived Type Fetching and Sorting
+        struct DisplayedType {
+            public Type RawType;
+            public string TypeName;
+        }
+        private static Dictionary<Type, DisplayedType[]> TypeCache = new Dictionary<Type, DisplayedType[]>();
+        private static DisplayedType[] GetDisplayedTypes(Type baseType) {
+            DisplayedType[] result;
+
+            if (TypeCache.TryGetValue(baseType, out result) == false) {
+                List<DisplayedType> types = new List<DisplayedType>();
+
+                foreach (var type in fiReflectionUtility.GetCreatableTypesDeriving(baseType)) {
+                    string typeName = "";
+
+                    var attr = fsPortableReflection.GetAttribute<InspectorDropdownNameAttribute>(type);
+                    if (attr != null) { 
+                        typeName = attr.DisplayName;
+                    }
+                    if (string.IsNullOrEmpty(typeName)) {
+                        typeName = type.CSharpName();
+                    }
+
+                    types.Add(new DisplayedType {
+                        RawType = type,
+                        TypeName = typeName
+                    });
+                }
+
+                result = types.OrderBy(dt => dt.TypeName).ToArray();
+                TypeCache[baseType] = result;
+            }
+
+            return result;
+        }
+        #endregion
+
+        private DisplayedType[] _options;
         private List<GUIContent> _displayedOptions;
 
         /// <summary>
         /// Setup the instance option manager for the given type.
         /// </summary>
         public AbstractTypeInstanceOptionManager(Type baseType) {
-            _options = fiReflectionUtilitity.GetCreatableTypesDeriving(baseType).ToArray();
-
-            _comments = (from option in _options
-                         let comment = option.GetAttribute<CommentAttribute>()
-                         select comment != null ? comment.Comment : "").ToArray();
+            _options = GetDisplayedTypes(baseType);
 
             _displayedOptions = new List<GUIContent>();
             _displayedOptions.Add(new GUIContent("null (" + baseType.CSharpName() + ")"));
             _displayedOptions.AddRange(from option in _options
-                                       let optionName = GetOptionName(option)
-                                       select new GUIContent(optionName));
+                                       select new GUIContent(option.TypeName));
         }
 
         private static string GetOptionName(Type type) {
@@ -69,34 +100,15 @@ namespace FullInspector.Internal {
 
             Type instanceType = instance.GetType();
             for (int i = 0; i < _options.Length; ++i) {
-                Type option = _options[i];
+                Type option = _options[i].RawType;
                 if (instanceType == option) {
                     return i + 1;
                 }
             }
 
             // we need a new display option
-            _displayedOptions.Add(new GUIContent(instance.GetType() + " (cannot reconstruct)"));
+            _displayedOptions.Add(new GUIContent(instance.GetType().CSharpName() + " (cannot reconstruct)"));
             return _displayedOptions.Count - 1;
-        }
-
-        /// <summary>
-        /// Returns a comment that should be displayed above the given option.
-        /// </summary>
-        public string GetComment(object instance) {
-            if (instance == null) {
-                return "";
-            }
-
-            Type instanceType = instance.GetType();
-            for (int i = 0; i < _options.Length; ++i) {
-                Type option = _options[i];
-                if (instanceType == option) {
-                    return _comments[i];
-                }
-            }
-
-            return "";
         }
 
         /// <summary>
@@ -114,7 +126,7 @@ namespace FullInspector.Internal {
             }
 
             // create an instance of the object
-            Type type = _options[updatedIndex - 1];
+            Type type = _options[updatedIndex - 1].RawType;
             return InspectedType.Get(type).CreateInstance();
         }
     }

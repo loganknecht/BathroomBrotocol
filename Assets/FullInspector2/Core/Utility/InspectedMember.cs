@@ -36,14 +36,14 @@ namespace FullInspector {
         }
 
         /// <summary>
-        /// Does this either contain an A value?
+        /// Is this member a method?
         /// </summary>
         public bool IsMethod { 
             get { return _method != null; }
         }
 
         /// <summary>
-        /// Does this either contain a B value?
+        /// Is this member a field or property?
         /// </summary>
         public bool IsProperty { 
             get { return _property != null; }

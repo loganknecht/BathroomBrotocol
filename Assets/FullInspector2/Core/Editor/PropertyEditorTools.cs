@@ -50,16 +50,23 @@ namespace FullInspector.Internal {
             }
 
             if (CanEdit(usedEditedType,
-                editorType.GetAttribute<CustomPropertyEditorAttribute>()) == false) {
+                fsPortableReflection.GetAttribute<CustomPropertyEditorAttribute>(editorType)) == false) {
                 editor = null;
                 return false;
             }
 
-            if (editorType.GetConstructor(NonEmptyConstructorArgs) != null) {
-                editor = (IPropertyEditor)Activator.CreateInstance(editorType, new object[] { actualEditedType, attributes });
+            try {
+                if (editorType.GetConstructor(NonEmptyConstructorArgs) != null) {
+                    editor = (IPropertyEditor)Activator.CreateInstance(editorType, new object[] { actualEditedType, attributes });
+                }
+                else {
+                    editor = (IPropertyEditor)Activator.CreateInstance(editorType);
+                }
             }
-            else {
-                editor = (IPropertyEditor)Activator.CreateInstance(editorType);
+            catch (Exception e) {
+                Debug.LogException(e);
+                editor = null;
+                return false;
             }
 
             if (editor.CanEdit(actualEditedType) == false) {
@@ -151,11 +158,12 @@ namespace FullInspector.Internal {
         /// <param name="editedType">The type that is being edited.</param>
         /// <param name="editorType">The editor type.</param>
         /// <param name="attributes">The attributes that were specified for the type.</param>
+        /// <param name="forceInherit">Should inheritance behavior be forced? The expected value is false.</param>
         /// <returns>A property editor that can edit the given edited type.</returns>
-        public static IPropertyEditor TryCreateEditor(Type editedType, Type editorType, ICustomAttributeProvider attributes) {
+        public static IPropertyEditor TryCreateEditor(Type editedType, Type editorType, ICustomAttributeProvider attributes, bool forceInherit) {
             // If our editor isn't inherited, then we only want to create a specific editor
-            var customPropertyEditorAttribute = editorType.GetAttribute<CustomPropertyEditorAttribute>();
-            if (customPropertyEditorAttribute == null || customPropertyEditorAttribute.Inherit == false) {
+            var customPropertyEditorAttribute = fsPortableReflection.GetAttribute<CustomPropertyEditorAttribute>(editorType);
+            if (!forceInherit && (customPropertyEditorAttribute == null || customPropertyEditorAttribute.Inherit == false)) {
                 return TryCreateSpecificEditor(editedType, editedType, editorType, attributes);
             }
 

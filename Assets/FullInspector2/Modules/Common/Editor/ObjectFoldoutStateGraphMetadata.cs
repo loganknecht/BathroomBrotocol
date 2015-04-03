@@ -2,7 +2,8 @@
 using UnityEngine;
 
 namespace FullInspector.Modules.Common {
-    public class ObjectFoldoutStateGraphMetadata : IGraphMetadataItem {
+    // TODO: make this persistent
+    public class ObjectFoldoutStateGraphMetadata : IGraphMetadataItemNotPersistent {
         /// <summary>
         /// Is the foldout currently active, ie, is the rendered item being displayed or is the
         /// short-form foldout being displayed?
@@ -13,7 +14,12 @@ namespace FullInspector.Modules.Common {
             }
             set {
                 if (value != _isActive.target) {
-                    _isActive.target = value;
+                    if (fiSettings.EnableAnimation) {
+                        _isActive.target = value;
+                    }
+                    else {
+                        _isActive = new AnimBool(value);
+                    }
                 }
             }
         }

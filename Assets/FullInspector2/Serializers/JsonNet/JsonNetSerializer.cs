@@ -1,10 +1,8 @@
 ﻿using FullInspector.Serializers.JsonNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using UnityEngine;
 
@@ -13,7 +11,7 @@ namespace FullInspector {
         /// <summary>
         /// The JsonConverters that we need to use for serialization to happen correctly.
         /// </summary>
-        private static JsonConverter[] RequiredConverters = new JsonConverter[] {
+        private static JsonConverter[] RequiredConverters = {
             new UnityObjectConverter(),
             new Vector2Converter(),
             new Vector3Converter(),

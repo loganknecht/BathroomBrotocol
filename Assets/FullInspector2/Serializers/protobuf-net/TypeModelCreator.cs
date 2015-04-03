@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using FullSerializer.Internal;
 using UnityEngine;
 
 namespace FullInspector.Serializers.ProtoBufNet {
@@ -21,7 +22,7 @@ namespace FullInspector.Serializers.ProtoBufNet {
         }
 
         public static bool IsInIgnoredAssembly(Type type) {
-            return IsAssemblyAllowed(type.Assembly) == false;
+            return IsAssemblyAllowed(type.Resolve().Assembly) == false;
         }
 
         /// <summary>
@@ -33,12 +34,12 @@ namespace FullInspector.Serializers.ProtoBufNet {
 
                    from contractType in assembly.GetTypes()
 
-                   where contractType.GetAttribute<ProtoContractAttribute>() != null
+                   where fsPortableReflection.GetAttribute<ProtoContractAttribute>(contractType) != null
 
                    // Generic contract types are useless by themselves; they are only used when
                    // requested by some other type that is being serialized, which in that case they
                    // will be instantiated with generic type parameters
-                   where contractType.IsGenericTypeDefinition == false
+                   where contractType.Resolve().IsGenericTypeDefinition == false
 
                    // Ignore types that have already been added to the model. For example, we
                    // ignore types with a surrogate
@@ -48,11 +49,11 @@ namespace FullInspector.Serializers.ProtoBufNet {
         }
 
         private static Type RunSanityCheck(Type type) {
-            if ((type.IsPublic || type.IsNestedPublic) == false) {
+            if ((type.Resolve().IsPublic || type.Resolve().IsNestedPublic) == false) {
                 Throw("sanity check -- type is not public for type={0}", type);
             }
 
-            if (type.IsGenericTypeDefinition) {
+            if (type.Resolve().IsGenericTypeDefinition) {
                 Throw("sanity check -- type is a generic definition for type={0}", type);
             }
 
@@ -78,7 +79,7 @@ namespace FullInspector.Serializers.ProtoBufNet {
 
             // regular old [ProtoContract] types
             foreach (Type contract in GetContracts(model)) {
-                if (contract.IsVisible == false) {
+                if (contract.Resolve().IsVisible == false) {
                     Throw("A ProtoContract type needs to have public visibility for contract={0}",
                         contract);
                 }
@@ -96,7 +97,7 @@ namespace FullInspector.Serializers.ProtoBufNet {
             foreach (var behaviorType in fiRuntimeReflectionUtility.GetUnityObjectTypes()) {
                 // We only want UnityObject types are serializable by ProtoBufNet
                 // TODO: support custom base classes
-                if (typeof(BaseBehavior<ProtoBufNetSerializer>).IsAssignableFrom(behaviorType) == false) {
+                if (typeof(BaseBehavior<ProtoBufNetSerializer>).Resolve().IsAssignableFrom(behaviorType.Resolve()) == false) {
                     continue;
                 }
 
@@ -104,7 +105,7 @@ namespace FullInspector.Serializers.ProtoBufNet {
                 foreach (InspectedProperty property in serializedProperties) {
                     // If the property is generic and the model currently doesn't contain it, make
                     // sure we add it to the model.
-                    if (property.StorageType.IsGenericType &&
+                    if (property.StorageType.Resolve().IsGenericType &&
                         ContainsType(model, property.StorageType) == false) {
 
                         model.Add(property.StorageType, true);

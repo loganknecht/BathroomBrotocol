@@ -1,6 +1,7 @@
 ﻿using FullInspector.Internal;
 using FullSerializer.Internal;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -34,11 +35,11 @@ namespace FullInspector {
 
         private class InspectableMembersFilter : IInspectedMemberFilter {
             public bool IsInterested(InspectedProperty property) {
-                return property.IsStatic == false && IsPropertyTypeInspectable(property) && ShouldDisplayProperty(property);
+                return IsPropertyTypeInspectable(property) && ShouldDisplayProperty(property);
             }
 
             public bool IsInterested(InspectedMethod method) {
-                return method.Method.IsDefined(typeof(InspectorButtonAttribute), inherit: true);
+                return method.Method.IsDefined(typeof(InspectorButtonAttribute), /*inherit:*/ true);
             }
         }
         public static IInspectedMemberFilter InspectableMembers = new InspectableMembersFilter();
@@ -50,7 +51,7 @@ namespace FullInspector {
             }
 
             public bool IsInterested(InspectedMethod method) {
-                return method.Method.IsDefined(typeof(InspectorButtonAttribute), inherit: true);
+                return method.Method.IsDefined(typeof(InspectorButtonAttribute), /*inherit:*/ true);
             }
         }
         public static IInspectedMemberFilter StaticInspectableMembers = new StaticInspectableMembersFilter();
@@ -61,7 +62,7 @@ namespace FullInspector {
             }
 
             public bool IsInterested(InspectedMethod method) {
-                return method.Method.IsDefined(typeof(InspectorButtonAttribute), inherit: true);
+                return method.Method.IsDefined(typeof(InspectorButtonAttribute), /*inherit:*/ true);
             }
         }
         public static IInspectedMemberFilter ButtonMembers = new ButtonMembersFilter();
@@ -73,11 +74,23 @@ namespace FullInspector {
         private static bool ShouldDisplayProperty(InspectedProperty property) {
             var memberInfo = property.MemberInfo;
 
-            if (memberInfo.IsDefined(typeof(ShowInInspectorAttribute), inherit: true)) {
+            // note: we do opt-out before opt-in so that we can still serialize
+            //       a field but not display it in the inspector (as the serialize
+            //       annotations automatically cause a field to be displayed)
+            if (memberInfo.IsDefined(typeof(HideInInspector), /*inherit:*/ true) ||
+                memberInfo.IsDefined(typeof(NotSerializedAttribute), /*inherit:*/true) ||
+                fiInstalledSerializerManager.SerializationOptOutAnnotations.Any(t => memberInfo.IsDefined(t, /*inherit*/true))) {
+
+                return false;
+            }
+
+            if (memberInfo.IsDefined(typeof(ShowInInspectorAttribute), /*inherit:*/ true) ||
+                (property.IsStatic == false && fiInstalledSerializerManager.SerializationOptInAnnotations.Any(t => memberInfo.IsDefined(t, /*inherit*/true)))) {
+
                 return true;
             }
 
-            if (memberInfo.IsDefined(typeof(HideInInspector), inherit: true)) {
+            if (property.MemberInfo is PropertyInfo && fiSettings.InspectorRequireShowInInspector) {
                 return false;
             }
 
@@ -100,7 +113,7 @@ namespace FullInspector {
             if (property.MemberInfo is FieldInfo) {
                 // Don't inspect compiler generated fields (an example would be a backing field
                 // for an automatically generated property).
-                if (property.MemberInfo.IsDefined(typeof(CompilerGeneratedAttribute), inherit: false)) {
+                if (property.MemberInfo.IsDefined(typeof(CompilerGeneratedAttribute), /*inherit:*/ false)) {
                     return false;
                 }
             }

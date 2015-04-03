@@ -79,7 +79,7 @@ namespace FullInspector {
 
             return OnSceneGUI((TElement)element);
         }
-        public virtual bool CanIndentLabelForDropdown {
+        public virtual bool DisplaysStandardLabel {
             get { return true; }
         }
         #endregion

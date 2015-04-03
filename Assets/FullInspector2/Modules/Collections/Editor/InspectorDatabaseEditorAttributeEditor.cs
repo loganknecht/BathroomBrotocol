@@ -1,11 +1,15 @@
-﻿using FullInspector.Internal;
-using FullInspector.LayoutToolkit;
-using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+using FullInspector.Internal;
 using UnityEngine;
+using tk = FullInspector.tk<System.Collections.IList, FullInspector.Modules.Collections.tkDatabaseContext>;
 
 namespace FullInspector.Modules.Collections {
+    class tkDatabaseContext {
+        public GUIContent label;
+        public IList editedList;
+    }
+
     /// <summary>
     /// Provides a relatively simple editor for IList{T} types that only views one element at a
     /// time. This is useful if the list is massive, or perhaps to just reduce information overload
@@ -14,91 +18,26 @@ namespace FullInspector.Modules.Collections {
     [CustomAttributePropertyEditor(typeof(InspectorDatabaseEditorAttribute), ReplaceOthers = true)]
     public class InspectorDatabaseEditorAttributeEditor<TDerived, T> :
         AttributePropertyEditor<IList<T>, InspectorDatabaseEditorAttribute>
-        where TDerived : IList<T>, new() {
+        where TDerived : IList<T> {
 
-        public override bool CanIndentLabelForDropdown {
+        public override bool DisplaysStandardLabel {
             get { return false; }
-        }
-
-        private fiLayout Header = new fiVerticalLayout {
-            2,
-
-            {
-                "BoxedArea", fiLayoutUtility.Margin(10, new fiVerticalLayout {
-                    3,
-
-                    { "Label", 18 },
-
-                    2,
-
-                    new fiHorizontalLayout(new fiLayoutHeight(18)) {
-                        2,
-                        "Back",
-                        2,
-                        "Forward",
-                        2,
-                        { "Delete", 25 }
-                    }
-                })
-            },
-
-            5
-        };
-
-        /// <summary>
-        /// Property editor that is used for the list items.
-        /// </summary>
-        private PropertyEditorChain _itemEditor = PropertyEditor.Get(typeof(T), null);
-
-        /// <summary>
-        /// Ensures that the given element points to a valid instance.
-        /// </summary>
-        private static void EnsureInstance(ref IList<T> element) {
-            if (element == null) {
-                element = new TDerived();
-            }
-        }
-
-        /// <summary>
-        /// Attempts to fetch an item to edit.
-        /// </summary>
-        /// <param name="list">The list that is being edited.</param>
-        /// <param name="edited">The item we are currently empty. Only contains a value if this
-        /// function returns true.</param>
-        /// <returns>True if there is an item being edited, otherwise false.</returns>
-        private bool TryGetEditedElement(IList<T> list, out T edited) {
-            if (HasEditableItem(list) == false) {
-                edited = default(T);
-                return false;
-            }
-
-            TryEnsureValidIndex(list);
-            edited = list[CurrentIndex(list)];
-            return true;
-        }
-
-        /// <summary>
-        /// Updates the stored value for the given edited item.
-        /// </summary>
-        private void UpdateEditedElement(IList<T> list, T edited) {
-            if (HasEditableItem(list)) {
-                list[CurrentIndex(list)] = edited;
-            }
         }
 
         /// <summary>
         /// Returns true if there is currently an item that is being edited.
         /// </summary>
-        private static bool HasEditableItem(IList<T> list) {
-            int index = CurrentIndex(list);
-            return index >= 0 && index < list.Count;
+        private static bool HasEditableItem(tkDatabaseContext context) {
+            int index = GetCurrentIndex(context);
+            return index >= 0 && index < context.editedList.Count;
         }
 
         /// <summary>
         /// Attempts to ensure that the current editing index is not out of range. However, if the
         /// edited list is empty, then the index will always be out of range.
         /// </summary>
-        private static void TryEnsureValidIndex(IList<T> list) {
+        private static void TryEnsureValidIndex(tkDatabaseContext context) {
+            var list = context.editedList;
             var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(list);
 
             if (list.Count == 0) {
@@ -112,167 +51,196 @@ namespace FullInspector.Modules.Collections {
             }
         }
 
-        /// <summary>
-        /// Returns true if the editor can delete the item currently being edited.
-        /// </summary>
-        private static bool CanDelete(IList<T> list) {
-            return HasEditableItem(list);
+        private static bool CanDeleteEditedItem(tkDatabaseContext context) {
+            return HasEditableItem(context);
+        }
+        private static void DeleteEditedItem(tkDatabaseContext context) {
+            fiListUtility.RemoveAt<T>(ref context.editedList, GetCurrentIndex(context));
+            TryEnsureValidIndex(context);
         }
 
-        /// <summary>
-        /// Returns true if the editor can go "back" to the previous item in the list.
-        /// </summary>
-        private static bool CanGoBack(IList<T> list) {
-            return CurrentIndex(list) > 0;
-        }
 
-        /// <summary>
-        /// Returns the index of the item being edited. The index is *not* necessarily valid.
-        /// </summary>
-        private static int CurrentIndex(IList<T> list) {
-            var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(list);
+        private static int GetCurrentIndex(tkDatabaseContext context) {
+            var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(context.editedList);
             return metadata.CurrentIndex;
         }
 
-        /// <summary>
-        /// Returns the index of the item being edited. The index is *not* necessarily valid.
-        /// </summary>
-        private static void SetIndex(IList<T> list, int index) {
-            var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(list);
+
+        private static void ChangeIndexTo(tkDatabaseContext context, int index) {
+            var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(context.editedList);
             metadata.CurrentIndex = index;
-            TryEnsureValidIndex(list);
+            TryEnsureValidIndex(context);
         }
 
-        /// <summary>
-        /// Changes the item being edited by the given offset. If necessary, this adds items to the
-        /// list.
-        /// </summary>
-        private static void ChangeEditedElement(IList<T> list, int offset) {
-            var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(list);
+
+        private static bool CanMoveIndexByOffset(tkDatabaseContext context, int offset) {
+            int newIndex = GetCurrentIndex(context) + offset;
+            return newIndex >= 0;
+        }
+        private static void MoveIndexByOffset(tkDatabaseContext context, int offset) {
+            var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(context.editedList);
             metadata.CurrentIndex += offset;
 
-            while (metadata.CurrentIndex >= list.Count) {
-                list.Add(default(T));
+            if (metadata.CurrentIndex < 0) {
+                metadata.CurrentIndex = 0;
+            }
+
+            // If we don't have enough elements inside of the list, then we'll just add to the
+            // list until we have a valid index
+            while (metadata.CurrentIndex >= context.editedList.Count) {
+                fiListUtility.Add<T>(ref context.editedList);
+                metadata.CurrentIndex = context.editedList.Count - 1;
             }
         }
 
-        /// <summary>
-        /// Removes the item currently being edited.
-        /// </summary>
-        private static void RemoveEditedElement(IList<T> list) {
-            if (CanDelete(list)) {
-                list.RemoveAt(CurrentIndex(list));
+        private static bool CanSwapItemByOffset(tkDatabaseContext context, int offset) {
+            int a = GetCurrentIndex(context);
+            int b = a + offset;
+
+            var list = context.editedList;
+            return list.Count > 0 && a >= 0 && a < list.Count && b >= 0 && b < list.Count;
+        }
+        private static void SwapItemByOffset(tkDatabaseContext context, int offset) {
+            int a = GetCurrentIndex(context);
+            int b = a + offset;
+
+            // Make sure we can do the swap - we *should* be able to remove this code
+            var list = context.editedList;
+            if (list.Count > 0 && a >= 0 && a < list.Count && b >= 0 && b < list.Count) {
+                var temp = list[a];
+                list[a] = list[b];
+                list[b] = temp;
             }
         }
 
-        /// <summary>
-        /// Adds extra information about the current item that is being edited to the label.
-        /// </summary>
-        private static GUIContent AddEditingInformation(GUIContent content, IList<T> list) {
-            string updatedText;
+        private static bool ShouldAddNextItem(tkDatabaseContext context) {
+            var list = context.editedList;
+            return list.Count == 0 || GetCurrentIndex(context) == list.Count - 1;
+        }
+        private static fiGUIContent GetForwardButtonText(tkDatabaseContext context) {
+            if (ShouldAddNextItem(context)) return Label_Forward_Add;
+            return Label_Forward_Forward;
+        }
 
-            if (list.Count == 0) {
-                updatedText = string.Format("{0} (empty)", content.text);
+        private static fiGUIContent GetLabelText(tkDatabaseContext context) {
+            var label = new GUIContent(context.label);
+
+            if (context.editedList.Count == 0) {
+                label.text += " (empty)";
             }
             else {
-                var metadata = fiGlobalMetadata.Get<InspectorDatabaseEditorMetadata>(list);
-                updatedText = string.Format("{0} (element {1} of {2})", content.text,
-                    metadata.CurrentIndex + 1, list.Count);
-
+                label.text += " (element " + (GetCurrentIndex(context) + 1) + " of " + context.editedList.Count + ")";
             }
 
-            return new GUIContent(updatedText, content.image, content.tooltip);
+            return label;
         }
 
-        private enum NextButtonOperation {
-            MoveNext, Add
-        }
-        private static NextButtonOperation GetNextButtonOperation(IList<T> list) {
-            if (list.Count == 0 || CurrentIndex(list) == list.Count - 1) {
-                return NextButtonOperation.Add;
-            }
-            return NextButtonOperation.MoveNext;
-        }
+        private static readonly fiGUIContent Label_SwapBack = new fiGUIContent("<Swap", "Swaps this item with the previous item");
+        private static readonly fiGUIContent Label_SwapForward = new fiGUIContent("Swap>", "Swaps this item with the next item");
+        private static readonly fiGUIContent Label_Back = new fiGUIContent("<<", "View the previous item");
+        private static readonly fiGUIContent Label_Forward_Forward = new fiGUIContent(">>", "View the next item");
+        private static readonly fiGUIContent Label_Forward_Add = new fiGUIContent("Add", "Add a new item");
+        private static readonly fiGUIContent Label_Delete = new fiGUIContent("X", "Delete the current item");
 
-        private Rect DrawHeader(Rect region, GUIContent label, IList<T> list) {
-            var labelRect = Header.GetSectionRect("Label", region);
-            var backRect = Header.GetSectionRect("Back", region);
-            var forwardRect = Header.GetSectionRect("Forward", region);
-            var delRect = Header.GetSectionRect("Delete", region);
-            var boxedRect = Header.GetSectionRect("BoxedArea", region);
-            region = RectTools.MoveDown(region, Header.Height);
+        private static readonly tkControlEditor ControlEditor = new tkControlEditor(
+            new tk.VerticalGroup {
+                new tk.Box(new tk.Margin(12,
+                    new tk.VerticalGroup {
+                        new tk.IntSlider(tk.Val((o, c) => GetLabelText(c)),
+                            /*min, max*/ 1, tk.Val(l => l.Count),
+                            /*get*/ (l, c) => l.Count == 0 ? 0 : GetCurrentIndex(c) + 1,
+                            /*set*/ (l, c, i) => ChangeIndexTo(c, i-1)) {
 
-            GUI.Box(boxedRect, GUIContent.none);
+                            Style = new tk.EnabledIf(l => l.Count > 0)
+                        },
 
-            label = AddEditingInformation(label, list);
-            if (list.Count == 0) {
-                EditorGUI.LabelField(labelRect, label);
-            }
-            else {
-                SetIndex(list, EditorGUI.IntSlider(labelRect, label, CurrentIndex(list), 0,
-                    list.Count - 1));
+                        new tk.HorizontalGroup {
+                            {
+                                60,
+                                new tk.Button(Label_SwapBack, (o, c) => SwapItemByOffset(c, -1)) {
+                                    Style = new tk.EnabledIf((o, c) => CanSwapItemByOffset(c, -1))
+                                } 
+                            },
+                                                       
+                            2, 
+
+                            new tk.Button(Label_Back, (o, c) => MoveIndexByOffset(c, -1)) {
+                                Style = new tk.EnabledIf((o, c) => CanMoveIndexByOffset(c, -1))
+                            },
+                            
+                            2,
+
+                            new tk.Button(tk.Val((o, c) => GetForwardButtonText(c)), (o, c) => MoveIndexByOffset(c, 1)) {
+                                Style = new tk.ColorIf((o, c) => ShouldAddNextItem(c), Color.green)
+                            },
+
+                            2,
+
+                            {
+                                60,
+                                new tk.Button(Label_SwapForward, (o, c) => SwapItemByOffset(c, 1)) {
+                                    Style = new tk.EnabledIf((o, c) => CanSwapItemByOffset(c, 1))
+                                } 
+                            },
+
+                            2, 
+
+                            {
+                                25,
+                                new tk.Button(Label_Delete, (o, c) => DeleteEditedItem(c)) {
+                                    Styles = {
+                                        new tk.Color(Color.red),
+                                        new tk.EnabledIf((o, c) => CanDeleteEditedItem(c))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )),
+
+                new tk.ShowIf((o,c) => HasEditableItem(c),
+                    tk.PropertyEditor.Create(fiGUIContent.Empty, null,
+                        (o, c) => (T)c.editedList[GetCurrentIndex(c)],
+                        (o, c, v) => c.editedList[GetCurrentIndex(c)] = v))
+            });
+
+        private static void EnsureInitialState(tkDatabaseContext context, fiGraphMetadata metadata) {
+            if (context.editedList == null) {
+                context.editedList = (IList)InspectedType.Get(typeof(TDerived)).CreateInstance();
             }
 
-            GUI.color = new Color(150, 0, 0);
-            EditorGUI.BeginDisabledGroup(!CanDelete(list));
-            if (GUI.Button(delRect, "X")) {
-                RemoveEditedElement(list);
-            }
-            EditorGUI.EndDisabledGroup();
-            GUI.color = Color.white;
+            TryEnsureValidIndex(context);
 
-            EditorGUI.BeginDisabledGroup(!CanGoBack(list));
-            if (GUI.Button(backRect, "<<")) {
-                ChangeEditedElement(list, -1);
-            }
-            EditorGUI.EndDisabledGroup();
+            // Set the global metadata to the graph metadata, as the graph metadata is persistent
+            // but users still may want to access the global metadata.
+            fiGlobalMetadata.Set(context.editedList, metadata.GetMetadata<InspectorDatabaseEditorMetadata>());
 
-            string nextLabel = ">>";
-            if (GetNextButtonOperation(list) == NextButtonOperation.Add) {
-                GUI.color = Color.green;
-                nextLabel = "Add";
-            }
-            if (GUI.Button(forwardRect, nextLabel)) {
-                ChangeEditedElement(list, 1);
-            }
-            GUI.color = Color.white;
-
-            return region;
+            // Disable the dropdown
+            metadata.GetPersistentMetadata<fiDropdownMetadata>().ForceDisable();
         }
 
         protected override IList<T> Edit(Rect region, GUIContent label, IList<T> list, InspectorDatabaseEditorAttribute attribute, fiGraphMetadata metadata) {
-            // Set the global metadata to the graph metadata, as the graph metadata is persistent
-            // but users still may want to access the global metadata.
-            fiGlobalMetadata.Set(list, metadata.GetMetadata<InspectorDatabaseEditorMetadata>());
+            var context = new tkDatabaseContext {
+                editedList = (IList)list,
+                label = label
+            };
+            EnsureInitialState(context, metadata);
 
-            EnsureInstance(ref list);
-            TryEnsureValidIndex(list);
+            ControlEditor.Context = context;
+            fiEditorGUI.tkControl(region, context.editedList, metadata, ControlEditor);
 
-            region = DrawHeader(region, label, list);
-
-            T edited;
-            if (TryGetEditedElement(list, out edited)) {
-                edited = (T)_itemEditor.FirstEditor.Edit(region, GUIContent.none, edited, metadata.Enter("SingleItemListEditor"));
-                UpdateEditedElement(list, edited);
-            }
-
-            return list;
+            return (IList<T>)context.editedList;
         }
 
         protected override float GetElementHeight(GUIContent label, IList<T> list, InspectorDatabaseEditorAttribute attribute, fiGraphMetadata metadata) {
-            // Set the global metadata to the graph metadata, as the graph metadata is persistent
-            // but users still may want to access the global metadata.
-            fiGlobalMetadata.Set(list, metadata.GetMetadata<InspectorDatabaseEditorMetadata>());
+            var context = new tkDatabaseContext {
+                editedList = (IList)list,
+                label = label
+            };
+            EnsureInitialState(context, metadata);
 
-            EnsureInstance(ref list);
-            TryEnsureValidIndex(list);
-
-            float height = Header.Height;
-
-            T edited;
-            if (TryGetEditedElement(list, out edited)) {
-                height += _itemEditor.FirstEditor.GetElementHeight(GUIContent.none, edited, metadata.Enter("SingleItemListEditor"));
-            }
+            ControlEditor.Context = context;
+            var height = fiEditorGUI.tkControlHeight(context.editedList, metadata, ControlEditor);
 
             return height;
         }
@@ -281,16 +249,8 @@ namespace FullInspector.Modules.Collections {
         /// The metadata we store on each item that we edit so that we know what the active editing
         /// item is.
         /// </summary>
-        [Obsolete("Please use InspectorDatabaseEditorMetadata instead")]
-        public class ItemMetadata {
-            public int CurrentIndex;
-        }
-
-        /// <summary>
-        /// The metadata we store on each item that we edit so that we know what the active editing
-        /// item is.
-        /// </summary>
-        public class InspectorDatabaseEditorMetadata : IGraphMetadataItem {
+        // TODO: make this persistent
+        public class InspectorDatabaseEditorMetadata : IGraphMetadataItemNotPersistent {
             public int CurrentIndex;
         }
     }

@@ -17,14 +17,15 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-using FullInspector.Internal;
-using FullSerializer.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using FullInspector.Internal;
+using FullSerializer.Internal;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace FullInspector {
     /// <summary>
@@ -86,18 +87,17 @@ namespace FullInspector {
             //
             // TODO: Can this support multi-object selection? Very, very dirty.
             if (typeof(Component).IsAssignableFrom(ReflectedType)) {
-#if UNITY_EDITOR
-                if (UnityEditor.Selection.activeGameObject != null) {
+                var activeGameObject = fiLateBindings.Selection.activeObject as GameObject;
+                if (activeGameObject != null) {
                     // Try to fetch an existing instance
-                    Component component = UnityEditor.Selection.activeGameObject.GetComponent(ReflectedType);
+                    Component component = activeGameObject.GetComponent(ReflectedType);
                     if (component != null) {
                         return component;
                     }
 
                     // Failed -- add a new instance
-                    return UnityEditor.Selection.activeGameObject.AddComponent(ReflectedType);
+                    return activeGameObject.AddComponent(ReflectedType);
                 }
-#endif
 
 #if !UNITY_EDITOR && (UNITY_WP8 || UNITY_METRO)
                 throw new InvalidOperationException("InspectedType.CreateInstance is not supported for " +
@@ -157,7 +157,7 @@ namespace FullInspector {
                 for (int i = 0; i < _allMembers.Count; ++i) {
                     var member = _allMembers[i];
 
-                    bool allow = false;
+                    bool allow;
                     if (member.IsProperty) allow = filter.IsInterested(member.Property);
                     else allow = filter.IsInterested(member.Method);
 
@@ -251,14 +251,16 @@ namespace FullInspector {
                     _allMembers.AddRange(inspectedParentType._allMembers);
                 }
 
-                // Add local properties. OrderBy, unlike Sort, is guaranteed to be stable.
-                var localMembers = CollectUnorderedLocalMembers(type).OrderBy(member =>
-                    InspectorOrderAttribute.GetInspectorOrder(member.MemberInfo)
-                );
+                // Add local properties.
+                var localMembers = CollectUnorderedLocalMembers(type).ToList();
+                StableSort(localMembers, (a, b) => {
+                    return Math.Sign(InspectorOrderAttribute.GetInspectorOrder(a.MemberInfo) - InspectorOrderAttribute.GetInspectorOrder(b.MemberInfo));
+                });
                 _allMembers.AddRange(localMembers);
 
                 // Add our property names in
                 _nameToProperty = new Dictionary<string, InspectedProperty>();
+                _formerlySerializedAsPropertyNames = new Dictionary<string, InspectedProperty>();
                 foreach (var member in _allMembers) {
                     if (member.IsProperty == false) continue;
 
@@ -268,14 +270,35 @@ namespace FullInspector {
                     }
 
                     _nameToProperty[member.Name] = member.Property;
+
+                    foreach (FormerlySerializedAsAttribute attr in
+                        member.MemberInfo.GetCustomAttributes(typeof(FormerlySerializedAsAttribute), /*inherit:*/ true)) {
+                        _nameToProperty[attr.oldName] = member.Property;
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Performs a stable sort on the list.
+        /// </summary>
+        public static void StableSort<T>(IList<T> list, Func<T, T, int> comparator) {
+            // insertion sort; see http://www.csharp411.com/c-stable-sort/
+            for (int j = 1; j < list.Count; ++j) {
+                T key = list[j];
+
+                int i = j - 1;
+                for (; i >= 0 && comparator(list[i], key) > 0; i--) {
+                    list[i + 1] = list[i];
+                }
+                list[i + 1] = key;
             }
         }
 
         private static List<InspectedMember> CollectUnorderedLocalMembers(Type reflectedType) {
             var members = new List<InspectedMember>();
 
-            foreach (MemberInfo member in reflectedType.GetDeclaredMembers()) { 
+            foreach (MemberInfo member in reflectedType.GetDeclaredMembers()) {
                 PropertyInfo property = member as PropertyInfo;
                 FieldInfo field = member as FieldInfo;
 
@@ -283,8 +306,8 @@ namespace FullInspector {
                 if (property != null) {
                     // If either the get or set methods are overridden, then the property is not
                     // considered local and will appear on a parent type.
-                    var getMethod = property.GetGetMethod(nonPublic: true);
-                    var setMethod = property.GetSetMethod(nonPublic: true);
+                    var getMethod = property.GetGetMethod(/*nonPublic:*/ true);
+                    var setMethod = property.GetSetMethod(/*nonPublic:*/ true);
                     if ((getMethod != null && getMethod != getMethod.GetBaseDefinition()) ||
                         (setMethod != null && setMethod != setMethod.GetBaseDefinition())) {
                         continue;
@@ -340,6 +363,38 @@ namespace FullInspector {
         /// </summary>
         private bool _isArray;
 
+        /// <summary>
+        /// The categories that are used for this type. If the type has no categories defined, then
+        /// this will be empty.
+        /// </summary>
+        public Dictionary<string, List<InspectedMember>> GetCategories(IInspectedMemberFilter filter) {
+            VerifyNotCollection();
+
+            Dictionary<string, List<InspectedMember>> categories;
+            if (_categoryCache.TryGetValue(filter, out categories) == false) {
+
+                // Not in the cache - actually compute the result.
+                // NOTE: we update the cache before actually doing the computation - if for whatever
+                //       reason there is an error, we will not redo this computation and just return
+                //       an empty result.
+                categories = new Dictionary<string, List<InspectedMember>>();
+                _categoryCache[filter] = categories;
+
+                foreach (var member in GetMembers(filter)) {
+                    foreach (InspectorCategoryAttribute attr in
+                        member.MemberInfo.GetCustomAttributes(typeof(InspectorCategoryAttribute), /*inherit:*/true)) {
+
+                        if (categories.ContainsKey(attr.Category) == false) {
+                            categories[attr.Category] = new List<InspectedMember>();
+                        }
+                        categories[attr.Category].Add(member);
+                    }
+                }
+            }
+
+            return categories;
+        }
+        private Dictionary<IInspectedMemberFilter, Dictionary<string, List<InspectedMember>>> _categoryCache = new Dictionary<IInspectedMemberFilter, Dictionary<string, List<InspectedMember>>>();
 
         private Dictionary<string, InspectedProperty> _nameToProperty;
 
@@ -355,6 +410,22 @@ namespace FullInspector {
 
             // no such member with the name
             if (_nameToProperty.TryGetValue(name, out property) == false) {
+                return null;
+            }
+
+            // we found a property!
+            return property;
+        }
+
+        private Dictionary<string, InspectedProperty> _formerlySerializedAsPropertyNames;
+
+        public InspectedProperty GetPropertyByFormerlySerializedName(string name) {
+            VerifyNotCollection();
+
+            InspectedProperty property;
+
+            // no such member with the name
+            if (_formerlySerializedAsPropertyNames.TryGetValue(name, out property) == false) {
                 return null;
             }
 

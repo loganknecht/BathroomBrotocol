@@ -66,7 +66,7 @@ namespace FullInspector {
                     ", InstanceType = " + InstanceType.CSharpName() + ")");
             }
 
-            Type defaultSerializer = fiSerializerProxy.DefaultMetadata.SerializerType;
+            Type defaultSerializer = fiInstalledSerializerManager.DefaultMetadata.SerializerType;
             var serializer = (BaseSerializer)fiSingletons.Get(defaultSerializer);
             var serializationOperator = new ListSerializationOperator() {
                 SerializedObjects = ObjectReferences
@@ -98,6 +98,28 @@ namespace FullInspector {
         /// <returns>The populated instance.</returns>
         public T ConstructInstance() {
             var obj = (T)Activator.CreateInstance(InstanceType);
+            PopulateInstance(ref obj);
+            return obj;
+        }
+
+        /// <summary>
+        /// Constructs a new instance (using either the default constructor or AddComponent) of the given
+        /// facade object.
+        /// </summary>
+        /// <param name="context">The GameObect to add the Component derived type to, if applicable.</param>
+        /// <remarks>This override is extremely useful if T is an interface type and you want to support MonoBehaviour derived
+        /// components but do not want to deal with the hassle of actually constructing said instance types.</remarks>
+        /// <returns>The populated instance.</returns>
+        public T ConstructInstance(GameObject context) {
+            T obj;
+
+            if (typeof(Component).IsAssignableFrom(InstanceType)) {
+                obj = (T)(object)context.AddComponent(InstanceType);
+            }
+            else {
+                obj = (T)Activator.CreateInstance(InstanceType);
+            }
+
             PopulateInstance(ref obj);
             return obj;
         }

@@ -16,7 +16,11 @@ namespace FullInspector {
         /// A simple type is a type that is either primitive, a string, or a non-generic
         /// non-abstract class composed of other simple types.
         /// </summary>
-        private static bool IsSimpleType(Type type) {
+        private static bool IsSimpleTypeThatUnityCanSerialize(Type type) {
+            if (IsPrimitiveSkippedByUnity(type)) {
+                return false;
+            }
+
             if (type.Resolve().IsPrimitive) {
                 return true;
             }
@@ -56,6 +60,17 @@ namespace FullInspector {
         }
 
         /// <summary>
+        /// Returns true if the primitive is *not* serialized by Unity
+        /// </summary>
+        private static bool IsPrimitiveSkippedByUnity(Type type) {
+            return
+                type == typeof(ushort) ||
+                type == typeof(uint) ||
+                type == typeof(ulong) ||
+                type == typeof(sbyte);
+        }
+
+        /// <summary>
         /// Returns true if the given type can be serialized by Unity. This function is conservative
         /// and may not return true if the type can be serialized by unity. However, it will *not*
         /// return true if the type cannot be serialized by unity.
@@ -80,7 +95,7 @@ namespace FullInspector {
             // If the attribute is not public and doesn't have a [SerializeField] attribute, then
             // Unity will not serialize it, regardless of type.
             if (property.IsPublic == false &&
-                property.MemberInfo.IsDefined(typeof(SerializeField), inherit: true) == false) {
+                property.MemberInfo.IsDefined(typeof(SerializeField), /*inherit:*/ true) == false) {
                 return false;
             }
 
@@ -88,19 +103,19 @@ namespace FullInspector {
 
             return
                 // Basic primitive types
-                IsSimpleType(type) ||
+                IsSimpleTypeThatUnityCanSerialize(type) ||
 
                 // A non-generic UnityObject derived type
                 (typeof(UnityObject).IsAssignableFrom(type) && type.Resolve().IsGenericType == false) ||
 
                 // Array (but not a multidimensional one)
-                (type.IsArray && type.GetElementType().IsArray == false && IsSimpleType(type.GetElementType())) ||
+                (type.IsArray && type.GetElementType().IsArray == false && IsSimpleTypeThatUnityCanSerialize(type.GetElementType())) ||
 
                 // Lists of already serializable types
                 (
                     type.Resolve().IsGenericType &&
                     type.GetGenericTypeDefinition() == typeof(List<>) &&
-                    IsSimpleType(type.GetGenericArguments()[0])
+                    IsSimpleTypeThatUnityCanSerialize(type.GetGenericArguments()[0])
                 );
         }
 
@@ -116,13 +131,13 @@ namespace FullInspector {
             }
 
             // if it has NonSerialized, then we *don't* serialize it
-            if (member.GetAttribute<NonSerializedAttribute>() != null ||
-                member.GetAttribute<NotSerializedAttribute>() != null) {
+            if (fsPortableReflection.HasAttribute<NonSerializedAttribute>(member) ||
+                fsPortableReflection.HasAttribute<NotSerializedAttribute>(member)) {
                 return false;
             }
 
             // Don't serialize it if it has one of the custom opt-out annotations either
-            var optOut = fiSerializerProxy.SerializationOptOutAnnotations;
+            var optOut = fiInstalledSerializerManager.SerializationOptOutAnnotations;
             for (int i = 0; i < optOut.Length; ++i) {
                 if (member.IsDefined(optOut[i], true)) {
                     return false;
@@ -130,20 +145,31 @@ namespace FullInspector {
             }
 
             // if we have a [SerializeField] or [Serializable] attribute, then we *do* serialize
-            if (member.GetAttribute<SerializeField>() != null ||
-                member.GetAttribute<SerializableAttribute>() != null) {
+            if (fsPortableReflection.HasAttribute<SerializeField>(member) ||
+                fsPortableReflection.HasAttribute<SerializableAttribute>(member)) {
                 return true;
             }
 
             // Serialize if we have a custom opt-in annotation
-            var optIn = fiSerializerProxy.SerializationOptInAnnotations;
+            var optIn = fiInstalledSerializerManager.SerializationOptInAnnotations;
             for (int i = 0; i < optIn.Length; ++i) {
-                if (member.IsDefined(optIn[i], inherit: true)) {
+                if (member.IsDefined(optIn[i], /*inherit:*/ true)) {
                     return true;
                 }
             }
 
-            // otherwise we serialize by default only if it's public
+            if (property.MemberInfo is PropertyInfo) {
+                // perf: property.IsAutoProperty is lazily computed, so if we have SerializeAutoProperties set
+                //       to false we can avoid computing any auto-property checks by putting the
+                //       SerializeAutoProperties check before the IsAutoProperty check
+
+                // If we're not serializing auto-properties, then we will not serialize any properties by default
+                if (fiSettings.SerializeAutoProperties == false) return false;
+
+                // If it's not an auto property, then we are not going to serialize it by default
+                if (property.IsAutoProperty == false) return false;
+            }
+
             return property.IsPublic;
         }
     }

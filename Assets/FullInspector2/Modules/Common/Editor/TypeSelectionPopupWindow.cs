@@ -29,7 +29,7 @@ namespace FullInspector.Modules.Common {
         static TypeSelectionPopupWindow() {
             _allTypesWithStatics = new List<Type>();
 
-            foreach (Assembly assembly in fiEditorReflectionUtility.GetEditorAssemblies()) {
+            foreach (Assembly assembly in fiRuntimeReflectionUtility.GetUserDefinedEditorAssemblies()) {
                 foreach (Type type in assembly.GetTypes()) {
                     var inspected = InspectedType.Get(type);
                     if (inspected.IsCollection == false &&
@@ -64,7 +64,7 @@ namespace FullInspector.Modules.Common {
             GUILayout.BeginHorizontal();
             _customTypeName = EditorGUILayout.TextField("Qualified Type Name", _customTypeName, GUILayout.ExpandWidth(true));
 
-            Type foundType = TypeCache.FindType(_customTypeName, null, /*willThrow:*/false);
+            Type foundType = TypeCache.FindType(_customTypeName);
 
             GUILayout.BeginVertical(GUILayout.Width(100));
             EditorGUI.BeginDisabledGroup(foundType == null);

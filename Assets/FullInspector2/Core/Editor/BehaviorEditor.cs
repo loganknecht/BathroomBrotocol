@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FullSerializer.Internal;
 
 namespace FullInspector {
 
@@ -22,14 +23,13 @@ namespace FullInspector {
             // fetch all CustomPropertyEditorAttribute types
             _editorTypes = new List<Type>();
             foreach (var editorType in
-                from assembly in fiEditorReflectionUtility.GetEditorAssemblies()
+                from assembly in fiRuntimeReflectionUtility.GetUserDefinedEditorAssemblies()
                 from type in assembly.GetTypes()
 
                 where type.IsAbstract == false
                 where type.IsInterface == false
 
-                let attribute = type.GetAttribute<CustomBehaviorEditorAttribute>()
-                where attribute != null
+                where fsPortableReflection.HasAttribute<CustomBehaviorEditorAttribute>(type)
 
                 select type) {
 
@@ -45,8 +45,8 @@ namespace FullInspector {
         /// </summary>
         private static void SortByPropertyTypeRelevance(List<IBehaviorEditor> editors) {
             editors.Sort((a, b) => {
-                Type targetA = a.GetType().GetAttribute<CustomBehaviorEditorAttribute>().BehaviorType;
-                Type targetB = b.GetType().GetAttribute<CustomBehaviorEditorAttribute>().BehaviorType;
+                Type targetA = fsPortableReflection.GetAttribute<CustomBehaviorEditorAttribute>(a.GetType()).BehaviorType;
+                Type targetB = fsPortableReflection.GetAttribute<CustomBehaviorEditorAttribute>(b.GetType()).BehaviorType;
 
                 if (targetA.HasParent(targetB)) {
                     return -1;

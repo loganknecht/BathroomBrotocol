@@ -20,7 +20,7 @@ namespace FullInspector.Internal {
             set;
         }
 
-        public bool CanIndentLabelForDropdown {
+        public bool DisplaysStandardLabel {
             get { return true; }
         }
 
@@ -36,7 +36,7 @@ namespace FullInspector.Internal {
         }
 
         public object Edit(Rect region, GUIContent label, object element, fiGraphMetadata metadata) {
-            metadata.Enter("AbstractTypeEditor").Metadata.GetMetadata<DropdownMetadata>().OverrideDisable = true;
+            metadata.Enter("AbstractTypeEditor").Metadata.GetPersistentMetadata<fiDropdownMetadata>().ForceDisable();
 
             try {
                 fiEditorGUI.AnimatedBegin(ref region, metadata);
@@ -68,23 +68,10 @@ namespace FullInspector.Internal {
                     return null;
                 }
 
-                // draw the comment
-                // TODO: move this into ReflectedPropertyEditor, draw the comment above the type
-                {
-                    string comment = _options.GetComment(element);
-                    if (string.IsNullOrEmpty(comment) == false) {
-                        Rect commentRegion = CommentUtils.GetCommentRect(comment, region);
-                        region.y += commentRegion.height;
-                        region.height += commentRegion.height;
-
-                        EditorGUI.HelpBox(commentRegion, comment, MessageType.None);
-                    }
-                }
-
                 // draw the instance specific property editor
                 {
                     Rect selectedRegion = new Rect(region);
-                    selectedRegion = RectTools.IndentedRect(selectedRegion);
+                    selectedRegion = fiRectUtility.IndentedRect(selectedRegion);
                     region.y += selectedRegion.height;
                     region.height -= selectedRegion.height;
 
@@ -103,12 +90,7 @@ namespace FullInspector.Internal {
         public float GetElementHeight(GUIContent label, object element, fiGraphMetadata metadata) {
             float height = EditorStyles.popup.CalcHeight(label, 100);
 
-            string comment = _options.GetComment(element);
-            if (string.IsNullOrEmpty(comment) == false) {
-                height += CommentUtils.GetCommentHeight(comment);
-            }
-
-            height += RectTools.IndentVertical;
+            height += fiRectUtility.IndentVertical;
 
             if (element != null) {
                 PropertyEditorChain chain = PropertyEditor.Get(element.GetType(), null);
@@ -124,7 +106,7 @@ namespace FullInspector.Internal {
         }
 
         public GUIContent GetFoldoutHeader(GUIContent label, object element) {
-            return new GUIContent(label.text + " (" + fiReflectionUtilitity.GetObjectTypeNameSafe(element) + ")");
+            return new GUIContent(label.text + " (" + fiReflectionUtility.GetObjectTypeNameSafe(element) + ")");
         }
 
         public bool CanEdit(Type dataType) {
@@ -133,7 +115,7 @@ namespace FullInspector.Internal {
 
         public static IPropertyEditor TryCreate(Type dataType) {
             if (dataType.IsAbstract || dataType.IsInterface ||
-                fiReflectionUtilitity.GetCreatableTypesDeriving(dataType).Count() > 1) {
+                fiReflectionUtility.GetCreatableTypesDeriving(dataType).Count() > 1) {
 
                 return new AbstractTypePropertyEditor(dataType);
             }

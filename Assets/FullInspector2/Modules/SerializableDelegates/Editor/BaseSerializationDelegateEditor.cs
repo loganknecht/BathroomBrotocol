@@ -45,8 +45,8 @@ namespace FullInspector.Modules.SerializableDelegates {
             popupRect = region;
             popupRect.y += objectRect.height + DividerHeight;
             popupRect.height = EditorStyles.popup.CalcHeight(GUIContent.none, 100);
-            popupRect.x += 15;
-            popupRect.width -= 15;
+            popupRect.x += fiRectUtility.IndentHorizontal;
+            popupRect.width -= fiRectUtility.IndentHorizontal;
         }
 
         /// <summary>

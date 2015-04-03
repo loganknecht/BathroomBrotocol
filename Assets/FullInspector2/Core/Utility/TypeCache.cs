@@ -25,6 +25,7 @@ namespace FullInspector.Internal {
     /// <summary>
     /// Caches type name to type lookups. Type lookups occur in all loaded assemblies.
     /// </summary>
+    // TODO: move this into fsTypeLookup - we are currently duplicating the cache
     public static class TypeCache {
         /// <summary>
         /// Cache from fully qualified type name to type instances.
@@ -86,7 +87,7 @@ namespace FullInspector.Internal {
             if (assemblyName != null) {
                 Assembly assembly;
                 if (_assembliesByName.TryGetValue(assemblyName, out assembly)) {
-                    type = assembly.GetType(typeName, throwOnError: false);
+                    type = assembly.GetType(typeName, /*throwOnError:*/ false);
                     return type != null;
                 }
             }
@@ -143,13 +144,22 @@ namespace FullInspector.Internal {
 
         /// <summary>
         /// Find a type with the given name. An exception is thrown if no type with the given name
-        /// can be found. This method searches all currently loaded assemblies for the given type.
+        /// can be found. This method searches all currently loaded assemblies for the given type. If the type cannot
+        /// be found, then null will be returned.
         /// </summary>
         /// <param name="name">The fully qualified name of the type.</param>
-        /// <param name="assemblyHint">A hint for the assembly to start the search with</param>
-        /// <param name="willThrow">Will an exception be thrown if the type could not be found? If
-        /// this is false, then null will be returned if the type was not located.</param>
-        public static Type FindType(string name, string assemblyHint = null, bool willThrow = true) {
+        public static Type FindType(string name) {
+            return FindType(name, null);
+        }
+
+        /// <summary>
+        /// Find a type with the given name. An exception is thrown if no type with the given name
+        /// can be found. This method searches all currently loaded assemblies for the given type. If the type cannot
+        /// be found, then null will be returned.
+        /// </summary>
+        /// <param name="name">The fully qualified name of the type.</param>
+        /// <param name="assemblyHint">A hint for the assembly to start the search with. Use null if unknown.</param>
+        public static Type FindType(string name, string assemblyHint) {
             if (string.IsNullOrEmpty(name)) {
                 return null;
             }
@@ -159,11 +169,6 @@ namespace FullInspector.Internal {
                 // if both the direct and indirect type lookups fail, then throw an exception
                 if (TryDirectTypeLookup(assemblyHint, name, out type) == false &&
                     TryIndirectTypeLookup(name, out type) == false) {
-
-                    if (willThrow) {
-                        throw new InvalidOperationException(
-                            "Cannot locate type = {0}, {1}".F(name, assemblyHint));
-                    }
                 }
 
                 _cachedTypes[name] = type;

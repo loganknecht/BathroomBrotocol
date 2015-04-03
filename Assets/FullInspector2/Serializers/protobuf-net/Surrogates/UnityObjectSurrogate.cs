@@ -20,7 +20,7 @@ namespace FullInspector.Serializers.ProtoBufNet {
         public int StorageId;
 
         // The code below is how serialization really should happen, but this doesn't work. I have
-        // no idea why -- if you know why, please submit a bug report!
+        // no idea why -- if you know why, please submit an issue report!
         /*
         public UnityObject Reference;
 

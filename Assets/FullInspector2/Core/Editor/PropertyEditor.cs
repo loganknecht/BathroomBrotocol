@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using FullSerializer.Internal;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
@@ -54,14 +55,13 @@ namespace FullInspector {
             // fetch all CustomPropertyEditorAttribute types
             _editorTypes = new List<Type>();
             foreach (var editorType in
-                from assembly in fiEditorReflectionUtility.GetEditorAssemblies()
+                from assembly in fiRuntimeReflectionUtility.GetUserDefinedEditorAssemblies()
                 from type in assembly.GetTypes()
 
                 where type.IsAbstract == false
                 where type.IsInterface == false
 
-                let attribute = type.GetAttribute<CustomPropertyEditorAttribute>()
-                where attribute != null
+                where fsPortableReflection.HasAttribute<CustomPropertyEditorAttribute>(type)
 
                 select type) {
 
@@ -72,10 +72,10 @@ namespace FullInspector {
                     continue;
                 }
 
-                var attr = editorType.GetAttribute<CustomPropertyEditorAttribute>();
+                var attr = fsPortableReflection.GetAttribute<CustomPropertyEditorAttribute>(editorType);
                 if (typeof(UnityObject).IsAssignableFrom(attr.PropertyType) &&
                     attr.DisableErrorOnUnityObject == false) {
-                    
+
                     Debug.LogError("Please use BehaviorEditor (not ProperytEditor) for " + attr.PropertyType + " on editor " + editorType);
                     continue;
                 }
@@ -92,8 +92,8 @@ namespace FullInspector {
         /// </summary>
         private static void SortByPropertyTypeRelevance(List<IPropertyEditor> editors) {
             editors.Sort((a, b) => {
-                Type targetA = a.GetType().GetAttribute<CustomPropertyEditorAttribute>().PropertyType;
-                Type targetB = b.GetType().GetAttribute<CustomPropertyEditorAttribute>().PropertyType;
+                Type targetA = fsPortableReflection.GetAttribute<CustomPropertyEditorAttribute>(a.GetType()).PropertyType;
+                Type targetB = fsPortableReflection.GetAttribute<CustomPropertyEditorAttribute>(b.GetType()).PropertyType;
 
                 if (targetA.HasParent(targetB)) {
                     return -1;
@@ -107,7 +107,7 @@ namespace FullInspector {
         /// Returns a set of property editors that can be used to edit the given property type.
         /// </summary>
         private static PropertyEditorChain GetCachedEditors(Type propertyType, ICustomAttributeProvider attributes) {
-            var cachedType = new CachedType() {
+            var cachedType = new CachedType {
                 EditedType = propertyType,
                 EditedAttributes = attributes
             };
@@ -125,10 +125,14 @@ namespace FullInspector {
                 // arrays always need special handling; we don't support overriding them
                 if ((editor = ArrayPropertyEditor.TryCreate(propertyType, attributes)) != null) chain.AddEditor(editor);
 
+                // support layout editors above custom editors
+                // notably this enables the layout editor to be the highest-priority, ie, above inherited editors
+                if ((editor = tkControlPropertyEditor.TryCreate(propertyType, attributes)) != null) chain.AddEditor(editor);
+
                 // user-defined property editors
                 var added = new List<IPropertyEditor>();
                 foreach (Type editorType in _editorTypes) {
-                    editor = PropertyEditorTools.TryCreateEditor(propertyType, editorType, attributes);
+                    editor = PropertyEditorTools.TryCreateEditor(propertyType, editorType, attributes, false);
                     if (editor != null) {
                         added.Add(editor);
                     }
@@ -136,18 +140,22 @@ namespace FullInspector {
                 SortByPropertyTypeRelevance(added);
                 foreach (IPropertyEditor toAdd in added) chain.AddEditor(toAdd);
 
+                // no user-defined editors so let's try to see if we can integrate a PropertyDrawer
+                if (added.Count == 0)
+                    if ((editor = fiGenericPropertyDrawerPropertyEditorManager.TryCreate(propertyType)) != null) chain.AddEditor(editor);
+
                 // enums come after generic & inherited to allow them to be overridden
                 if ((editor = EnumPropertyEditor.TryCreate(propertyType)) != null) chain.AddEditor(editor);
 
                 // try and create an editor for nullable types
-                if ((editor = NullablePropertyEditor.TryCreate(propertyType)) != null) chain.AddEditor(editor);
+                if ((editor = NullablePropertyEditor.TryCreate(propertyType, attributes)) != null) chain.AddEditor(editor);
 
                 // try and create an editor for abstract/interface type
                 if ((editor = AbstractTypePropertyEditor.TryCreate(propertyType)) != null) chain.AddEditor(editor);
 
                 // try and create a reflected editor; will only fail for arrays or collections,
                 // which should be covered by the array editor
-                if ((editor = ReflectedPropertyEditor.TryCreate(propertyType)) != null) chain.AddEditor(editor);
+                if ((editor = ReflectedPropertyEditor.TryCreate(propertyType, attributes)) != null) chain.AddEditor(editor);
             }
 
             return chain;

@@ -101,28 +101,31 @@ namespace FullInspector.Serializers.ProtoBufNet {
                 WorkingDirectory = Directory.GetCurrentDirectory()
             };
 
-#if UNITY_EDITOR
-#if UNITY_EDITOR_WIN
-            // windows platform
-            startInfo.FileName = decompilerPath;
-            startInfo.Arguments = args;
-#elif UNITY_EDITOR_OSX
-            // osx platform
-            // On OSX, we need to invoke the decompiler using mono, not just as a raw executable
-            startInfo.FileName = "mono";
-            startInfo.Arguments = decompilerPath + " " + args;
-#else
-#error Unknown editor platform
-#endif
-#endif
+            if (Application.platform == RuntimePlatform.WindowsEditor) {
+                // windows platform
+                startInfo.FileName = decompilerPath;
+                startInfo.Arguments = args;
+            }
+            else if (Application.platform == RuntimePlatform.OSXEditor) {
+                // osx platform
+                // On OSX, we need to invoke the decompiler using mono, not just as a raw executable
+                startInfo.FileName = "mono";
+                startInfo.Arguments = decompilerPath + " " + args;
+            }
+            else {
+                Debug.LogError("Unknown platform to run decompiler on");
+            }
+
             try {
                 _decompilationProcess = Process.Start(startInfo);
             }
             catch (Exception e) {
                 string msg = "Failed to start decompilation process.";
-#if UNITY_EDITOR_OSX
-                msg += " Is mono installed and available from the command line?";
-#endif
+
+                if (Application.platform == RuntimePlatform.OSXEditor) {
+                    msg += " Is mono installed and available from the command line?";
+                }
+
                 Debug.Log(msg + " Exception is:\n" + e);
             }
 

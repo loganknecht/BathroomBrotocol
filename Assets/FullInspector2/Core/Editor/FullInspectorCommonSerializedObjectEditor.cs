@@ -1,10 +1,7 @@
-﻿using FullInspector.BackupService;
+﻿using System.Collections.Generic;
+using FullInspector.BackupService;
 using FullInspector.Internal;
-using FullInspector.Modules.Collections;
-using FullInspector.Modules.Common;
 using FullInspector.Rotorz.ReorderableList;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
@@ -27,31 +24,32 @@ namespace FullInspector {
         /// </summary>
         private static bool _editorShowSerializedState;
 
-        [MenuItem("Window/Full Inspector/Show Serialized State")]
+        [MenuItem("Window/Full Inspector/Show Serialized State &d", false, 0)]
         protected static void ViewSerializedState() {
             _editorShowSerializedState = !_editorShowSerializedState;
+            fiEditorUtility.RepaintAllEditors();
         }
 
         private static fiGraphMetadata SerializedStateMetadata = new fiGraphMetadata();
 
         private static void DrawSerializedState(ISerializedObject behavior) {
             if (_editorShowSerializedState) {
-                var flags = ReorderableListFlags.HideAddButton;
+                var flags = ReorderableListFlags.HideAddButton | ReorderableListFlags.DisableReordering;
 
                 EditorGUILayout.HelpBox("The following is raw serialization data. Only change it " +
                     "if you know what you're doing or you could corrupt your object!",
                     MessageType.Warning);
 
                 ReorderableListGUI.Title("Serialized Keys");
-                ReorderableListGUI.ListField(new GenericListAdaptorWithDynamicHeight<string>(
+                ReorderableListGUI.ListField(new ListAdaptor<string>(
                     behavior.SerializedStateKeys, DrawItem, GetItemHeight, SerializedStateMetadata), flags);
 
                 ReorderableListGUI.Title("Serialized Values");
-                ReorderableListGUI.ListField(new GenericListAdaptorWithDynamicHeight<string>(
+                ReorderableListGUI.ListField(new ListAdaptor<string>(
                     behavior.SerializedStateValues, DrawItem, GetItemHeight, SerializedStateMetadata), flags);
 
                 ReorderableListGUI.Title("Serialized Object References");
-                ReorderableListGUI.ListField(new GenericListAdaptorWithDynamicHeight<UnityObject>(
+                ReorderableListGUI.ListField(new ListAdaptor<UnityObject>(
                     behavior.SerializedObjectReferences, DrawItem, GetItemHeight, SerializedStateMetadata), flags);
             }
         }
@@ -91,9 +89,9 @@ namespace FullInspector {
 
                 EditorGUILayout.Space();
 
-                float marginVertical = 5f;
-                float marginHorizontalRight = 13f;
-                float marginHorizontalLeft = 2f;
+                const float marginVertical = 5f;
+                const float marginHorizontalRight = 13f;
+                const float marginHorizontalLeft = 2f;
 
                 Rect boxed = EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(true));
                 GUILayout.Space(marginHorizontalRight);
@@ -135,7 +133,7 @@ namespace FullInspector {
                 Rect rect = EditorGUILayout.GetControlRect(false, EditorStyles.objectField.CalcHeight(label, 100));
 
                 float labelWidth = EditorGUIUtility.labelWidth;
-                EditorGUIUtility.labelWidth = fiEditorUtility.GetLabelWidth(rect.width);
+                EditorGUIUtility.labelWidth = fiUtility.GetLabelWidth(rect.width);
 
                 EditorGUI.ObjectField(rect, label, monoScript, typeof(MonoScript), false);
 
@@ -159,22 +157,13 @@ namespace FullInspector {
                 if (EditorGUI.EndChangeCheck()) {
                     EditorUtility.SetDirty(target);
                     inspectedObject.RestoreState();
-
-                    ObjectModificationDetector.Update(inspectedObject);
                 }
             }
         }
 
         public override void OnInspectorGUI() {
-            fiEditorUtility.Repaint = false;
-
             ShowBackupButton(target);
             ShowInspectorForSerializedObject(target);
-
-            if (fiEditorUtility.Repaint) {
-                Repaint();
-                fiEditorUtility.Repaint = false;
-            }
         }
 
         public override bool HasPreviewGUI() {

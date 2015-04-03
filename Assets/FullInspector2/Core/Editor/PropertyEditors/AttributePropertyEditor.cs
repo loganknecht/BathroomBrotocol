@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using FullSerializer.Internal;
 using UnityEngine;
 
 namespace FullInspector.Internal {
@@ -18,7 +19,7 @@ namespace FullInspector.Internal {
         /// </summary>
         private static Dictionary<Type, bool> _attributeReplaceMappings = new Dictionary<Type, bool>();
 
-        public bool CanIndentLabelForDropdown {
+        public bool DisplaysStandardLabel {
             get { return true; }
         }
 
@@ -28,14 +29,13 @@ namespace FullInspector.Internal {
             _attributeReplaceMappings = new Dictionary<Type, bool>();
 
             foreach (Type attributeHolder in
-                from assembly in fiEditorReflectionUtility.GetEditorAssemblies()
+                from assembly in fiRuntimeReflectionUtility.GetUserDefinedEditorAssemblies()
                 from type in assembly.GetTypes()
 
                 where type.IsAbstract == false
                 where type.IsInterface == false
 
-                let attribute = type.GetAttribute<CustomAttributePropertyEditorAttribute>()
-                where attribute != null
+                where fsPortableReflection.HasAttribute<CustomAttributePropertyEditorAttribute>(type)
 
                 select type) {
 
@@ -46,7 +46,7 @@ namespace FullInspector.Internal {
                     continue;
                 }
 
-                var attribute = attributeHolder.GetAttribute<CustomAttributePropertyEditorAttribute>();
+                var attribute = fsPortableReflection.GetAttribute<CustomAttributePropertyEditorAttribute>(attributeHolder);
 
                 _attributeEditorMappings[attribute.AttributeActivator] = attributeHolder;
                 _attributeReplaceMappings[attribute.AttributeActivator] = attribute.ReplaceOthers;
@@ -90,15 +90,15 @@ namespace FullInspector.Internal {
 
         private void DisableFoldouts(fiGraphMetadata metadata) {
             if (_showTopLevelFoldout == false) {
-                metadata.GetMetadata<DropdownMetadata>().OverrideDisable = true;
+                metadata.GetPersistentMetadata<fiDropdownMetadata>().ForceDisable();
             }
 
             for (int i = 0; i < _editors.Count; ++i) {
-                metadata.Enter(i).Metadata.GetMetadata<DropdownMetadata>().OverrideDisable = true;
+                metadata.Enter(i).Metadata.GetPersistentMetadata<fiDropdownMetadata>().ForceDisable();
             }
 
             if (_showPrimary) {
-                metadata.Enter("Primary").Metadata.GetMetadata<DropdownMetadata>().OverrideDisable = true;
+                metadata.Enter("Primary").Metadata.GetPersistentMetadata<fiDropdownMetadata>().ForceDisable();
             }
         }
 
@@ -106,8 +106,8 @@ namespace FullInspector.Internal {
             DisableFoldouts(metadata);
 
             if (_indent) {
-                region.x += RectTools.IndentHorizontal;
-                region.width -= RectTools.IndentHorizontal;
+                region.x += fiRectUtility.IndentHorizontal;
+                region.width -= fiRectUtility.IndentHorizontal;
             }
 
             var heights = new List<float>(_editors.Count);
@@ -163,7 +163,7 @@ namespace FullInspector.Internal {
             bool indent = false;
 
             foreach (object attribute in
-                editedAttributes.GetCustomAttributes(inherit: true)) {
+                editedAttributes.GetCustomAttributes(/*inherit:*/ true)) {
 
                 if (attribute is InspectorIndentAttribute) {
                     indent = true;
@@ -172,7 +172,7 @@ namespace FullInspector.Internal {
 
                 if (_attributeEditorMappings.ContainsKey(attribute.GetType())) {
                     Type editorType = _attributeEditorMappings[attribute.GetType()];
-                    IPropertyEditor editor = PropertyEditorTools.TryCreateEditor(editedType, editorType, editedAttributes);
+                    IPropertyEditor editor = PropertyEditorTools.TryCreateEditor(editedType, editorType, editedAttributes, /*forceInherit:*/ true);
                     if (editor == null) {
                         Debug.LogWarning(string.Format("Failed to create attribute property " +
                             "editor {0} for {1}", editedAttributes, editorType));

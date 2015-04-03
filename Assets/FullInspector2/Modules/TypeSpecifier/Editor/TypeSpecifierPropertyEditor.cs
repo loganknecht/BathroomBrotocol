@@ -18,7 +18,7 @@ namespace FullInspector.Modules.TypeSpecifierImpl {
             dropdownTypes.Add(null);
             dropdownLabels.Add(new GUIContent("<no type>"));
 
-            var types = fiReflectionUtilitity.GetCreatableTypesDeriving(typeof(TType)).ToList();
+            var types = fiReflectionUtility.GetCreatableTypesDeriving(typeof(TType)).ToList();
             dropdownTypes.AddRange(types);
             dropdownLabels.AddRange(types.Select(t => new GUIContent(t.CSharpName())));
 

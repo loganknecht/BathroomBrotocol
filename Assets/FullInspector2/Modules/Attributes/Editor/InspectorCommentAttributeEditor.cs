@@ -12,24 +12,17 @@ namespace FullInspector.Modules.Attributes {
         }
 
         protected override T Edit(Rect region, GUIContent label, T element, InspectorCommentAttribute attribute, fiGraphMetadata metadata) {
-            region.height = GetRawCommentHeight(attribute);
+            region.height = GetCommentHeight(attribute);
             EditorGUI.HelpBox(region, attribute.Comment, MapCommentType(attribute.Type));
             return element;
         }
 
-        private float GetRawCommentHeight(InspectorCommentAttribute attribute) {
-            float height = CommentUtils.GetCommentHeight(attribute.Comment);
-
-            float minImageHeight = 40;
-            if (attribute.Type != CommentType.None && height < minImageHeight) {
-                height = minImageHeight;
-            }
-
-            return height;
+        private float GetCommentHeight(InspectorCommentAttribute attribute) {
+            return fiCommentUtility.GetCommentHeight(attribute.Comment, attribute.Type);
         }
 
         protected override float GetElementHeight(GUIContent label, T element, InspectorCommentAttribute attribute, fiGraphMetadata metadata) {
-            return GetRawCommentHeight(attribute) + Margin;
+            return GetCommentHeight(attribute) + Margin;
         }
     }
 }

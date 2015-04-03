@@ -1,7 +1,6 @@
 ﻿using FullInspector.Internal;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
 namespace FullInspector {
@@ -17,7 +16,13 @@ namespace FullInspector {
     /// <summary>
     /// An item that can be used as metadata inside of the graph metadata engine.
     /// </summary>
-    public interface IGraphMetadataItem {
+    public interface IGraphMetadataItemNotPersistent { }
+    public interface IGraphMetadataItemPersistent {
+        /// <summary>
+        /// Should this metadata item be serialized? If it is in the default state, then there
+        /// is no need to serialize it as it can just be recreated next time.
+        /// </summary>
+        bool ShouldSerialize();
     }
 
     /// <summary>
@@ -27,121 +32,64 @@ namespace FullInspector {
     /// child metadata items.
     /// </summary>
     public class fiGraphMetadata {
+        #region Serialization
         /// <summary>
-        /// A cullable dictionary is like a normal dictionary except that items inside of it can
-        /// be removed if they are not used after a cull cycle.
+        /// Returns true if the metadata should be reserialized. Because metadata restoration is lazy, we
+        /// only want to reserialize metadata if we have restored the actual metadata structure. Otherwise,
+        /// if we serialize before restoring we will lose all of the persistent metadata.
         /// </summary>
-        private class CullableDictionary<TKey, TValue, TDictionary>
-            where TDictionary : IDictionary<TKey, TValue>, new() {
+        public bool ShouldSerialize() {
+            // we can check to see if we restored by checking if we have any children
+            return
+                _childrenInt.IsEmpty == false ||
+                _childrenString.IsEmpty == false;
+        }
 
-            /// <summary>
-            /// Items that have been used and will therefore *not* be culled.
-            /// </summary>
-            [SerializeField]
-            private TDictionary _primary;
+        public void Serialize<TPersistentData>(out string[] keys_, out TPersistentData[] values_)
+            where TPersistentData : IGraphMetadataItemPersistent {
 
-            /// <summary>
-            /// The items that we will cull if EndCullZone is called.
-            /// </summary>
-            [SerializeField]
-            private TDictionary _culled;
+            var keys = new List<string>();
+            var values = new List<TPersistentData>();
 
-            /// <summary>
-            /// Are we currently culling data?
-            /// </summary>
-            [SerializeField]
-            private bool _isCulling;
+            AddSerializeData(keys, values);
 
-            public CullableDictionary() {
-                _primary = new TDictionary();
-                _culled = new TDictionary();
-            }
+            keys_ = keys.ToArray();
+            values_ = values.ToArray();
+        }
+        private void AddSerializeData<TPersistentData>(List<string> keys, List<TPersistentData> values)
+            where TPersistentData : IGraphMetadataItemPersistent {
 
-            public TValue this[TKey key] {
-                get {
-                    TValue value;
-                    if (TryGetValue(key, out value) == false) {
-                        throw new KeyNotFoundException("" + key);
-                    }
-                    return value;
-                }
-                set {
-                    _culled.Remove(key);
-                    _primary[key] = value;
-                }
-            }
-
-            /// <summary>
-            /// Add an item to the dictionary.
-            /// </summary>
-            public void Add(TKey key, TValue value) {
-                _primary.Add(key, value);
-            }
-
-            /// <summary>
-            /// Attempts to fetch a value for the given key. If a value is found, then it will
-            /// not be culled on the next cull-cycle.
-            /// </summary>
-            public bool TryGetValue(TKey key, out TValue value) {
-                if (_culled.TryGetValue(key, out value)) {
-
-                    // If we access the value in the culled set, then we want to make sure to move
-                    // it into the primary set so we don't cull it.
-                    _culled.Remove(key);
-                    _primary.Add(key, value);
-
-                    return true;
-                }
-
-                return _primary.TryGetValue(key, out value);
-            }
-
-            /// <summary>
-            /// Begin a call zone. This is fine to call multiple times.
-            /// </summary>
-            public void BeginCullZone() {
-                if (_isCulling == false) {
-                    fiUtility.Swap(ref _primary, ref _culled);
-                    _isCulling = true;
-                }
-            }
-
-            /// <summary>
-            /// Clears out all unused items. This method is harmless if called outside of
-            /// BeginCullZone().
-            /// </summary>
-            public void EndCullZone() {
-                if (_isCulling) _isCulling = false;
-
-                if (fiSettings.EmitGraphMetadataCulls) {
-                    // sigh: Only run the foreach loop if we actually have content to emit,
-                    // otherwise we will allocate an iterator needlessly.
-                    if (_culled.Count > 0) {
-                        foreach (var item in _culled) {
-                            Debug.Log("fiGraphMetadata culling \"" + item.Key + "\"");
-                        }
+            foreach (var item in _metadata.Items) {
+                if (item.Key == typeof(TPersistentData)) {
+                    if (((IGraphMetadataItemPersistent)item.Value).ShouldSerialize()) {
+                        keys.Add(_accessPath);
+                        values.Add((TPersistentData)item.Value);
                     }
                 }
-                _culled.Clear();
+            }
+
+            foreach (var item in _childrenInt.Items) {
+                item.Value.AddSerializeData(keys, values);
+            }
+            foreach (var item in _childrenString.Items) {
+                item.Value.AddSerializeData(keys, values);
             }
         }
 
-        #region Global Graph Access
-#if UNITY_EDITOR
-        /// <summary>
-        /// Returns the graph metadata for the given UnityObject target.
-        /// </summary>
-        public static fiGraphMetadata GetGlobal(UnityObject obj) {
-            fiGraphMetadata metadata;
+        private Dictionary<string, List<object>> _precomputedData;
+        public void Deserialize<TPersistentData>(string[] keys, TPersistentData[] values) {
+            for (int i = 0; i < keys.Length; ++i) {
+                var key = keys[i];
 
-            if (fiGraphMetadataPersistentStorage.Instance.SavedGraphs.TryGetValue(obj, out metadata) == false) {
-                metadata = new fiGraphMetadata();
-                fiGraphMetadataPersistentStorage.Instance.SavedGraphs[obj] = metadata;
+                List<object> allValues;
+                if (_precomputedData.TryGetValue(key, out allValues) == false) {
+                    allValues = new List<object>();
+                    _precomputedData[key] = allValues;
+                }
+
+                allValues.Add(values[i]);
             }
-
-            return metadata;
         }
-#endif
         #endregion
 
         #region Culling
@@ -192,23 +140,65 @@ namespace FullInspector {
         /// We use two dictionaries instead of just one (that takes an object key) to avoid boxing
         /// ints.
         /// </remarks>
-        [ShowInInspector, SerializeField]
+        [ShowInInspector]
         private CullableDictionary<int, fiGraphMetadata, IntDictionary<fiGraphMetadata>> _childrenInt;
-        [ShowInInspector, SerializeField]
+        [ShowInInspector]
         private CullableDictionary<string, fiGraphMetadata, Dictionary<string, fiGraphMetadata>> _childrenString;
 
         /// <summary>
         /// The actual metadata objects.
         /// </summary>
-        [ShowInInspector, SerializeField]
-        private CullableDictionary<Type, IGraphMetadataItem, Dictionary<Type, IGraphMetadataItem>> _metadata;
+        [ShowInInspector]
+        private CullableDictionary<Type, object, Dictionary<Type, object>> _metadata;
 
-        public fiGraphMetadata() {
+        /// <summary>
+        /// Reference to parent data, for access via GetInheritedMetadata
+        /// </summary>
+        private fiGraphMetadata _parentMetadata;
+
+        private fiUnityObjectReference _targetObject;
+        private UnityObject TargetObject {
+            get {
+                if (_targetObject != null && _targetObject.IsValid) return _targetObject.Target;
+                if (_parentMetadata != null) return _parentMetadata.TargetObject;
+                return null;
+            }
+        }
+
+        private string _accessPath;
+
+        public fiGraphMetadata() : this(null) {
+        }
+
+        public fiGraphMetadata(fiUnityObjectReference targetObject)
+            : this(null, string.Empty) {
+            _targetObject = targetObject;
+        }
+
+        private fiGraphMetadata(fiGraphMetadata parentMetadata, string accessKey) {
             _childrenInt = new CullableDictionary<int, fiGraphMetadata, IntDictionary<fiGraphMetadata>>();
             _childrenString = new CullableDictionary<string, fiGraphMetadata, Dictionary<string, fiGraphMetadata>>();
-            _metadata = new CullableDictionary<Type, IGraphMetadataItem, Dictionary<Type, IGraphMetadataItem>>();
+            _metadata = new CullableDictionary<Type, object, Dictionary<Type, object>>();
+            _parentMetadata = parentMetadata;
 
-            //UnityEngine.Debug.Log("Constructed " + this);
+            if (_parentMetadata == null) _precomputedData = new Dictionary<string, List<object>>();
+            else _precomputedData = _parentMetadata._precomputedData;
+
+            RebuildAccessPath(accessKey);
+
+            if (_precomputedData.ContainsKey(_accessPath)) {
+                foreach (var data in _precomputedData[_accessPath]) {
+                    _metadata[data.GetType()] = data;
+                }
+            }
+        }
+
+        private void RebuildAccessPath(string accessKey) {
+            _accessPath = "";
+            if (_parentMetadata != null && string.IsNullOrEmpty(_parentMetadata._accessPath) == false) {
+                _accessPath += _parentMetadata._accessPath + ".";
+            }
+            _accessPath += accessKey;
         }
 
         #region Metadata Migration APIs
@@ -224,6 +214,7 @@ namespace FullInspector {
         /// </remarks>
         public void SetChild(int identifier, fiGraphMetadata metadata) {
             _childrenInt[identifier] = metadata;
+            metadata.RebuildAccessPath(identifier.ToString());
         }
         /// <summary>
         /// Forcibly change the metadata that the given identifier points to to the specified
@@ -237,6 +228,7 @@ namespace FullInspector {
         /// </remarks>
         public void SetChild(string identifier, fiGraphMetadata metadata) {
             _childrenString[identifier] = metadata;
+            metadata.RebuildAccessPath(identifier);
         }
 
         public struct MetadataMigration {
@@ -247,37 +239,47 @@ namespace FullInspector {
         /// Helper method that automates metadata migration for array based graph reorders.
         /// </summary>
         public static void MigrateMetadata<T>(fiGraphMetadata metadata, T[] previous, T[] updated) {
-            List<MetadataMigration> migrations;
-            MigrateMetadata<T>(metadata, previous, updated, out migrations);
+            var migrations = ComputeNeededMigrations(metadata, previous, updated);
 
+            // migrate persistent data
+            var fromKeys = new string[migrations.Count];
+            var toKeys = new string[migrations.Count];
+            for (int i = 0; i < migrations.Count; ++i) {
+                fromKeys[i] = metadata.Enter(migrations[i].OldIndex).Metadata._accessPath;
+                toKeys[i] = metadata.Enter(migrations[i].NewIndex).Metadata._accessPath;
+            }
+            // fiPersistentMetadata.Migrate(metadata.TargetObject, fromKeys, toKeys);
+
+            // migrate the graph items
             List<fiGraphMetadata> copiedGraphs = new List<fiGraphMetadata>(migrations.Count);
             for (int i = 0; i < migrations.Count; ++i) {
-                copiedGraphs.Add(metadata.Enter(i).Metadata);
+                copiedGraphs.Add(metadata._childrenInt[i]);
             }
 
             for (int i = 0; i < migrations.Count; ++i) {
-                MetadataMigration migration = migrations[i];
-                metadata.SetChild(migration.NewIndex, copiedGraphs[i]);
+                metadata._childrenInt[migrations[i].NewIndex] = copiedGraphs[i];
             }
         }
 
         /// <summary>
         /// Helper method that automates metadata migration for array based graph reorders.
         /// </summary>
-        public static void MigrateMetadata<T>(fiGraphMetadata metadata, T[] previous, T[] updated, out List<MetadataMigration> migrations) {
-            migrations = new List<MetadataMigration>();
+        private static List<MetadataMigration> ComputeNeededMigrations<T>(fiGraphMetadata metadata, T[] previous, T[] updated) {
+            var migrations = new List<MetadataMigration>();
 
             for (int newIndex = 0; newIndex < updated.Length; ++newIndex) {
                 int prevIndex = Array.IndexOf(previous, updated[newIndex]);
 
                 if (prevIndex != -1 && prevIndex != newIndex) {
-                    migrations.Add(new MetadataMigration {
+                    migrations.Add(new MetadataMigration
+                    {
                         NewIndex = newIndex,
                         OldIndex = prevIndex
                     });
                 }
             }
 
+            return migrations;
         }
         #endregion
         /// <summary>
@@ -289,7 +291,7 @@ namespace FullInspector {
 
 
             if (_childrenInt.TryGetValue(childIdentifier, out metadata) == false) {
-                metadata = new fiGraphMetadata();
+                metadata = new fiGraphMetadata(this, childIdentifier.ToString());
                 _childrenInt[childIdentifier] = metadata;
             }
 
@@ -304,38 +306,109 @@ namespace FullInspector {
             fiGraphMetadata metadata;
 
             if (_childrenString.TryGetValue(childIdentifier, out metadata) == false) {
-                metadata = new fiGraphMetadata();
+                metadata = new fiGraphMetadata(this, childIdentifier);
                 _childrenString[childIdentifier] = metadata;
             }
 
             return new fiGraphMetadataChild { Metadata = metadata };
         }
 
+        public T GetPersistentMetadata<T>()
+            where T : IGraphMetadataItemPersistent, new() {
+
+            bool wasCreated;
+            return GetPersistentMetadata<T>(out wasCreated);
+        }
+
+        public T GetPersistentMetadata<T>(out bool wasCreated)
+            where T : IGraphMetadataItemPersistent, new() {
+
+            //return fiPersistentMetadata.GetMetadata<T>(TargetObject, _accessPath, out wasCreated);
+            return GetCommonMetadata<T>(out wasCreated);
+        }
+
+        // TODO: remove TryGetMetadata, replace with GetMetadata(out bool created)
+
         /// <summary>
         /// Get a metadata instance for an object.
         /// </summary>
         /// <typeparam name="T">The type of metadata instance.</typeparam>
-        public T GetMetadata<T>() where T : IGraphMetadataItem, new() {
-            IGraphMetadataItem val;
+        public T GetMetadata<T>() where T : IGraphMetadataItemNotPersistent, new() {
+            bool wasCreated;
+            return GetMetadata<T>(out wasCreated);
+        }
+
+        public T GetMetadata<T>(out bool wasCreated) where T : IGraphMetadataItemNotPersistent, new() {
+            return GetCommonMetadata<T>(out wasCreated);
+        }
+
+        private T GetCommonMetadata<T>(out bool wasCreated)
+            where T : new() {
+
+            object val;
             if (_metadata.TryGetValue(typeof(T), out val) == false) {
                 val = new T();
                 _metadata[typeof(T)] = val;
+                wasCreated = true;
             }
+            else {
+                wasCreated = false;
+            }
+
             return (T)val;
+        }
+
+        /// <summary>
+        /// Get a metadata instance for an object, searching up through parent chain
+        /// </summary>
+        /// <typeparam name="T">The type of metadata instance.</typeparam>
+        public T GetInheritedMetadata<T>() where T : IGraphMetadataItemNotPersistent, new() {
+            object val;
+
+            if (_metadata.TryGetValue(typeof(T), out val)) {
+                return (T)val;
+            }
+            else if (_parentMetadata == null) {
+                return GetMetadata<T>();
+            }
+            else {
+                return _parentMetadata.GetInheritedMetadata<T>();
+            }
         }
 
         /// <summary>
         /// Attempts to fetch a pre-existing metadata instance for an object.
         /// </summary>
         /// <typeparam name="T">The type of metadata instance.</typeparam>
-        /// <param name="metadata">The found metadata instance, or null.</param>
+        /// <param name="metadata">The metadata instance.</param>
         /// <returns>True if a metadata instance was found, false otherwise.</returns>
-        public bool TryGetMetadata<T>(out T metadata) where T : IGraphMetadataItem, new() {
-            IGraphMetadataItem item;
+        public bool TryGetMetadata<T>(out T metadata) where T : IGraphMetadataItemNotPersistent, new() {
+            object item;
             bool result = _metadata.TryGetValue(typeof(T), out item);
 
             metadata = (T)item;
             return result;
+        }
+
+        /// <summary>
+        /// Attempts to fetch a pre-existing metadata instance for an object, searching up through the parent chain
+        /// </summary>
+        /// <typeparam name="T">The type of metadata instance.</typeparam>
+        /// <param name="metadata">The found metadata instance. Undefined if there was no metadata.</param>
+        /// <returns>True if a metadata instance was found, false otherwise.</returns>
+        public bool TryGetInheritedMetadata<T>(out T metadata) where T : IGraphMetadataItemNotPersistent, new() {
+            object item;
+            if (_metadata.TryGetValue(typeof(T), out item)) {
+                metadata = (T)item;
+                return true;
+            }
+            else if (_parentMetadata == null) {
+                metadata = default(T);
+                return false;
+            }
+            else {
+                return _parentMetadata.TryGetInheritedMetadata(out metadata);
+            }
         }
     }
 
@@ -365,7 +438,7 @@ namespace FullInspector {
         }
 
         public ICollection<int> Keys {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         public bool Remove(int key) {
@@ -391,7 +464,7 @@ namespace FullInspector {
         }
 
         public ICollection<TValue> Values {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         public TValue this[int key] {
@@ -427,7 +500,7 @@ namespace FullInspector {
         }
 
         public bool Contains(KeyValuePair<int, TValue> item) {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void CopyTo(KeyValuePair<int, TValue>[] array, int arrayIndex) {
@@ -451,11 +524,11 @@ namespace FullInspector {
         }
 
         public bool IsReadOnly {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
         }
 
         public bool Remove(KeyValuePair<int, TValue> item) {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public IEnumerator<KeyValuePair<int, TValue>> GetEnumerator() {

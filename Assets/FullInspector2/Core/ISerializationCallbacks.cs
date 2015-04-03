@@ -15,6 +15,16 @@
         void OnBeforeSerialize();
 
         /// <summary>
+        /// Called right after FI runs serialization.
+        /// </summary>
+        void OnAfterSerialize();
+
+        /// <summary>
+        /// Called right before FI runs deserialization.
+        /// </summary>
+        void OnBeforeDeserialize();
+
+        /// <summary>
         /// Called right after FI runs deserialization.
         /// </summary>
         void OnAfterDeserialize();

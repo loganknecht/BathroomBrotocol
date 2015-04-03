@@ -24,7 +24,7 @@ namespace FullInspector.Modules.Common {
         private static float FoldoutHeight = EditorStyles.foldout.CalcHeight(GUIContent.none, 100);
 
         private static void DisableFoldoutByDefault(object obj, fiGraphMetadata metadata) {
-            metadata.GetMetadata<DropdownMetadata>().OverrideDisable = true;
+            metadata.GetPersistentMetadata<fiDropdownMetadata>().ForceDisable();
         }
 
         private static bool CanDisplayDropdown(UnityObject obj) {
@@ -53,11 +53,14 @@ namespace FullInspector.Modules.Common {
                 });
         }
 
+        // Should ObjectFields display scene objects? ScriptableObjects can never be in the scene so for that
+        // scenario we should *not* allow them.
+        private static readonly bool AllowSceneObjects = !typeof(ScriptableObject).IsAssignableFrom(typeof(ObjectType));
 
         public override UnityObject Edit(Rect region, GUIContent label, UnityObject element, fiGraphMetadata metadata) {
             if (CanDisplayDropdown(element) == false) {
                 region.height = FoldoutHeight;
-                return (ObjectType)EditorGUI.ObjectField(region, label, element, typeof(ObjectType), true);
+                return (ObjectType)EditorGUI.ObjectField(region, label, element, typeof(ObjectType), AllowSceneObjects);
             }
 
             // We have to show a foldout.
@@ -67,29 +70,23 @@ namespace FullInspector.Modules.Common {
             // The rect for the foldout
             Rect foldoutRect = region;
             foldoutRect.height = FoldoutHeight;
-            foldoutRect.width = 10;
-            foldoutRect.x += foldoutRect.width;
-
-            // The rect for the object field
-            float objectRectIndent = 10;
-            if (string.IsNullOrEmpty(label.text)) objectRectIndent += 3;
+            if (string.IsNullOrEmpty(label.text) == false) {
+                foldoutRect.width = EditorGUIUtility.labelWidth;
+            }
+            else {
+                foldoutRect.width = 15;
+            }
 
             Rect objectRect = region;
-            objectRect.x += objectRectIndent;
-            objectRect.width -= objectRectIndent;
+            objectRect.x += foldoutRect.width;
+            objectRect.width -= foldoutRect.width;
             objectRect.height = FoldoutHeight;
-            
-            // Because we're indenting the object rect, we have to reduce the label width so that
-            // the object picker renders at the correct position, in line with all of the other
-            // controls.
-            EditorGUIUtility.labelWidth -= objectRectIndent;
-
 
             var foldoutState = metadata.GetMetadata<ObjectFoldoutStateGraphMetadata>();
-            bool updatedActive = EditorGUI.Foldout(foldoutRect, foldoutState.IsActive, GUIContent.none);
+            bool updatedActive = EditorGUI.Foldout(foldoutRect, foldoutState.IsActive, label, /*toggleOnLabelClick:*/true);
             if (updatedActive != foldoutState.IsActive && foldoutState.IsAnimating == false) foldoutState.IsActive = updatedActive;
 
-            element = (ObjectType)EditorGUI.ObjectField(objectRect, label, element, typeof(ObjectType), true);
+            element = (ObjectType)EditorGUI.ObjectField(objectRect, GUIContent.none, element, typeof(ObjectType), AllowSceneObjects);
 
             if (element != null && (foldoutState.IsActive || foldoutState.IsAnimating)) {
                 Rect subRect = new Rect(region);
@@ -109,13 +106,17 @@ namespace FullInspector.Modules.Common {
 
                 GUI.Box(boxRect, GUIContent.none);
 
+                fiEditorGUI.PushHierarchyMode(false);
+
                 var editor = BehaviorEditor.Get(element.GetType());
                 editor.Edit(propertyRect, element);
+
+                fiEditorGUI.PopHierarchyMode();
 
                 fiEditorGUI.EndFadeGroup();
 
                 if (foldoutState.IsAnimating) {
-                    fiEditorUtility.Repaint = true;
+                    fiEditorUtility.RepaintAllEditors();
                 }
             }
 
@@ -124,15 +125,13 @@ namespace FullInspector.Modules.Common {
 
         public override float GetElementHeight(GUIContent label, UnityObject element, fiGraphMetadata metadata) {
             float height = FoldoutHeight;
-            float faded = 1f;
 
             if (CanDisplayDropdown(element)) {
                 DisableFoldoutByDefault(element, metadata);
 
                 var foldoutState = metadata.GetMetadata<ObjectFoldoutStateGraphMetadata>();
                 if (foldoutState.IsActive || foldoutState.IsAnimating) {
-                    faded = foldoutState.AnimPercentage;
-
+                    var faded = foldoutState.AnimPercentage;
                     var editor = BehaviorEditor.Get(element.GetType());
 
                     DynamicItemHeight.SetHeight(editor.GetHeight(element));
