@@ -21,8 +21,8 @@ public class WaveManager : MonoBehaviour {
 
     public static WaveManager Instance {
         get {
-            if(_instance == null) {
-                lock(_lock) {
+            if (_instance == null) {
+                lock (_lock) {
                     if (_instance == null) {
                         GameObject waveManagerGameObject = new GameObject("WaveManagerGameObject");
                         _instance = (waveManagerGameObject.AddComponent<WaveManager>()).GetComponent<WaveManager>();
@@ -51,7 +51,7 @@ public class WaveManager : MonoBehaviour {
     }
 
     public void Update() {
-        if(!isPaused) {
+        if (!isPaused) {
             // Debug.Log("currentTimer: " + currentTimer);
             waveTimer += Time.deltaTime;
             currentTimer += Time.deltaTime;
@@ -59,19 +59,19 @@ public class WaveManager : MonoBehaviour {
             PerformWaveLogic();
         }
 
-        if(Input.GetKeyDown(KeyCode.Q)) {
+        if (Input.GetKeyDown(KeyCode.Q)) {
             // EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 0);
         }
-        if(Input.GetKeyDown(KeyCode.W)) {
+        if (Input.GetKeyDown(KeyCode.W)) {
             // EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 1);
         }
-        if(Input.GetKeyDown(KeyCode.E)) {
+        if (Input.GetKeyDown(KeyCode.E)) {
             // EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 2);
         }
-        if(Input.GetKeyDown(KeyCode.R)) {
+        if (Input.GetKeyDown(KeyCode.R)) {
             // EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(BroType.GenericBro, 3);
         }
-        if(Input.GetKeyDown(KeyCode.T)) {
+        if (Input.GetKeyDown(KeyCode.T)) {
             // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.BluetoothBro);
             // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.ChattyBro);
             // EntranceQueueManager.Instance.GenerateSpecificBroInRandomEntranceQueue(BroType.CuttingBro);
@@ -85,10 +85,6 @@ public class WaveManager : MonoBehaviour {
 
             // EntranceQueueManager.Instance.GenerateRandomBroInRandomEntranceQueue();
         }
-    }
-
-    public void InitializeWave() {
-        waveLogicReference.Initialize();
     }
 
     public void Pause() {

@@ -11,9 +11,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
 
     // Use this for initialization
-    public override void Start () {
+    public override void Start() {
         base.Start();
-        // Initialize();
+        Initialize();
     }
 
     public override void Initialize() {
@@ -21,17 +21,17 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
         GameObject broCzarEnterWaveGameObject = CreateWaveState("Start Animation Game Object",
-                                                                   TriggerBroCzarEnterAnimation,
-                                                                   PerformBroCzarEnterAnimation,
-                                                                   FinishBroCzarEnterAnimation);
+                                                TriggerBroCzarEnterAnimation,
+                                                PerformBroCzarEnterAnimation,
+                                                FinishBroCzarEnterAnimation);
 
         InitializeWaveStates(
-                             broCzarEnterWaveGameObject
-                            );
+            broCzarEnterWaveGameObject
+        );
     }
 
     // Update is called once per frame
-    public override void Update () {
+    public override void Update() {
         base.Update();
     }
 
@@ -39,14 +39,14 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // Debug.Log("triggering start animation");
         // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
-        // TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject, 
-        //                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, 
-        //                                   -595, 
-        //                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x, 
+        // TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject,
+        //                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x,
+        //                                   -595,
+        //                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x,
         //                                   -250,
-        //                                   1, 
-        //                                   2, 
-        //                                   UITweener.Method.BounceIn, 
+        //                                   1,
+        //                                   2,
+        //                                   UITweener.Method.BounceIn,
         //                                   null);
 
         FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
@@ -60,19 +60,20 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
 
         broCzarGameObject.transform.position = new Vector3(lastQueueTile.transform.position.x,
-                                                           lastQueueTile.transform.position.y,
-                                                           broCzarGameObject.transform.position.z);
+                lastQueueTile.transform.position.y,
+                broCzarGameObject.transform.position.z);
         List<GameObject> entranceToCenterMovementNodes = entranceLineQueue.GetQueueMovementNodes();
+        // Debug.Log("entranceToCenterMovementNodes Length: " + entranceToCenterMovementNodes.Count);
         entranceToCenterMovementNodes.AddRange(AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                                                                        AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                                                                        BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(lastQueueTile.transform.position, true).GetComponent<BathroomTile>(),
-                                                                                        BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
+                                               AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(lastQueueTile.transform.position, true).GetComponent<BathroomTile>(),
+                                               BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
 
         // SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
 
         broCzarTargetPathing.SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
-        // broCzarTargetPathing.SetOnArrivalAtTargetPosition(() => { 
-        //                                                             Debug.Log("lol at target position"); 
+        // broCzarTargetPathing.SetOnArrivalAtTargetPosition(() => {
+        //                                                             Debug.Log("lol at target position");
         //                                                          });
 
         LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
@@ -80,7 +81,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     public void PerformBroCzarEnterAnimation() {
         // Debug.Log("performing start animation");
         // if(TextboxManager.Instance.HasFinished()) {
-            TriggerWaveFinish();
+        TriggerWaveFinish();
         // }
     }
     public void FinishBroCzarEnterAnimation() {

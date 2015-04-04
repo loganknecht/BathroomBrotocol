@@ -48,7 +48,9 @@ public class BathroomObject : MonoBehaviour {
                 animatorReference.SetBool(bathroomObjectState.ToString(), false);
             }
         }
-        animatorReference.SetBool(bathroomFacingReference.facing.ToString(), true);
+        if(bathroomFacingReference.facing != Facing.None) {
+            animatorReference.SetBool(bathroomFacingReference.facing.ToString(), true);
+        }
         if(state != BathroomObjectState.None) {
             animatorReference.SetBool(state.ToString(), true);
         }
