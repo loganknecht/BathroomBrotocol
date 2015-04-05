@@ -591,7 +591,6 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         List<GameObject> closedNodes = new List<GameObject>();
         closedNodes.AddRange(GetListCopyOfPermanentClosedNodes());
         closedNodes.AddRange(GetListCopyOfTemporaryClosedNodes());
-        Debug.Log(closedNodes.Count);
         return closedNodes;
     }
 

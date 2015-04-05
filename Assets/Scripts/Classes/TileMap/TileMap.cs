@@ -8,7 +8,6 @@ using System.Collections.Generic;
 // ALL ROWS MUST BE EQUAL IN WIDTH
 // IF USING THE ROW CONTAINER CONVENIENCE LIST TILES MUST BE IN ORDER
 public class TileMap : BaseBehavior {
-
     public float singleTileWidth = -1;
     public float singleTileHeight = -1;
     public int tilesWide = 0;
@@ -34,70 +33,70 @@ public class TileMap : BaseBehavior {
 
     // TO DO: probably move this over to bathroom tile map
     public void ConfigureRows() {
-        foreach(Transform child in this.gameObject.transform) {
+        foreach (Transform child in this.gameObject.transform) {
             rowContainers.Add(child.gameObject);
         }
     }
 
     // TO DO: probably move this over to bathroom tile map
     public void ConfigureTileMap() {
-        if(singleTileWidth < 0 || singleTileHeight < 0) {
+        if (singleTileWidth < 0 || singleTileHeight < 0) {
             Debug.LogError("SingleTileWidth and SingleTileHeight of the tile map cannot be negative numbers.");
         }
-        if((rowContainers == null || rowContainers.Count == 0) && (tiles == null || tiles.Length == 0)) {
+        if ((rowContainers == null || rowContainers.Count == 0) && (tiles == null || tiles.Length == 0)) {
             Debug.LogError("The the rowContainers list and tiles array has not been initialized or is empty, please fix this otherwise nothing will work!");
         }
-        else if(rowContainers != null && rowContainers.Count > 0 && tiles != null && tiles.Length > 0) {
+        else if (rowContainers != null && rowContainers.Count > 0 && tiles != null && tiles.Length > 0) {
             Debug.LogError("You cannot configure the tile map using the rowContainers AND the tiles list. You must configure the tile map using only one of these");
         }
         else {
             // Perform tiles configuration ONLY IF THERE ARE ONLY TILES IN THE TILE LIST
-            if(tiles != null && tiles.Length > 0) {
+            if (tiles != null && tiles.Length > 0) {
                 // Error checking to make sure that row width is congruent/symmetrical in the tiles array
                 int rowWidth = -1;
-                foreach(GameObject[] row in tiles) {
-                    if(rowWidth == -1) {
+                foreach (GameObject[] row in tiles) {
+                    if (rowWidth == -1) {
                         rowWidth = row.Length;
                     }
                     else {
-                        if(rowWidth != row.Length) {
+                        if (rowWidth != row.Length) {
                             Debug.LogError("The tile map width is incongruent, please verify that all rows are equivilant in length!");
                         }
                     }
                 }
 
-                tilesWide = rowWidth; 
+                tilesWide = rowWidth;
                 tilesHigh = tiles.Length;
             }
 
             // Perform rowContainers configuration ONLY IF THERE ARE ONLY ROWS IN THE ROW LIST
-            if(rowContainers != null && rowContainers.Count > 0) {
+            if (rowContainers != null && rowContainers.Count > 0) {
                 // Error checking to make sure that the row containers are congruent/symmetrical
                 bool rowWidthsHaveSameLength = true;
                 int rowWidth = -1;
-                foreach(GameObject rowContainer in rowContainers) {
-                    if(rowWidth == -1) {
+                foreach (GameObject rowContainer in rowContainers) {
+                    if (rowWidth == -1) {
                         rowWidth = rowContainer.transform.childCount;
                     }
                     else  {
-                        if(rowWidth != rowContainer.transform.childCount) {
+                        if (rowWidth != rowContainer.transform.childCount) {
                             rowWidthsHaveSameLength = false;
                             Debug.LogError("The tile map width is incongruent, please verify that all row container rows are equivilant in length!");
                         }
                     }
                 }
 
-                if(rowWidthsHaveSameLength) {
+                if (rowWidthsHaveSameLength) {
                     // So freaking stupid using jagged arrays instead of a freaking multi dimensional array, I hate you Unity!!!
                     int tileArrayHeight = rowContainers.Count;
                     tiles = new GameObject[tileArrayHeight][];
-                    for(int i = 0; i < tileArrayHeight; i++) {
+                    for (int i = 0; i < tileArrayHeight; i++) {
                         tiles[i] = new GameObject[rowWidth];
                     }
 
-                    foreach(GameObject rowContainer in rowContainers) {
+                    foreach (GameObject rowContainer in rowContainers) {
                         // Debug.Log(rowContainer.name);
-                        foreach(Transform childTransform in rowContainer.transform) {
+                        foreach (Transform childTransform in rowContainer.transform) {
                             // Debug.Log(childTransform.name);
 
                             int x = childTransform.gameObject.GetComponent<Tile>().tileX;
@@ -108,7 +107,7 @@ public class TileMap : BaseBehavior {
                     }
                 }
 
-                tilesWide = rowWidth; 
+                tilesWide = rowWidth;
                 tilesHigh = tiles.Length;
             }
             // Debug.Log("tiles wide: " + tilesWide);
@@ -125,8 +124,8 @@ public class TileMap : BaseBehavior {
 
     public List<GameObject> GetTilesAsList() {
         List<GameObject> tileList = new List<GameObject>();
-        foreach(GameObject[] row in tiles) {
-            foreach(GameObject tile in row) {
+        foreach (GameObject[] row in tiles) {
+            foreach (GameObject tile in row) {
                 tileList.Add(tile);
             }
         }
@@ -136,8 +135,8 @@ public class TileMap : BaseBehavior {
     public GameObject[] GetTilesAsSingleDimensionalArray() {
         GameObject[] tilesArray = new GameObject[tilesWide * tilesHigh];
         int index = 0;
-        foreach(GameObject[] row in tiles) {
-            foreach(GameObject tile in row) {
+        foreach (GameObject[] row in tiles) {
+            foreach (GameObject tile in row) {
                 tilesArray[index] = tile;
                 index++;
             }
@@ -151,36 +150,36 @@ public class TileMap : BaseBehavior {
         return GetTileGameObjectByIndex(0, tilesHigh);
     }
     public GameObject GetTopCenterTileGameObject() {
-        return GetTileGameObjectByIndex(tilesWide/2, tilesHigh);
+        return GetTileGameObjectByIndex(tilesWide / 2, tilesHigh);
     }
     public GameObject GetTopRightTileGameObject() {
         return GetTileGameObjectByIndex(tilesWide, tilesHigh);
     }
     public GameObject GetMiddleLeftTileGameObject() {
-        return GetTileGameObjectByIndex(0, tilesHigh/2);
+        return GetTileGameObjectByIndex(0, tilesHigh / 2);
     }
     public GameObject GetMiddleTileGameObject() {
-        return GetTileGameObjectByIndex(tilesWide/2, tilesHigh/2);
+        return GetTileGameObjectByIndex(tilesWide / 2, tilesHigh / 2);
     }
     public GameObject GetMiddleRightTileGameObject() {
-        return GetTileGameObjectByIndex(tilesWide, tilesHigh/2);
+        return GetTileGameObjectByIndex(tilesWide, tilesHigh / 2);
     }
     public GameObject GetBottomLeftTileGameObject() {
         return GetTileGameObjectByIndex(0, 0);
     }
     public GameObject GetBottomCenterTileGameObject() {
-        return GetTileGameObjectByIndex(tilesWide/2, 0);
+        return GetTileGameObjectByIndex(tilesWide / 2, 0);
     }
     public GameObject GetBottomRightTileGameObject() {
         return GetTileGameObjectByIndex(tilesWide, 0);
     }
     public GameObject GetTileGameObjectByIndex(int tileX, int tileY) {
-        if(tiles != null) {
-           return tiles[tileY][tileX];
+        if (tiles != null) {
+            return tiles[tileY][tileX];
         }
         return null;
     }
-    
+
     public GameObject GetTileGameObjectByWorldPosition(Vector3 position, bool returnClosestTile) {
         return GetTileGameObjectByWorldPosition(position.x, position.y, returnClosestTile);
     }
@@ -194,32 +193,32 @@ public class TileMap : BaseBehavior {
         float closestTileXDistance = 0f;
         float closestTileYDistance = 0f;
 
-        foreach(GameObject[] row in tiles) {
-            foreach(GameObject tile in row) {
-                float leftBound = tile.transform.position.x - singleTileWidth/2;
-                float rightBound = tile.transform.position.x + singleTileWidth/2;
+        foreach (GameObject[] row in tiles) {
+            foreach (GameObject tile in row) {
+                float leftBound = tile.transform.position.x - singleTileWidth / 2;
+                float rightBound = tile.transform.position.x + singleTileWidth / 2;
 
-                float bottomBound = tile.transform.position.y - singleTileHeight/2;
-                float topBound = tile.transform.position.y + singleTileHeight/2;
+                float bottomBound = tile.transform.position.y - singleTileHeight / 2;
+                float topBound = tile.transform.position.y + singleTileHeight / 2;
 
-                if(leftBound <= xPosition
-                    && rightBound >= xPosition
-                    && bottomBound <= yPosition
-                    && topBound >= yPosition) {
+                if (leftBound <= xPosition
+                        && rightBound > xPosition
+                        && bottomBound <= yPosition
+                        && topBound > yPosition) {
                     return tile;
                 }
 
-                if(returnClosestTile) {
+                if (returnClosestTile) {
                     float currentClosestTileCheckXDistance = Mathf.Abs(xPosition - tile.transform.position.x);
                     float currentClosestTileCheckYDistance = Mathf.Abs(yPosition - tile.transform.position.y);
-                    if(closestTile == null) {
+                    if (closestTile == null) {
                         closestTile = tile;
                         closestTileXDistance = currentClosestTileCheckXDistance;
                         closestTileYDistance = currentClosestTileCheckYDistance;
                     }
                     else {
-                        if(currentClosestTileCheckXDistance <= closestTileXDistance
-                           && currentClosestTileCheckYDistance <= closestTileYDistance) {
+                        if (currentClosestTileCheckXDistance <= closestTileXDistance
+                                && currentClosestTileCheckYDistance <= closestTileYDistance) {
                             closestTile = tile;
                             closestTileXDistance = currentClosestTileCheckXDistance;
                             closestTileYDistance = currentClosestTileCheckYDistance;
@@ -229,7 +228,7 @@ public class TileMap : BaseBehavior {
             }
         }
 
-        if(returnClosestTile) {
+        if (returnClosestTile) {
             return closestTile;
         }
         else {
@@ -266,13 +265,13 @@ public class TileMap : BaseBehavior {
     // This should really be a generic, but whatever
     public GameObject[][] TransposeMatrix(GameObject[][] tileMapToRotate, int tilesWide, int tilesHigh) {
         GameObject[][] tempTileMap = new GameObject[tilesWide][];
-        for(int j = 0; j < tilesWide; j++) {
+        for (int j = 0; j < tilesWide; j++) {
             tempTileMap[j] = new GameObject[tilesHigh];
         }
 
 
-        for(int j = 0; j < tilesWide; j++) {
-            for(int i = 0; i < tilesHigh; i++) {
+        for (int j = 0; j < tilesWide; j++) {
+            for (int i = 0; i < tilesHigh; i++) {
                 tempTileMap[j][i] = tiles[i][j];
             }
         }
@@ -280,7 +279,7 @@ public class TileMap : BaseBehavior {
     }
 
     public GameObject[][] ReverseAllColumns(GameObject[][] tileMapToRotate, int tilesWide) {
-        for(int i = 0; i < tilesWide; i++) {
+        for (int i = 0; i < tilesWide; i++) {
             // Debug.Log(i);
             ReverseColumn(tileMapToRotate, i);
         }
@@ -288,7 +287,7 @@ public class TileMap : BaseBehavior {
     }
     // This should really be a generic, but whatever
     public GameObject[][] ReverseColumn(GameObject[][] tileMapToRotate, int columnToRotate) {
-        for(int j = 0; j < tilesHigh/2; j++) {
+        for (int j = 0; j < tilesHigh / 2; j++) {
             GameObject tempTileGameObject = tileMapToRotate[j][columnToRotate];
             tileMapToRotate[j][columnToRotate] = tileMapToRotate[tilesHigh - j - 1][columnToRotate];
             tileMapToRotate[tileMapToRotate.Length - j - 1][columnToRotate] = tempTileGameObject;
@@ -297,7 +296,7 @@ public class TileMap : BaseBehavior {
     }
 
     public GameObject[][] ReverseAllRows(GameObject[][] tileMapToRotate) {
-        for(int j = 0; j < tileMapToRotate.Length; j++) {
+        for (int j = 0; j < tileMapToRotate.Length; j++) {
             ReverseRow(tileMapToRotate, j);
         }
         return tileMapToRotate;
@@ -310,8 +309,8 @@ public class TileMap : BaseBehavior {
     }
 
     public GameObject[][] SetPositionsInWorldBasedOnTileMapProperties(GameObject[][] tileMapToSetPositions) {
-        for(int j = 0; j < tileMapToSetPositions.Length; j++) {
-            for(int i = 0; i < tileMapToSetPositions[j].Length; i++) {
+        for (int j = 0; j < tileMapToSetPositions.Length; j++) {
+            for (int i = 0; i < tileMapToSetPositions[j].Length; i++) {
                 tileMapToSetPositions[j][i].transform.position = new Vector3(i * singleTileWidth, j * singleTileHeight, tileMapToSetPositions[j][i].transform.position.z);
             }
         }
@@ -319,9 +318,9 @@ public class TileMap : BaseBehavior {
     }
 
     public GameObject[][] UpdateAllTilesIsometricDisplay(GameObject[][] tilesToUpdate) {
-        foreach(GameObject[] row in tilesToUpdate) {
-            foreach(GameObject cell in row) {
-                if(cell.GetComponent<IsometricDisplay>() != null) {
+        foreach (GameObject[] row in tilesToUpdate) {
+            foreach (GameObject cell in row) {
+                if (cell.GetComponent<IsometricDisplay>() != null) {
                     cell.GetComponent<IsometricDisplay>().UpdateDisplayPosition();
                 }
             }

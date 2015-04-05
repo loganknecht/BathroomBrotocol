@@ -17,7 +17,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
 
     public override void Initialize() {
-        Debug.Log("initialization");
+        // Debug.Log("initialization");
         SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
 
         GameObject broCzarEnterWaveGameObject = CreateWaveState("Start Animation Game Object",
@@ -57,6 +57,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         TargetPathing broCzarTargetPathing = broCzarGameObject.GetComponent<TargetPathing>();
 
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
+        GameObject firstQueueTile = entranceLineQueue.GetFirstQueueTile();
         GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
 
         broCzarGameObject.transform.position = new Vector3(lastQueueTile.transform.position.x,
@@ -66,24 +67,29 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // Debug.Log("entranceToCenterMovementNodes Length: " + entranceToCenterMovementNodes.Count);
         entranceToCenterMovementNodes.AddRange(AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
                                                AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(lastQueueTile.transform.position, true).GetComponent<BathroomTile>(),
+                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(firstQueueTile.transform.position, true).GetComponent<BathroomTile>(),
                                                BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
 
         // SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
 
         broCzarTargetPathing.SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
-        // broCzarTargetPathing.SetOnArrivalAtTargetPosition(() => {
-        //                                                             Debug.Log("lol at target position");
-        //                                                          });
+        broCzarTargetPathing.SetMoveSpeed(3, 3);
+        // broCzarTargetPathing.SetOnArrivalAtTargetPosition(()
+        broCzarTargetPathing.SetOnArrivalAtTargetPosition(() => {
+            // Debug.Log("lol at target position");
+            broCzarGameObject.GetComponent<BathroomFacing>().SetFacing(Facing.Bottom);
+        });
 
         LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
     }
+
     public void PerformBroCzarEnterAnimation() {
         // Debug.Log("performing start animation");
         // if(TextboxManager.Instance.HasFinished()) {
         TriggerWaveFinish();
         // }
     }
+
     public void FinishBroCzarEnterAnimation() {
         // Debug.Log("finishing start animation");
     }

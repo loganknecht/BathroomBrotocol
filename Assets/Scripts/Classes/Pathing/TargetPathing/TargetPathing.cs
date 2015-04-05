@@ -14,13 +14,13 @@ public class TargetPathing : BaseBehavior {
     public GameObject targetObject = null;
     public Vector3 targetPosition = Vector3.zero;
     public GameObject targetTile = null;
-    public List<GameObject> movementNodes = null; 
+    public List<GameObject> movementNodes = null;
 
     public float xMoveSpeed = 1;
     public float yMoveSpeed = 1;
 
-    public float targetPositionXLockBuffer = 0.05f;
-    public float targetPositionYLockBuffer = 0.05f;
+    public float xLockBuffer = 0.05f;
+    public float yLockBuffer = 0.05f;
 
     public bool isPaused = false;
     public bool disableMovementLogic = false;
@@ -47,12 +47,43 @@ public class TargetPathing : BaseBehavior {
 
     // Update is called once per frame
     public virtual void Update () {
-        if(movementNodes == null) {
+        if (movementNodes == null) {
             Debug.Log("lol lol movement nodes of " + this.gameObject.name + " be null.");
         }
-        if(!isPaused) {
+        if (!isPaused) {
             PerformLogic();
         }
+    }
+
+    public void SetLockBuffer(Vector2 newLockBuffer) {
+        SetXLockBuffer(newLockBuffer.x);
+        SetYLockBuffer(newLockBuffer.y);
+    }
+    public void SetLockBuffer(float newXLockBuffer, float newYLockBuffer) {
+        SetXLockBuffer(newXLockBuffer);
+        SetYLockBuffer(newYLockBuffer);
+    }
+
+    public float GetXLockBuffer() {
+        return xLockBuffer;
+    }
+    public void SetXLockBuffer(float newLockBuffer) {
+        xLockBuffer = newLockBuffer;
+    }
+
+    public float GetYLockBuffer() {
+        return yLockBuffer;
+    }
+    public void SetYLockBuffer(float newLockBuffer) {
+        yLockBuffer = newLockBuffer;
+    }
+    public void SetMoveSpeed(Vector2 newMoveSpeed) {
+        SetXMoveSpeed(newMoveSpeed.x);
+        SetYMoveSpeed(newMoveSpeed.y);
+    }
+    public void SetMoveSpeed(float newXMoveSpeed, float newYMoveSpeed) {
+        SetXMoveSpeed(newXMoveSpeed);
+        SetYMoveSpeed(newYMoveSpeed);
     }
 
     public float GetXMoveSpeed() {
@@ -119,8 +150,8 @@ public class TargetPathing : BaseBehavior {
     }
 
     public bool IsAtMovementNodePosition() {
-        if(gameObjectToMove.transform.position.x == targetPosition.x
-            && gameObjectToMove.transform.position.y == targetPosition.y) {
+        if (gameObjectToMove.transform.position.x == targetPosition.x
+                && gameObjectToMove.transform.position.y == targetPosition.y) {
             return true;
         }
         else {
@@ -128,9 +159,9 @@ public class TargetPathing : BaseBehavior {
         }
     }
     public bool IsAtTargetPosition() {
-        if(movementNodes.Count == 0
-            && gameObjectToMove.transform.position.x == targetPosition.x
-            && gameObjectToMove.transform.position.y == targetPosition.y) {
+        if (movementNodes.Count == 0
+                && gameObjectToMove.transform.position.x == targetPosition.x
+                && gameObjectToMove.transform.position.y == targetPosition.y) {
             return true;
         }
         else {
@@ -139,7 +170,7 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual void PerformLogic() {
-        if(!disableMovementLogic) {
+        if (!disableMovementLogic) {
             PerformMovementLogic();
         }
     }
@@ -147,14 +178,14 @@ public class TargetPathing : BaseBehavior {
     public virtual void PerformMovementLogic() {
         //This is the logic for the bro moving to their destination
         Vector2 newPositionOffset = CalculateNextPositionOffset();
-        newPositionOffset = (newPositionOffset*Time.deltaTime);
+        newPositionOffset = (newPositionOffset * Time.deltaTime);
         newPositionOffset = LockNewPositionOffsetToTarget(newPositionOffset);
         UpdateBathroomFacingBasedOnNewPositionOffset(newPositionOffset);
         transform.position += new Vector3(newPositionOffset.x, newPositionOffset.y, 0);
 
         //performs check to pop new node from the movemeNodes list
-        if(IsAtMovementNodePosition()) {
-            if(onArrivalAtMovementNodeLogic != null) {
+        if (IsAtMovementNodePosition()) {
+            if (onArrivalAtMovementNodeLogic != null) {
                 onArrivalAtMovementNodeLogic();
             }
 
@@ -162,27 +193,28 @@ public class TargetPathing : BaseBehavior {
             PopMovementNode();
         }
 
-        if(!performedOnArrivalAtTargetPosition
-           && IsAtTargetPosition()) {
+        //performs check
+        if (!performedOnArrivalAtTargetPosition
+                && IsAtTargetPosition()) {
             performedOnArrivalAtTargetPosition = true;
-            if(onArrivalAtTargetPositionLogic != null) {
+            if (onArrivalAtTargetPositionLogic != null) {
                 onArrivalAtTargetPositionLogic();
             }
         }
     }
 
     public virtual void PopMovementNode() {
-        if(movementNodes == null) {
+        if (movementNodes == null) {
             Debug.Log("movemeNodes is null");
         }
-        if(movementNodes.Count > 0) {
-        //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
+        if (movementNodes.Count > 0) {
+            //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
             GameObject nextNode = movementNodes[0];
             targetTile = nextNode;
             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
             //Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
             movementNodes.RemoveAt(0);
-            if(onPopMovementNodeLogic != null) {
+            if (onPopMovementNodeLogic != null) {
                 onPopMovementNodeLogic();
             }
             // Destroy(nextNode);
@@ -196,17 +228,17 @@ public class TargetPathing : BaseBehavior {
     public virtual Vector2 CalculateNextPositionOffset() {
         Vector2 newPositionOffset = Vector2.zero;
 
-        if(gameObjectToMove.transform.position.x < targetPosition.x) {
+        if (gameObjectToMove.transform.position.x < targetPosition.x) {
             newPositionOffset.x += xMoveSpeed;
         }
-        else if(gameObjectToMove.transform.position.x > targetPosition.x) {
+        else if (gameObjectToMove.transform.position.x > targetPosition.x) {
             newPositionOffset.x -= xMoveSpeed;
         }
 
-        if(gameObjectToMove.transform.position.y < targetPosition.y) {
+        if (gameObjectToMove.transform.position.y < targetPosition.y) {
             newPositionOffset.y += yMoveSpeed;
         }
-        else if(gameObjectToMove.transform.position.y > targetPosition.y) {
+        else if (gameObjectToMove.transform.position.y > targetPosition.y) {
             newPositionOffset.y -= yMoveSpeed;
         }
 
@@ -214,53 +246,44 @@ public class TargetPathing : BaseBehavior {
     }
 
     public virtual Vector2 LockNewPositionOffsetToTarget(Vector2 newPositionOffset) {
-        // X Locker
-        // Debug.Log("target x pos great: " + (targetPosition.x - targetPositionXLockBuffer));
-        // Debug.Log("target x pos less: " + (targetPosition.x + targetPositionXLockBuffer));
-        // Debug.Log("target x pos: " + targetPosition.x);
-        // Debug.Log("next x pos: " + (this.gameObject.transform.position.x + newPositionOffset.x));
-        if((gameObjectToMove.transform.position.x + newPositionOffset.x) > (targetPosition.x - targetPositionXLockBuffer)
-            && (gameObjectToMove.transform.position.x + newPositionOffset.x) < (targetPosition.x + targetPositionXLockBuffer)) {
-            //Debug.Log("setting x position to target");
-            gameObjectToMove.transform.position = new Vector3(targetPosition.x,
-                                                             gameObjectToMove.transform.position.y,
-                                                             gameObjectToMove.transform.position.z);
-            newPositionOffset.x = 0;
+        float nextXPosition = gameObjectToMove.transform.position.x + newPositionOffset.x;
+        float nextYPosition = gameObjectToMove.transform.position.y + newPositionOffset.y;
+
+        if ((gameObjectToMove.transform.position.x < targetPosition.x  && nextXPosition > targetPosition.x)
+                || (gameObjectToMove.transform.position.x > targetPosition.x  && nextXPosition < targetPosition.x)) {
+            newPositionOffset.x = targetPosition.x - gameObjectToMove.transform.position.x;
+            Debug.Log("locking x");
         }
-        // Y Locker
-        if((gameObjectToMove.transform.position.y + newPositionOffset.y) > (targetPosition.y - targetPositionYLockBuffer)
-            && (gameObjectToMove.transform.position.y + newPositionOffset.y) < (targetPosition.y + targetPositionYLockBuffer)) {
-            //Debug.Log("setting y position to target");
-            gameObjectToMove.transform.position = new Vector3(gameObjectToMove.transform.position.x,
-                                                             targetPosition.y,
-                                                             gameObjectToMove.transform.position.z);
-            newPositionOffset.y = 0;
+        if ((gameObjectToMove.transform.position.y < targetPosition.y && nextYPosition > targetPosition.y)
+                || (gameObjectToMove.transform.position.y > targetPosition.y && nextYPosition < targetPosition.y)) {
+            newPositionOffset.y = targetPosition.y - gameObjectToMove.transform.position.y;
+            Debug.Log("locking y");
         }
 
         return newPositionOffset;
     }
 
-    public void UpdateBathroomFacingBasedOnNewPositionOffset(Vector2 newPositionOffset){
+    public void UpdateBathroomFacingBasedOnNewPositionOffset(Vector2 newPositionOffset) {
         bool movingUp = false;
         bool movingRight = false;
         bool movingDown = false;
         bool movingLeft = false;
 
-        if(newPositionOffset.x > 0) {
+        if (newPositionOffset.x > 0) {
             movingRight = true;
         }
-        else if(newPositionOffset.x < 0) {
+        else if (newPositionOffset.x < 0) {
             movingLeft = true;
         }
-        if(newPositionOffset.y > 0) {
+        if (newPositionOffset.y > 0) {
             movingUp = true;
         }
-        else if(newPositionOffset.y < 0) {
+        else if (newPositionOffset.y < 0) {
             movingDown = true;
         }
 
         // if(newPositionOffset.x != 0
-            // || newPositionOffset.y != 0) {
+        // || newPositionOffset.y != 0) {
         directionBeingLookedAt = CameraManager.Instance.rotateReference.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);
         // }
         // else {
