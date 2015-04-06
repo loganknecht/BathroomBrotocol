@@ -3,31 +3,31 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour {
     public GameObject uiRootGameObject = null;
-  //-------------
+    //-------------
     public string sceneToChangeTo = "";
-  //-------------
-  public GameObject backgroundImage = null;
-  //-------------
-  public GameObject pauseButton = null;
-  public bool isPaused = false;
-  //-------------
-  public GameObject janitorButton = null;
-  //-------------
-  public GameObject pausePanel = null;
-  //-------------
-  public GameObject levelCompletedPanel = null;
-  public GameObject levelFailedPanel = null;
-  //-------------
-  public GameObject janitorOverlayGameObject = null;
-  //-------------
-  public GameObject currentScoreLabel = null;
-  public GameObject perfectScoreLabel = null;
-  public GameObject colorGUIScoreRating = null;
-  //-------------
-  bool failedLevel = false;
-  bool passedLevel = false;
+    //-------------
+    public GameObject backgroundImage = null;
+    //-------------
+    public GameObject pauseButton = null;
+    public bool isPaused = false;
+    //-------------
+    public GameObject janitorButton = null;
+    //-------------
+    public GameObject pausePanel = null;
+    //-------------
+    public GameObject levelCompletedPanel = null;
+    public GameObject levelFailedPanel = null;
+    //-------------
+    public GameObject janitorOverlayGameObject = null;
+    //-------------
+    public GameObject currentScoreLabel = null;
+    public GameObject perfectScoreLabel = null;
+    public GameObject colorGUIScoreRating = null;
+    //-------------
+    bool failedLevel = false;
+    bool passedLevel = false;
 
-  bool levelChangeTriggered = false;
+    bool levelChangeTriggered = false;
 
     //BEGINNING OF SINGLETON CODE CONFIGURATION5
     private static volatile LevelManager _instance;
@@ -39,8 +39,8 @@ public class LevelManager : MonoBehaviour {
 
     public static LevelManager Instance {
         get {
-            if(_instance == null) {
-                lock(_lock) {
+            if (_instance == null) {
+                lock (_lock) {
                     if (_instance == null) {
 
                         GameObject levelManagerGameObject = new GameObject("LevelGUIManagerGameObject");
@@ -68,18 +68,18 @@ public class LevelManager : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-    // TweenExecutor.TweenObjectColor(colorGUIScoreRating, Color.red, Color.green, 0, 10, UITweener.Method.Linear, null);
+        // TweenExecutor.TweenObjectColor(colorGUIScoreRating, Color.red, Color.green, 0, 10, UITweener.Method.Linear, null);
     }
 
     // Update is called once per frame
     void Update () {
-    UpdateScoreComponents();
+        UpdateScoreComponents();
     }
 
     public void TogglePause() {
         isPaused = !isPaused;
 
-        if(isPaused) {
+        if (isPaused) {
             pausePanel.GetComponent<UIPanel>().alpha = 1;
 
             ScoreManager.Instance.Pause();
@@ -97,100 +97,112 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    public void HideUI() {
+    public LevelManager HideUI() {
         TweenExecutor.TweenObjectAlpha(uiRootGameObject, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void ShowUI() {
+    public LevelManager ShowUI() {
         TweenExecutor.TweenObjectAlpha(uiRootGameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void HidePauseButton() {
+    public LevelManager HidePauseButton() {
         TweenExecutor.TweenObjectAlpha(pauseButton, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void ShowPauseButton() {
+    public LevelManager ShowPauseButton() {
         TweenExecutor.TweenObjectAlpha(pauseButton, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void HideJanitorButton() {
+    public LevelManager HideJanitorButton() {
         TweenExecutor.TweenObjectAlpha(janitorButton, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void ShowJanitorButton() {
+    public LevelManager ShowJanitorButton() {
         TweenExecutor.TweenObjectAlpha(janitorButton, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void HideJanitorOverlay() {
+    public LevelManager HideJanitorOverlay() {
         TweenExecutor.TweenObjectAlpha(janitorOverlayGameObject, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void ShowJanitorOverlay() {
+    public LevelManager ShowJanitorOverlay() {
         TweenExecutor.TweenObjectAlpha(janitorOverlayGameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void HideLevelCompletedPanel() {
+    public LevelManager HideLevelCompletedPanel() {
         TweenExecutor.TweenObjectAlpha(levelCompletedPanel, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void ShowLevelCompletedPanel() {
+    public LevelManager ShowLevelCompletedPanel() {
         TweenExecutor.TweenObjectAlpha(levelCompletedPanel, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void HideLevelFailedPanel() {
+    public LevelManager HideLevelFailedPanel() {
         TweenExecutor.TweenObjectAlpha(levelFailedPanel, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
-    public void ShowLevelFailedPanel() {
+    public LevelManager ShowLevelFailedPanel() {
         TweenExecutor.TweenObjectAlpha(levelFailedPanel, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        return this;
     }
 
     public void UpdateScoreComponents() {
-        if(currentScoreLabel != null
-            && currentScoreLabel.GetComponent<UILabel>()  != null) {
+        if (currentScoreLabel != null
+                && currentScoreLabel.GetComponent<UILabel>()  != null) {
             // currentScoreLabel.GetComponent<UILabel>().text = "Score: " + ScoreManager.Instance.playerOneScoreTracker.CalculateCurrentScore();
             currentScoreLabel.GetComponent<UILabel>().text = "Current Score: " + ScoreManager.Instance.playerOneScoreTracker.currentScore;
         }
-        if(perfectScoreLabel != null
-            && perfectScoreLabel.GetComponent<UILabel>()  != null) {
+        if (perfectScoreLabel != null
+                && perfectScoreLabel.GetComponent<UILabel>()  != null) {
             // perfectScoreLabel.GetComponent<UILabel>().text = "Score: " + ScoreManager.Instance.playerOneScoreTracker.CalculateCurrentScore();
             perfectScoreLabel.GetComponent<UILabel>().text = "Perfect Score: " + ScoreManager.Instance.playerOneScoreTracker.perfectScore;
         }
-        if(colorGUIScoreRating != null
-            && colorGUIScoreRating.GetComponent<UISprite>()) {
+        if (colorGUIScoreRating != null
+                && colorGUIScoreRating.GetComponent<UISprite>()) {
             float scoreRatio =  0;
             // Debug.Log(ScoreManager.Instance.playerOneScoreTracker.perfectScore);
-            if(ScoreManager.Instance.playerOneScoreTracker.perfectScore > 0) {
-                scoreRatio = (((float)ScoreManager.Instance.playerOneScoreTracker.currentScore)/((float)ScoreManager.Instance.playerOneScoreTracker.perfectScore));
+            if (ScoreManager.Instance.playerOneScoreTracker.perfectScore > 0) {
+                scoreRatio = (((float)ScoreManager.Instance.playerOneScoreTracker.currentScore) / ((float)ScoreManager.Instance.playerOneScoreTracker.perfectScore));
                 // Debug.Log("Score Ratio: " + scoreRatio);
             }
             colorGUIScoreRating.GetComponent<UISprite>().color = Color.Lerp(Color.red, Color.green, scoreRatio);
         }
     }
 
-  public void TriggerFailedLevel() {
-    if(!passedLevel
-       && !failedLevel) {
-      failedLevel = true;
-      // Change to be level failed panel
-      ShowLevelFailedPanel();
+    public void TriggerFailedLevel() {
+        if (!passedLevel
+                && !failedLevel) {
+            failedLevel = true;
+            // Change to be level failed panel
+            ShowLevelFailedPanel();
+        }
     }
-  }
-  public void TriggerFinishedLevel() {
-    if(!passedLevel
-       && !failedLevel) {
-      passedLevel = true;
-      ShowLevelCompletedPanel();
+    public void TriggerFinishedLevel() {
+        if (!passedLevel
+                && !failedLevel) {
+            passedLevel = true;
+            ShowLevelCompletedPanel();
+        }
     }
-  }
 
-  public void TriggerLevelChangeToScoreMenu() {
-    TriggerLevelChange("ScoreMenu");
-  }
-
-  void TriggerLevelChange(string newSceneToChangeTo) {
-    if(!levelChangeTriggered) {
-      sceneToChangeTo = newSceneToChangeTo;
-      FadeManager.Instance.SetFadeFinishLogic(ChangeToScene);
-      FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
-
-      HideUI();
-
-      BroGenerator.Instance.Pause();
-      ScoreManager.Instance.Pause();
+    public void TriggerLevelChangeToScoreMenu() {
+        TriggerLevelChange("ScoreMenu");
     }
-  }
 
-  public void ChangeToScene() {
-    Application.LoadLevel(sceneToChangeTo);
-  }
+    void TriggerLevelChange(string newSceneToChangeTo) {
+        if (!levelChangeTriggered) {
+            sceneToChangeTo = newSceneToChangeTo;
+            FadeManager.Instance.SetFadeFinishLogic(ChangeToScene);
+            FadeManager.Instance.PerformFade(Color.clear, Color.white, 1, false);
+
+            HideUI();
+
+            BroGenerator.Instance.Pause();
+            ScoreManager.Instance.Pause();
+        }
+    }
+
+    public void ChangeToScene() {
+        Application.LoadLevel(sceneToChangeTo);
+    }
 }

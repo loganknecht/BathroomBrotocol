@@ -19,9 +19,6 @@ public class TargetPathing : BaseBehavior {
     public float xMoveSpeed = 1;
     public float yMoveSpeed = 1;
 
-    public float xLockBuffer = 0.05f;
-    public float yLockBuffer = 0.05f;
-
     public bool isPaused = false;
     public bool disableMovementLogic = false;
 
@@ -55,28 +52,6 @@ public class TargetPathing : BaseBehavior {
         }
     }
 
-    public void SetLockBuffer(Vector2 newLockBuffer) {
-        SetXLockBuffer(newLockBuffer.x);
-        SetYLockBuffer(newLockBuffer.y);
-    }
-    public void SetLockBuffer(float newXLockBuffer, float newYLockBuffer) {
-        SetXLockBuffer(newXLockBuffer);
-        SetYLockBuffer(newYLockBuffer);
-    }
-
-    public float GetXLockBuffer() {
-        return xLockBuffer;
-    }
-    public void SetXLockBuffer(float newLockBuffer) {
-        xLockBuffer = newLockBuffer;
-    }
-
-    public float GetYLockBuffer() {
-        return yLockBuffer;
-    }
-    public void SetYLockBuffer(float newLockBuffer) {
-        yLockBuffer = newLockBuffer;
-    }
     public void SetMoveSpeed(Vector2 newMoveSpeed) {
         SetXMoveSpeed(newMoveSpeed.x);
         SetYMoveSpeed(newMoveSpeed.y);
@@ -252,12 +227,10 @@ public class TargetPathing : BaseBehavior {
         if ((gameObjectToMove.transform.position.x < targetPosition.x  && nextXPosition > targetPosition.x)
                 || (gameObjectToMove.transform.position.x > targetPosition.x  && nextXPosition < targetPosition.x)) {
             newPositionOffset.x = targetPosition.x - gameObjectToMove.transform.position.x;
-            Debug.Log("locking x");
         }
         if ((gameObjectToMove.transform.position.y < targetPosition.y && nextYPosition > targetPosition.y)
                 || (gameObjectToMove.transform.position.y > targetPosition.y && nextYPosition < targetPosition.y)) {
             newPositionOffset.y = targetPosition.y - gameObjectToMove.transform.position.y;
-            Debug.Log("locking y");
         }
 
         return newPositionOffset;

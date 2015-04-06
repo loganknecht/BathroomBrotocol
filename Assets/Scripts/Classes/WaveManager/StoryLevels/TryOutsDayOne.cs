@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
-    public GameObject broCzarGameObject = null;
+    public Bro broCzarReference = null;
 
     public override void Awake() {
         base.Awake();
@@ -37,7 +37,32 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     public void TriggerBroCzarEnterAnimation() {
         // Debug.Log("triggering start animation");
-        // SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
+        FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
+
+        BroGenerator.Instance.Pause();
+
+        broCzarReference.gameObject.SetActive(true);
+
+        LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
+        GameObject firstQueueTile = entranceLineQueue.GetFirstQueueTile();
+        GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
+
+        broCzarReference.transform.position = new Vector3(lastQueueTile.transform.position.x,
+                lastQueueTile.transform.position.y,
+                broCzarReference.transform.position.z);
+        List<GameObject> entranceToCenterMovementNodes = entranceLineQueue.GetQueueMovementNodes();
+        entranceToCenterMovementNodes.AddRange(AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                               AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(firstQueueTile.transform.position, true).GetComponent<BathroomTile>(),
+                                               BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
+
+        broCzarReference.targetPathingReference.SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
+        broCzarReference.targetPathingReference.SetMoveSpeed(3, 3);
+        broCzarReference.targetPathingReference.SetOnArrivalAtTargetPosition(() => {
+            broCzarReference.SetState(BroState.Standing).SetFacing(Facing.Bottom);
+        });
+
+        LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
 
         // TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject,
         //                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x,
@@ -48,39 +73,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //                                   2,
         //                                   UITweener.Method.BounceIn,
         //                                   null);
-
-        FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
-
-        BroGenerator.Instance.Pause();
-
-        broCzarGameObject.SetActive(true);
-        TargetPathing broCzarTargetPathing = broCzarGameObject.GetComponent<TargetPathing>();
-
-        LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
-        GameObject firstQueueTile = entranceLineQueue.GetFirstQueueTile();
-        GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
-
-        broCzarGameObject.transform.position = new Vector3(lastQueueTile.transform.position.x,
-                lastQueueTile.transform.position.y,
-                broCzarGameObject.transform.position.z);
-        List<GameObject> entranceToCenterMovementNodes = entranceLineQueue.GetQueueMovementNodes();
-        // Debug.Log("entranceToCenterMovementNodes Length: " + entranceToCenterMovementNodes.Count);
-        entranceToCenterMovementNodes.AddRange(AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-                                               AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-                                               BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(firstQueueTile.transform.position, true).GetComponent<BathroomTile>(),
-                                               BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
-
-        // SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
-
-        broCzarTargetPathing.SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
-        broCzarTargetPathing.SetMoveSpeed(3, 3);
-        // broCzarTargetPathing.SetOnArrivalAtTargetPosition(()
-        broCzarTargetPathing.SetOnArrivalAtTargetPosition(() => {
-            // Debug.Log("lol at target position");
-            broCzarGameObject.GetComponent<BathroomFacing>().SetFacing(Facing.Bottom);
-        });
-
-        LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
     }
 
     public void PerformBroCzarEnterAnimation() {
