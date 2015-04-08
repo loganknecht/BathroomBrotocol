@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public LinkedList<GameObject> waveStatesQueue = new LinkedList<GameObject>();
-    GameObject currentWaveStateGameObject = null;
+    public GameObject currentWaveStateGameObject = null;
+    public IEnumerator currentWaveStateCoroutine = null;
     public float timer = 0f;
     
     public bool waveLogicFinished = false;
@@ -14,6 +15,13 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public virtual void Start() {}
     
     public virtual void Update() {}
+    
+    public virtual void Delay(float newDelayTime) {
+        if(currentWaveStateGameObject != null) {
+            WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
+            currentWaveStateRef.SetDelay(newDelayTime);
+        }
+    }
     
     public virtual void Initialize() {}
     
@@ -29,12 +37,24 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         if(currentWaveStateGameObject != null) {
             // Debug.Log("performing wave state logic");
             WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
-            currentWaveStateRef.PerformWaveStateLogic();
+            
+            // Coroutine start is triggered here for wave state
+            if(currentWaveStateCoroutine == null) {
+                Debug.Log("starting wave state coroutine");
+                currentWaveStateCoroutine = currentWaveStateRef.PerformWaveStateLogic();
+                StartCoroutine(currentWaveStateCoroutine);
+            }
             
             if(currentWaveStateRef.hasFinished) {
                 if(waveStatesQueue.Count > 0) {
                     currentWaveStateGameObject = (GameObject)DequeueWaveState();
-                } else {
+                    // cleans up previous wave state's coroutine just in case
+                    if(currentWaveStateCoroutine != null) {
+                        StopCoroutine(currentWaveStateCoroutine);
+                        currentWaveStateCoroutine = null;
+                    }
+                }
+                else {
                     currentWaveStateGameObject = null;
                 }
             }
@@ -60,8 +80,8 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
             if(bathObjRef != null) {
                 if(bathObjRef.type != BathroomObjectType.Exit) {
                     if(bathObjRef.state != BathroomObjectState.Broken
-                            && bathObjRef.state != BathroomObjectState.BrokenByPee
-                            && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
+                        && bathObjRef.state != BathroomObjectState.BrokenByPee
+                        && bathObjRef.state != BathroomObjectState.BrokenByPoop) {
                         foundBathroomObjectThatIsNotBroken = true;
                     }
                 }

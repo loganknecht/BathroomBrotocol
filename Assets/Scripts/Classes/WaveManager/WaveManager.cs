@@ -85,6 +85,10 @@ public class WaveManager : MonoBehaviour {
         }
     }
     
+    public bool IsPaused() {
+        return isPaused;
+    }
+    
     public void Pause() {
         isPaused = true;
     }
@@ -92,6 +96,9 @@ public class WaveManager : MonoBehaviour {
         isPaused = false;
     }
     
+    public void Delay(float newDelayTime) {
+        waveLogicReference.Delay(newDelayTime);
+    }
     public void PerformWaveLogic() {
         waveLogicReference.PerformWaveLogic();
     }

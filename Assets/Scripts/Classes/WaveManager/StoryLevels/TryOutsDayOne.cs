@@ -18,8 +18,6 @@ using System.Collections.Generic;
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     public Bro broCzarReference = null;
-    public float waitTime = 0;
-    public bool waitFinished = false;
     
     public override void Awake()
     {   base.Awake(); }
@@ -44,8 +42,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                                 FinishBroCzarEnterAnimation);
                                                                 
         InitializeWaveStates(
-            basicBrosEnter
-            // broCzarEnterWaveGameObject
+            // basicBrosEnter
+            broCzarEnterWaveGameObject
         );
     }
     
@@ -57,7 +55,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     //--------------------------------------------------------------------------
     // Bros Enter and Line Up
     //--------------------------------------------------------------------------
-    public IEnumerator TriggerAnimationBasicBrosEnter() {
+    public void TriggerAnimationBasicBrosEnter() {
         BroGenerator.Instance.Pause();
         broCzarReference.gameObject.SetActive(false);
         
@@ -107,18 +105,17 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     // Old Bathroom Bro Czar Enters To The Center of The Screen
     //--------------------------------------------------------------------------
     public void TriggerBroCzarEnterAnimation() {
-        waitTime = 0f;
+        Debug.Log("triggering start animation");
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
         GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
         Vector3 startBroCzarPosition = new Vector2(lastQueueTile.transform.position.x,
                                                    lastQueueTile.transform.position.y);
         broCzarReference.SetLocation(startBroCzarPosition)
         .SetTargetObjectAndTargetPosition(null, startBroCzarPosition);
-        
     }
     
     public void PerformBroCzarEnterAnimation() {
-        // Debug.Log("lol done waiting");
+        Debug.Log("performing start animation");
         // waitTime += Time.deltaTime;
         // if(waitTime > 1
         //         && !waitFinished) {
@@ -159,6 +156,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
     
     public void FinishBroCzarEnterAnimation() {
-        // Debug.Log("finishing start animation");
+        Debug.Log("finishing start animation");
     }
 }
