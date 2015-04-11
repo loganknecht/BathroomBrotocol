@@ -6,7 +6,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public LinkedList<GameObject> waveStatesQueue = new LinkedList<GameObject>();
     public GameObject currentWaveStateGameObject = null;
     public IEnumerator currentWaveStateCoroutine = null;
-    public float timer = 0f;
+    public float delayTimer = 0f;
     
     public bool waveLogicFinished = false;
     
@@ -14,48 +14,64 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     
     public virtual void Start() {}
     
-    public virtual void Update() {}
+    public virtual void Update() {
+        PerformDelayTimerLogic();
+    }
     
-    public virtual void Delay(float newDelayTime) {
-        if(currentWaveStateGameObject != null) {
-            WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
-            currentWaveStateRef.SetDelay(newDelayTime);
+    public virtual void Initialize() {
+        //
+    }
+    
+    public virtual void PerformDelayTimerLogic() {
+        if(delayTimer > 0) {
+            delayTimer -= Time.deltaTime;
         }
     }
     
-    public virtual void Initialize() {}
+    public virtual bool HasDelayFinished() {
+        if(delayTimer <= 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public virtual void Delay(float newTimer) {
+        delayTimer = newTimer;
+    }
+    
+    public virtual void Completed() {
+        WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
+        currentWaveStateRef.Completed();
+        // Debug.Log("WaveLogic Completed");
+    }
+    
+    public virtual bool HasFinished() {
+        return false;
+    }
     
     // Think of this as the main update loop
     public virtual void PerformWaveLogic() {
-        timer += Time.deltaTime;
-        // Debug.Log("Current Timer: " + timer);
+        // Debug.Log("Current Timer: " + delayTimer);
         
-        PerformLevelFailCheck();
-        PerformLevelFinishCheck();
-        
-        //this assumes that the paused state is already managed by the wave manager
-        if(currentWaveStateGameObject != null) {
-            // Debug.Log("performing wave state logic");
-            WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
+        if(HasDelayFinished()) {
+            PerformLevelFailCheck();
+            PerformLevelFinishCheck();
             
-            // Coroutine start is triggered here for wave state
-            if(currentWaveStateCoroutine == null) {
-                Debug.Log("starting wave state coroutine");
-                currentWaveStateCoroutine = currentWaveStateRef.PerformWaveStateLogic();
-                StartCoroutine(currentWaveStateCoroutine);
-            }
-            
-            if(currentWaveStateRef.hasFinished) {
-                if(waveStatesQueue.Count > 0) {
-                    currentWaveStateGameObject = (GameObject)DequeueWaveState();
-                    // cleans up previous wave state's coroutine just in case
-                    if(currentWaveStateCoroutine != null) {
-                        StopCoroutine(currentWaveStateCoroutine);
-                        currentWaveStateCoroutine = null;
+            //this assumes that the paused state is already managed by the wave manager
+            if(currentWaveStateGameObject != null) {
+                // Debug.Log("performing wave state logic");
+                WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
+                currentWaveStateRef.PerformWaveStateLogic();
+                
+                if(currentWaveStateRef.HasFinished()) {
+                    if(waveStatesQueue.Count > 0) {
+                        currentWaveStateGameObject = (GameObject)DequeueWaveState();
                     }
-                }
-                else {
-                    currentWaveStateGameObject = null;
+                    else {
+                        currentWaveStateGameObject = null;
+                    }
                 }
             }
         }
@@ -91,12 +107,19 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         return !foundBathroomObjectThatIsNotBroken;
     }
     
-    public GameObject CreateWaveState(string gameObjectName, WaveState.WaveStateStartLogic startLogic, WaveState.WaveStateLogic performingLogic, WaveState.WaveStateFinishLogic endLogic) {
+    public GameObject CreateWaveState(string gameObjectName, WaveState.WaveStateLogic waveStateLogic) {
         GameObject newWaveStateGameObject = ((new GameObject(gameObjectName)).AddComponent<WaveState>()).gameObject;
-        newWaveStateGameObject.GetComponent<WaveState>().ConfigureLogic(startLogic, performingLogic, endLogic);
+        newWaveStateGameObject.GetComponent<WaveState>().ConfigureLogic(waveStateLogic);
         newWaveStateGameObject.transform.parent = this.gameObject.transform;
         
         return newWaveStateGameObject;
+    }
+    
+    public GameObject CreateDelayState(string gameObjectName, float delayTime) {
+        return CreateWaveState("Delay", () => {
+            Delay(delayTime);
+            Completed();
+        });
     }
     
     public void InitializeWaveStates(params GameObject[] waveStates) {
@@ -104,6 +127,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         
         foreach(GameObject waveState in waveStates) {
             EnqueueWaveState(waveState);
+            // Debug.Log(waveState);
         }
         if(waveStatesQueue.Count != 0) {
             currentWaveStateGameObject = (GameObject)DequeueWaveState();
@@ -118,6 +142,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public void EnqueueWaveState(GameObject waveStateGameObjectToEnqueue) {
         waveStatesQueue.AddLast(waveStateGameObjectToEnqueue);
     }
+    
     public void EnqueueWaveStateAtFront(GameObject waveStateGameObjectToEnqueue) {
         waveStatesQueue.AddFirst(waveStateGameObjectToEnqueue);
     }
@@ -131,11 +156,20 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public void AddWaveStateToFrontOfQueue(GameObject waveStateGameObjectToAdd) {
         waveStatesQueue.AddFirst(waveStateGameObjectToAdd);
     }
+    
     public void AddWaveStateToEndOfQueue(GameObject waveStateGameObjectToAdd) {
         waveStatesQueue.AddLast(waveStateGameObjectToAdd);
     }
     
-    public void TriggerWaveFinish() {
-        currentWaveStateGameObject.GetComponent<WaveState>().TriggerWaveFinish();
-    }
+// public void StartCompleted() {
+//     currentWaveStateGameObject.GetComponent<WaveState>().StartCompleted();
+// }
+
+// public void RunCompleted() {
+//     currentWaveStateGameObject.GetComponent<WaveState>().RunCompleted();
+// }
+
+// public void FinalCompleted() {
+//     currentWaveStateGameObject.GetComponent<WaveState>().FinalCompleted();
+// }
 }

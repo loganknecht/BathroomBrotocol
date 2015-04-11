@@ -2,30 +2,15 @@
 using System.Collections;
 
 public class WaveState : MonoBehaviour {
-    public bool hasBeenTriggered = false;
-    public bool isPlaying = false;
-    public bool triggerFinishLogic = false;
-    public bool hasFinished = false;
-    public bool useDelay = false;
-    public bool delayStarted = false;
-    public float delayTime = 0f;
-    public IEnumerator delayCoroutine = null;
+
+    public bool hasTriggeredLogic = false;
+    public bool hasCompletedLogic = false;
     
-    public delegate void WaveStateStartLogic();
     public delegate void WaveStateLogic();
-    public delegate void WaveStateFinishLogic();
-    public WaveStateStartLogic waveStateStartLogic = null;
-    public WaveStateLogic waveStateLogic = null;
-    public WaveStateFinishLogic waveStateFinishLogic = null;
     
-    public WaveStateStartLogic playerWaveStateStartLogic = null;
     public WaveStateLogic playerWaveStateLogic = null;
-    public WaveStateFinishLogic playerWaveStateFinishLogic = null;
     
     public void Awake() {
-        waveStateStartLogic = new WaveStateStartLogic(DefaultWaveStateStartedLogic);
-        waveStateLogic = new WaveStateLogic(DefaultWaveStatePlayingLogic);
-        waveStateFinishLogic = new WaveStateFinishLogic(DefaultWaveStateFinishedLogic);
     }
     
     public void Start() {
@@ -34,91 +19,57 @@ public class WaveState : MonoBehaviour {
     public void Update() {
     }
     
-    public void ConfigureLogic(WaveStateStartLogic startLogic, WaveStateLogic performingLogic, WaveStateFinishLogic endLogic) {
-        playerWaveStateStartLogic = new WaveStateStartLogic(startLogic);
-        playerWaveStateLogic = new WaveStateLogic(performingLogic);
-        playerWaveStateFinishLogic = new WaveStateFinishLogic(endLogic);
+    public void ConfigureLogic(WaveStateLogic newPlayerWaveStateLogic) {
+        playerWaveStateLogic = new WaveStateLogic(newPlayerWaveStateLogic);
     }
     
-    public IEnumerator PerformWaveStateLogic() {
+    public bool HasStarted() {
+        return hasTriggeredLogic;
+    }
+    
+    public bool HasFinished() {
+        if(hasTriggeredLogic
+            && hasCompletedLogic) {
+            return true;
+        }
+        else {
+            return false;
+        }
+        
+    }
+    
+    public void PerformWaveStateLogic() {
         if(!WaveManager.Instance.IsPaused()) {
-            Debug.Log("not paused");
-            if(useDelay) {
-                if(!delayStarted) {
-                    delayStarted = true;
-                    // TODO: Yield for seconds here
-                    // delayCoroutine = new WaitForSeconds(delayTime);
-                    delayCoroutine = Delay(delayTime);
-                    StartCoroutine(delayCoroutine);
+            if(playerWaveStateLogic != null) {
+                if(!HasStarted()) {
+                    // Debug.Log("Starting WaveState.");
+                    Started();
                 }
-            }
-            if(!hasBeenTriggered) {
-                Debug.Log("triggering logic");
-                hasBeenTriggered = true;
-                isPlaying = true;
-                waveStateStartLogic();
+                // Debug.Log("Performing Logic.");
+                playerWaveStateLogic();
             }
             else {
-                if(hasBeenTriggered
-                    && !triggerFinishLogic) {
-                    Debug.Log("performing logic");
-                    waveStateLogic();
-                }
-                else {
-                    if(triggerFinishLogic) {
-                        waveStateFinishLogic();
-                    }
-                }
+                // Debug.Log("Wave State does not exist!!!");
             }
         }
-        // Wave State Logic Has Finished Completely
-        yield break;
     }
     
-    public IEnumerator Delay(float newDelayTime) {
-        yield return new WaitForSeconds(newDelayTime);
+    public void PerformLoop() {
+    
     }
     
-    public void SetDelay(float newDelayTime) {
-        if(delayCoroutine != null) {
-            StopCoroutine(delayCoroutine);
-        }
-        delayCoroutine = null;
-        useDelay = true;
-        delayStarted = false;
-        delayTime = newDelayTime;
+    public void Delay(float newDelayTime) {
     }
     
     public void Reset() {
-        hasBeenTriggered = false;
-        isPlaying = false;
-        triggerFinishLogic = false;
-        hasFinished = false;
     }
     
-    public void DefaultWaveStateStartedLogic() {
-        // Debug.Log("PERFORMING DEFAULT WAVE STATE STARTED LOGIC, PLEASE FIX THIS ISSUE.");
-        TriggerWaveStart();
-        playerWaveStateStartLogic();
-    }
-    public void DefaultWaveStatePlayingLogic() {
-        // Debug.Log("PERFORMING DEFAULT WAVE STATE LOGIC, PLEASE FIX THIS ISSUE.");
-        playerWaveStateLogic();
-    }
-    public void DefaultWaveStateFinishedLogic() {
-        // Debug.Log("PERFORMING DEFAULT WAVE STATE FINISHED LOGIC, PLEASE FIX THIS ISSUE.");
-        WaveHasFinished();
-        playerWaveStateFinishLogic();
+    public void Started() {
+        hasTriggeredLogic = true;
     }
     
-    public void TriggerWaveStart() {
-        hasBeenTriggered = true;
-        isPlaying = true;
-    }
-    public void TriggerWaveFinish() {
-        triggerFinishLogic = true;
-    }
-    public void WaveHasFinished() {
-        hasFinished = true;
+    public void Completed() {
+        // Debug.Log("WaveState Completed");
+        hasCompletedLogic = true;
     }
 }

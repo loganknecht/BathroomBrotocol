@@ -96,9 +96,6 @@ public class WaveManager : MonoBehaviour {
         isPaused = false;
     }
     
-    public void Delay(float newDelayTime) {
-        waveLogicReference.Delay(newDelayTime);
-    }
     public void PerformWaveLogic() {
         waveLogicReference.PerformWaveLogic();
     }
