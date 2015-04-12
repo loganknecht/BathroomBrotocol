@@ -17,4 +17,10 @@ public class Tile : MonoBehaviour {
     // Update is called once per frame
     public virtual void Update() {
     }
+    
+    public override string ToString() {
+        string stringToReturn = "";
+        stringToReturn += "TileX: " + tileX + " Tile Y: " + tileY;
+        return stringToReturn;
+    }
 }

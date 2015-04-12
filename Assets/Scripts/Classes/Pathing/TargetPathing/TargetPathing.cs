@@ -90,6 +90,35 @@ public class TargetPathing : BaseBehavior {
     public List<GameObject> GetMovementNodes() {
         return movementNodes;
     }
+    
+    public GameObject GetFirstMovementNode() {
+        if(movementNodes.Count > 0) {
+            return movementNodes[0];
+        }
+        else {
+            return null;
+        }
+    }
+    
+    public GameObject GetLastMovementNode() {
+        if(movementNodes.Count > 0) {
+            return movementNodes[movementNodes.Count - 1];
+        }
+        else {
+            return null;
+        }
+    }
+    
+    public TargetPathing AddMovementNodes(List<GameObject> newMovementNodes) {
+        if(movementNodes == null) {
+            movementNodes = new List<GameObject>();
+        }
+        movementNodes.AddRange(newMovementNodes);
+        performedOnArrivalAtTargetPosition = false;
+        
+        return this;
+    }
+    
     public TargetPathing SetMovementNodes(List<GameObject> newMovementNodes) {
         movementNodes = newMovementNodes;
         performedOnArrivalAtTargetPosition = false;
@@ -156,18 +185,20 @@ public class TargetPathing : BaseBehavior {
     
     public bool IsAtMovementNodePosition() {
         if(gameObjectToMove.transform.position.x == targetPosition.x
-                && gameObjectToMove.transform.position.y == targetPosition.y) {
+            && gameObjectToMove.transform.position.y == targetPosition.y) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
     public bool IsAtTargetPosition() {
         if(movementNodes.Count == 0
-                && gameObjectToMove.transform.position.x == targetPosition.x
-                && gameObjectToMove.transform.position.y == targetPosition.y) {
+            && gameObjectToMove.transform.position.x == targetPosition.x
+            && gameObjectToMove.transform.position.y == targetPosition.y) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -198,7 +229,7 @@ public class TargetPathing : BaseBehavior {
         
         //performs check
         if(!performedOnArrivalAtTargetPosition
-                && IsAtTargetPosition()) {
+            && IsAtTargetPosition()) {
             performedOnArrivalAtTargetPosition = true;
             if(onArrivalAtTargetPositionLogic != null) {
                 onArrivalAtTargetPositionLogic();
@@ -222,7 +253,8 @@ public class TargetPathing : BaseBehavior {
             }
             // Destroy(nextNode);
             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-        } else {
+        }
+        else {
             targetTile = null;
         }
     }
@@ -232,18 +264,18 @@ public class TargetPathing : BaseBehavior {
         
         if(gameObjectToMove.transform.position.x < targetPosition.x) {
             newPositionOffset.x += xMoveSpeed;
-        } else
-            if(gameObjectToMove.transform.position.x > targetPosition.x) {
-                newPositionOffset.x -= xMoveSpeed;
-            }
-            
+        }
+        else if(gameObjectToMove.transform.position.x > targetPosition.x) {
+            newPositionOffset.x -= xMoveSpeed;
+        }
+        
         if(gameObjectToMove.transform.position.y < targetPosition.y) {
             newPositionOffset.y += yMoveSpeed;
-        } else
-            if(gameObjectToMove.transform.position.y > targetPosition.y) {
-                newPositionOffset.y -= yMoveSpeed;
-            }
-            
+        }
+        else if(gameObjectToMove.transform.position.y > targetPosition.y) {
+            newPositionOffset.y -= yMoveSpeed;
+        }
+        
         return newPositionOffset;
     }
     
@@ -252,11 +284,11 @@ public class TargetPathing : BaseBehavior {
         float nextYPosition = gameObjectToMove.transform.position.y + newPositionOffset.y;
         
         if((gameObjectToMove.transform.position.x < targetPosition.x  && nextXPosition > targetPosition.x)
-                || (gameObjectToMove.transform.position.x > targetPosition.x  && nextXPosition < targetPosition.x)) {
+            || (gameObjectToMove.transform.position.x > targetPosition.x  && nextXPosition < targetPosition.x)) {
             newPositionOffset.x = targetPosition.x - gameObjectToMove.transform.position.x;
         }
         if((gameObjectToMove.transform.position.y < targetPosition.y && nextYPosition > targetPosition.y)
-                || (gameObjectToMove.transform.position.y > targetPosition.y && nextYPosition < targetPosition.y)) {
+            || (gameObjectToMove.transform.position.y > targetPosition.y && nextYPosition < targetPosition.y)) {
             newPositionOffset.y = targetPosition.y - gameObjectToMove.transform.position.y;
         }
         
@@ -271,17 +303,17 @@ public class TargetPathing : BaseBehavior {
         
         if(newPositionOffset.x > 0) {
             movingRight = true;
-        } else
-            if(newPositionOffset.x < 0) {
-                movingLeft = true;
-            }
+        }
+        else if(newPositionOffset.x < 0) {
+            movingLeft = true;
+        }
         if(newPositionOffset.y > 0) {
             movingUp = true;
-        } else
-            if(newPositionOffset.y < 0) {
-                movingDown = true;
-            }
-            
+        }
+        else if(newPositionOffset.y < 0) {
+            movingDown = true;
+        }
+        
         // if(newPositionOffset.x != 0
         // || newPositionOffset.y != 0) {
         directionBeingLookedAt = CameraManager.Instance.rotateReference.GetDirectionFacingBasedOnCameraAndMovementDirection(movingUp, movingRight, movingDown, movingLeft);

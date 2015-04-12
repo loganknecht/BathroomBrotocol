@@ -32,37 +32,42 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // Debug.Log("initialization");
         SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
         
-        // GameObject broCzarEnterWaveGameObject = CreateWaveState("Start Animation Game Object", TriggerBroCzarEnterAnimation);
-        
-        // Debug.Log("triggering start animation");
-        
-        // LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
-        // GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
-        // Vector2 startBroCzarPosition = new Vector2(lastQueueTile.transform.position.x,
-        //                                            lastQueueTile.transform.position.y);
-        // broCzarReference.SetLocation(startBroCzarPosition)
-        // .SetTargetObjectAndTargetPosition(null, startBroCzarPosition);
-        
-        
-        // Debug.Log("Starting Delay");
-        // yield return new WaitForSeconds(3);
-        // Debug.Log("Finished Delay");
-        // Completed();
         // PerformBroCzarEnterAnimation,
         // FinishBroCzarEnterAnimation);
         // basicBrosEnter
         // broCzarEnterWaveGameObject
         
+        BathroomTile centerTile = BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>();
+        BathroomTile middleLeftTile = BathroomTileMap.Instance.GetMiddleLeftTileGameObject().GetComponent<BathroomTile>();
+        BathroomTile topCenterTile = BathroomTileMap.Instance.GetTopCenterTileGameObject().GetComponent<BathroomTile>();
+        BathroomTile middleRightTile = BathroomTileMap.Instance.GetMiddleRightTileGameObject().GetComponent<BathroomTile>();
+        BathroomTile bottomCenterTile = BathroomTileMap.Instance.GetBottomCenterTileGameObject().GetComponent<BathroomTile>();
+        
+        GameObject firstBro = null;
+        // GameObject secondBro = null;
+        // GameObject thirdBro = null;
+        // GameObject fourthBro = null;
+        // GameObject fifthBro = null;
+        
         List<GameObject> waveStates = new List<GameObject>();
-        waveStates.Add(CreateWaveState("Start Animation", () => {
-            Debug.Log("First Wave");
+        
+        waveStates.Add(CreateDelayState("Delay", 1f));
+        waveStates.Add(CreateWaveState("First Bro Entrance", () => {
+            Debug.Log("Generating");
+            firstBro = CinematicHelper.Instance
+                       .CreateBro(BroType.GenericBro)
+                       .BroEnterThroughLineQueue(0)
+                       .BroMoveToTile(middleLeftTile.tileX, middleLeftTile.tileY)
+                       .BroMoveToTile(topCenterTile.tileX, topCenterTile.tileY)
+                       .BroMoveToTile(middleRightTile.tileX, middleRightTile.tileY)
+                       .BroMoveToTile(bottomCenterTile.tileX, bottomCenterTile.tileY)
+                       .BuildBro();
             Completed();
         }));
-        waveStates.Add(CreateDelayState("Delay", 5f));
-        waveStates.Add(CreateWaveState("Derp", () => {
-            Debug.Log("After Delay");
-            Completed();
-        }));
+        // waveStates.Add(CreateWaveState("Derp", () => {
+        //     Debug.Log("After Delay");
+        //     Completed();
+        // }));
         
         InitializeWaveStates(waveStates.ToArray()); // End of Initialize
     }
