@@ -2,15 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// TweenExecutor.TweenObjectPosition(LevelManager.Instance.janitorOverlayGameObject,
-//                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x,
-//                                   -595,
-//                                   LevelManager.Instance.janitorOverlayGameObject.transform.localPosition.x,
-//                                   -250,
-//                                   1,
-//                                   2,
-//                                   uitWEENER.mETHOD.bOUNCEiN,
-//                                   null);
 // Debug.Log("performing start animation");
 // if(TextboxManager.Instance.HasFinished()) {
 // TriggerWaveFinish();
@@ -18,6 +9,9 @@ using System.Collections.Generic;
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     public Bro broCzarReference = null;
+    public GameObject leftLightningClouds = null;
+    public List<GameObject> lightningCloudsToFlash = null;
+    public GameObject rightLightningClouds = null;
     
     public override void Awake()
     {   base.Awake(); }
@@ -49,37 +43,84 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // GameObject fourthBro = null;
         // GameObject fifthBro = null;
         
+        // firstBro = CinematicHelper.Instance
+        //            .CreateBro(BroType.GenericBro)
+        //            .BroEnterThroughLineQueue(0)
+        //            .BroMoveToTile(middleLeftTile.tileX, middleLeftTile.tileY)
+        //            .BroMoveToTile(topCenterTile.tileX, topCenterTile.tileY)
+        //            .BroMoveToTile(middleRightTile.tileX, middleRightTile.tileY)
+        //            .BroMoveToTile(bottomCenterTile.tileX, bottomCenterTile.tileY)
+        //            .BuildBro();
+        
         List<GameObject> waveStates = new List<GameObject>();
         
         waveStates.Add(CreateDelayState("Delay", 1f));
         waveStates.Add(CreateWaveState("First Bro Entrance", () => {
             Debug.Log("Generating");
-            firstBro = CinematicHelper.Instance
-                       .CreateBro(BroType.GenericBro)
-                       .BroEnterThroughLineQueue(0)
-                       .BroMoveToTile(middleLeftTile.tileX, middleLeftTile.tileY)
-                       .BroMoveToTile(topCenterTile.tileX, topCenterTile.tileY)
-                       .BroMoveToTile(middleRightTile.tileX, middleRightTile.tileY)
-                       .BroMoveToTile(bottomCenterTile.tileX, bottomCenterTile.tileY)
-                       .BuildBro();
+            // firstBro = CinematicHelper.Instance
+            //            .CreateBro(BroType.GenericBro)
+            //            .BroEnterThroughLineQueue(0)
+            //            .BroMoveToTile(middleLeftTile.tileX, middleLeftTile.tileY)
+            //            .BroMoveToTile(topCenterTile.tileX, topCenterTile.tileY)
+            //            .BroMoveToTile(middleRightTile.tileX, middleRightTile.tileY)
+            //            .BroMoveToTile(bottomCenterTile.tileX, bottomCenterTile.tileY)
+            //            .BuildBro();
             Completed();
         }));
-        // waveStates.Add(CreateWaveState("Derp", () => {
-        //     Debug.Log("After Delay");
-        //     Completed();
-        // }));
+        waveStates.Add(CreateWaveState("CloudEnter", () => {
+            Debug.Log("Clouds Entering");
+            TweenExecutor.TweenObjectPosition(leftLightningClouds,
+                                              -10, // startX
+                                              4, // startY
+                                              7, // endX
+                                              4, // endY
+                                              0, // delay
+                                              1, // duration
+                                              UITweener.Method.BounceIn, // UITweener.Method easingMethod
+                                              null); // EventDelegate eventDelegate
+            TweenExecutor.TweenObjectPosition(rightLightningClouds,
+                                              25, // startX
+                                              4, // startY
+                                              9, // endX
+                                              4, // endY
+                                              0, // delay
+                                              1, // duration
+                                              UITweener.Method.BounceIn, // UITweener.Method easingMethod
+            new EventDelegate(() => {
+                // TODO: Replace with cinematic helper function
+                foreach(GameObject gameObj in lightningCloudsToFlash) {
+                    Animator animator = gameObj.GetComponent<Animator>();
+                    AnimatorHelper animatorHelper = gameObj.GetComponent<AnimatorHelper>();
+                    string animationToPlay = "Lightning";
+                    animator.Play(animationToPlay);
+                    animatorHelper.SetOnStateExit(animationToPlay, () => { Debug.Log("lololol finished animation."); });
+                }
+            })); // EventDelegate eventDelegate
+            Completed();
+        }));
+        waveStates.Add(CreateWaveState("Lightning Finish", () => {
+            // Debug.Log("lightning animation complete");
+            // Completed();
+        }));
+        bool performedCheck = false;
+        waveStates.Add(CreateWaveState("Cinematic Complete", () => {
+            if(!performedCheck) {
+                performedCheck = true;
+                Debug.Log("Cinematic Complete!");
+            }
+        }));
         
         InitializeWaveStates(waveStates.ToArray()); // End of Initialize
     }
     
-    // Update is called once per frame
+// Update is called once per frame
     public override void Update() {
         base.Update();
     }
     
-    //--------------------------------------------------------------------------
-    // Old Bathroom Bro Czar Enters To The Center of The Screen
-    //--------------------------------------------------------------------------
+//--------------------------------------------------------------------------
+// Old Bathroom Bro Czar Enters To The Center of The Screen
+//--------------------------------------------------------------------------
     public void TriggerBroCzarEnterAnimation() {
     }
     
