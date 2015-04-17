@@ -29,14 +29,14 @@ using System.Collections.Generic;
 ///       event
 /// </summary>
 public class AnimatorHelper : MonoBehaviour {
-    public delegate void OnStateEvent();
-    public Dictionary<string, OnStateEvent> onStateEnter = new Dictionary<string, OnStateEvent>();
-    public Dictionary<string, OnStateEvent> onStateUpdate = new Dictionary<string, OnStateEvent>();
-    public Dictionary<string, OnStateEvent> onStateExit = new Dictionary<string, OnStateEvent>();
-    public Dictionary<string, OnStateEvent> onStateMove = new Dictionary<string, OnStateEvent>();
-    public Dictionary<string, OnStateEvent> onStateIK = new Dictionary<string, OnStateEvent>();
+    public delegate void StateEvent();
+    public Dictionary<string, StateEvent> onStateEnter = new Dictionary<string, StateEvent>();
+    public Dictionary<string, StateEvent> onStateUpdate = new Dictionary<string, StateEvent>();
+    public Dictionary<string, StateEvent> onStateExit = new Dictionary<string, StateEvent>();
+    public Dictionary<string, StateEvent> onStateMove = new Dictionary<string, StateEvent>();
+    public Dictionary<string, StateEvent> onStateIK = new Dictionary<string, StateEvent>();
     //--------------------------------------------------------------------------
-    public Dictionary<string, OnStateEvent> onAnimationFinish = new Dictionary<string, OnStateEvent>();
+    public Dictionary<string, StateEvent> onAnimationFinish = new Dictionary<string, StateEvent>();
     public Dictionary<string, bool> loopAnimationFinishEvent = new Dictionary<string, bool>();
     
     // Use this for initialization
@@ -47,21 +47,21 @@ public class AnimatorHelper : MonoBehaviour {
     void Update() {
     }
     
-    public void SetOnAnimationFinish(string stateName, OnStateEvent stateEventFunction, bool loopAnimationEvent = false) {
+    public void SetOnAnimationFinish(string stateName, StateEvent stateEventFunction, bool loopAnimationEvent = false) {
         if(stateEventFunction != null) {
-            onAnimationFinish[stateName] = new OnStateEvent(stateEventFunction);
+            onAnimationFinish[stateName] = new StateEvent(stateEventFunction);
         }
         else {
             onAnimationFinish[stateName] = null;
         }
         SetLoopAnimationFinishEvent(stateName, loopAnimationEvent);
     }
-    public OnStateEvent GetOnAnimationFinish(string stateName) {
-        OnStateEvent returnEvent = null;
+    public StateEvent GetOnAnimationFinish(string stateName) {
+        StateEvent returnEvent = null;
         onAnimationFinish.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, OnStateEvent> GetOnAnimationFinishDictionary() {
+    public Dictionary<string, StateEvent> GetOnAnimationFinishDictionary() {
         return onAnimationFinish;
     }
     public void SetLoopAnimationFinishEvent(string stateName, bool loopAnimationEvent) {
@@ -73,63 +73,63 @@ public class AnimatorHelper : MonoBehaviour {
         return shouldAnimationFinishEventLoop;
     }
     //--------------------------------------------------------------------------
-    public void SetOnStateEnter(string stateName, OnStateEvent stateEventFunction) {
-        onStateEnter[stateName] = new OnStateEvent(stateEventFunction);
+    public void SetOnStateEnter(string stateName, StateEvent stateEventFunction) {
+        onStateEnter[stateName] = new StateEvent(stateEventFunction);
     }
-    public OnStateEvent GetOnStateEnter(string stateName) {
-        OnStateEvent returnEvent = null;
+    public StateEvent GetOnStateEnter(string stateName) {
+        StateEvent returnEvent = null;
         onStateEnter.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, OnStateEvent> GetOnStateEnterDictionary() {
+    public Dictionary<string, StateEvent> GetOnStateEnterDictionary() {
         return onStateEnter;
     }
     
-    public void SetOnStateUpdate(string stateName, OnStateEvent stateEventFunction) {
-        onStateUpdate[stateName] = new OnStateEvent(stateEventFunction);
+    public void SetOnStateUpdate(string stateName, StateEvent stateEventFunction) {
+        onStateUpdate[stateName] = new StateEvent(stateEventFunction);
     }
-    public OnStateEvent GetOnStateUpdate(string stateName) {
-        OnStateEvent returnEvent = null;
+    public StateEvent GetOnStateUpdate(string stateName) {
+        StateEvent returnEvent = null;
         onStateUpdate.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, OnStateEvent> GetOnStateUpdateDictionary() {
+    public Dictionary<string, StateEvent> GetOnStateUpdateDictionary() {
         return onStateUpdate;
     }
     
-    public void SetOnStateExit(string stateName, OnStateEvent stateEventFunction) {
-        onStateExit[stateName] = new OnStateEvent(stateEventFunction);
+    public void SetOnStateExit(string stateName, StateEvent stateEventFunction) {
+        onStateExit[stateName] = new StateEvent(stateEventFunction);
     }
-    public OnStateEvent GetOnStateExit(string stateName) {
-        OnStateEvent returnEvent = null;
+    public StateEvent GetOnStateExit(string stateName) {
+        StateEvent returnEvent = null;
         onStateExit.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, OnStateEvent> GetOnStateExitDictionary() {
+    public Dictionary<string, StateEvent> GetOnStateExitDictionary() {
         return onStateExit;
     }
     
-    public void SetOnStateMove(string stateName, OnStateEvent stateEventFunction) {
-        onStateMove[stateName] = new OnStateEvent(stateEventFunction);
+    public void SetOnStateMove(string stateName, StateEvent stateEventFunction) {
+        onStateMove[stateName] = new StateEvent(stateEventFunction);
     }
-    public OnStateEvent GetOnStateMove(string stateName) {
-        OnStateEvent returnEvent = null;
+    public StateEvent GetOnStateMove(string stateName) {
+        StateEvent returnEvent = null;
         onStateMove.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, OnStateEvent> GetOnStateMoveDictionary() {
+    public Dictionary<string, StateEvent> GetOnStateMoveDictionary() {
         return onStateMove;
     }
     
-    public void SetOnStateIK(string stateName, OnStateEvent stateEventFunction) {
-        onStateIK[stateName] = new OnStateEvent(stateEventFunction);
+    public void SetOnStateIK(string stateName, StateEvent stateEventFunction) {
+        onStateIK[stateName] = new StateEvent(stateEventFunction);
     }
-    public OnStateEvent GetOnStateIK(string stateName) {
-        OnStateEvent returnEvent = null;
+    public StateEvent GetOnStateIK(string stateName) {
+        StateEvent returnEvent = null;
         onStateIK.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, OnStateEvent> GetOnStateIKDictionary() {
+    public Dictionary<string, StateEvent> GetOnStateIKDictionary() {
         return onStateIK;
     }
 }

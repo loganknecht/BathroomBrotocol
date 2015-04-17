@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class CinematicHelper : MonoBehaviour {
 
 
-    public delegate void Logic();
+    // public delegate void Logic();
     // public Logic logicToPerform = null;
     
     public static GameObject broGameObject = null;
@@ -46,51 +46,36 @@ public class CinematicHelper : MonoBehaviour {
     //END OF SINGLETON CODE CONFIGURATION
     
     
-    // public CinematicHelper GetAnimationStates(Animator animatior) {
-    // return this;
-    // }
-    // public CinematicHelper AnimatorGetState(GameObject animatorGameObject) {
-    // Animator animator = animatorGameObject.GetComponent<Animator>();
-    // if(animator != null) {
-    //     UnityEditor.Animations.AnimatorController ac = animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
-    //     foreach(UnityEditor.Animations.ChildAnimatorState cas in ac.states) {
-    //         Debug.Log(cas.state.name);
-    //     }
-    // }
-    // return this;
-    // }
-    // This is not good, because it assumes
-    // 1) The animation does not loop
-    // 2) The animation's frames will be player consistently
-    // 3) The playback retrieved is going to end up at a number that is > 0.98 which may not occur
-    // Until this fails it will be used for cinematic animations
-    public CinematicHelper AnimationIfAtFinish(string animationName, Animator animator, Logic onAnimationFinish) {
-        // int stateId = Animator.StringToHash(animationName);
-        AnimatorStateInfo currentBaseState = animator.GetCurrentAnimatorStateInfo(0);
-        float playbackTime = currentBaseState.normalizedTime % 1;
-        // // Debug.Log("playbackTime: " + playbackTime);
-        
-        // // if(currentBaseState.IsName(animationName)) {
-        if(currentBaseState.IsName(animationName) && playbackTime >= 0.97) {
-            // if(currentBaseState.IsName(animationName) && currentBaseState.normalizedTime >= 0.97) {
-            
-            // if(!animator.GetCurrentAnimatorStateInfo(0).IsName(animationName)) {
-            // Debug.Log("At Finish");
-            onAnimationFinish();
+    public CinematicHelper PlayAnimation(string animationName, List<GameObject> animatorGameObjects) {
+        foreach(GameObject animatorGameObject in animatorGameObjects) {
+            PlayAnimation(animationName, animatorGameObject);
         }
         
-        // if(animator.IsInTransition(0) &&
-        // animator.GetNextAnimatorStateInfo(0).nameHash == animController.stateA) {
-        //Do reaction
-        // }
+        return this;
+    }
+    public CinematicHelper PlayAnimation(string animationName, GameObject animatorGameObject) {
+        Animator animator = animatorGameObject.GetComponent<Animator>();
+        animator.Play(animationName);
         
+        return this;
+    }
+    public CinematicHelper SetOnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
+        foreach(GameObject animatorGameObject in animatorGameObjects) {
+            SetOnAnimationFinish(animationName, animatorGameObject, onAnimationFinish, loopEvent);
+        }
+        return this;
+    }
+    public CinematicHelper SetOnAnimationFinish(string animationName, GameObject animatorGameObject, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
+        AnimatorHelper animatorHelper = animatorGameObject.GetComponent<AnimatorHelper>();
+        if(animatorHelper != null) {
+            animatorHelper.SetOnAnimationFinish(animationName, onAnimationFinish, loopEvent);
+        }
         return this;
     }
     
     public CinematicHelper CreateBro(BroType broType) {
         broGameObject = Factory.Instance.GenerateBroGameObject(broType);
         return this;
-        // Debug.Log("triggering start animation");
     }
     
     public CinematicHelper BroEnterThroughLineQueue(int lineQueueEntrance) {

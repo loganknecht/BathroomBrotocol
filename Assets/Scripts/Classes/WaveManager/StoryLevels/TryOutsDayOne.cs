@@ -87,14 +87,16 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                               1, // duration
                                               UITweener.Method.BounceIn, // UITweener.Method easingMethod
             new EventDelegate(() => {
-                // TODO: Replace with cinematic helper function
-                foreach(GameObject gameObj in lightningCloudsToFlash) {
-                    Animator animator = gameObj.GetComponent<Animator>();
-                    AnimatorHelper animatorHelper = gameObj.GetComponent<AnimatorHelper>();
-                    string animationToPlay = "Lightning";
-                    animator.Play(animationToPlay);
-                    animatorHelper.SetOnAnimationFinish(animationToPlay, () => { Debug.Log("lololol finished animation."); });
-                }
+                string animationToPlay = "Lightning";
+                CinematicHelper.Instance.PlayAnimation("Lightning", lightningCloudsToFlash)
+                .SetOnAnimationFinish("Lightning", lightningCloudsToFlash, () => { Debug.Log("lol done bro"); });
+                
+                // foreach(GameObject gameObj in lightningCloudsToFlash) {
+                // Animator animator = gameObj.GetComponent<Animator>();
+                // AnimatorHelper animatorHelper = gameObj.GetComponent<AnimatorHelper>();
+                // animator.Play(animationToPlay);
+                // animatorHelper.SetOnAnimationFinish(animationToPlay, () => { Debug.Log("lololol finished animation."); });
+                // }
             })); // EventDelegate eventDelegate
             Completed();
         }));
