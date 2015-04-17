@@ -93,7 +93,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     AnimatorHelper animatorHelper = gameObj.GetComponent<AnimatorHelper>();
                     string animationToPlay = "Lightning";
                     animator.Play(animationToPlay);
-                    animatorHelper.SetOnStateExit(animationToPlay, () => { Debug.Log("lololol finished animation."); });
+                    animatorHelper.SetOnAnimationFinish(animationToPlay, () => { Debug.Log("lololol finished animation."); });
                 }
             })); // EventDelegate eventDelegate
             Completed();

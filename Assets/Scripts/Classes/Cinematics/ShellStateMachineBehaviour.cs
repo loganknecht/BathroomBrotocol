@@ -21,16 +21,28 @@ public class ShellStateMachineBehaviour : StateMachineBehaviour {
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         AnimatorHelper animatorHelper = animator.gameObject.GetComponent<AnimatorHelper>();
         if(animatorHelper != null) {
-            AnimatorHelper.OnStateEvent stateEvent = animatorHelper.GetOnStateUpdate(stateName);
-            if(stateEvent != null) {
-                stateEvent();
+            AnimatorHelper.OnStateEvent updateStateEvent = animatorHelper.GetOnStateUpdate(stateName);
+            if(updateStateEvent != null) {
+                updateStateEvent();
+            }
+            
+            if(stateInfo.normalizedTime >= 0.99) {
+                // Debug.Log(stateName + ": Animation finished");
+                AnimatorHelper.OnStateEvent animationFinishStateEvent = animatorHelper.GetOnAnimationFinish(stateName);
+                if(animationFinishStateEvent != null) {
+                    Debug.Log("Performing animation: " + stateName + " finish event");
+                    animationFinishStateEvent();
+                    if(!animatorHelper.ShouldAnimationFinishEventLoop(stateName)) {
+                        Debug.Log("only performing once!");
+                        animatorHelper.SetOnAnimationFinish(stateName, null);
+                    }
+                }
             }
         }
     }
     
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        Debug.Log(stateName + " finished!");
         AnimatorHelper animatorHelper = animator.gameObject.GetComponent<AnimatorHelper>();
         if(animatorHelper != null) {
             AnimatorHelper.OnStateEvent stateEvent = animatorHelper.GetOnStateExit(stateName);
@@ -60,6 +72,11 @@ public class ShellStateMachineBehaviour : StateMachineBehaviour {
                 stateEvent();
             }
         }
+    }
+    
+    public void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
+    }
+    public void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
     }
 }
 
