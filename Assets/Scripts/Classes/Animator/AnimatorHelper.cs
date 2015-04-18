@@ -38,6 +38,7 @@ public class AnimatorHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     public Dictionary<string, StateEvent> onAnimationFinish = new Dictionary<string, StateEvent>();
     public Dictionary<string, bool> loopAnimationFinishEvent = new Dictionary<string, bool>();
+    public bool destroyOnFinish = false;
     
     // Use this for initialization
     void Start() {
@@ -46,8 +47,32 @@ public class AnimatorHelper : MonoBehaviour {
     // Update is called once per frame
     void Update() {
     }
+    //--------------------------------------------------------------------------
+    // Simple Retrieval
+    //--------------------------------------------------------------------------
+    public Dictionary<string, StateEvent> GetOnStateEnterDictionary() {
+        return onStateEnter;
+    }
+    public Dictionary<string, StateEvent> GetOnStateUpdateDictionary() {
+        return onStateUpdate;
+    }
+    public Dictionary<string, StateEvent> GetOnStateExitDictionary() {
+        return onStateExit;
+    }
+    public Dictionary<string, StateEvent> GetOnStateMoveDictionary() {
+        return onStateMove;
+    }
+    public Dictionary<string, StateEvent> GetOnStateIKDictionary() {
+        return onStateIK;
+    }
+    public Dictionary<string, StateEvent> GetOnAnimationFinishDictionary() {
+        return onAnimationFinish;
+    }
     
-    public void SetOnAnimationFinish(string stateName, StateEvent stateEventFunction, bool loopAnimationEvent = false) {
+    //--------------------------------------------------------------------------
+    // Custom Animation Methods
+    //--------------------------------------------------------------------------
+    public void SetOnAnimationFinish(string stateName, StateEvent stateEventFunction, bool destroyOnFinish = false, bool loopAnimationEvent = false) {
         if(stateEventFunction != null) {
             onAnimationFinish[stateName] = new StateEvent(stateEventFunction);
         }
@@ -61,17 +86,30 @@ public class AnimatorHelper : MonoBehaviour {
         onAnimationFinish.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, StateEvent> GetOnAnimationFinishDictionary() {
-        return onAnimationFinish;
+    //----------------------------
+    public void SetDestroyOnFinish(bool newDestroyOnFinish) {
+        destroyOnFinish = newDestroyOnFinish;
     }
+    public bool GetDestroyOnFinish() {
+        return destroyOnFinish;
+    }
+    //----------------------------
+    /// <summary>
+    /// Sets the state for animation that it should loop
+    /// </summary>
     public void SetLoopAnimationFinishEvent(string stateName, bool loopAnimationEvent) {
         loopAnimationFinishEvent[stateName] = loopAnimationEvent;
     }
+    /// <summary>
+    /// Returns a bool indicating if the animation name provided should loop
+    /// </summary>
     public bool ShouldAnimationFinishEventLoop(string stateName) {
         bool shouldAnimationFinishEventLoop = false;
         loopAnimationFinishEvent.TryGetValue(stateName, out shouldAnimationFinishEventLoop);
         return shouldAnimationFinishEventLoop;
     }
+    //--------------------------------------------------------------------------
+    // Default Unity State Machine Hook Ins
     //--------------------------------------------------------------------------
     public void SetOnStateEnter(string stateName, StateEvent stateEventFunction) {
         onStateEnter[stateName] = new StateEvent(stateEventFunction);
@@ -81,10 +119,7 @@ public class AnimatorHelper : MonoBehaviour {
         onStateEnter.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, StateEvent> GetOnStateEnterDictionary() {
-        return onStateEnter;
-    }
-    
+    //----------------------------
     public void SetOnStateUpdate(string stateName, StateEvent stateEventFunction) {
         onStateUpdate[stateName] = new StateEvent(stateEventFunction);
     }
@@ -93,10 +128,7 @@ public class AnimatorHelper : MonoBehaviour {
         onStateUpdate.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, StateEvent> GetOnStateUpdateDictionary() {
-        return onStateUpdate;
-    }
-    
+    //----------------------------
     public void SetOnStateExit(string stateName, StateEvent stateEventFunction) {
         onStateExit[stateName] = new StateEvent(stateEventFunction);
     }
@@ -105,10 +137,7 @@ public class AnimatorHelper : MonoBehaviour {
         onStateExit.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, StateEvent> GetOnStateExitDictionary() {
-        return onStateExit;
-    }
-    
+    //----------------------------
     public void SetOnStateMove(string stateName, StateEvent stateEventFunction) {
         onStateMove[stateName] = new StateEvent(stateEventFunction);
     }
@@ -117,10 +146,7 @@ public class AnimatorHelper : MonoBehaviour {
         onStateMove.TryGetValue(stateName, out returnEvent);
         return returnEvent;
     }
-    public Dictionary<string, StateEvent> GetOnStateMoveDictionary() {
-        return onStateMove;
-    }
-    
+    //----------------------------
     public void SetOnStateIK(string stateName, StateEvent stateEventFunction) {
         onStateIK[stateName] = new StateEvent(stateEventFunction);
     }
@@ -128,8 +154,5 @@ public class AnimatorHelper : MonoBehaviour {
         StateEvent returnEvent = null;
         onStateIK.TryGetValue(stateName, out returnEvent);
         return returnEvent;
-    }
-    public Dictionary<string, StateEvent> GetOnStateIKDictionary() {
-        return onStateIK;
     }
 }

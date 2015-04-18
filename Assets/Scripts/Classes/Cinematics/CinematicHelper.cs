@@ -44,6 +44,13 @@ public class CinematicHelper : MonoBehaviour {
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
+    public CinematicHelper CreateAnimation(string animationName, string resourcePrefabPath, Vector3 startPosition, bool destroyOnFinish = false) {
+        GameObject animationGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
+        animationGameObject.transform.position = startPosition;
+        animationGameObject.GetComponent<AnimatorHelper>().SetDestroyOnFinish(destroyOnFinish);
+        PlayAnimation(animationName, animationGameObject);
+        return this;
+    }
     
     
     public CinematicHelper PlayAnimation(string animationName, List<GameObject> animatorGameObjects) {
@@ -57,6 +64,14 @@ public class CinematicHelper : MonoBehaviour {
         Animator animator = animatorGameObject.GetComponent<Animator>();
         animator.Play(animationName);
         
+        return this;
+    }
+    // Sets the first object encountered
+    public CinematicHelper SetSingleOnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false, int indexToSet = 0) {
+        if(animatorGameObjects != null
+            && animatorGameObjects.Count > 0) {
+            SetOnAnimationFinish(animationName, animatorGameObjects[indexToSet], onAnimationFinish, loopEvent);
+        }
         return this;
     }
     public CinematicHelper SetOnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {

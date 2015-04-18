@@ -88,28 +88,24 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                               UITweener.Method.BounceIn, // UITweener.Method easingMethod
             new EventDelegate(() => {
                 string animationToPlay = "Lightning";
-                CinematicHelper.Instance.PlayAnimation("Lightning", lightningCloudsToFlash)
-                .SetOnAnimationFinish("Lightning", lightningCloudsToFlash, () => { Debug.Log("lol done bro"); });
-                
-                // foreach(GameObject gameObj in lightningCloudsToFlash) {
-                // Animator animator = gameObj.GetComponent<Animator>();
-                // AnimatorHelper animatorHelper = gameObj.GetComponent<AnimatorHelper>();
-                // animator.Play(animationToPlay);
-                // animatorHelper.SetOnAnimationFinish(animationToPlay, () => { Debug.Log("lololol finished animation."); });
-                // }
-            })); // EventDelegate eventDelegate
+                CinematicHelper.Instance.PlayAnimation(animationToPlay, lightningCloudsToFlash)
+                .SetSingleOnAnimationFinish(animationToPlay, lightningCloudsToFlash, () => {
+                    // Debug.Log("Completed Lightning Playing");
+                    Completed();
+                });
+            }));
             Completed();
         }));
         waveStates.Add(CreateWaveState("Lightning Finish", () => {
-            // Debug.Log("lightning animation complete");
-            // Completed();
+            // Wait for previous animation to finish
         }));
-        bool performedCheck = false;
+        waveStates.Add(CreateWaveState("SmokeAnimation", () => {
+            CinematicHelper.Instance.CreateAnimation("Smoke", AnimationPrefabs.GetPath("EntranceSmoke"), Vector3.zero, true);
+            Completed();
+        }));
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
-            if(!performedCheck) {
-                performedCheck = true;
-                Debug.Log("Cinematic Complete!");
-            }
+            Debug.Log("Cinematic Complete!");
+            Completed();
         }));
         
         InitializeWaveStates(waveStates.ToArray()); // End of Initialize

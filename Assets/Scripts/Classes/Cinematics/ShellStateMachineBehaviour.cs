@@ -26,6 +26,9 @@ public class ShellStateMachineBehaviour : StateMachineBehaviour {
                 updateStateEvent();
             }
             
+            //------------------------------------------------------------------
+            // OnAnimationFinish
+            //------------------------------------------------------------------
             // Checks to see if animation finished
             if(stateInfo.normalizedTime >= 0.99) {
                 // Debug.Log(stateName + ": Animation finished");
@@ -36,6 +39,9 @@ public class ShellStateMachineBehaviour : StateMachineBehaviour {
                     if(!animatorHelper.ShouldAnimationFinishEventLoop(stateName)) {
                         // Debug.Log("only performing once!");
                         animatorHelper.SetOnAnimationFinish(stateName, null);
+                        if(animatorHelper.GetDestroyOnFinish()) {
+                            Destroy(animator.gameObject);
+                        }
                     }
                 }
             }
