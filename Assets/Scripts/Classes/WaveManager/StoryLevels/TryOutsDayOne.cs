@@ -100,7 +100,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             // Wait for previous animation to finish
         }));
         waveStates.Add(CreateWaveState("SmokeAnimation", () => {
-            CinematicHelper.Instance.CreateAnimation("Smoke", AnimationPrefabs.GetPath("EntranceSmoke"), Vector3.zero, true);
+            GameObject smokeAnimation = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("EntranceSmoke"), Vector3.zero);
+            CinematicHelper.Instance.PlayAnimation("Smoke", smokeAnimation, true);
             Completed();
         }));
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {

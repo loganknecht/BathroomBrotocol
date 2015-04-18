@@ -12,7 +12,6 @@ public static class AnimationPrefabs {
     
     public static string GetPath(string animationName) {
         string returnString = "";
-        bool foundValue = false;
         paths.TryGetValue(animationName, out returnString);
         return returnString;
     }
