@@ -9,9 +9,6 @@ using System.Collections.Generic;
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
     public Bro broCzarReference = null;
-    public GameObject leftLightningClouds = null;
-    public List<GameObject> lightningCloudsToFlash = null;
-    public GameObject rightLightningClouds = null;
     
     public override void Awake()
     {   base.Awake(); }
@@ -26,18 +23,16 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // Debug.Log("initialization");
         SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
         
-        // PerformBroCzarEnterAnimation,
-        // FinishBroCzarEnterAnimation);
-        // basicBrosEnter
-        // broCzarEnterWaveGameObject
-        
         BathroomTile centerTile = BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>();
         BathroomTile middleLeftTile = BathroomTileMap.Instance.GetMiddleLeftTileGameObject().GetComponent<BathroomTile>();
         BathroomTile topCenterTile = BathroomTileMap.Instance.GetTopCenterTileGameObject().GetComponent<BathroomTile>();
         BathroomTile middleRightTile = BathroomTileMap.Instance.GetMiddleRightTileGameObject().GetComponent<BathroomTile>();
         BathroomTile bottomCenterTile = BathroomTileMap.Instance.GetBottomCenterTileGameObject().GetComponent<BathroomTile>();
         
-        GameObject firstBro = null;
+        GameObject leftCloud = null;
+        GameObject rightCloud = null;
+        
+        // GameObject firstBro = null;
         // GameObject secondBro = null;
         // GameObject thirdBro = null;
         // GameObject fourthBro = null;
@@ -53,62 +48,73 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //            .BuildBro();
         
         List<GameObject> waveStates = new List<GameObject>();
-        
+        //----------------------------------------------------------------------
         waveStates.Add(CreateDelayState("Delay", 1f));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("First Bro Entrance", () => {
             Debug.Log("Generating");
-            // firstBro = CinematicHelper.Instance
-            //            .CreateBro(BroType.GenericBro)
-            //            .BroEnterThroughLineQueue(0)
-            //            .BroMoveToTile(middleLeftTile.tileX, middleLeftTile.tileY)
-            //            .BroMoveToTile(topCenterTile.tileX, topCenterTile.tileY)
-            //            .BroMoveToTile(middleRightTile.tileX, middleRightTile.tileY)
-            //            .BroMoveToTile(bottomCenterTile.tileX, bottomCenterTile.tileY)
-            //            .BuildBro();
             Completed();
         }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("CloudEnter", () => {
+            Vector3 leftStartPosition = (centerTile.gameObject.transform.position - (new Vector3(10, 0, 0)));
+            Vector3 rightStartPosition = (centerTile.gameObject.transform.position + (new Vector3(10, 0, 0)));
+            leftCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
+                                                                 leftStartPosition)
+                        .Build();
+            rightCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
+                                                                  rightStartPosition)
+                         .Build();
             Debug.Log("Clouds Entering");
-            TweenExecutor.TweenObjectPosition(leftLightningClouds,
-                                              -10, // startX
-                                              4, // startY
-                                              7, // endX
-                                              4, // endY
+            TweenExecutor.TweenObjectPosition(leftCloud,
+                                              leftStartPosition.x, // startX
+                                              leftStartPosition.y, // startY
+                                              centerTile.gameObject.transform.position.x, // endX
+                                              leftStartPosition.y, // endY
                                               0, // delay
                                               1, // duration
                                               UITweener.Method.BounceIn, // UITweener.Method easingMethod
                                               null); // EventDelegate eventDelegate
-            TweenExecutor.TweenObjectPosition(rightLightningClouds,
-                                              25, // startX
-                                              4, // startY
-                                              9, // endX
-                                              4, // endY
+            TweenExecutor.TweenObjectPosition(rightCloud,
+                                              rightStartPosition.x, // startX
+                                              rightStartPosition.y, // startY
+                                              centerTile.gameObject.transform.position.x, // endX
+                                              rightStartPosition.y, // endY
                                               0, // delay
                                               1, // duration
                                               UITweener.Method.BounceIn, // UITweener.Method easingMethod
             new EventDelegate(() => {
                 string animationToPlay = "Lightning";
-                CinematicHelper.Instance.PlayAnimation(animationToPlay, lightningCloudsToFlash)
-                .SetSingleOnAnimationFinish(animationToPlay, lightningCloudsToFlash, () => {
+                CinematicHelper.Instance.SetObject(leftCloud)
+                .PlayAnimation(animationToPlay);
+                CinematicHelper.Instance.SetObject(rightCloud)
+                .PlayAnimation(animationToPlay)
+                .SetOnAnimationFinish(animationToPlay, () => {
                     // Debug.Log("Completed Lightning Playing");
                     Completed();
                 });
             }));
             Completed();
         }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Lightning Finish", () => {
             // Wait for previous animation to finish
         }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("SmokeAnimation", () => {
-            GameObject smokeAnimation = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("EntranceSmoke"), Vector3.zero);
-            CinematicHelper.Instance.PlayAnimation("Smoke", smokeAnimation, true);
+            CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("EntranceSmoke"),
+                                                     centerTile.gameObject.transform.position)
+            .PlayAnimation("Smoke", true)
+            .Build();
+            
             Completed();
         }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
             Debug.Log("Cinematic Complete!");
             Completed();
         }));
-        
+        //----------------------------------------------------------------------
         InitializeWaveStates(waveStates.ToArray()); // End of Initialize
     }
     

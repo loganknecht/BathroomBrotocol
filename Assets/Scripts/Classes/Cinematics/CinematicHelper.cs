@@ -8,7 +8,7 @@ public class CinematicHelper : MonoBehaviour {
     // public delegate void Logic();
     // public Logic logicToPerform = null;
     
-    public static GameObject broGameObject = null;
+    public static GameObject currentGameObject = null;
     
     //BEGINNING OF SINGLETON CODE CONFIGURATION
     private static volatile CinematicHelper _instance;
@@ -44,13 +44,30 @@ public class CinematicHelper : MonoBehaviour {
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
-    public GameObject CreateAnimation(string resourcePrefabPath, Vector3 startPosition) {
-        GameObject animationGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
-        animationGameObject.transform.position = startPosition;
-        return animationGameObject;
+    
+    
+    //--------------------------------------------------------------------------
+    // Creation Logic
+    //--------------------------------------------------------------------------
+    public CinematicHelper CreateAnimation(string resourcePrefabPath, Vector3 startPosition) {
+        currentGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
+        currentGameObject.transform.position = startPosition;
+        return this;
     }
     
+    public CinematicHelper CreateBro(BroType broType) {
+        currentGameObject = Factory.Instance.GenerateBroGameObject(broType);
+        return this;
+    }
     
+    public CinematicHelper SetObject(GameObject newCurrentGameObject) {
+        currentGameObject = newCurrentGameObject;
+        return this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // Animation Logic
+    //--------------------------------------------------------------------------
     public CinematicHelper PlayAnimation(string animationName, List<GameObject> animatorGameObjects, bool destroyOnFinish = false) {
         foreach(GameObject animatorGameObject in animatorGameObjects) {
             PlayAnimation(animationName, animatorGameObject, destroyOnFinish);
@@ -58,6 +75,7 @@ public class CinematicHelper : MonoBehaviour {
         
         return this;
     }
+    
     public CinematicHelper PlayAnimation(string animationName, GameObject animatorGameObject, bool destroyOnFinish = false) {
         Animator animator = animatorGameObject.GetComponent<Animator>();
         animator.Play(animationName);
@@ -65,20 +83,22 @@ public class CinematicHelper : MonoBehaviour {
         
         return this;
     }
-    // Sets the first object encountered
-    public CinematicHelper SetSingleOnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false, int indexToSet = 0) {
-        if(animatorGameObjects != null
-            && animatorGameObjects.Count > 0) {
-            SetOnAnimationFinish(animationName, animatorGameObjects[indexToSet], onAnimationFinish, loopEvent);
-        }
+    
+    public CinematicHelper PlayAnimation(string animationName, bool destroyOnFinish = false) {
+        Animator animator = currentGameObject.GetComponent<Animator>();
+        animator.Play(animationName);
+        currentGameObject.GetComponent<AnimatorHelper>().SetDestroyOnFinish(destroyOnFinish);
+        
         return this;
     }
+    
     public CinematicHelper SetOnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
         foreach(GameObject animatorGameObject in animatorGameObjects) {
             SetOnAnimationFinish(animationName, animatorGameObject, onAnimationFinish, loopEvent);
         }
         return this;
     }
+    
     public CinematicHelper SetOnAnimationFinish(string animationName, GameObject animatorGameObject, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
         AnimatorHelper animatorHelper = animatorGameObject.GetComponent<AnimatorHelper>();
         if(animatorHelper != null) {
@@ -87,13 +107,19 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
-    public CinematicHelper CreateBro(BroType broType) {
-        broGameObject = Factory.Instance.GenerateBroGameObject(broType);
+    public CinematicHelper SetOnAnimationFinish(string animationName, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
+        AnimatorHelper animatorHelper = currentGameObject.GetComponent<AnimatorHelper>();
+        if(animatorHelper != null) {
+            animatorHelper.SetOnAnimationFinish(animationName, onAnimationFinish, loopEvent);
+        }
         return this;
     }
     
+    //--------------------------------------------------------------------------
+    // Bro Logic
+    //--------------------------------------------------------------------------
     public CinematicHelper BroEnterThroughLineQueue(int lineQueueEntrance) {
-        Bro broReferece = broGameObject.GetComponent<Bro>();
+        Bro broReferece = currentGameObject.GetComponent<Bro>();
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(lineQueueEntrance).GetComponent<LineQueue>();
         
         GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
@@ -108,12 +134,12 @@ public class CinematicHelper : MonoBehaviour {
     }
     
     public CinematicHelper BroMoveToTile(int tileX, int tileY, bool appendToCurrentMovementNodes = true) {
-        BroMoveToTile(tileX, tileY, appendToCurrentMovementNodes, broGameObject);
+        BroMoveToTile(tileX, tileY, appendToCurrentMovementNodes, currentGameObject);
         return this;
     }
     
-    public CinematicHelper BroMoveToTile(int tileX, int tileY, bool appendToCurrentMovementNodes, GameObject broGameObjectToModify) {
-        Bro broReferece = broGameObjectToModify.GetComponent<Bro>();
+    public CinematicHelper BroMoveToTile(int tileX, int tileY, bool appendToCurrentMovementNodes, GameObject currentObjectToModify) {
+        Bro broReferece = currentObjectToModify.GetComponent<Bro>();
         
         // get bro's last movement node of the existing nodes?
         // if movement nodes is empty, use bros current movement node
@@ -173,9 +199,12 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
-    public GameObject BuildBro() {
-        GameObject broToReturn = broGameObject;
-        broGameObject = null;
-        return broToReturn;
+    //--------------------------------------------------------------------------
+    // Building Logic
+    //--------------------------------------------------------------------------
+    public GameObject Build() {
+        GameObject objectToReturn = currentGameObject;
+        currentGameObject = null;
+        return objectToReturn;
     }
 }
