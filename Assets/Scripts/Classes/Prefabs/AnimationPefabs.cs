@@ -4,11 +4,16 @@ using System.IO;
 
 // This is used to import a list of all the animations that exist
 // and provide their path reference for easy animations...
+// YOU MUST configure the subdirectory paths to be the path that would be loaded
+// you were calling GameObject.Instantiate. For example if your prefab is under
+// Resources/Prefabs/Example/ExampleObject you would use the subdirectory path
+// "Prefabs/Example". This is because it determines the loading string associated
+// with the asset based on that path
 public static class AnimationPrefabs {
     public static Dictionary<string, string> paths = null;
     
     public static string resourceBasePath = "Assets/Resources/";
-    public static string animationsPath = "Prefabs/Animations/";
+    public static string[] subDirectoryPaths = new string[] { "Prefabs/Animations/" };
     
     public static string GetPath(string animationName) {
         string returnString = "";
@@ -19,17 +24,19 @@ public static class AnimationPrefabs {
     public static string GetBasePath() {
         return resourceBasePath;
     }
-    public static string GetAnimationPath() {
-        return animationsPath;
+    public static string[] GetSubdirectoryPaths() {
+        return subDirectoryPaths;
     }
     
     public static void PopulatePaths() {
         paths = new Dictionary<string, string>();
-        PopulateFromPath(GetAnimationPath());
+        foreach(string subDirectoryPath in subDirectoryPaths) {
+            // PopulateFromPath(GetSubdirectoryPaths());
+            PopulateFromPath(subDirectoryPath);
+        }
     }
     
     public static void PopulateFromPath(string path) {
-        // string currentPath = Getb
         string currentPath = GetBasePath() + path;
         // Debug.Log("------------------------------");
         DirectoryInfo directoryInfo = new DirectoryInfo(currentPath);

@@ -44,6 +44,7 @@ public class BathroomTileMap : TileMap {
     // Use this for initialization
     protected override void Start() {
         AnimationPrefabs.PopulatePaths();
+        NPCPrefabs.PopulatePaths();
         
         if(AStarManager.Instance.permanentClosedNodes == null) {
             AStarManager.Instance.permanentClosedNodes = new List<GameObject>();

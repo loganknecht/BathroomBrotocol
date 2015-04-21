@@ -39,7 +39,9 @@ public class ShellStateMachineBehaviour : StateMachineBehaviour {
                     if(!animatorHelper.ShouldAnimationFinishEventLoop(stateName)) {
                         // Debug.Log("only performing once!");
                         animatorHelper.SetOnAnimationFinish(stateName, null);
+                        // Debug.Log("Animation Finished!");
                         if(animatorHelper.GetDestroyOnFinish()) {
+                            // Debug.Log("Destroying: " + animator.gameObject.name);
                             Destroy(animator.gameObject);
                         }
                     }

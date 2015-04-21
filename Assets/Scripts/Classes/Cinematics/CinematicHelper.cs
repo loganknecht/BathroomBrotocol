@@ -46,22 +46,70 @@ public class CinematicHelper : MonoBehaviour {
     //END OF SINGLETON CODE CONFIGURATION
     
     
+    
+    //--------------------------------------------------------------------------
+    // Creation Logic
+    //--------------------------------------------------------------------------
+    public GameObject GetChildGameObject(GameObject fromGameObject, string childName) {
+        // Debug.Log("Searching: " + fromGameObject.name);
+        GameObject gameObjectToReturn = null;
+        foreach(Transform childTransform in fromGameObject.transform) {
+            // Debug.Log("Checking: " + childTransform.gameObject.name);
+            if(childTransform.gameObject.name == childName) {
+                Debug.Log("Found: " + childName);
+                gameObjectToReturn = childTransform.gameObject;
+                // stops search immediately meaning it finds the first occurence
+                // of the object and stops
+                break;
+            }
+            else {
+                // Debug.Log("Diving");
+                gameObjectToReturn = GetChildGameObject(childTransform.gameObject, childName);
+            }
+        }
+        return gameObjectToReturn;
+    }
+    
     //--------------------------------------------------------------------------
     // Creation Logic
     //--------------------------------------------------------------------------
     public CinematicHelper CreateAnimation(string resourcePrefabPath, Vector3 startPosition) {
         currentGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
-        currentGameObject.transform.position = startPosition;
+        SetPosition(startPosition);
         return this;
     }
     
-    public CinematicHelper CreateBro(BroType broType) {
-        currentGameObject = Factory.Instance.GenerateBroGameObject(broType);
+    public CinematicHelper CreateBro(string resourcePrefabPath, Vector3 startPosition) {
+        // currentGameObject = Factory.Instance.GenerateBroGameObject(broType);
+        currentGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
+        SetPosition(startPosition);
+        SetTargetObjectAndTargetPosition(null, startPosition);
         return this;
     }
     
     public CinematicHelper SetObject(GameObject newCurrentGameObject) {
         currentGameObject = newCurrentGameObject;
+        return this;
+    }
+    
+    public CinematicHelper SetPosition(Vector3 newPosition) {
+        currentGameObject.transform.position = newPosition;
+        return this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // Bathroom Facing
+    //--------------------------------------------------------------------------
+    public CinematicHelper SetFacing(Facing facing) {
+        currentGameObject.GetComponent<BathroomFacing>().SetFacing(Facing.Bottom);
+        return this;
+    }
+    
+    //--------------------------------------------------------------------------
+    // Target Pathing Logic
+    //--------------------------------------------------------------------------
+    public CinematicHelper SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPathingPosition) {
+        currentGameObject.GetComponent<TargetPathing>().SetTargetObjectAndTargetPosition(newTargetObject, newTargetPathingPosition);
         return this;
     }
     
@@ -118,6 +166,11 @@ public class CinematicHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     // Bro Logic
     //--------------------------------------------------------------------------
+    public CinematicHelper SetBroState(BroState newBroState) {
+        currentGameObject.GetComponent<Bro>().SetState(newBroState);
+        return this;
+    }
+    
     public CinematicHelper BroEnterThroughLineQueue(int lineQueueEntrance) {
         Bro broReferece = currentGameObject.GetComponent<Bro>();
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(lineQueueEntrance).GetComponent<LineQueue>();

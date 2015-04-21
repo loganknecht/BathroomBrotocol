@@ -6,38 +6,38 @@ public class TextboxManager : MonoBehaviour {
 
     public UIPanel textboxPanel = null;
     public Vector2 textboxPanelPosition = new Vector2(50, -300);
-
+    
     public GameObject textboxBackgroundObject = null;
-
+    
     public GameObject textboxButtonObject = null;
-
+    
     public GameObject textboxTextObject = null;
     public UILabel textboxText = null;
     public Queue textboxTextSet = new Queue();
-
+    
     public delegate void TextboxButtonPressLogic();
     public delegate void TextboxTextFinishedLogic();
     public TextboxButtonPressLogic textboxButtonLogicToPerform = null;
     public TextboxTextFinishedLogic textboxTextFinishedLogicToPerform = null;
-
+    
     public bool textboxFinishLogicTriggered = false;
     public bool finishedTextboxText = false;
     //----------------------------------------------------------------------------
-
+    
     //Probably doesn't need to be a singleton
     //BEGINNING OF SINGLETON CODE CONFIGURATION
     private static volatile TextboxManager _instance;
     private static object _lock = new object();
-
+    
     //Stops the lock being created ahead of time if it's not necessary
     static TextboxManager() {
     }
-
+    
     public static TextboxManager Instance {
         get {
             if(_instance == null) {
                 lock(_lock) {
-                    if (_instance == null) {
+                    if(_instance == null) {
                         GameObject textboxManagerManagerGameObject = new GameObject("TextBoxManagerGameObject");
                         _instance = (textboxManagerManagerGameObject.AddComponent<TextboxManager>()).GetComponent<TextboxManager>();
                     }
@@ -46,10 +46,10 @@ public class TextboxManager : MonoBehaviour {
             return _instance;
         }
     }
-
+    
     private TextboxManager(TextboxButtonPressLogic newLogic) {
     }
-
+    
     public void Awake() {
         //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
         //the script, which is assumedly attached to some GameObject. This in turn allows the instance
@@ -59,25 +59,25 @@ public class TextboxManager : MonoBehaviour {
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
-
+    
     // Use this for initialization
-    void Start () {
+    void Start() {
         textboxPanel = this.gameObject.GetComponent<UIPanel>();
-
+        
         textboxText = textboxTextObject.GetComponent<UILabel>();
-
+        
         textboxButtonLogicToPerform = new TextboxButtonPressLogic(MoveToNextTextboxText);
-        SetTextboxFinishedLogicToDefault();
+        SetFinishedLogicToDefault();
     }
-
+    
     // Update is called once per frame
-    void Update () {
+    void Update() {
     }
-
+    
     public void PerformTextboxButtonPress() {
         textboxButtonLogicToPerform();
     }
-
+    
     public void PerformTextboxTextFinished() {
         finishedTextboxText = true;
         if(!textboxFinishLogicTriggered) {
@@ -85,24 +85,24 @@ public class TextboxManager : MonoBehaviour {
             textboxTextFinishedLogicToPerform();
         }
     }
-
+    
     public void DefaultTextFinishedLogicToPerform() {
     }
-
-    public void SetNewTextBoxLogic(TextboxButtonPressLogic newLogic) {
+    
+    public void SetNewLogic(TextboxButtonPressLogic newLogic) {
         textboxButtonLogicToPerform = newLogic;
     }
-    public void SetTextboxFinishedLogic(TextboxTextFinishedLogic newTextboxTextFinishedLogic) {
+    public void SetFinishedLogic(TextboxTextFinishedLogic newTextboxTextFinishedLogic) {
         textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(newTextboxTextFinishedLogic);
     }
-    public void SetTextboxFinishedLogicToDefault() {
+    public void SetFinishedLogicToDefault() {
         textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(DefaultTextFinishedLogicToPerform);
     }
-
+    
     public bool HasFinished() {
         return finishedTextboxText;
     }
-
+    
     //----------------------------------------------------------------------------
     // GUI STUFF GOES DOWN HERE
     //----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ public class TextboxManager : MonoBehaviour {
         // textboxPanel.alpha = 1;
         TweenExecutor.TweenObjectAlpha(this.gameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
     }
-
+    
     public void MoveToNextTextboxText() {
         // Debug.Log("button press for moving to the next textbox.");
         SoundManager.Instance.Play(AudioType.TextboxNextButtonPressBeep);
@@ -130,13 +130,19 @@ public class TextboxManager : MonoBehaviour {
             //finished text crap, should do something here??
         }
     }
-
-    public void SetTextboxTextSet(Queue newTextboxTextSet, bool popFirstNodeOfSet = true) {
+    
+    public void SetText(params string[] textboxTexts) {
+        Queue textboxTextsQueue = new Queue();
+        foreach(string textboxText in textboxTexts) {
+            textboxTextsQueue.Enqueue(textboxText);
+        }
+        SetText(textboxTextsQueue);
+    }
+    
+    public void SetText(Queue newTextboxTextSet) {
         textboxFinishLogicTriggered = false;
         finishedTextboxText = false;
         textboxTextSet = newTextboxTextSet;
-        if(popFirstNodeOfSet) {
-            PopNextTextboxText();
-        }
+        PopNextTextboxText();
     }
 }

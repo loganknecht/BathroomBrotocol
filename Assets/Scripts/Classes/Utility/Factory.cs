@@ -82,35 +82,35 @@ public class Factory {
         //   Debug.LogError("There was a none type sent to the Factory for a bro. If this was not intended please check the logic.");
         // break;
         // case(BroType.BluetoothBro):
-        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/BluetoothBro1")) as GameObject;
+        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("BluetoothBro1"))) as GameObject;
         // break;
         // case(BroType.ChattyBro):
-        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/ChattyBro1")) as GameObject;
+        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("ChattyBro1"))) as GameObject;
         // break;
         // case(BroType.CuttingBro):
-        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/CuttingBro1")) as GameObject;
+        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("CuttingBro1"))) as GameObject;
         // break;
         case(BroType.DrunkBro):
-            newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/DrunkBro1")) as GameObject;
+            newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("DrunkBro1"))) as GameObject;
             // newBro.GetComponent<DrunkBro>().vomitTimerThreshold = Random.Range(10f, 20f);
             break;
         case(BroType.GassyBro):
-            newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/GassyBro1")) as GameObject;
+            newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("GassyBro1"))) as GameObject;
             break;
         case(BroType.GenericBro):
-            newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/GenericBro1")) as GameObject;
+            newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("GenericBro1"))) as GameObject;
             break;
         // case(BroType.RichBro):
-        //     newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/RichBro1")) as GameObject;
+        //     newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("RichBro1"))) as GameObject;
         // break;
         case(BroType.ShyBro):
-            newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/ShyBro1")) as GameObject;
+            newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("ShyBro1"))) as GameObject;
             break;
         case(BroType.SlobBro):
-            newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/SlobBro1")) as GameObject;
+            newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("SlobBro1"))) as GameObject;
             break;
         // case(BroType.TimeWasterBro):
-        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load("Prefabs/NPC/Bro/TimeWasterBro1")) as GameObject;
+        //   newBro = (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("TimeWasterBro1"))) as GameObject;
         // break;
         default:
             Debug.Log("Something broke in the \"GenerateBroGameObject\" method in the \"Factory\"");

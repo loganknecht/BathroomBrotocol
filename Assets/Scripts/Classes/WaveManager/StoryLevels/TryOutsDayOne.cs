@@ -31,7 +31,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         
         GameObject leftCloud = null;
         GameObject rightCloud = null;
+        GameObject centerCloud = null;
         
+        GameObject oldBathroomBroCzar = null;
         // GameObject firstBro = null;
         // GameObject secondBro = null;
         // GameObject thirdBro = null;
@@ -59,41 +61,55 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         waveStates.Add(CreateWaveState("CloudEnter", () => {
             Vector3 leftStartPosition = (centerTile.gameObject.transform.position - (new Vector3(10, 0, 0)));
             Vector3 rightStartPosition = (centerTile.gameObject.transform.position + (new Vector3(10, 0, 0)));
+            Vector3 centerStartPosition = (centerTile.gameObject.transform.position + (new Vector3(0, 10, 0)));
+            // Debug.Log(AnimationPrefabs.GetPath("LightningCloud"));
             leftCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
                                                                  leftStartPosition)
                         .Build();
             rightCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
                                                                   rightStartPosition)
                          .Build();
-            Debug.Log("Clouds Entering");
-            TweenExecutor.TweenObjectPosition(leftCloud,
-                                              leftStartPosition.x, // startX
-                                              leftStartPosition.y, // startY
-                                              centerTile.gameObject.transform.position.x, // endX
-                                              leftStartPosition.y, // endY
-                                              0, // delay
-                                              1, // duration
-                                              UITweener.Method.BounceIn, // UITweener.Method easingMethod
-                                              null); // EventDelegate eventDelegate
-            TweenExecutor.TweenObjectPosition(rightCloud,
-                                              rightStartPosition.x, // startX
-                                              rightStartPosition.y, // startY
-                                              centerTile.gameObject.transform.position.x, // endX
-                                              rightStartPosition.y, // endY
-                                              0, // delay
-                                              1, // duration
-                                              UITweener.Method.BounceIn, // UITweener.Method easingMethod
-            new EventDelegate(() => {
-                string animationToPlay = "Lightning";
+            centerCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
+                                                                   centerStartPosition)
+                          .Build();
+            // Debug.Log("Clouds Entering");
+            TweenExecutor.Position
+            .Object(leftCloud)
+            .StartPosition(leftStartPosition.x, leftStartPosition.y)
+            .EndPosition(centerTile.gameObject.transform.position.x - 1f, leftStartPosition.y)
+            .Duration(1f)
+            .Method(UITweener.Method.BounceIn)
+            .Tween();
+            
+            TweenExecutor.Position
+            .Object(centerCloud)
+            .StartPosition(centerStartPosition.x, centerStartPosition.y)
+            .EndPosition(centerTile.gameObject.transform.position.x, centerTile.gameObject.transform.position.y)
+            .Duration(1)
+            .Method(UITweener.Method.BounceIn)
+            .Tween();
+            
+            TweenExecutor.Position
+            .Object(rightCloud)
+            .StartPosition(rightStartPosition.x, rightStartPosition.y)
+            .EndPosition(centerTile.gameObject.transform.position.x + 1f, rightStartPosition.y)
+            .Duration(1)
+            .Method(UITweener.Method.BounceIn)
+            .OnFinish(new EventDelegate(() => {
+                string animationStateToPlay = "Lightning";
                 CinematicHelper.Instance.SetObject(leftCloud)
-                .PlayAnimation(animationToPlay);
+                .PlayAnimation(animationStateToPlay);
+                CinematicHelper.Instance.SetObject(centerCloud)
+                .PlayAnimation(animationStateToPlay);
                 CinematicHelper.Instance.SetObject(rightCloud)
-                .PlayAnimation(animationToPlay)
-                .SetOnAnimationFinish(animationToPlay, () => {
+                .PlayAnimation(animationStateToPlay)
+                .SetOnAnimationFinish(animationStateToPlay, () => {
                     // Debug.Log("Completed Lightning Playing");
                     Completed();
                 });
-            }));
+            }))
+            .Tween();
+            
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -102,12 +118,54 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("SmokeAnimation", () => {
+            // Smoke Created
+            string animationStateToPlay = "Smoke";
             CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("EntranceSmoke"),
                                                      centerTile.gameObject.transform.position)
-            .PlayAnimation("Smoke", true)
+            .PlayAnimation(animationStateToPlay, true)
+            .SetOnAnimationFinish(animationStateToPlay, () => {
+                Completed();
+            })
             .Build();
             
+            // OBBC Created
+            oldBathroomBroCzar = CinematicHelper.Instance.CreateBro(NPCPrefabs.GetPath("OldBathroomBroCzar"),
+                                                                    centerTile.gameObject.transform.position)
+                                 // .SetBroState(BroState.Standing)
+                                 // .SetFacing(Facing.Top)
+                                 .Build();
+                                 
             Completed();
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("WaitForSmoke", () => {
+            // Waiting
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Jumped", () => {
+            GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "BroSprite");
+            // GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
+            Debug.Log("SpriteToTween: " + spriteToTween.name);
+            TweenExecutor.Position
+            .Object(spriteToTween)
+            .StartPosition(spriteToTween.transform.position.x, spriteToTween.transform.position.y)
+            .EndPosition(spriteToTween.transform.position.x, spriteToTween.transform.position.y + 1)
+            .Duration(1)
+            .Method(UITweener.Method.BounceIn)
+            .Tween();
+            
+            // string animationStateToPlay = "JumpUp";
+            // CinematicHelper.Instance.SetObject(oldBathroomBroCzar)
+            // .PlayAnimation(animationStateToPlay, true)
+            // .Build();
+            
+            Completed();
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Appears", () => {
+            // TextboxManager.Instance.SetText("asdfa",
+            //                                 "alskdfjalsd");
+            // Completed();
         }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
