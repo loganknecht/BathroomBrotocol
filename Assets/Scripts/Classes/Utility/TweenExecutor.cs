@@ -9,28 +9,28 @@ public class TweenHelper {
     protected UITweener.Style style = UITweener.Style.Once;
     protected EventDelegate onFinish = null;
     
-    public TweenHelper Object(GameObject newGameObject) {
+    public virtual TweenHelper Object(GameObject newGameObject) {
         objectToTween = newGameObject;
         return this;
     }
     
-    public TweenHelper Delay(float newDelay) {
+    public virtual TweenHelper Delay(float newDelay) {
         delay = newDelay;
         return this;
     }
-    public TweenHelper Duration(float newDuration) {
+    public virtual TweenHelper Duration(float newDuration) {
         duration = newDuration;
         return this;
     }
-    public TweenHelper Method(UITweener.Method newMethod) {
+    public virtual TweenHelper Method(UITweener.Method newMethod) {
         method = newMethod;
         return this;
     }
-    public TweenHelper Style(UITweener.Style newStyle) {
+    public virtual TweenHelper Style(UITweener.Style newStyle) {
         style = newStyle;
         return this;
     }
-    public TweenHelper OnFinish(EventDelegate newOnFinishEvent) {
+    public virtual TweenHelper OnFinish(EventDelegate newOnFinishEvent) {
         onFinish = newOnFinishEvent;
         return this;
     }
@@ -38,6 +38,7 @@ public class TweenHelper {
     public virtual void Tween() {
     }
 }
+
 public class TweenPositionHelper : TweenHelper {
     Vector2 startPosition = Vector2.zero;
     Vector2 endPosition = Vector2.zero;
@@ -99,9 +100,67 @@ public class TweenPositionHelper : TweenHelper {
         }
     }
 }
+//------------------------------------------------------------------------------
+// Tween Opacity Helper
+//------------------------------------------------------------------------------
+public class TweenAlphaHelper : TweenHelper {
+    protected float startAlpha = 1f;
+    protected float endAlpha = 1f;
+    
+    public new TweenAlphaHelper Object(GameObject newGameObject) {
+        base.Object(newGameObject);
+        return this;
+    }
+    public TweenAlphaHelper StartAlpha(float newStartAlpha) {
+        startAlpha = Mathf.Clamp(newStartAlpha, 0, 1);
+        return this;
+    }
+    public TweenAlphaHelper EndAlpha(float newEndAlpha) {
+        endAlpha = Mathf.Clamp(newEndAlpha, 0, 1);
+        return this;
+    }
+    public new TweenAlphaHelper Delay(float newDelay) {
+        base.Delay(newDelay);
+        return this;
+    }
+    public new TweenAlphaHelper Duration(float newDuration) {
+        base.Duration(newDuration);
+        return this;
+    }
+    public new TweenAlphaHelper Method(UITweener.Method newMethod) {
+        base.Method(newMethod);
+        return this;
+    }
+    public new TweenAlphaHelper Style(UITweener.Style newStyle) {
+        base.Style(newStyle);
+        return this;
+    }
+    public new TweenAlphaHelper OnFinish(EventDelegate newOnFinishEvent) {
+        base.OnFinish(newOnFinishEvent);
+        return this;
+    }
+    
+    public override void Tween() {
+        if(objectToTween.GetComponent<TweenAlpha>() == null) {
+            objectToTween.AddComponent<TweenAlpha>();
+        }
+        TweenAlpha tweenAlpha = objectToTween.GetComponent<TweenAlpha>();
+        
+        tweenAlpha.delay = delay;
+        tweenAlpha.value = startAlpha;
+        tweenAlpha.from = startAlpha;
+        
+        TweenAlpha.Begin(objectToTween, duration, endAlpha).method = method;
+        
+        if(onFinish != null) {
+            EventDelegate.Add(tweenAlpha.onFinished, onFinish);
+        }
+    }
+}
 
 public static class TweenExecutor {
     static TweenPositionHelper tweenPositionHelper = null;
+    static TweenAlphaHelper tweenAlphaHelper = null;
     
     public static TweenPositionHelper Position {
         get {
@@ -113,6 +172,20 @@ public static class TweenExecutor {
         set {
             if(tweenPositionHelper == null) {
                 tweenPositionHelper = new TweenPositionHelper();
+            }
+        }
+    }
+    
+    public static TweenAlphaHelper Alpha {
+        get {
+            if(tweenAlphaHelper == null) {
+                tweenAlphaHelper = new TweenAlphaHelper();
+            }
+            return tweenAlphaHelper;
+        }
+        set {
+            if(tweenAlphaHelper == null) {
+                tweenAlphaHelper = new TweenAlphaHelper();
             }
         }
     }
@@ -138,26 +211,26 @@ public static class TweenExecutor {
     //     }
     // }
     
-    public static void TweenObjectAlpha(GameObject objectToTween, float startOpacity, float endOpacity, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
-        if(objectToTween.GetComponent<TweenAlpha>() == null) {
-            objectToTween.AddComponent<TweenAlpha>();
-        }
-        TweenAlpha tweenAlpha = objectToTween.GetComponent<TweenAlpha>();
-        
-        // Debug.Log("Tweening: " + objectToTween.name);
-        tweenAlpha.delay = delay;
-        
-        tweenAlpha.value = startOpacity;
-        // objectToTween.GetComponent<UIRect>().alpha = startOpacity;
-        
-        tweenAlpha.from = startOpacity;
-        
-        TweenAlpha.Begin(objectToTween, duration, endOpacity).method = easingMethod;
-        
-        if(eventDelegate != null) {
-            EventDelegate.Add(tweenAlpha.onFinished, eventDelegate);
-        }
-    }
+    // public static void TweenObjectAlpha(GameObject objectToTween, float startOpacity, float endOpacity, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
+    //     if(objectToTween.GetComponent<TweenAlpha>() == null) {
+    //         objectToTween.AddComponent<TweenAlpha>();
+    //     }
+    //     TweenAlpha tweenAlpha = objectToTween.GetComponent<TweenAlpha>();
+    
+    //     // Debug.Log("Tweening: " + objectToTween.name);
+    //     tweenAlpha.delay = delay;
+    
+    //     tweenAlpha.value = startOpacity;
+    //     // objectToTween.GetComponent<UIRect>().alpha = startOpacity;
+    
+    //     tweenAlpha.from = startOpacity;
+    
+    //     TweenAlpha.Begin(objectToTween, duration, endOpacity).method = easingMethod;
+    
+    //     if(eventDelegate != null) {
+    //         EventDelegate.Add(tweenAlpha.onFinished, eventDelegate);
+    //     }
+    // }
     
     public static void TweenObjectColor(GameObject objectToTween, Color startColor, Color endColor, float delay, float duration, UITweener.Method easingMethod, EventDelegate eventDelegate) {
         // Debug.Log("Tweening: " + objectToTween.name);

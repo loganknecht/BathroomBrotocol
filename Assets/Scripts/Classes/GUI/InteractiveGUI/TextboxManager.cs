@@ -107,12 +107,24 @@ public class TextboxManager : MonoBehaviour {
     // GUI STUFF GOES DOWN HERE
     //----------------------------------------------------------------------------
     public void Hide() {
-        TweenExecutor.TweenObjectAlpha(this.gameObject, 1, 0, 0, 1, UITweener.Method.Linear, null);
+        TweenExecutor.Alpha
+        .Object(this.gameObject)
+        .StartAlpha(1)
+        .EndAlpha(0)
+        .Method(UITweener.Method.Linear)
+        .OnFinish(null)
+        .Tween();
         // textboxPanel.alpha = 0;
     }
     public void Show() {
         // textboxPanel.alpha = 1;
-        TweenExecutor.TweenObjectAlpha(this.gameObject, 0, 1, 0, 1, UITweener.Method.Linear, null);
+        TweenExecutor.Alpha
+        .Object(this.gameObject)
+        .StartAlpha(0)
+        .EndAlpha(1)
+        .Method(UITweener.Method.Linear)
+        .OnFinish(null)
+        .Tween();
     }
     
     public void MoveToNextTextboxText() {
