@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class StartMenuManager : MonoBehaviour {
@@ -79,7 +80,7 @@ public class StartMenuManager : MonoBehaviour {
         .Duration(1)
         .Method(UITweener.Method.Linear)
         .Style(UITweener.Style.Once)
-        .OnFinish(new EventDelegate(callbackToPerform))
+        .OnFinish(callbackToPerform)
         .Tween();
         
         TweenExecutor.Position

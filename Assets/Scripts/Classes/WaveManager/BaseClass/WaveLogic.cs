@@ -42,8 +42,10 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     }
     
     public virtual void Completed() {
-        WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
-        currentWaveStateRef.Completed();
+        if(currentWaveStateGameObject != null) {
+            WaveState currentWaveStateRef = currentWaveStateGameObject.GetComponent<WaveState>();
+            currentWaveStateRef.Completed();
+        }
         // Debug.Log("WaveLogic Completed");
     }
     

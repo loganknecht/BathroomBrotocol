@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TweenHelper {
     protected GameObject objectToTween = null;
@@ -7,7 +8,7 @@ public class TweenHelper {
     protected float duration = 1f;
     protected UITweener.Method method = UITweener.Method.Linear;
     protected UITweener.Style style = UITweener.Style.Once;
-    protected EventDelegate onFinish = null;
+    protected EventDelegate.Callback onFinish = null;
     
     public virtual TweenHelper Object(GameObject newGameObject) {
         objectToTween = newGameObject;
@@ -30,7 +31,7 @@ public class TweenHelper {
         style = newStyle;
         return this;
     }
-    public virtual TweenHelper OnFinish(EventDelegate newOnFinishEvent) {
+    public virtual TweenHelper OnFinish(EventDelegate.Callback newOnFinishEvent) {
         onFinish = newOnFinishEvent;
         return this;
     }
@@ -63,7 +64,7 @@ public class TweenPositionHelper : TweenHelper {
         base.Style(newStyle);
         return this;
     }
-    public new TweenPositionHelper OnFinish(EventDelegate newOnFinishEvent) {
+    public new TweenPositionHelper OnFinish(EventDelegate.Callback newOnFinishEvent) {
         base.OnFinish(newOnFinishEvent);
         return this;
     }
@@ -90,14 +91,22 @@ public class TweenPositionHelper : TweenHelper {
         }
         TweenPosition tweenPosition = objectToTween.GetComponent<TweenPosition>();
         
+        tweenPosition.from = startPosition;
+        tweenPosition.to = endPosition;
         tweenPosition.delay = delay;
+        tweenPosition.style = style;
+        tweenPosition.method = method;
         
         objectToTween.transform.localPosition = new Vector3(startPosition.x, startPosition.y, objectToTween.transform.localPosition.z);
-        TweenPosition.Begin(objectToTween, duration, new Vector3(endPosition.x, endPosition.y, objectToTween.transform.localPosition.z)).method = method;
         
         if(onFinish != null) {
-            EventDelegate.Add(tweenPosition.onFinished, onFinish);
+            tweenPosition.ResetToBeginning();
+            EventDelegate.Add(tweenPosition.onFinished, onFinish, true);
         }
+        
+        TweenPosition.Begin(objectToTween, duration, new Vector3(endPosition.x, endPosition.y, objectToTween.transform.localPosition.z));
+        
+        objectToTween = null;
     }
 }
 //------------------------------------------------------------------------------
@@ -135,7 +144,7 @@ public class TweenAlphaHelper : TweenHelper {
         base.Style(newStyle);
         return this;
     }
-    public new TweenAlphaHelper OnFinish(EventDelegate newOnFinishEvent) {
+    public new TweenAlphaHelper OnFinish(EventDelegate.Callback newOnFinishEvent) {
         base.OnFinish(newOnFinishEvent);
         return this;
     }
@@ -149,12 +158,18 @@ public class TweenAlphaHelper : TweenHelper {
         tweenAlpha.delay = delay;
         tweenAlpha.value = startAlpha;
         tweenAlpha.from = startAlpha;
+        tweenAlpha.method = method;
+        tweenAlpha.style = style;
         
-        TweenAlpha.Begin(objectToTween, duration, endAlpha).method = method;
-        
+        //TO DO RESET THE SPRITES ALPHA VALUE BEFORE TWEENING?
         if(onFinish != null) {
-            EventDelegate.Add(tweenAlpha.onFinished, onFinish);
+            tweenAlpha.ResetToBeginning();
+            EventDelegate.Add(tweenAlpha.onFinished, onFinish, true);
         }
+        
+        TweenAlpha.Begin(objectToTween, duration, endAlpha);
+        
+        objectToTween = null;
     }
 }
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class BroFistAnimation : MonoBehaviour {
@@ -30,7 +31,7 @@ public class BroFistAnimation : MonoBehaviour {
             .StartPosition(leftBroFistStartXPostion, leftBroFist.transform.position.y)
             .EndPosition(leftBroFistFinalXPostion, leftBroFist.transform.position.y)
             .Duration(broFistDuration)
-            .OnFinish(new EventDelegate(onFinishCallback))
+            .OnFinish(onFinishCallback)
             .Tween();
             TweenExecutor.Position
             .Object(rightBroFist)

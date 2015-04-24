@@ -34,6 +34,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         GameObject centerCloud = null;
         
         GameObject oldBathroomBroCzar = null;
+        Bro oldBathroomBroCzarReference = null;
         // GameObject firstBro = null;
         // GameObject secondBro = null;
         // GameObject thirdBro = null;
@@ -51,6 +52,11 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         
         List<GameObject> waveStates = new List<GameObject>();
         //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("Configure Default Configuration", () => {
+            TextboxManager.Instance.Hide(0);
+            Completed();
+        }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateDelayState("Delay", 1f));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("First Bro Entrance", () => {
@@ -62,7 +68,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 leftStartPosition = (centerTile.gameObject.transform.position - (new Vector3(10, 0, 0)));
             Vector3 rightStartPosition = (centerTile.gameObject.transform.position + (new Vector3(10, 0, 0)));
             Vector3 centerStartPosition = (centerTile.gameObject.transform.position + (new Vector3(0, 10, 0)));
-            // Debug.Log(AnimationPrefabs.GetPath("LightningCloud"));
+            
             leftCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
                                                                  leftStartPosition)
                         .Build();
@@ -72,12 +78,14 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             centerCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
                                                                    centerStartPosition)
                           .Build();
+                          
             // Debug.Log("Clouds Entering");
+            
             TweenExecutor.Position
             .Object(leftCloud)
             .StartPosition(leftStartPosition.x, leftStartPosition.y)
             .EndPosition(centerTile.gameObject.transform.position.x - 1f, leftStartPosition.y)
-            .Duration(1f)
+            .Duration(1)
             .Method(UITweener.Method.BounceIn)
             .Tween();
             
@@ -95,7 +103,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .EndPosition(centerTile.gameObject.transform.position.x + 1f, rightStartPosition.y)
             .Duration(1)
             .Method(UITweener.Method.BounceIn)
-            .OnFinish(new EventDelegate(() => {
+            .OnFinish(() => {
                 string animationStateToPlay = "Lightning";
                 CinematicHelper.Instance.SetObject(leftCloud)
                 .PlayAnimation(animationStateToPlay);
@@ -107,7 +115,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     // Debug.Log("Completed Lightning Playing");
                     Completed();
                 });
-            }))
+            })
             .Tween();
             
             Completed();
@@ -131,10 +139,11 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             // OBBC Created
             oldBathroomBroCzar = CinematicHelper.Instance.CreateBro(NPCPrefabs.GetPath("OldBathroomBroCzar"),
                                                                     centerTile.gameObject.transform.position)
-                                 // .SetBroState(BroState.Standing)
-                                 // .SetFacing(Facing.Top)
+                                 .SetBroState(BroState.Standing)
+                                 .SetFacing(Facing.Top)
                                  .Build();
-                                 
+            oldBathroomBroCzarReference = oldBathroomBroCzar.GetComponent<Bro>();
+            
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -142,29 +151,55 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             // Waiting
         }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Jumped", () => {
-            GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "BroSprite");
-            // GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
-            Debug.Log("SpriteToTween: " + spriteToTween.name);
+        waveStates.Add(CreateWaveState("Behold", () => {
+            TextboxManager.Instance.SetText("Behold my glory! \nFor this is what your future may hold if you can prove that you are worthy of this position!");
+            TextboxManager.Instance.Show();
+            Completed();
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("BeholdEnd", () => {
+            if(TextboxManager.Instance.HasFinished()) {
+                TextboxManager.Instance.Hide();
+                Completed();
+            }
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Jump Up", () => {
+            GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
+            float jumpHeight = 1f;
+            float jumpStart = spriteToTween.transform.localPosition.y;
+            float jumpApex = spriteToTween.transform.localPosition.y + jumpHeight;
+            
+            // Debug.Log("SpriteToTween: " + spriteToTween.name);
             TweenExecutor.Position
             .Object(spriteToTween)
-            .StartPosition(spriteToTween.transform.position.x, spriteToTween.transform.position.y)
-            .EndPosition(spriteToTween.transform.position.x, spriteToTween.transform.position.y + 1)
-            .Duration(1)
-            .Method(UITweener.Method.BounceIn)
+            .StartPosition(spriteToTween.transform.localPosition.x, jumpStart)
+            .EndPosition(spriteToTween.transform.localPosition.x, jumpApex)
+            .Duration(0.25f)
+            .Method(UITweener.Method.Linear)
+            .Style(UITweener.Style.Once)
+            .OnFinish(() => {
+                oldBathroomBroCzarReference.SetFacing(Facing.Bottom);
+                
+                TweenExecutor.Position
+                .Object(spriteToTween)
+                .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
+                .EndPosition(spriteToTween.transform.localPosition.x, jumpStart)
+                .Duration(0.25f)
+                .Method(UITweener.Method.Linear)
+                .Style(UITweener.Style.Once)
+                .OnFinish(() => {
+                    Completed();
+                })
+                .Tween();
+            })
             .Tween();
-            
-            // string animationStateToPlay = "JumpUp";
-            // CinematicHelper.Instance.SetObject(oldBathroomBroCzar)
-            // .PlayAnimation(animationStateToPlay, true)
-            // .Build();
             
             Completed();
         }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Appears", () => {
-            // TextboxManager.Instance.SetText("asdfa",
-            //                                 "alskdfjalsd");
+        waveStates.Add(CreateWaveState("OBBC Jump Up End", () => {
+            Debug.Log("waiting to end");
             // Completed();
         }));
         //----------------------------------------------------------------------
@@ -176,75 +211,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         InitializeWaveStates(waveStates.ToArray()); // End of Initialize
     }
     
-// Update is called once per frame
+    // Update is called once per frame
     public override void Update() {
         base.Update();
-    }
-    
-//--------------------------------------------------------------------------
-// Old Bathroom Bro Czar Enters To The Center of The Screen
-//--------------------------------------------------------------------------
-    public void TriggerBroCzarEnterAnimation() {
-    }
-    
-    public void PerformBroCzarEnterAnimation() {
-        // Debug.Log("performing start animation");
-        // waitTime += Time.deltaTime;
-        // if(waitTime > 1
-        //         && !waitFinished) {
-        // waitFinished = true;
-        
-        
-        
-        
-        
-        // FadeManager.Instance.PerformFullScreenFade(Color.white, Color.clear, 1, false);
-        
-        // BroGenerator.Instance.Pause();
-        
-        // broCzarReference.gameObject.SetActive(true);
-        
-        // LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(0).GetComponent<LineQueue>();
-        // GameObject firstQueueTile = entranceLineQueue.GetFirstQueueTile();
-        
-        
-        
-        
-        
-        // GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
-        
-        // Vector3 startBroCzarPosition = new Vector3(lastQueueTile.transform.position.x,
-        //                                            lastQueueTile.transform.position.y,
-        //                                            broCzarReference.transform.position.z);
-        
-        // broCzarReference.SetLocation(startBroCzarPosition)
-        // .SetTargetObjectAndTargetPosition(null, startBroCzarPosition);
-        
-        
-        
-        
-        
-        
-        // List<GameObject> entranceToCenterMovementNodes = entranceLineQueue.GetQueueMovementNodes();
-        // entranceToCenterMovementNodes.AddRange(AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
-        //                                                                                 AStarManager.Instance.GetListCopyOfAllClosedNodes(),
-        //                                                                                 BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(firstQueueTile.transform.position, true).GetComponent<BathroomTile>(),
-        //                                                                                 BathroomTileMap.Instance.GetMiddleTileGameObject().GetComponent<BathroomTile>()));
-        
-        // broCzarReference.targetPathingReference.SetTargetObjectAndTargetPosition(null, entranceToCenterMovementNodes);
-        // broCzarReference.targetPathingReference.SetMoveSpeed(25, 25);
-        // broCzarReference.targetPathingReference.SetOnArrivalAtTargetPosition(() => {
-        //     broCzarReference.SetState(BroState.Standing).SetFacing(Facing.Bottom);
-        //     broCzarReference.animatorReference.Play("JumpUp");
-        
-        // });
-        
-        // LevelManager.Instance.pauseButton.GetComponent<UISprite>().alpha = 0;
-        
-        
-        
-        
-        // }
     }
     
     public void FinishBroCzarEnterAnimation() {

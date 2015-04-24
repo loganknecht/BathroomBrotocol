@@ -56,7 +56,7 @@ public class CinematicHelper : MonoBehaviour {
         foreach(Transform childTransform in fromGameObject.transform) {
             // Debug.Log("Checking: " + childTransform.gameObject.name);
             if(childTransform.gameObject.name == childName) {
-                Debug.Log("Found: " + childName);
+                // Debug.Log("Found: " + childName);
                 gameObjectToReturn = childTransform.gameObject;
                 // stops search immediately meaning it finds the first occurence
                 // of the object and stops
@@ -100,8 +100,8 @@ public class CinematicHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     // Bathroom Facing
     //--------------------------------------------------------------------------
-    public CinematicHelper SetFacing(Facing facing) {
-        currentGameObject.GetComponent<BathroomFacing>().SetFacing(Facing.Bottom);
+    public CinematicHelper SetFacing(Facing newFacing) {
+        currentGameObject.GetComponent<BathroomFacing>().SetFacing(newFacing);
         return this;
     }
     
