@@ -138,6 +138,10 @@ public class TextboxManager : MonoBehaviour {
         if(textboxTextSet != null
             && textboxTextSet.Count > 0) {
             textboxText.text = "" + textboxTextSet.Dequeue();
+            TypewriterEffect typewriterEffectRef = textboxTextObject.GetComponent<TypewriterEffect>();
+            if(typewriterEffectRef != null) {
+                typewriterEffectRef.ResetToBeginning();
+            }
         }
         else {
             PerformTextboxTextFinished();

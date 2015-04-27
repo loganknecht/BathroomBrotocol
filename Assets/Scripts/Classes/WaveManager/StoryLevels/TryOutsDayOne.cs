@@ -54,6 +54,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Configure Default Configuration", () => {
             TextboxManager.Instance.Hide(0);
+            ConfirmationBoxManager.Instance.Hide(0);
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -152,19 +153,22 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Behold", () => {
-            TextboxManager.Instance.SetText("Behold my glory! \nFor this is what your future may hold if you can prove that you are worthy of this position!");
+            TextboxManager.Instance.SetText("Behold my glory!",
+                                            "For, this is what your future may hold-",
+                                            "...",
+                                            // "But only, if you can prove that you are worthy of this position!",
+                                            "No one's here ...");
             TextboxManager.Instance.Show();
             Completed();
         }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("BeholdEnd", () => {
             if(TextboxManager.Instance.HasFinished()) {
-                TextboxManager.Instance.Hide();
                 Completed();
             }
         }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Jump Up", () => {
+        waveStates.Add(CreateWaveState("OBBC JumpUp Left", () => {
             GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
             float jumpHeight = 1f;
             float jumpStart = spriteToTween.transform.localPosition.y;
@@ -175,17 +179,17 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .Object(spriteToTween)
             .StartPosition(spriteToTween.transform.localPosition.x, jumpStart)
             .EndPosition(spriteToTween.transform.localPosition.x, jumpApex)
-            .Duration(0.25f)
+            .Duration(0.15f)
             .Method(UITweener.Method.Linear)
             .Style(UITweener.Style.Once)
             .OnFinish(() => {
-                oldBathroomBroCzarReference.SetFacing(Facing.Bottom);
+                oldBathroomBroCzarReference.SetFacing(Facing.Left);
                 
                 TweenExecutor.Position
                 .Object(spriteToTween)
                 .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
                 .EndPosition(spriteToTween.transform.localPosition.x, jumpStart)
-                .Duration(0.25f)
+                .Duration(0.15f)
                 .Method(UITweener.Method.Linear)
                 .Style(UITweener.Style.Once)
                 .OnFinish(() => {
@@ -198,10 +202,130 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Completed();
         }));
         //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC JumpUp Left End", () => {
+            // Wait for Completed to be called
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC JumpUp Right", () => {
+            GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
+            float jumpHeight = 1f;
+            float jumpStart = spriteToTween.transform.localPosition.y;
+            float jumpApex = spriteToTween.transform.localPosition.y + jumpHeight;
+            
+            // Debug.Log("SpriteToTween: " + spriteToTween.name);
+            TweenExecutor.Position
+            .Object(spriteToTween)
+            .StartPosition(spriteToTween.transform.localPosition.x, jumpStart)
+            .EndPosition(spriteToTween.transform.localPosition.x, jumpApex)
+            .Duration(0.15f)
+            .Method(UITweener.Method.Linear)
+            .Style(UITweener.Style.Once)
+            .OnFinish(() => {
+                oldBathroomBroCzarReference.SetFacing(Facing.Right);
+                
+                TweenExecutor.Position
+                .Object(spriteToTween)
+                .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
+                .EndPosition(spriteToTween.transform.localPosition.x, jumpStart)
+                .Duration(0.15f)
+                .Method(UITweener.Method.Linear)
+                .Style(UITweener.Style.Once)
+                .OnFinish(() => {
+                    Completed();
+                })
+                .Tween();
+            })
+            .Tween();
+            
+            Completed();
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("JumpUp Left End", () => {
+            // Wait for Completed to be called
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Jump Up Front", () => {
+            GameObject spriteToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
+            float jumpHeight = 1f;
+            float jumpStart = spriteToTween.transform.localPosition.y;
+            float jumpApex = spriteToTween.transform.localPosition.y + jumpHeight;
+            
+            // Debug.Log("SpriteToTween: " + spriteToTween.name);
+            TweenExecutor.Position
+            .Object(spriteToTween)
+            .StartPosition(spriteToTween.transform.localPosition.x, jumpStart)
+            .EndPosition(spriteToTween.transform.localPosition.x, jumpApex)
+            .Duration(0.15f)
+            .Method(UITweener.Method.Linear)
+            .Style(UITweener.Style.Once)
+            .OnFinish(() => {
+                oldBathroomBroCzarReference.SetFacing(Facing.Bottom);
+                
+                TweenExecutor.Position
+                .Object(spriteToTween)
+                .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
+                .EndPosition(spriteToTween.transform.localPosition.x, jumpStart)
+                .Duration(0.15f)
+                .Method(UITweener.Method.Linear)
+                .Style(UITweener.Style.Once)
+                .OnFinish(() => {
+                    Completed();
+                    TextboxManager.Instance.SetText("Ah, there's your stupid face.",
+                                                    " Wait... is this the kind of slob they're trying to pass to me as successor material?");
+                })
+                .Tween();
+            })
+            .Tween();
+            
+            Completed();
+        }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("OBBC Jump Up End", () => {
-            Debug.Log("waiting to end");
             // Completed();
         }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Jump Up End", () => {
+            if(TextboxManager.Instance.HasFinished()) {
+                ConfirmationBoxManager.Instance.Show()
+                .SetText("Do you really think you've got what it takes to be the Bathroom Bro Czar?")
+                .SetYesButtonText("Pipe down old man, I'm here for your job.")
+                .SetNoButtonText("I can't go home.. Not after what happened...");
+                Completed();
+            }
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Confirmation Response", () => {
+            if(ConfirmationBoxManager.Instance.WasYesSelected()) {
+                PerformWaveStatesThenReturn(CreateWaveState("OBBC Confirmation Yes", () => {
+                    // Debug.Log("yes");
+                    ConfirmationBoxManager.Instance.Hide();
+                    Completed();
+                    
+                }),
+                CreateWaveState("1", () => {
+                    Debug.Log("1");
+                    Completed();
+                }),
+                CreateWaveState("2", () => {
+                    Debug.Log("2");
+                    Completed();
+                }),
+                CreateWaveState("3", () => {
+                    Debug.Log("3");
+                    Completed();
+                }));
+                
+                Completed();
+            }
+            else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
+                // PerformWaveStatesThenReturn(CreateWaveState("OBBC Confirmation No", () => {
+                //     // Debug.Log("no");
+                //     ConfirmationBoxManager.Instance.Hide();
+                // }));
+                // Completed();
+            }
+        }));
+        
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
             Debug.Log("Cinematic Complete!");

@@ -136,9 +136,13 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         }
     }
     
-    public void PerformWaveStateThenReturn(GameObject waveStateToJumpTo) {
-        waveStatesQueue.AddFirst(currentWaveStateGameObject);
-        currentWaveStateGameObject = waveStateToJumpTo;
+    public void PerformWaveStatesThenReturn(params GameObject[] waveStatesToJumpTo) {
+        // waveStatesQueue.AddFirst(currentWaveStateGameObject);
+        // currentWaveStateGameObject = waveStateToJumpTo;
+        System.Array.Reverse(waveStatesToJumpTo);
+        foreach(GameObject waveStateToJumpTo in waveStatesToJumpTo) {
+            waveStatesQueue.AddFirst(waveStateToJumpTo);
+        }
     }
     
     public void EnqueueWaveState(GameObject waveStateGameObjectToEnqueue) {

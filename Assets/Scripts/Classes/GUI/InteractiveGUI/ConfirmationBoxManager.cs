@@ -5,7 +5,9 @@ public class ConfirmationBoxManager : MonoBehaviour {
 
     public GameObject background = null;
     public GameObject yesButton = null;
+    public GameObject yesButtonText = null;
     public GameObject noButton = null;
+    public GameObject noButtonText = null;
     public GameObject text = null;
     public GameObject title = null;
     //----------------------------------------------------------------------------
@@ -51,40 +53,64 @@ public class ConfirmationBoxManager : MonoBehaviour {
     //END OF SINGLETON CODE CONFIGURATION
     
     // Use this for initialization
-    void Start() {
+    public void Start() {
     }
     
     // Update is called once per frame
-    void Update() {
+    public void Update() {
     }
     
-    public void Hide() {
+    public bool WasYesSelected() {
+        return selectedYes;
+    }
+    
+    public bool WasNoSelected() {
+        return selectedNo;
+    }
+    
+    public ConfirmationBoxManager Hide(float duration = 1f) {
         TweenExecutor.Alpha
         .Object(this.gameObject)
         .StartAlpha(1)
         .EndAlpha(0)
+        .Duration(duration)
         .Method(UITweener.Method.Linear)
         .OnFinish(null)
         .Tween();
+        return this;
     }
-    public void Show() {
+    public ConfirmationBoxManager Show(float duration = 1f) {
         TweenExecutor.Alpha
         .Object(this.gameObject)
         .StartAlpha(0)
         .EndAlpha(1)
+        .Duration(duration)
         .Method(UITweener.Method.Linear)
         .OnFinish(null)
         .Tween();
+        return this;
     }
     
-    public void SetText(string newConfirmationBoxText) {
+    public ConfirmationBoxManager SetText(string newConfirmationBoxText) {
         text.GetComponent<UILabel>().text = newConfirmationBoxText;
+        Reset();
+        return this;
     }
     
-    public void Reset() {
+    public ConfirmationBoxManager SetYesButtonText(string newConfirmationBoxText) {
+        yesButtonText.GetComponent<UILabel>().text = newConfirmationBoxText;
+        return this;
+    }
+    public ConfirmationBoxManager SetNoButtonText(string newConfirmationBoxText) {
+        noButtonText.GetComponent<UILabel>().text = newConfirmationBoxText;
+        return this;
+    }
+    
+    public ConfirmationBoxManager Reset() {
         hasSelectedAnswer = false;
         selectedNo = false;
         selectedYes = false;
+        return this;
     }
     
     public void SelectedYes() {
