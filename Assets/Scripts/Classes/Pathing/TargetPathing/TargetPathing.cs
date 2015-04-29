@@ -125,6 +125,15 @@ public class TargetPathing : BaseBehavior {
         return this;
     }
     
+    public bool HasMovementNodes() {
+        if(movementNodes.Count > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
     public void ClearMovementNodes() {
         movementNodes.Clear();
     }

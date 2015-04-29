@@ -79,9 +79,22 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
+    public CinematicHelper CreateBro(string resourcePrefabPath) {
+        CreateBro(resourcePrefabPath, Vector3.zero);
+        return this;
+    }
     public CinematicHelper CreateBro(string resourcePrefabPath, Vector3 startPosition) {
-        // currentGameObject = Factory.Instance.GenerateBroGameObject(broType);
         currentGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
+        SetPosition(startPosition);
+        SetTargetObjectAndTargetPosition(null, startPosition);
+        return this;
+    }
+    public CinematicHelper CreateBro(BroType broTypeToGenerate) {
+        CreateBro(broTypeToGenerate, Vector3.zero);
+        return this;
+    }
+    public CinematicHelper CreateBro(BroType broTypeToGenerate, Vector3 startPosition) {
+        currentGameObject = Factory.Instance.GenerateBroGameObject(broTypeToGenerate);
         SetPosition(startPosition);
         SetTargetObjectAndTargetPosition(null, startPosition);
         return this;
@@ -171,28 +184,23 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
-    public CinematicHelper BroEnterThroughLineQueue(int lineQueueEntrance) {
-        Bro broReferece = currentGameObject.GetComponent<Bro>();
+    public CinematicHelper EnterThroughLineQueue(int lineQueueEntrance) {
+        // Bro broReferece = currentGameObject.GetComponent<Bro>();
+        TargetPathing targetPathingReference = currentGameObject.GetComponent<TargetPathing>();
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(lineQueueEntrance).GetComponent<LineQueue>();
         
         GameObject lastQueueTile = entranceLineQueue.GetLastQueueTile();
-        Vector2 startBroPosition = new Vector2(lastQueueTile.transform.position.x,
-                                               lastQueueTile.transform.position.y);
-                                               
-        broReferece.SetLocation(startBroPosition)
-        .SetTargetObjectAndTargetPosition(null, entranceLineQueue.GetQueueMovementNodes());
-        // .SetTargetObjectAndTargetPosition(null, startBroPosition);
+        Vector2 startPosition = new Vector2(lastQueueTile.transform.position.x,
+                                            lastQueueTile.transform.position.y);
+                                            
+        SetPosition(startPosition);
+        targetPathingReference.SetTargetObjectAndTargetPosition(null, entranceLineQueue.GetQueueMovementNodes());
         
         return this;
     }
     
-    public CinematicHelper BroMoveToTile(int tileX, int tileY, bool appendToCurrentMovementNodes = true) {
-        BroMoveToTile(tileX, tileY, appendToCurrentMovementNodes, currentGameObject);
-        return this;
-    }
-    
-    public CinematicHelper BroMoveToTile(int tileX, int tileY, bool appendToCurrentMovementNodes, GameObject currentObjectToModify) {
-        Bro broReferece = currentObjectToModify.GetComponent<Bro>();
+    public CinematicHelper MoveToTile(int tileX, int tileY, bool appendToCurrentMovementNodes = true) {
+        TargetPathing targetPathingReference = currentGameObject.GetComponent<TargetPathing>();
         
         // get bro's last movement node of the existing nodes?
         // if movement nodes is empty, use bros current movement node
@@ -205,13 +213,13 @@ public class CinematicHelper : MonoBehaviour {
         
         //----------------------------------------------------------------------
         // start at last node if exist and they should be appended
-        if(broReferece.HasMovementNodes()
+        if(targetPathingReference.HasMovementNodes()
             && appendToCurrentMovementNodes) {
-            startTileGameObject = broReferece.GetLastMovementNode();
+            startTileGameObject = targetPathingReference.GetLastMovementNode();
         }
         // otherwise just start from the bro's position
         else {
-            startTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(broReferece.transform.position, false);
+            startTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(currentGameObject.transform.position, false);
         }
         endTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByIndex(tileX, tileY, true);
         //----------------------------------------------------------------------
@@ -243,10 +251,10 @@ public class CinematicHelper : MonoBehaviour {
                                                                     endTile);
                                                                     
         if(appendToCurrentMovementNodes) {
-            broReferece.AddMovementNodes(newMovementNodes);
+            targetPathingReference.AddMovementNodes(newMovementNodes);
         }
         else {
-            broReferece.SetMovementNodes(newMovementNodes);
+            targetPathingReference.SetMovementNodes(newMovementNodes);
         }
         
         return this;

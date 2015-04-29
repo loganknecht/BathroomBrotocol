@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -173,9 +173,76 @@ public class TweenAlphaHelper : TweenHelper {
     }
 }
 
+//------------------------------------------------------------------------------
+// Tween Scale Helper
+//------------------------------------------------------------------------------
+public class TweenScaleHelper : TweenHelper {
+    protected Vector3 startScale = new Vector3(1, 1, 1);
+    protected Vector3 endScale = new Vector3(1, 1, 1);
+    
+    public new TweenScaleHelper Object(GameObject newGameObject) {
+        base.Object(newGameObject);
+        return this;
+    }
+    public TweenScaleHelper StartScale(Vector3 newStartScale) {
+        // startScale = Mathf.Clamp(newStartAlpha, 0, 1);
+        startScale = newStartScale;
+        return this;
+    }
+    public TweenScaleHelper EndScale(Vector3 newEndScale) {
+        // endScale = Mathf.Clamp(newEndAlpha, 0, 1);
+        endScale = newEndScale;
+        return this;
+    }
+    public new TweenScaleHelper Delay(float newDelay) {
+        base.Delay(newDelay);
+        return this;
+    }
+    public new TweenScaleHelper Duration(float newDuration) {
+        base.Duration(newDuration);
+        return this;
+    }
+    public new TweenScaleHelper Method(UITweener.Method newMethod) {
+        base.Method(newMethod);
+        return this;
+    }
+    public new TweenScaleHelper Style(UITweener.Style newStyle) {
+        base.Style(newStyle);
+        return this;
+    }
+    public new TweenScaleHelper OnFinish(EventDelegate.Callback newOnFinishEvent) {
+        base.OnFinish(newOnFinishEvent);
+        return this;
+    }
+    
+    public override void Tween() {
+        if(objectToTween.GetComponent<TweenScale>() == null) {
+            objectToTween.AddComponent<TweenScale>();
+        }
+        TweenScale tweenScale = objectToTween.GetComponent<TweenScale>();
+        // Add this in if it doesn't start at the right scale
+        // objectToTween.transform.localScale = startScale;
+        
+        tweenScale.delay = delay;
+        tweenScale.value = startScale;
+        tweenScale.from = startScale;
+        tweenScale.method = method;
+        tweenScale.style = style;
+        
+        if(onFinish != null) {
+            tweenScale.ResetToBeginning();
+            EventDelegate.Add(tweenScale.onFinished, onFinish, true);
+        }
+        
+        TweenScale.Begin(objectToTween, duration, endScale);
+        
+        objectToTween = null;
+    }
+}
 public static class TweenExecutor {
     static TweenPositionHelper tweenPositionHelper = null;
     static TweenAlphaHelper tweenAlphaHelper = null;
+    static TweenScaleHelper tweenScaleHelper = null;
     
     public static TweenPositionHelper Position {
         get {
@@ -197,6 +264,20 @@ public static class TweenExecutor {
                 tweenAlphaHelper = new TweenAlphaHelper();
             }
             return tweenAlphaHelper;
+        }
+        set {
+            if(tweenAlphaHelper == null) {
+                tweenAlphaHelper = new TweenAlphaHelper();
+            }
+        }
+    }
+    
+    public static TweenScaleHelper Scale {
+        get {
+            if(tweenScaleHelper == null) {
+                tweenScaleHelper = new TweenScaleHelper();
+            }
+            return tweenScaleHelper;
         }
         set {
             if(tweenAlphaHelper == null) {

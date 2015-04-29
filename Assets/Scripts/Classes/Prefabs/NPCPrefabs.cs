@@ -15,9 +15,9 @@ public static class NPCPrefabs {
     public static string resourceBasePath = "Assets/Resources/";
     public static string[] subDirectoryPaths = new string[] { "Prefabs/NPC/" };
     
-    public static string GetPath(string animationName) {
+    public static string GetPath(string broPrefabName) {
         string returnString = "";
-        paths.TryGetValue(animationName, out returnString);
+        paths.TryGetValue(broPrefabName, out returnString);
         return returnString;
     }
     

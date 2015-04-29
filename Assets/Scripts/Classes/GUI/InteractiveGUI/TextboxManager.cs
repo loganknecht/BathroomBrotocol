@@ -80,9 +80,11 @@ public class TextboxManager : MonoBehaviour {
     
     public void PerformTextboxTextFinished() {
         finishedTextboxText = true;
-        if(!textboxFinishLogicTriggered) {
+        if(!textboxFinishLogicTriggered
+            && textboxTextFinishedLogicToPerform != null) {
             textboxFinishLogicTriggered = true;
             textboxTextFinishedLogicToPerform();
+            textboxTextFinishedLogicToPerform = null;
         }
     }
     
@@ -92,8 +94,9 @@ public class TextboxManager : MonoBehaviour {
     public void SetNewLogic(TextboxButtonPressLogic newLogic) {
         textboxButtonLogicToPerform = newLogic;
     }
-    public void SetFinishedLogic(TextboxTextFinishedLogic newTextboxTextFinishedLogic) {
+    public TextboxManager OnFinish(TextboxTextFinishedLogic newTextboxTextFinishedLogic) {
         textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(newTextboxTextFinishedLogic);
+        return this;
     }
     public void SetFinishedLogicToDefault() {
         textboxTextFinishedLogicToPerform = new TextboxTextFinishedLogic(DefaultTextFinishedLogicToPerform);
@@ -149,18 +152,22 @@ public class TextboxManager : MonoBehaviour {
         }
     }
     
-    public void SetText(params string[] textboxTexts) {
+    public TextboxManager SetText(params string[] textboxTexts) {
         Queue textboxTextsQueue = new Queue();
         foreach(string textboxText in textboxTexts) {
             textboxTextsQueue.Enqueue(textboxText);
         }
         SetText(textboxTextsQueue);
+        
+        return this;
     }
     
-    public void SetText(Queue newTextboxTextSet) {
+    public TextboxManager SetText(Queue newTextboxTextSet) {
         textboxFinishLogicTriggered = false;
         finishedTextboxText = false;
         textboxTextSet = newTextboxTextSet;
         PopNextTextboxText();
+        
+        return this;
     }
 }

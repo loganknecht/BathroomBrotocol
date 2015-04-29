@@ -192,13 +192,9 @@ public class Bro : BaseBehavior {
     }
     
     public bool HasMovementNodes() {
-        if(targetPathingReference.GetMovementNodes().Count > 0) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return targetPathingReference.HasMovementNodes();
     }
+    
     public List<GameObject> GetMovementNodes() {
         return targetPathingReference.GetMovementNodes();
     }
