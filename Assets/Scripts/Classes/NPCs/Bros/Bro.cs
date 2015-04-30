@@ -465,7 +465,13 @@ public class Bro : BaseBehavior {
                 }
             }
             else {
-                if(targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+                if(targetObject != null
+                    && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
+                    // Do not roam on move to exit? That's weird though....
+                    // Should be removed by default... so moving to exit
+                    // shouldn't matter?
+                }
+                else {
                     Debug.Log("lol starting to roam");
                     state = BroState.Roaming;
                 }

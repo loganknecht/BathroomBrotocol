@@ -1,3 +1,5 @@
+#pragma warning disable 0219
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -106,13 +108,13 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     .Method(UITweener.Method.BounceIn)
         //     .OnFinish(() => {
         //         string animationStateToPlay = "Lightning";
-        //         CinematicHelper.Instance.SetObject(leftCloud)
+        //         CinematicHelper.Instance.Object(leftCloud)
         //         .PlayAnimation(animationStateToPlay);
-        //         CinematicHelper.Instance.SetObject(centerCloud)
+        //         CinematicHelper.Instance.Object(centerCloud)
         //         .PlayAnimation(animationStateToPlay);
-        //         CinematicHelper.Instance.SetObject(rightCloud)
+        //         CinematicHelper.Instance.Object(rightCloud)
         //         .PlayAnimation(animationStateToPlay)
-        //         .SetOnAnimationFinish(animationStateToPlay, () => {
+        //         .OnAnimationFinish(animationStateToPlay, () => {
         //             // Debug.Log("Completed Lightning Playing");
         //             Completed();
         //         });
@@ -126,27 +128,27 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     // Wait for previous animation to finish
         // }));
         // //----------------------------------------------------------------------
-        // waveStates.Add(CreateWaveState("SmokeAnimation", () => {
-        //     // Smoke Created
-        //     string animationStateToPlay = "Smoke";
-        //     CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("EntranceSmoke"),
-        //                                              centerTile.gameObject.transform.position)
-        //     .PlayAnimation(animationStateToPlay, true)
-        //     .SetOnAnimationFinish(animationStateToPlay, () => {
-        //         Completed();
-        //     })
-        //     .Build();
-        
-        //     // OBBC Created
-        //     oldBathroomBroCzar = CinematicHelper.Instance.CreateBro(NPCPrefabs.GetPath("OldBathroomBroCzar"),
-        //                                                             centerTile.gameObject.transform.position)
-        //                          .SetBroState(BroState.Standing)
-        //                          .SetFacing(Facing.Top)
-        //                          .Build();
-        //     oldBathroomBroCzarReference = oldBathroomBroCzar.GetComponent<Bro>();
-        
-        //     Completed();
-        // }));
+        waveStates.Add(CreateWaveState("SmokeAnimation", () => {
+            // Smoke Created
+            string animationStateToPlay = "Smoke";
+            CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("EntranceSmoke"),
+                                                     centerTile.gameObject.transform.position)
+            .PlayAnimation(animationStateToPlay, true)
+            .OnAnimationFinish(animationStateToPlay, () => {
+                Completed();
+            })
+            .Build();
+            
+            // OBBC Created
+            oldBathroomBroCzar = CinematicHelper.Instance.CreateBro(NPCPrefabs.GetPath("OldBathroomBroCzar"),
+                                                                    centerTile.gameObject.transform.position)
+                                 .BroState(BroState.Standing)
+                                 .Facing(Facing.Top)
+                                 .Build();
+            oldBathroomBroCzarReference = oldBathroomBroCzar.GetComponent<Bro>();
+            
+            Completed();
+        }));
         // //----------------------------------------------------------------------
         // waveStates.Add(CreateWaveState("WaitForSmoke", () => {
         //     // Waiting
@@ -361,18 +363,91 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             TextboxManager.Instance.SetText("Alright, it's not just you I'm picking from. We gotta get your competition in here.",
                                             "THE REST OF YOU BRO MAGNUMS WAITING TO TRY OUT THIS ROUND GET IN HERE!")
             .OnFinish(() => {
-                firstBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
-                           .EnterThroughLineQueue(0)
-                           .MoveToTile(centerTile.tileX, centerTile.tileY)
-                           .Build();
                 Completed();
             });
             Completed();
         }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Bros Enter", () => {
-            // Wait for bros to enter
+        waveStates.Add(CreateWaveState("Wait For Call Bros In", () => {
+            // wait for the player to finish the text
         }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("Bros entering", () => {
+            PerformWaveStatesThenReturn(
+            CreateWaveState("First Bro Enter", () => {
+                firstBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+                           .MoveSpeed(10, 10)
+                           .EnterThroughLineQueue(0)
+                           .MoveToTile(centerTile.tileX - 2, centerTile.tileY - 1)
+                           .Build();
+                Completed();
+            })
+            , CreateDelayState("Second Bro Delay", 0.25f)
+            , CreateWaveState("Second Bro Enter", () => {
+                secondBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+                            .MoveSpeed(10, 10)
+                            .EnterThroughLineQueue(0)
+                            .MoveToTile(centerTile.tileX - 1, centerTile.tileY - 1)
+                            .Build();
+                Completed();
+            })
+            , CreateDelayState("Third Bro Delay", 0.25f)
+            , CreateWaveState("Third Bro Enter", () => {
+                thirdBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+                           .MoveSpeed(10, 10)
+                           .EnterThroughLineQueue(0)
+                           .MoveToTile(centerTile.tileX, centerTile.tileY - 1)
+                           .Build();
+                Completed();
+            })
+            , CreateDelayState("Fourth Bro Delay", 0.25f)
+            , CreateWaveState("Fourth Bro Enter", () => {
+                fourthBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+                            .MoveSpeed(10, 10)
+                            .EnterThroughLineQueue(0)
+                            .MoveToTile(centerTile.tileX + 1, centerTile.tileY - 1)
+                            .Build();
+                Completed();
+            })
+            , CreateDelayState("Fifth Bro Bro Delay", 0.25f)
+            , CreateWaveState("Fifth Bro Bro Enter", () => {
+                fifthBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+                           .MoveSpeed(10, 10)
+                           .EnterThroughLineQueue(0)
+                           .MoveToTile(centerTile.tileX + 2, centerTile.tileY - 1)
+                .AddOnArrivalAtTargetPositionLogic(() => {
+                    Completed();
+                })
+                .Build();
+                Completed();
+            })
+            );
+            Completed();
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Bros Enter Finish", () => {
+            // Wait for bros to finish entering
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Bros Enter Finish", () => {
+            CinematicHelper.Instance
+            .Object(oldBathroomBroCzar)
+            .MoveSpeed(2, 2)
+            .MoveToTile(centerTile.tileX - 2, centerTile.tileY)
+            .BroState(BroState.MovingToTargetObject)
+            .AddOnArrivalAtTargetPositionLogic(() => {
+                oldBathroomBroCzar.GetComponent<Bro>()
+                .SetState(BroState.Standing)
+                .SetFacing(Facing.Bottom);
+                Completed();
+            })
+            .Build();
+            Completed();
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("Waiting", () => {
+        }));
+        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
             Debug.Log("Cinematic Complete!");
             Completed();

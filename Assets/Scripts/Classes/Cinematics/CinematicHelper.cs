@@ -75,7 +75,7 @@ public class CinematicHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     public CinematicHelper CreateAnimation(string resourcePrefabPath, Vector3 startPosition) {
         currentGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
-        SetPosition(startPosition);
+        Position(startPosition);
         return this;
     }
     
@@ -85,8 +85,8 @@ public class CinematicHelper : MonoBehaviour {
     }
     public CinematicHelper CreateBro(string resourcePrefabPath, Vector3 startPosition) {
         currentGameObject = (GameObject)GameObject.Instantiate(Resources.Load(resourcePrefabPath) as GameObject);
-        SetPosition(startPosition);
-        SetTargetObjectAndTargetPosition(null, startPosition);
+        Position(startPosition);
+        TargetObjectAndTargetPosition(null, startPosition);
         return this;
     }
     public CinematicHelper CreateBro(BroType broTypeToGenerate) {
@@ -95,17 +95,17 @@ public class CinematicHelper : MonoBehaviour {
     }
     public CinematicHelper CreateBro(BroType broTypeToGenerate, Vector3 startPosition) {
         currentGameObject = Factory.Instance.GenerateBroGameObject(broTypeToGenerate);
-        SetPosition(startPosition);
-        SetTargetObjectAndTargetPosition(null, startPosition);
+        Position(startPosition);
+        TargetObjectAndTargetPosition(null, startPosition);
         return this;
     }
     
-    public CinematicHelper SetObject(GameObject newCurrentGameObject) {
+    public CinematicHelper Object(GameObject newCurrentGameObject) {
         currentGameObject = newCurrentGameObject;
         return this;
     }
     
-    public CinematicHelper SetPosition(Vector3 newPosition) {
+    public CinematicHelper Position(Vector3 newPosition) {
         currentGameObject.transform.position = newPosition;
         return this;
     }
@@ -113,7 +113,7 @@ public class CinematicHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     // Bathroom Facing
     //--------------------------------------------------------------------------
-    public CinematicHelper SetFacing(Facing newFacing) {
+    public CinematicHelper Facing(Facing newFacing) {
         currentGameObject.GetComponent<BathroomFacing>().SetFacing(newFacing);
         return this;
     }
@@ -121,8 +121,16 @@ public class CinematicHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     // Target Pathing Logic
     //--------------------------------------------------------------------------
-    public CinematicHelper SetTargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPathingPosition) {
+    public CinematicHelper TargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPathingPosition) {
         currentGameObject.GetComponent<TargetPathing>().SetTargetObjectAndTargetPosition(newTargetObject, newTargetPathingPosition);
+        return this;
+    }
+    public CinematicHelper MoveSpeed(float xMoveSpeed, float yMoveSpeed) {
+        currentGameObject.GetComponent<TargetPathing>().SetMoveSpeed(xMoveSpeed, yMoveSpeed);
+        return this;
+    }
+    public CinematicHelper AddOnArrivalAtTargetPositionLogic(TargetPathing.OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
+        currentGameObject.GetComponent<TargetPathing>().AddOnArrivalAtTargetPositionLogic(newOnArrivalAtTargetPositionLogic);
         return this;
     }
     
@@ -153,14 +161,14 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
-    public CinematicHelper SetOnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
+    public CinematicHelper OnAnimationFinish(string animationName, List<GameObject> animatorGameObjects, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
         foreach(GameObject animatorGameObject in animatorGameObjects) {
-            SetOnAnimationFinish(animationName, animatorGameObject, onAnimationFinish, loopEvent);
+            OnAnimationFinish(animationName, animatorGameObject, onAnimationFinish, loopEvent);
         }
         return this;
     }
     
-    public CinematicHelper SetOnAnimationFinish(string animationName, GameObject animatorGameObject, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
+    public CinematicHelper OnAnimationFinish(string animationName, GameObject animatorGameObject, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
         AnimatorHelper animatorHelper = animatorGameObject.GetComponent<AnimatorHelper>();
         if(animatorHelper != null) {
             animatorHelper.SetOnAnimationFinish(animationName, onAnimationFinish, loopEvent);
@@ -168,7 +176,7 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
-    public CinematicHelper SetOnAnimationFinish(string animationName, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
+    public CinematicHelper OnAnimationFinish(string animationName, AnimatorHelper.StateEvent onAnimationFinish, bool loopEvent = false) {
         AnimatorHelper animatorHelper = currentGameObject.GetComponent<AnimatorHelper>();
         if(animatorHelper != null) {
             animatorHelper.SetOnAnimationFinish(animationName, onAnimationFinish, loopEvent);
@@ -179,11 +187,14 @@ public class CinematicHelper : MonoBehaviour {
     //--------------------------------------------------------------------------
     // Bro Logic
     //--------------------------------------------------------------------------
-    public CinematicHelper SetBroState(BroState newBroState) {
+    public CinematicHelper BroState(BroState newBroState) {
         currentGameObject.GetComponent<Bro>().SetState(newBroState);
         return this;
     }
     
+    //--------------------------------------------------------------------------
+    // Complex Logic
+    //--------------------------------------------------------------------------
     public CinematicHelper EnterThroughLineQueue(int lineQueueEntrance) {
         // Bro broReferece = currentGameObject.GetComponent<Bro>();
         TargetPathing targetPathingReference = currentGameObject.GetComponent<TargetPathing>();
@@ -193,7 +204,7 @@ public class CinematicHelper : MonoBehaviour {
         Vector2 startPosition = new Vector2(lastQueueTile.transform.position.x,
                                             lastQueueTile.transform.position.y);
                                             
-        SetPosition(startPosition);
+        Position(startPosition);
         targetPathingReference.SetTargetObjectAndTargetPosition(null, entranceLineQueue.GetQueueMovementNodes());
         
         return this;

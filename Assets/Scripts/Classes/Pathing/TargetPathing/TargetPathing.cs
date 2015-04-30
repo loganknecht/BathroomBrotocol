@@ -26,7 +26,7 @@ public class TargetPathing : BaseBehavior {
     public OnArrivalAtMovementNode onArrivalAtMovementNodeLogic = null;
     
     public delegate void OnArrivalAtTargetPosition();
-    public OnArrivalAtTargetPosition onArrivalAtTargetPositionLogic = null;
+    public List<OnArrivalAtTargetPosition> onArrivalAtTargetPositionLogics = null;
     public bool performedOnArrivalAtTargetPosition = false;
     
     public delegate void OnPopMovementNode();
@@ -36,6 +36,7 @@ public class TargetPathing : BaseBehavior {
         base.Awake();
         
         movementNodes = new List<GameObject>();
+        onArrivalAtTargetPositionLogics = new List<OnArrivalAtTargetPosition>();
     }
     
     // Use this for initialization
@@ -177,17 +178,17 @@ public class TargetPathing : BaseBehavior {
         return this;
     }
     
-    public TargetPathing SetOnArrivalAtTargetPosition(OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
-        onArrivalAtTargetPositionLogic = new OnArrivalAtTargetPosition(newOnArrivalAtTargetPositionLogic);
+    public TargetPathing AddOnArrivalAtTargetPositionLogic(OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
+        onArrivalAtTargetPositionLogics.Add(new OnArrivalAtTargetPosition(newOnArrivalAtTargetPositionLogic));
         return this;
     }
     
-    public TargetPathing SetOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode newOnArrivalAtMovementNodeLogic) {
+    public TargetPathing AddOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode newOnArrivalAtMovementNodeLogic) {
         onArrivalAtMovementNodeLogic = new OnArrivalAtMovementNode(newOnArrivalAtMovementNodeLogic);
         return this;
     }
     
-    public TargetPathing SetOnPopMovementNodeLogic(OnPopMovementNode newOnPopMovementNodeLogic) {
+    public TargetPathing AddOnPopMovementNodeLogic(OnPopMovementNode newOnPopMovementNodeLogic) {
         onPopMovementNodeLogic = new OnPopMovementNode(newOnPopMovementNodeLogic);
         return this;
     }
@@ -240,9 +241,15 @@ public class TargetPathing : BaseBehavior {
         if(!performedOnArrivalAtTargetPosition
             && IsAtTargetPosition()) {
             performedOnArrivalAtTargetPosition = true;
-            if(onArrivalAtTargetPositionLogic != null) {
-                onArrivalAtTargetPositionLogic();
+            if(onArrivalAtTargetPositionLogics.Count > 0) {
+                foreach(OnArrivalAtTargetPosition onArrivalAtTargetPositionLogic in onArrivalAtTargetPositionLogics) {
+                    onArrivalAtTargetPositionLogic();
+                }
+                onArrivalAtTargetPositionLogics.Clear();
             }
+            // if(onArrivalAtTargetPositionLogic != null) {
+            //     onArrivalAtTargetPositionLogic();
+            // }
         }
     }
     
