@@ -7,7 +7,6 @@ public class WaveState : MonoBehaviour {
     public bool hasCompletedLogic = false;
     
     public delegate void WaveStateLogic();
-    
     public WaveStateLogic playerWaveStateLogic = null;
     
     public void Awake() {

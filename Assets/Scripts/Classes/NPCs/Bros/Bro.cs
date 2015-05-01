@@ -159,6 +159,12 @@ public class Bro : BaseBehavior {
         return this;
     }
     
+    public Bro ToggleTargetPathing(bool useTargetPathing) {
+        // Set to the opposite because the state is opposite in target pathing :|
+        targetPathingReference.disableMovementLogic = !useTargetPathing;
+        return this;
+    }
+    
     public virtual Bro SetMovementNodes(List<GameObject> newMovementNodes) {
         SetTargetObjectAndTargetPosition(targetPathingReference.GetTargetObject(),
                                          newMovementNodes);

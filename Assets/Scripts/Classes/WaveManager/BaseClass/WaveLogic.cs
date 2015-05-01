@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public LinkedList<GameObject> waveStatesQueue = new LinkedList<GameObject>();
     public GameObject currentWaveStateGameObject = null;
-    public IEnumerator currentWaveStateCoroutine = null;
     public float delayTimer = 0f;
     
     public bool waveLogicFinished = false;

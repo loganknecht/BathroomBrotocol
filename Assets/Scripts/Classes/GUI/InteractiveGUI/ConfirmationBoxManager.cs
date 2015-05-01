@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ConfirmationBoxManager : MonoBehaviour {
 
@@ -8,12 +9,15 @@ public class ConfirmationBoxManager : MonoBehaviour {
     public GameObject yesButtonText = null;
     public GameObject noButton = null;
     public GameObject noButtonText = null;
-    public GameObject text = null;
+    public GameObject bodyText = null;
     public GameObject title = null;
     //----------------------------------------------------------------------------
     public bool hasSelectedAnswer = false;
     public bool selectedYes = false;
     public bool selectedNo = false;
+    //----------------------------------------------------------------------------
+    public delegate void Selection();
+    public List<Selection> onPlayerSelections = null;
     //----------------------------------------------------------------------------
     
     //Probably doesn't need to be a singleton
@@ -54,10 +58,15 @@ public class ConfirmationBoxManager : MonoBehaviour {
     
     // Use this for initialization
     public void Start() {
+        onPlayerSelections = new List<Selection>();
     }
     
     // Update is called once per frame
     public void Update() {
+    }
+    
+    public bool IsVisible() {
+        return (this.gameObject.GetComponent<UIPanel>().alpha > 0) ? true : false;
     }
     
     public bool WasYesSelected() {
@@ -66,6 +75,13 @@ public class ConfirmationBoxManager : MonoBehaviour {
     
     public bool WasNoSelected() {
         return selectedNo;
+    }
+    
+    public ConfirmationBoxManager Reset() {
+        hasSelectedAnswer = false;
+        selectedNo = false;
+        selectedYes = false;
+        return this;
     }
     
     public ConfirmationBoxManager Hide(float duration = 1f) {
@@ -91,25 +107,18 @@ public class ConfirmationBoxManager : MonoBehaviour {
         return this;
     }
     
-    public ConfirmationBoxManager SetText(string newConfirmationBoxText) {
-        text.GetComponent<UILabel>().text = newConfirmationBoxText;
+    public ConfirmationBoxManager BodyText(string newConfirmationBoxText) {
+        bodyText.GetComponent<UILabel>().text = newConfirmationBoxText;
         Reset();
         return this;
     }
     
-    public ConfirmationBoxManager SetYesButtonText(string newConfirmationBoxText) {
+    public ConfirmationBoxManager YesButtonText(string newConfirmationBoxText) {
         yesButtonText.GetComponent<UILabel>().text = newConfirmationBoxText;
         return this;
     }
-    public ConfirmationBoxManager SetNoButtonText(string newConfirmationBoxText) {
+    public ConfirmationBoxManager NoButtonText(string newConfirmationBoxText) {
         noButtonText.GetComponent<UILabel>().text = newConfirmationBoxText;
-        return this;
-    }
-    
-    public ConfirmationBoxManager Reset() {
-        hasSelectedAnswer = false;
-        selectedNo = false;
-        selectedYes = false;
         return this;
     }
     
@@ -117,6 +126,7 @@ public class ConfirmationBoxManager : MonoBehaviour {
         if(!hasSelectedAnswer) {
             hasSelectedAnswer = true;
             selectedYes = true;
+            PerformOnSelection();
             
             SoundManager.Instance.Play(AudioType.TextboxNextButtonPressBeep);
         }
@@ -126,8 +136,26 @@ public class ConfirmationBoxManager : MonoBehaviour {
         if(!hasSelectedAnswer) {
             hasSelectedAnswer = true;
             selectedNo = true;
+            PerformOnSelection();
             
             SoundManager.Instance.Play(AudioType.TextboxNextButtonPressBeep);
         }
+    }
+    
+    public ConfirmationBoxManager OnSelection(Selection newOnSelection) {
+        onPlayerSelections.Add(newOnSelection);
+        return this;
+    }
+    
+    public ConfirmationBoxManager PerformOnSelection() {
+        if(onPlayerSelections != null
+            && onPlayerSelections.Count > 0) {
+            foreach(Selection onPlayerSelection in onPlayerSelections) {
+                Debug.Log("Selection made");
+                onPlayerSelection();
+            }
+            onPlayerSelections.Clear();
+        }
+        return this;
     }
 }

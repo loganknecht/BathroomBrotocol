@@ -289,9 +289,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         // waveStates.Add(CreateWaveState("OBBC Jump Up End", () => {
         //     if(TextboxManager.Instance.HasFinished()) {
         //         ConfirmationBoxManager.Instance.Show()
-        //         .SetText("Do you really think you've got what it takes to be the Bathroom Bro Czar?")
-        //         .SetYesButtonText("Pipe down old man, I'm here for your job.")
-        //         .SetNoButtonText("I can't go home.. Not after what happened...");
+        //         .BodyText("Do you really think you've got what it takes to be the Bathroom Bro Czar?")
+        //         .YesButtonText("Pipe down old man, I'm here for your job.")
+        //         .NoButtonText("I can't go home.. Not after what happened...");
         //         Completed();
         //     }
         // }));
@@ -315,7 +315,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //                 .OnFinish(() => {
         //                     Debug.Log("Scale finished");
         //                     TextboxManager.Instance
-        //                     .SetText("PROVE IT!")
+        //                     .BodyText("PROVE IT!")
         //                     .OnFinish(() => {
         //                         Debug.Log("Text Finished!");
         //                         TweenExecutor.Scale
@@ -359,81 +359,446 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     }
         // }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Call Bros In", () => {
-            TextboxManager.Instance.SetText("Alright, it's not just you I'm picking from. We gotta get your competition in here.",
-                                            "THE REST OF YOU BRO MAGNUMS WAITING TO TRY OUT THIS ROUND GET IN HERE!")
-            .OnFinish(() => {
-                Completed();
-            });
-            Completed();
-        }));
-        //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("Wait For Call Bros In", () => {
-            // wait for the player to finish the text
-        }));
-        //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("Bros entering", () => {
-            PerformWaveStatesThenReturn(
-            CreateWaveState("First Bro Enter", () => {
-                firstBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
-                           .MoveSpeed(10, 10)
-                           .EnterThroughLineQueue(0)
-                           .MoveToTile(centerTile.tileX - 2, centerTile.tileY - 1)
-                           .Build();
-                Completed();
-            })
-            , CreateDelayState("Second Bro Delay", 0.25f)
-            , CreateWaveState("Second Bro Enter", () => {
-                secondBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
-                            .MoveSpeed(10, 10)
-                            .EnterThroughLineQueue(0)
-                            .MoveToTile(centerTile.tileX - 1, centerTile.tileY - 1)
-                            .Build();
-                Completed();
-            })
-            , CreateDelayState("Third Bro Delay", 0.25f)
-            , CreateWaveState("Third Bro Enter", () => {
-                thirdBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
-                           .MoveSpeed(10, 10)
-                           .EnterThroughLineQueue(0)
-                           .MoveToTile(centerTile.tileX, centerTile.tileY - 1)
-                           .Build();
-                Completed();
-            })
-            , CreateDelayState("Fourth Bro Delay", 0.25f)
-            , CreateWaveState("Fourth Bro Enter", () => {
-                fourthBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
-                            .MoveSpeed(10, 10)
-                            .EnterThroughLineQueue(0)
-                            .MoveToTile(centerTile.tileX + 1, centerTile.tileY - 1)
-                            .Build();
-                Completed();
-            })
-            , CreateDelayState("Fifth Bro Bro Delay", 0.25f)
-            , CreateWaveState("Fifth Bro Bro Enter", () => {
-                fifthBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
-                           .MoveSpeed(10, 10)
-                           .EnterThroughLineQueue(0)
-                           .MoveToTile(centerTile.tileX + 2, centerTile.tileY - 1)
-                .AddOnArrivalAtTargetPositionLogic(() => {
-                    Completed();
-                })
-                .Build();
-                Completed();
-            })
-            );
-            Completed();
-        }));
-        //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Bros Enter Finish", () => {
-            // Wait for bros to finish entering
-        }));
-        //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("OBBC Bros Enter Finish", () => {
+        // waveStates.Add(CreateWaveState("OBBC Call Bros In", () => {
+        //     TextboxManager.Instance.SetText("Alright, it's not just you I'm picking from. We gotta get your competition in here.",
+        //                                     "THE REST OF YOU BRO MAGNUMS WAITING TO TRY OUT THIS ROUND GET IN HERE!")
+        //     .OnFinish(() => {
+        //         Completed();
+        //     });
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Wait For Call Bros In", () => {
+        //     // wait for the player to finish the text
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Bros entering", () => {
+        //     PerformWaveStatesThenReturn(
+        //     CreateWaveState("First Bro Enter", () => {
+        //         firstBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+        //                    .MoveSpeed(10, 10)
+        //                    .EnterThroughLineQueue(0)
+        //                    .MoveToTile(centerTile.tileX - 2, centerTile.tileY - 1)
+        //                    .Build();
+        //         Completed();
+        //     })
+        //     , CreateDelayState("Second Bro Delay", 0.25f)
+        //     , CreateWaveState("Second Bro Enter", () => {
+        //         secondBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+        //                     .MoveSpeed(10, 10)
+        //                     .EnterThroughLineQueue(0)
+        //                     .MoveToTile(centerTile.tileX - 1, centerTile.tileY - 1)
+        //                     .Build();
+        //         Completed();
+        //     })
+        //     , CreateDelayState("Third Bro Delay", 0.25f)
+        //     , CreateWaveState("Third Bro Enter", () => {
+        //         thirdBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+        //                    .MoveSpeed(10, 10)
+        //                    .EnterThroughLineQueue(0)
+        //                    .MoveToTile(centerTile.tileX, centerTile.tileY - 1)
+        //                    .Build();
+        //         Completed();
+        //     })
+        //     , CreateDelayState("Fourth Bro Delay", 0.25f)
+        //     , CreateWaveState("Fourth Bro Enter", () => {
+        //         fourthBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+        //                     .MoveSpeed(10, 10)
+        //                     .EnterThroughLineQueue(0)
+        //                     .MoveToTile(centerTile.tileX + 1, centerTile.tileY - 1)
+        //                     .Build();
+        //         Completed();
+        //     })
+        //     , CreateDelayState("Fifth Bro Bro Delay", 0.25f)
+        //     , CreateWaveState("Fifth Bro Bro Enter", () => {
+        //         fifthBro = CinematicHelper.Instance.CreateBro(BroType.GenericBro)
+        //                    .MoveSpeed(10, 10)
+        //                    .EnterThroughLineQueue(0)
+        //                    .MoveToTile(centerTile.tileX + 2, centerTile.tileY - 1)
+        //         .AddOnArrivalAtTargetPositionLogic(() => {
+        //             Completed();
+        //         })
+        //         .Build();
+        //         Completed();
+        //     })
+        //     );
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Bros Enter Finish", () => {
+        //     // Wait for bros to finish entering
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Move To First Bro", () => {
+        //     CinematicHelper.Instance
+        //     .Object(oldBathroomBroCzar)
+        //     .MoveSpeed(2, 2)
+        //     .MoveToTile(centerTile.tileX - 2, centerTile.tileY)
+        //     .BroState(BroState.MovingToTargetObject)
+        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //         oldBathroomBroCzar.GetComponent<Bro>()
+        //         .SetState(BroState.Standing)
+        //         .SetFacing(Facing.Right);
+        //         Completed();
+        //     })
+        //     .Build();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Waiting", () => {
+        //     // Wait for OBBC to arrive
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("First Bro Review", () => {
+        //     TextboxManager.Instance.SetText("Dear Chad! You are much too boring!",
+        //                                     "Spinnnniing",
+        //                                     "Brooooo",
+        //                                     "FIST!")
+        //     .OnFinish(() => {
+        //         Completed();
+        //     });
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("First Bro Review End", () => {
+        //     // Wait for Text to Finish
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Spinning Bro Fist First Bro", () => {
+        //     Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
+        //     GameObject broToFist = firstBro;
+        //     broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
+        
+        //     TweenExecutor.Position
+        //     .Object(oldBathroomBroCzar)
+        //     .StartPosition(obbcStartPosition)
+        //     .EndPosition(broToFist.transform.position.x, broToFist.transform.position.y)
+        //     .Duration(0.1f)
+        //     .OnFinish(() => {
+        //         TweenExecutor.Position
+        //         .Object(oldBathroomBroCzar)
+        //         .StartPosition(oldBathroomBroCzar.transform.position)
+        //         .EndPosition(obbcStartPosition)
+        //         .Duration(0.1f)
+        //         .OnFinish(() => {
+        //             Completed();
+        //         })
+        //         .Tween();
+        
+        //         TweenExecutor.Position
+        //         .Object(broToFist)
+        //         .StartPosition(broToFist.transform.position)
+        //         .EndPosition(broToFist.transform.position.x, -20)
+        //         .Duration(1f)
+        //         .OnFinish(() => {
+        //             Destroy(firstBro);
+        //         })
+        //         .Tween();
+        //     })
+        //     .Tween();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Bro Fist First Bro Punch End", () => {
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Move To Second Bro", () => {
+        //     CinematicHelper.Instance
+        //     .Object(oldBathroomBroCzar)
+        //     .MoveSpeed(2, 2)
+        //     .MoveToTile(centerTile.tileX - 1, centerTile.tileY)
+        //     .BroState(BroState.MovingToTargetObject)
+        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //         oldBathroomBroCzar.GetComponent<Bro>()
+        //         .SetState(BroState.Standing)
+        //         .SetFacing(Facing.Right);
+        //         Completed();
+        //     })
+        //     .Build();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Waiting", () => {
+        //     // Wait for OBBC to arrive
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Second Bro Review", () => {
+        //     TextboxManager.Instance.SetText("Sweet Baby Chad! You are much too boring! Look at you! Even your experience has nothing!",
+        //                                     "Spinnnniing",
+        //                                     "Brooooo",
+        //                                     "FIST!")
+        //     .OnFinish(() => {
+        //         Completed();
+        //     });
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Second Bro Review End", () => {
+        //     // Wait for Text to Finish
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Spinning Bro Fist Second Bro", () => {
+        //     Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
+        //     GameObject broToFist = secondBro;
+        //     broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
+        
+        //     TweenExecutor.Position
+        //     .Object(oldBathroomBroCzar)
+        //     .StartPosition(obbcStartPosition)
+        //     .EndPosition(broToFist.transform.position.x, broToFist.transform.position.y)
+        //     .Duration(0.1f)
+        //     .OnFinish(() => {
+        //         TweenExecutor.Position
+        //         .Object(oldBathroomBroCzar)
+        //         .StartPosition(oldBathroomBroCzar.transform.position)
+        //         .EndPosition(obbcStartPosition)
+        //         .Duration(0.1f)
+        //         .OnFinish(() => {
+        //             Completed();
+        //         })
+        //         .Tween();
+        
+        //         TweenExecutor.Position
+        //         .Object(broToFist)
+        //         .StartPosition(broToFist.transform.position)
+        //         .EndPosition(broToFist.transform.position.x, -20)
+        //         .Duration(1f)
+        //         .OnFinish(() => {
+        //             Destroy(firstBro);
+        //         })
+        //         .Tween();
+        //     })
+        //     .Tween();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Bro Fist Second Bro Punch End", () => {
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Move To Third Bro", () => {
+        //     CinematicHelper.Instance
+        //     .Object(oldBathroomBroCzar)
+        //     .MoveSpeed(2, 2)
+        //     .MoveToTile(centerTile.tileX, centerTile.tileY)
+        //     .BroState(BroState.MovingToTargetObject)
+        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //         oldBathroomBroCzar.GetComponent<Bro>()
+        //         .SetState(BroState.Standing)
+        //         .SetFacing(Facing.Right);
+        //         Completed();
+        //     })
+        //     .Build();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Waiting", () => {
+        //     // Wait for OBBC to arrive
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Third Bro Review", () => {
+        //     TextboxManager.Instance.SetText("Sweet Baby Chad! You are much too boring! Look at you! Even your experience has nothing!",
+        //                                     "Spinnnniing",
+        //                                     "Brooooo",
+        //                                     "FIST!")
+        //     .OnFinish(() => {
+        //         Completed();
+        //     });
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Third Bro Review End", () => {
+        //     // Wait for Text to Finish
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Spinning Bro Fist Third Bro", () => {
+        //     Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
+        //     GameObject broToFist = thirdBro;
+        //     broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
+        
+        //     TweenExecutor.Position
+        //     .Object(oldBathroomBroCzar)
+        //     .StartPosition(obbcStartPosition)
+        //     .EndPosition(broToFist.transform.position.x, broToFist.transform.position.y)
+        //     .Duration(0.1f)
+        //     .OnFinish(() => {
+        //         TweenExecutor.Position
+        //         .Object(oldBathroomBroCzar)
+        //         .StartPosition(oldBathroomBroCzar.transform.position)
+        //         .EndPosition(obbcStartPosition)
+        //         .Duration(0.1f)
+        //         .OnFinish(() => {
+        //             Completed();
+        //         })
+        //         .Tween();
+        
+        //         TweenExecutor.Position
+        //         .Object(broToFist)
+        //         .StartPosition(broToFist.transform.position)
+        //         .EndPosition(broToFist.transform.position.x, -20)
+        //         .Duration(1f)
+        //         .OnFinish(() => {
+        //             Destroy(firstBro);
+        //         })
+        //         .Tween();
+        //     })
+        //     .Tween();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Bro Fist Third Bro Punch End", () => {
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Move To Fourth Bro", () => {
+        //     CinematicHelper.Instance
+        //     .Object(oldBathroomBroCzar)
+        //     .MoveSpeed(2, 2)
+        //     .MoveToTile(centerTile.tileX + 1, centerTile.tileY)
+        //     .BroState(BroState.MovingToTargetObject)
+        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //         oldBathroomBroCzar.GetComponent<Bro>()
+        //         .SetState(BroState.Standing)
+        //         .SetFacing(Facing.Right);
+        //         Completed();
+        //     })
+        //     .Build();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Waiting", () => {
+        //     // Wait for OBBC to arrive
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Fourth Bro Review", () => {
+        //     TextboxManager.Instance.SetText("Sweet Baby Chad! You are much too boring! Look at you! Even your experience has nothing!",
+        //                                     "Spinnnniing",
+        //                                     "Brooooo",
+        //                                     "FIST!")
+        //     .OnFinish(() => {
+        //         Completed();
+        //     });
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Fourth Bro Review End", () => {
+        //     // Wait for Text to Finish
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Spinning Bro Fist Fourth Bro", () => {
+        //     Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
+        //     GameObject broToFist = fourthBro;
+        //     broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
+        
+        //     TweenExecutor.Position
+        //     .Object(oldBathroomBroCzar)
+        //     .StartPosition(obbcStartPosition)
+        //     .EndPosition(broToFist.transform.position.x, broToFist.transform.position.y)
+        //     .Duration(0.1f)
+        //     .OnFinish(() => {
+        //         TweenExecutor.Position
+        //         .Object(oldBathroomBroCzar)
+        //         .StartPosition(oldBathroomBroCzar.transform.position)
+        //         .EndPosition(obbcStartPosition)
+        //         .Duration(0.1f)
+        //         .OnFinish(() => {
+        //             Completed();
+        //         })
+        //         .Tween();
+        
+        //         TweenExecutor.Position
+        //         .Object(broToFist)
+        //         .StartPosition(broToFist.transform.position)
+        //         .EndPosition(broToFist.transform.position.x, -20)
+        //         .Duration(1f)
+        //         .OnFinish(() => {
+        //             Destroy(firstBro);
+        //         })
+        //         .Tween();
+        //     })
+        //     .Tween();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Bro Fist Fourth Bro Punch End", () => {
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Move To Fifth Bro", () => {
+        //     CinematicHelper.Instance
+        //     .Object(oldBathroomBroCzar)
+        //     .MoveSpeed(2, 2)
+        //     .MoveToTile(centerTile.tileX + 2, centerTile.tileY)
+        //     .BroState(BroState.MovingToTargetObject)
+        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //         oldBathroomBroCzar.GetComponent<Bro>()
+        //         .SetState(BroState.Standing)
+        //         .SetFacing(Facing.Right);
+        //         Completed();
+        //     })
+        //     .Build();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Waiting", () => {
+        //     // Wait for OBBC to arrive
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Fifth Bro Review", () => {
+        //     TextboxManager.Instance.SetText("Sweet Baby Chad! You are much too boring! Look at you! Even your experience has nothing!",
+        //                                     "Spinnnniing",
+        //                                     "Brooooo",
+        //                                     "FIST!")
+        //     .OnFinish(() => {
+        //         Completed();
+        //     });
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Fifth Bro Review End", () => {
+        //     // Wait for Text to Finish
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("OBBC Spinning Bro Fist Fifth Bro", () => {
+        //     Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
+        //     GameObject broToFist = fifthBro;
+        //     broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
+        
+        //     TweenExecutor.Position
+        //     .Object(oldBathroomBroCzar)
+        //     .StartPosition(obbcStartPosition)
+        //     .EndPosition(broToFist.transform.position.x, broToFist.transform.position.y)
+        //     .Duration(0.1f)
+        //     .OnFinish(() => {
+        //         TweenExecutor.Position
+        //         .Object(oldBathroomBroCzar)
+        //         .StartPosition(oldBathroomBroCzar.transform.position)
+        //         .EndPosition(obbcStartPosition)
+        //         .Duration(0.1f)
+        //         .OnFinish(() => {
+        //             Completed();
+        //         })
+        //         .Tween();
+        
+        //         TweenExecutor.Position
+        //         .Object(broToFist)
+        //         .StartPosition(broToFist.transform.position)
+        //         .EndPosition(broToFist.transform.position.x, -20)
+        //         .Duration(1f)
+        //         .OnFinish(() => {
+        //             Destroy(firstBro);
+        //         })
+        //         .Tween();
+        //     })
+        //     .Tween();
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // waveStates.Add(CreateWaveState("Bro Fist Fifth Bro Punch End", () => {
+        // }));
+        // //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Move To Center Tile", () => {
             CinematicHelper.Instance
             .Object(oldBathroomBroCzar)
             .MoveSpeed(2, 2)
-            .MoveToTile(centerTile.tileX - 2, centerTile.tileY)
+            .MoveToTile(centerTile.tileX, centerTile.tileY)
             .BroState(BroState.MovingToTargetObject)
             .AddOnArrivalAtTargetPositionLogic(() => {
                 oldBathroomBroCzar.GetComponent<Bro>()
@@ -445,7 +810,44 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Completed();
         }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("Waiting", () => {
+        waveStates.Add(CreateWaveState("OBBC Move To Center Tile End", () => {
+            // Wait for finish move
+        }));
+        //----------------------------------------------------------------------
+        WaveState.WaveStateLogic playerConfirmTheyUnderstand = null;
+        playerConfirmTheyUnderstand = delegate() {
+            TextboxManager.Instance.SetText("By all that is broly, I can't believe you're really the best we've got this round...",
+                                            "...",
+                                            "Alright... Alright. Alright!",
+                                            "Show me what you've got...",
+                                            "This is just the preliminary round.")
+            .OnFinish(() => {
+                ConfirmationBoxManager.Instance.Show()
+                .BodyText("So, all you have to prove to me this round is just that you can handle some simple bros.\nYou dig?")
+                .YesButtonText("Yeah, yeah, I got this.")
+                .NoButtonText("Wait what?")
+                .OnSelection(() => {
+                    if(ConfirmationBoxManager.Instance.WasYesSelected()) {
+                        Completed();
+                    }
+                    if(ConfirmationBoxManager.Instance.WasNoSelected()) {
+                        PerformWaveStatesThenReturn(CreateWaveState("Redo Confirmation.", playerConfirmTheyUnderstand));
+                    }
+                    ConfirmationBoxManager.Instance
+                    .Reset()
+                    .Hide();
+                });
+            });
+            Completed();
+        };
+        
+        waveStates.Add(CreateWaveState("OBBC Response Acknowledgement", playerConfirmTheyUnderstand));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("OBBC Response Acknowledgement End", () => {
+            // wait
+        }));
+        //----------------------------------------------------------------------
+        waveStates.Add(CreateWaveState("Player Confirms They Understand", () => {
         }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
