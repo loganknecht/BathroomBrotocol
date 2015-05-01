@@ -151,7 +151,7 @@ public class ConfirmationBoxManager : MonoBehaviour {
         if(onPlayerSelections != null
             && onPlayerSelections.Count > 0) {
             foreach(Selection onPlayerSelection in onPlayerSelections) {
-                Debug.Log("Selection made");
+                // Debug.Log("Selection made");
                 onPlayerSelection();
             }
             onPlayerSelections.Clear();

@@ -129,7 +129,7 @@ public class CinematicHelper : MonoBehaviour {
         currentGameObject.GetComponent<TargetPathing>().SetMoveSpeed(xMoveSpeed, yMoveSpeed);
         return this;
     }
-    public CinematicHelper AddOnArrivalAtTargetPositionLogic(TargetPathing.OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
+    public CinematicHelper OnArrivalAtTargetPositionLogic(TargetPathing.OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
         currentGameObject.GetComponent<TargetPathing>().AddOnArrivalAtTargetPositionLogic(newOnArrivalAtTargetPositionLogic);
         return this;
     }

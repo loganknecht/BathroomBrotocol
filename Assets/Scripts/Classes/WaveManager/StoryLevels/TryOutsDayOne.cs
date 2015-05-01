@@ -149,10 +149,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             
             Completed();
         }));
-        // //----------------------------------------------------------------------
-        // waveStates.Add(CreateWaveState("WaitForSmoke", () => {
-        //     // Waiting
-        // }));
+        waveStates.Add(CreateWaveState("WaitForSmoke", () => {
+            // Waiting
+        }));
         // //----------------------------------------------------------------------
         // waveStates.Add(CreateWaveState("Behold", () => {
         //     TextboxManager.Instance.SetText("Behold my glory!",
@@ -415,7 +414,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //                    .MoveSpeed(10, 10)
         //                    .EnterThroughLineQueue(0)
         //                    .MoveToTile(centerTile.tileX + 2, centerTile.tileY - 1)
-        //         .AddOnArrivalAtTargetPositionLogic(() => {
+        //         .OnArrivalAtTargetPositionLogic(() => {
         //             Completed();
         //         })
         //         .Build();
@@ -435,7 +434,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     .MoveSpeed(2, 2)
         //     .MoveToTile(centerTile.tileX - 2, centerTile.tileY)
         //     .BroState(BroState.MovingToTargetObject)
-        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //     .OnArrivalAtTargetPositionLogic(() => {
         //         oldBathroomBroCzar.GetComponent<Bro>()
         //         .SetState(BroState.Standing)
         //         .SetFacing(Facing.Right);
@@ -508,7 +507,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     .MoveSpeed(2, 2)
         //     .MoveToTile(centerTile.tileX - 1, centerTile.tileY)
         //     .BroState(BroState.MovingToTargetObject)
-        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //     .OnArrivalAtTargetPositionLogic(() => {
         //         oldBathroomBroCzar.GetComponent<Bro>()
         //         .SetState(BroState.Standing)
         //         .SetFacing(Facing.Right);
@@ -581,7 +580,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     .MoveSpeed(2, 2)
         //     .MoveToTile(centerTile.tileX, centerTile.tileY)
         //     .BroState(BroState.MovingToTargetObject)
-        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //     .OnArrivalAtTargetPositionLogic(() => {
         //         oldBathroomBroCzar.GetComponent<Bro>()
         //         .SetState(BroState.Standing)
         //         .SetFacing(Facing.Right);
@@ -654,7 +653,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     .MoveSpeed(2, 2)
         //     .MoveToTile(centerTile.tileX + 1, centerTile.tileY)
         //     .BroState(BroState.MovingToTargetObject)
-        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //     .OnArrivalAtTargetPositionLogic(() => {
         //         oldBathroomBroCzar.GetComponent<Bro>()
         //         .SetState(BroState.Standing)
         //         .SetFacing(Facing.Right);
@@ -727,7 +726,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //     .MoveSpeed(2, 2)
         //     .MoveToTile(centerTile.tileX + 2, centerTile.tileY)
         //     .BroState(BroState.MovingToTargetObject)
-        //     .AddOnArrivalAtTargetPositionLogic(() => {
+        //     .OnArrivalAtTargetPositionLogic(() => {
         //         oldBathroomBroCzar.GetComponent<Bro>()
         //         .SetState(BroState.Standing)
         //         .SetFacing(Facing.Right);
@@ -800,7 +799,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .MoveSpeed(2, 2)
             .MoveToTile(centerTile.tileX, centerTile.tileY)
             .BroState(BroState.MovingToTargetObject)
-            .AddOnArrivalAtTargetPositionLogic(() => {
+            .OnArrivalAtTargetPositionLogic(() => {
                 oldBathroomBroCzar.GetComponent<Bro>()
                 .SetState(BroState.Standing)
                 .SetFacing(Facing.Bottom);
@@ -816,11 +815,10 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //----------------------------------------------------------------------
         WaveState.WaveStateLogic playerConfirmTheyUnderstand = null;
         playerConfirmTheyUnderstand = delegate() {
-            TextboxManager.Instance.SetText("By all that is broly, I can't believe you're really the best we've got this round...",
-                                            "...",
-                                            "Alright... Alright. Alright!",
-                                            "Show me what you've got...",
-                                            "This is just the preliminary round.")
+            TextboxManager.Instance
+            .SetText("By all that is broly, I can't believe you're really the best we've got this round...",
+                     "...",
+                     "This is just the preliminary round.")
             .OnFinish(() => {
                 ConfirmationBoxManager.Instance.Show()
                 .BodyText("So, all you have to prove to me this round is just that you can handle some simple bros.\nYou dig?")
@@ -830,8 +828,10 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     if(ConfirmationBoxManager.Instance.WasYesSelected()) {
                         Completed();
                     }
-                    if(ConfirmationBoxManager.Instance.WasNoSelected()) {
-                        PerformWaveStatesThenReturn(CreateWaveState("Redo Confirmation.", playerConfirmTheyUnderstand));
+                    else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
+                        PerformWaveStatesThenReturn(CreateWaveState("Redo Confirmation.", playerConfirmTheyUnderstand),
+                        CreateWaveState("Redo Confirmation Wait", () => { /* wait */ }));
+                        Completed();
                     }
                     ConfirmationBoxManager.Instance
                     .Reset()
@@ -842,13 +842,15 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         };
         
         waveStates.Add(CreateWaveState("OBBC Response Acknowledgement", playerConfirmTheyUnderstand));
-        //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("OBBC Response Acknowledgement End", () => {
             // wait
         }));
         //----------------------------------------------------------------------
-        waveStates.Add(CreateWaveState("Player Confirms They Understand", () => {
-        }));
+        // waveStates.Add(CreateWaveState("Player Confirms They Understand", () => {
+        
+        //                                     "Alright... Alright. Alright!",
+        //                                     "Show me what you've got...",
+        // }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Cinematic Complete", () => {
             Debug.Log("Cinematic Complete!");

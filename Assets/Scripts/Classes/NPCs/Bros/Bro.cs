@@ -478,7 +478,7 @@ public class Bro : BaseBehavior {
                     // shouldn't matter?
                 }
                 else {
-                    Debug.Log("lol starting to roam");
+                    // Debug.Log("lol starting to roam");
                     state = BroState.Roaming;
                 }
             }
