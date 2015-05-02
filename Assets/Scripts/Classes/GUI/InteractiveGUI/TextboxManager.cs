@@ -138,17 +138,21 @@ public class TextboxManager : MonoBehaviour {
         PopNextTextboxText();
     }
     public void PopNextTextboxText() {
-        if(textboxTextSet != null
-            && textboxTextSet.Count > 0) {
-            textboxText.text = "" + textboxTextSet.Dequeue();
-            TypewriterEffect typewriterEffectRef = textboxTextObject.GetComponent<TypewriterEffect>();
-            if(typewriterEffectRef != null) {
-                typewriterEffectRef.ResetToBeginning();
+        TypewriterEffect textboxTextTypewriterEffect = textboxTextObject.GetComponent<TypewriterEffect>();
+        if(textboxTextTypewriterEffect == null
+            || (textboxTextTypewriterEffect != null && !textboxTextTypewriterEffect.isActive)) {
+            if(textboxTextSet != null
+                && textboxTextSet.Count > 0) {
+                textboxText.text = "" + textboxTextSet.Dequeue();
+                TypewriterEffect typewriterEffectRef = textboxTextObject.GetComponent<TypewriterEffect>();
+                if(typewriterEffectRef != null) {
+                    typewriterEffectRef.ResetToBeginning();
+                }
             }
-        }
-        else {
-            PerformTextboxTextFinished();
-            //finished text crap, should do something here??
+            else {
+                PerformTextboxTextFinished();
+                //finished text crap, should do something here??
+            }
         }
     }
     
@@ -163,6 +167,10 @@ public class TextboxManager : MonoBehaviour {
     }
     
     public TextboxManager SetText(Queue newTextboxTextSet) {
+        TypewriterEffect textboxTextTypewriterEffect = textboxTextObject.GetComponent<TypewriterEffect>();
+        if(textboxTextTypewriterEffect != null) {
+            textboxTextTypewriterEffect.ResetToBeginning();
+        }
         textboxFinishLogicTriggered = false;
         finishedTextboxText = false;
         textboxTextSet = newTextboxTextSet;

@@ -71,7 +71,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 leftStartPosition = (centerTile.gameObject.transform.position - (new Vector3(10, 0, 0)));
             Vector3 rightStartPosition = (centerTile.gameObject.transform.position + (new Vector3(10, 0, 0)));
             Vector3 centerStartPosition = (centerTile.gameObject.transform.position + (new Vector3(0, 10, 0)));
-        
+            
             leftCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
                                                                  leftStartPosition)
                         .Build();
@@ -81,9 +81,9 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             centerCloud = CinematicHelper.Instance.CreateAnimation(AnimationPrefabs.GetPath("LightningCloud"),
                                                                    centerStartPosition)
                           .Build();
-        
+                          
             // Debug.Log("Clouds Entering");
-        
+            
             TweenExecutor.Position
             .Object(leftCloud)
             .StartPosition(leftStartPosition.x, leftStartPosition.y)
@@ -91,7 +91,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .Duration(1)
             .Method(UITweener.Method.BounceIn)
             .Tween();
-        
+            
             TweenExecutor.Position
             .Object(centerCloud)
             .StartPosition(centerStartPosition.x, centerStartPosition.y)
@@ -99,7 +99,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .Duration(1)
             .Method(UITweener.Method.BounceIn)
             .Tween();
-        
+            
             TweenExecutor.Position
             .Object(rightCloud)
             .StartPosition(rightStartPosition.x, rightStartPosition.y)
@@ -120,7 +120,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                 });
             })
             .Tween();
-        
+            
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -154,11 +154,13 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         }));
         //----------------------------------------------------------------------
         waveStates.Add(CreateWaveState("Behold", () => {
-            TextboxManager.Instance.SetText("Behold my glory!",
-                                            "For, this is what your future may hold-",
-                                            "...",
-                                            // "But only, if you can prove that you are worthy of this position!",
-                                            "No one's here ...");
+            TextboxManager.Instance.SetText(
+                "Lorem ipsum  dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "Behold my glory!",
+                "For, this is what your future may hold-",
+                "...",
+                // "But only, if you can prove that you are worthy of this position!",
+                "No one's here ...");
             TextboxManager.Instance.Show();
             Completed();
         }));
@@ -174,7 +176,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             float jumpHeight = 1f;
             float jumpStart = spriteToTween.transform.localPosition.y;
             float jumpApex = spriteToTween.transform.localPosition.y + jumpHeight;
-        
+            
             // Debug.Log("SpriteToTween: " + spriteToTween.name);
             TweenExecutor.Position
             .Object(spriteToTween)
@@ -185,7 +187,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .Style(UITweener.Style.Once)
             .OnFinish(() => {
                 oldBathroomBroCzarReference.SetFacing(Facing.Left);
-        
+                
                 TweenExecutor.Position
                 .Object(spriteToTween)
                 .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
@@ -199,7 +201,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                 .Tween();
             })
             .Tween();
-        
+            
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -212,7 +214,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             float jumpHeight = 1f;
             float jumpStart = spriteToTween.transform.localPosition.y;
             float jumpApex = spriteToTween.transform.localPosition.y + jumpHeight;
-        
+            
             // Debug.Log("SpriteToTween: " + spriteToTween.name);
             TweenExecutor.Position
             .Object(spriteToTween)
@@ -223,7 +225,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .Style(UITweener.Style.Once)
             .OnFinish(() => {
                 oldBathroomBroCzarReference.SetFacing(Facing.Right);
-        
+                
                 TweenExecutor.Position
                 .Object(spriteToTween)
                 .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
@@ -237,7 +239,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                 .Tween();
             })
             .Tween();
-        
+            
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -250,7 +252,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             float jumpHeight = 1f;
             float jumpStart = spriteToTween.transform.localPosition.y;
             float jumpApex = spriteToTween.transform.localPosition.y + jumpHeight;
-        
+            
             // Debug.Log("SpriteToTween: " + spriteToTween.name);
             TweenExecutor.Position
             .Object(spriteToTween)
@@ -261,7 +263,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             .Style(UITweener.Style.Once)
             .OnFinish(() => {
                 oldBathroomBroCzarReference.SetFacing(Facing.Bottom);
-        
+                
                 TweenExecutor.Position
                 .Object(spriteToTween)
                 .StartPosition(spriteToTween.transform.localPosition.x, jumpApex)
@@ -277,7 +279,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                 .Tween();
             })
             .Tween();
-        
+            
             Completed();
         }));
         //----------------------------------------------------------------------
@@ -304,7 +306,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     ConfirmationBoxManager.Instance.Hide();
                     TextboxManager.Instance.SetText("Oh, yeah bro?");
                     Completed();
-        
+                    
                 }),
                 CreateWaveState("End OBBC Yes Response", () => {
                     if(TextboxManager.Instance.HasFinished()) {
@@ -336,7 +338,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                 CreateWaveState("OBBC Scale Up Finish", () => {
                     // Waits for the scale up and down to finish
                 }));
-        
+                
                 Completed();
             }
             else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
@@ -347,14 +349,14 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                                                     "Here's a coupon for the I don't care depot.",
                                                     "They have some snivelers on sale, they might match you!");
                     Completed();
-        
+                    
                 }),
                 CreateWaveState("End OBBC No Response", () => {
                     if(TextboxManager.Instance.HasFinished()) {
                         Completed();
                     }
                 }));
-        
+                
                 Completed();
             }
         }));
@@ -467,7 +469,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
             GameObject broToFist = firstBro;
             broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
-        
+            
             TweenExecutor.Position
             .Object(oldBathroomBroCzar)
             .StartPosition(obbcStartPosition)
@@ -483,7 +485,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     Completed();
                 })
                 .Tween();
-        
+                
                 TweenExecutor.Position
                 .Object(broToFist)
                 .StartPosition(broToFist.transform.position)
@@ -539,7 +541,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
             GameObject broToFist = secondBro;
             broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
-        
+            
             TweenExecutor.Position
             .Object(oldBathroomBroCzar)
             .StartPosition(obbcStartPosition)
@@ -555,7 +557,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     Completed();
                 })
                 .Tween();
-        
+                
                 TweenExecutor.Position
                 .Object(broToFist)
                 .StartPosition(broToFist.transform.position)
@@ -612,7 +614,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
             GameObject broToFist = thirdBro;
             broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
-        
+            
             TweenExecutor.Position
             .Object(oldBathroomBroCzar)
             .StartPosition(obbcStartPosition)
@@ -628,7 +630,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     Completed();
                 })
                 .Tween();
-        
+                
                 TweenExecutor.Position
                 .Object(broToFist)
                 .StartPosition(broToFist.transform.position)
@@ -683,7 +685,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
             GameObject broToFist = fourthBro;
             broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
-        
+            
             TweenExecutor.Position
             .Object(oldBathroomBroCzar)
             .StartPosition(obbcStartPosition)
@@ -699,7 +701,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     Completed();
                 })
                 .Tween();
-        
+                
                 TweenExecutor.Position
                 .Object(broToFist)
                 .StartPosition(broToFist.transform.position)
@@ -755,7 +757,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Vector3 obbcStartPosition = oldBathroomBroCzar.transform.position;
             GameObject broToFist = fifthBro;
             broToFist.GetComponent<Bro>().ToggleTargetPathing(false);
-        
+            
             TweenExecutor.Position
             .Object(oldBathroomBroCzar)
             .StartPosition(obbcStartPosition)
@@ -771,7 +773,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
                     Completed();
                 })
                 .Tween();
-        
+                
                 TweenExecutor.Position
                 .Object(broToFist)
                 .StartPosition(broToFist.transform.position)
