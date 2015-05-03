@@ -50,43 +50,43 @@ using System.Collections.Generic;
 // SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {
 
 // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                                                                     // firstWave,
-                                                                    // });
+// firstWave,
+// });
 public class BroGenerator : MonoBehaviour {
 
     public List<GameObject> distributionPoints = new List<GameObject>();
-
+    
     public float broGenerationTimer = 0f;
     public bool loopGenerationLogic = false;
     // public float broGenerationTimerMax = 5f;
-
+    
     public bool isPaused = false;
-
+    
     //BEGINNING OF SINGLETON CODE CONFIGURATION
     private static volatile BroGenerator _instance;
     private static object _lock = new object();
-
+    
     //Stops the lock being created ahead of time if it's not necessary
     static BroGenerator() {
     }
-
+    
     public static BroGenerator Instance {
-    get {
-      if(_instance == null) {
-        lock(_lock) {
-          if (_instance == null) {
-            GameObject broManagerGameObject = new GameObject("BroGenerator");
-            _instance = (broManagerGameObject.AddComponent<BroGenerator>()).GetComponent<BroGenerator>();
-          }
+        get {
+            if(_instance == null) {
+                lock(_lock) {
+                    if(_instance == null) {
+                        GameObject broManagerGameObject = new GameObject("BroGenerator");
+                        _instance = (broManagerGameObject.AddComponent<BroGenerator>()).GetComponent<BroGenerator>();
+                    }
+                }
+            }
+            return _instance;
         }
-      }
-      return _instance;
     }
-    }
-
+    
     private BroGenerator() {
     }
-
+    
     public void Awake() {
         //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
         //the script, which is assumedly attached to some GameObject. This in turn allows the instance
@@ -96,45 +96,45 @@ public class BroGenerator : MonoBehaviour {
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
-
+    
     void Start() {
     }
-
+    
     // Update is called once per frame
-    void Update () {
+    void Update() {
         if(!isPaused) {
             PerformGenerationLogic();
             PerformGenerationTimerLogic();
         }
     }
-
+    
     public void Pause() {
         isPaused = true;
     }
-
+    
     public void Unpause() {
         isPaused = false;
     }
     public void SetDistributionLogic(DistributionObject[] distributionObjects) {
         broGenerationTimer = 0;
-
+        
         // Debug.Log("Setting distribution logic");
         foreach(GameObject gameObj in distributionPoints) {
             Destroy(gameObj);
         }
         distributionPoints = new List<GameObject>();
         foreach(BroDistributionObject broDistributionObject in distributionObjects) {
-
+        
             List<GameObject> broDistributionPointsToAdd = null;
             broDistributionPointsToAdd = broDistributionObject.CalculateDistributionPoints();
-
+            
             // Change to add range?
             foreach(GameObject broDistributionPoint in broDistributionPointsToAdd) {
                 distributionPoints.Add(broDistributionPoint);
             }
         }
     }
-
+    
     // Convert to override this if base class created
     public void PerformGenerationLogic() {
         foreach(GameObject gameObj in distributionPoints) {
@@ -147,32 +147,32 @@ public class BroGenerator : MonoBehaviour {
             }
         }
     }
-
+    
     // public void PerformBroDistribution(GameObject broTypeToDistribute, int selectedEntrance) {
     public void PerformBroDistribution(GameObject broToDistribute, int selectedEntrance) {
         // EntranceQueueManager.Instance.GenerateBroInEntranceQueueByType(broTypeToDistribute, selectedEntrance);
         broToDistribute.SetActive(true);
         // Bro broRef = broToDistribute.GetComponent<Bro>();
-        Vector3 lineQueueBeingAddedToLastTilePosition =  EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects[EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects.Count-1].transform.position;
+        Vector3 lineQueueBeingAddedToLastTilePosition =  EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects[EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects.Count - 1].transform.position;
         // Vector3 lineQueueBeingAddedToLastTilePosition =  EntranceQueueManager.Instance.lineQueues[selectedEntrance].GetComponent<LineQueue>().queueTileObjects.Last().transform.position;
         broToDistribute.transform.position = new Vector3(lineQueueBeingAddedToLastTilePosition.x, lineQueueBeingAddedToLastTilePosition.y, broToDistribute.transform.position.z);
         EntranceQueueManager.Instance.AddBroToEntranceQueue(broToDistribute, selectedEntrance);
     }
-
+    
     public void PerformGenerationTimerLogic() {
         broGenerationTimer += Time.deltaTime;
         // if(broGenerationTimer > broGenerationTimerMax) {
         //   PerformGenerationTimerResetLogic();
         // }
     }
-
+    
     public void PerformGenerationTimerResetLogic() {
         broGenerationTimer = 0f;
         // if(generationTimerMaxIsStochastic) {
-            //   broGenerationTimerMax = Random.Range(minBroGenerationTimerMax, maxBroGenerationTimerMax);
-            // }
-        }
-
+        //   broGenerationTimerMax = Random.Range(minBroGenerationTimerMax, maxBroGenerationTimerMax);
+        // }
+    }
+    
     public bool HasFinishedGenerating() {
         bool foundDistributionPointThatWasNotDistributed = false;
         foreach(GameObject distributionPointGameObject in distributionPoints) {
@@ -180,7 +180,7 @@ public class BroGenerator : MonoBehaviour {
                 foundDistributionPointThatWasNotDistributed = true;
             }
         }
-
+        
         if(foundDistributionPointThatWasNotDistributed) {
             return false;
         }

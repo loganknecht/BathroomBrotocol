@@ -49,10 +49,7 @@ public class Bro : BaseBehavior {
     
     protected override void Awake() {
         base.Awake();
-    }
-    
-    // Use this for initialization
-    public virtual void Start() {
+        
         // base.Start();
         InitializeOccupationDuration();
         InitializeComponents();
@@ -71,6 +68,10 @@ public class Bro : BaseBehavior {
         if(selectableReference != null) {
             selectableReference.SetColor(selectionColor);
         }
+    }
+    
+    // Use this for initialization
+    public virtual void Start() {
     }
     
     // Update is called once per frame

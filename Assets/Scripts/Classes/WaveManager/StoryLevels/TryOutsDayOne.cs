@@ -860,6 +860,48 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         //----------------------------------------------------------------------
         PerformWaveStates(CreateWaveState("First Wave Logic", () => {
             Debug.Log("First Wave Generating!");
+            
+            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+            
+            BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+            firstWave.broConfigurer
+            .SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
+            .SetXMoveSpeed(BroDistribution.AllBros, 1.5f, 1.5f)
+            .SetYMoveSpeed(BroDistribution.AllBros , 1.5f, 1.5f)
+            .SetFightProbability(BroDistribution.AllBros, 0.15f, 0.15f)
+            .SetModifyFightProbabilityUsingScoreRatio(BroDistribution.AllBros, false)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0f, 0f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2f, 2f)
+            .SetBathroomObjectOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2f, 2f)
+            .SetLineQueueSkipType(BroDistribution.AllBros, true)
+            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
+            .SetChooseObjectOnRelief(BroDistribution.AllBros, true);
+            // Fart Generator if the bro has it (TileBlocker Properties)
+            firstWave.fartGeneratorConfigurer
+            .SetProbability(BroDistribution.AllBros, 2f, 2f)
+            .SetDuration(BroDistribution.AllBros, 2f, 2f)
+            .SetDurationIsStochastic(BroDistribution.AllBros, false)
+            .SetMinDuration(BroDistribution.AllBros, 2f, 2f)
+            .SetMaxDuration(BroDistribution.AllBros, 2f, 2f)
+            .SetGenerationFrequency(BroDistribution.AllBros, 2f, 2f)
+            .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+            .SetMinGenerationFrequency(BroDistribution.AllBros, 2f, 2f)
+            .SetMaxGenerationFrequency(BroDistribution.AllBros, 2f, 2f);
+            // Vomit Generator if the bro has it (TileBlocker Properties)
+            firstWave.vomitGeneratorConfigurer
+            .SetProbability(BroDistribution.AllBros, 1f, 1f)
+            .SetGenerationFrequency(BroDistribution.AllBros, 2f, 2f)
+            .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+            .SetMinGenerationFrequency(BroDistribution.AllBros, 2f, 2f)
+            .SetMaxGenerationFrequency(BroDistribution.AllBros, 2f, 2f);
+            
+            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                firstWave
+            });
             Completed();
         }));
         //----------------------------------------------------------------------
