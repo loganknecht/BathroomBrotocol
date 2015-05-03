@@ -196,7 +196,6 @@ public class CinematicHelper : MonoBehaviour {
     // Complex Logic
     //--------------------------------------------------------------------------
     public CinematicHelper EnterThroughLineQueue(int lineQueueEntrance) {
-        // Bro broReferece = currentGameObject.GetComponent<Bro>();
         TargetPathing targetPathingReference = currentGameObject.GetComponent<TargetPathing>();
         LineQueue entranceLineQueue = EntranceQueueManager.Instance.GetLineQueue(lineQueueEntrance).GetComponent<LineQueue>();
         
@@ -206,6 +205,33 @@ public class CinematicHelper : MonoBehaviour {
                                             
         Position(startPosition);
         targetPathingReference.SetTargetObjectAndTargetPosition(null, entranceLineQueue.GetQueueMovementNodes());
+        
+        return this;
+    }
+    public CinematicHelper ExitThroughLineQueue(int lineQueueEntrance) {
+        TargetPathing targetPathingReference = currentGameObject.GetComponent<TargetPathing>();
+        LineQueue exitLineQueue = EntranceQueueManager.Instance.GetLineQueue(lineQueueEntrance).GetComponent<LineQueue>();
+        
+        Vector3 startPosition = currentGameObject.transform.position;
+        Vector3 endPosition = exitLineQueue.GetFirstQueueTile().transform.position;
+        
+        GameObject endTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(endPosition, true);
+        GameObject startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(startPosition, true);
+        
+        List<GameObject> newMovementNodes = null;
+        newMovementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
+                                                                    AStarManager.Instance.GetListCopyOfAllClosedNodes(),
+                                                                    startTile,
+                                                                    endTile);
+                                                                    
+        List<GameObject> exitMovementNodes = exitLineQueue.GetQueueMovementNodes();
+        exitMovementNodes.Reverse();
+        newMovementNodes.AddRange(exitMovementNodes);
+        
+        targetPathingReference.SetTargetObjectAndTargetPosition(null, newMovementNodes);
+        targetPathingReference.AddOnArrivalAtTargetPositionLogic(() => {
+            Destroy(currentGameObject);
+        });
         
         return this;
     }

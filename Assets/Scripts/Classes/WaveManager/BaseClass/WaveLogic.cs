@@ -124,12 +124,12 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     }
     
     public void InitializeWaveStates(params GameObject[] waveStates) {
-        waveStatesQueue = new LinkedList<GameObject>();
+        // waveStatesQueue = new LinkedList<GameObject>();
         
-        foreach(GameObject waveState in waveStates) {
-            EnqueueWaveState(waveState);
-            // Debug.Log(waveState);
-        }
+        // foreach(GameObject waveState in waveStates) {
+        //     EnqueueWaveState(waveState);
+        //     // Debug.Log(waveState);
+        // }
         if(waveStatesQueue.Count != 0) {
             currentWaveStateGameObject = (GameObject)DequeueWaveState();
         }
@@ -142,6 +142,20 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         foreach(GameObject waveStateToJumpTo in waveStatesToJumpTo) {
             waveStatesQueue.AddFirst(waveStateToJumpTo);
         }
+    }
+    
+    public void PerformWaveStates(params GameObject[] waveStatesToJumpTo) {
+        foreach(GameObject waveStateToJumpTo in waveStatesToJumpTo) {
+            waveStatesQueue.AddLast(waveStateToJumpTo);
+        }
+    }
+    
+    public void PerformWaveStatesAndWait(params GameObject[] waveStatesToJumpTo) {
+        foreach(GameObject waveStateToJumpTo in waveStatesToJumpTo) {
+            waveStatesQueue.AddLast(waveStateToJumpTo);
+        }
+        waveStatesQueue.AddLast(CreateWaveState("Wait", delegate() { /* wait */ }));
+        
     }
     
     public void EnqueueWaveState(GameObject waveStateGameObjectToEnqueue) {

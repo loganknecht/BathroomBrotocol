@@ -168,13 +168,15 @@ public class TextboxManager : MonoBehaviour {
     
     public TextboxManager SetText(Queue newTextboxTextSet) {
         TypewriterEffect textboxTextTypewriterEffect = textboxTextObject.GetComponent<TypewriterEffect>();
-        if(textboxTextTypewriterEffect != null) {
-            textboxTextTypewriterEffect.ResetToBeginning();
-        }
+        
         textboxFinishLogicTriggered = false;
         finishedTextboxText = false;
         textboxTextSet = newTextboxTextSet;
         PopNextTextboxText();
+        
+        if(textboxTextTypewriterEffect != null) {
+            textboxTextTypewriterEffect.ResetToBeginning();
+        }
         
         return this;
     }
