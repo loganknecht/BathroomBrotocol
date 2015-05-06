@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class TextboxManager : MonoBehaviour {
 
     public UIPanel textboxPanel = null;
-    public Vector2 textboxPanelPosition = new Vector2(50, -300);
     
     public GameObject textboxBackgroundObject = null;
     
@@ -22,9 +21,8 @@ public class TextboxManager : MonoBehaviour {
     
     public bool textboxFinishLogicTriggered = false;
     public bool finishedTextboxText = false;
-    //----------------------------------------------------------------------------
     
-    //Probably doesn't need to be a singleton
+    //----------------------------------------------------------------------------
     //BEGINNING OF SINGLETON CODE CONFIGURATION
     private static volatile TextboxManager _instance;
     private static object _lock = new object();

@@ -49,10 +49,10 @@ public class BroConfigurer {
     //-------------------------------------------------------------------------
     
     public BroConfigurer() {
+        // Configure default values where needed
         defaultReliefRequired = Factory.Instance.SelectRandomReliefType(defaultReliefRequiredToChooseFrom);
         defaultLineSkipBathroomObject = Factory.Instance.SelectRandomBathroomObjectType(defaultBathroomObjectsToChooseFromOnLineQueueSkip);
         defaultOnReliefBathroomObject = Factory.Instance.SelectRandomBathroomObjectType(defaultBathroomObjectsToChooseFromOnRelief);
-        
         InitializeOccupationDuration();
     }
     

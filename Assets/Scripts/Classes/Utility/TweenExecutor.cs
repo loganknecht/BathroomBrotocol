@@ -104,7 +104,7 @@ public class TweenPositionHelper : TweenHelper {
             EventDelegate.Add(tweenPosition.onFinished, onFinish, true);
         }
         
-        TweenPosition.Begin(objectToTween, duration, new Vector3(endPosition.x, endPosition.y, objectToTween.transform.localPosition.z));
+        // TweenPosition.Begin(objectToTween, duration, new Vector3(endPosition.x, endPosition.y, objectToTween.transform.localPosition.z));
         
         objectToTween = null;
     }
@@ -164,9 +164,9 @@ public class TweenAlphaHelper : TweenHelper {
         //TO DO RESET THE SPRITES ALPHA VALUE BEFORE TWEENING?
         if(onFinish != null) {
             tweenAlpha.ResetToBeginning();
+            // tweenAlpha.AddOnFinished(onFinish);
             EventDelegate.Add(tweenAlpha.onFinished, onFinish, true);
         }
-        
         TweenAlpha.Begin(objectToTween, duration, endAlpha);
         
         objectToTween = null;
@@ -280,8 +280,8 @@ public static class TweenExecutor {
             return tweenScaleHelper;
         }
         set {
-            if(tweenAlphaHelper == null) {
-                tweenAlphaHelper = new TweenAlphaHelper();
+            if(tweenScaleHelper == null) {
+                tweenScaleHelper = new TweenScaleHelper();
             }
         }
     }

@@ -3,9 +3,9 @@ using System.Collections;
 
 public class CameraShake : MonoBehaviour {
     public GameObject cameraGameObject = null;
-
+    
     public Vector3 cameraAnchor = Vector3.zero;
-
+    
     public bool isShaking = false;
     public float shakeTimer = 0f;
     public float shakeFrequencyTimer = 0f;
@@ -13,19 +13,19 @@ public class CameraShake : MonoBehaviour {
     public float shakeDuration = 1f;
     public float shakeXOffset = 0.5f;
     public float shakeYOffset = 0.5f;
-
+    
     public delegate void OnCameraShakeFinishDelegate();
     public OnCameraShakeFinishDelegate OnCameraShakeFinish;
-
-	// Use this for initialization
-	void Start () {
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    
+    // Use this for initialization
+    void Start() {
+    }
+    
+    // Update is called once per frame
+    void Update() {
         PerformShakingLogic();
-	}
-
+    }
+    
     public void StartCameraShake() {
         if(!isShaking) {
             cameraAnchor = cameraGameObject.transform.localPosition;
@@ -34,21 +34,24 @@ public class CameraShake : MonoBehaviour {
             shakeFrequencyTimer = 0f;
         }
     }
-
+    
     public void StartCameraShake(float newShakeFrequency, float newShakeDuration, float newShakeXOffset, float newShakeYOffset) {
         if(!isShaking) {
             shakeFrequency = newShakeFrequency;
             shakeDuration = newShakeDuration;
             shakeXOffset = newShakeXOffset;
             shakeYOffset = newShakeYOffset;
-
+            
             cameraAnchor = cameraGameObject.transform.localPosition;
             isShaking = true;
             shakeTimer = 0f;
             shakeFrequencyTimer = 0f;
         }
     }
-
+    public void StopCameraShake() {
+        isShaking = false;
+    }
+    
     void PerformShakingLogic() {
         if(isShaking) {
             shakeTimer += Time.deltaTime;
@@ -61,7 +64,7 @@ public class CameraShake : MonoBehaviour {
                 cameraGameObject.transform.localPosition = newCameraShakePositionOffset;
                 shakeFrequencyTimer = 0f;
             }
-
+            
             if(shakeTimer > shakeDuration) {
                 isShaking = false;
                 cameraGameObject.transform.localPosition = cameraAnchor;
@@ -69,11 +72,11 @@ public class CameraShake : MonoBehaviour {
             }
         }
     }
-
+    
     public void SetOnCameraShakeFinish(OnCameraShakeFinishDelegate newOnCameraShakeFinish) {
         OnCameraShakeFinish = new OnCameraShakeFinishDelegate(newOnCameraShakeFinish);
     }
-
+    
     public void PerformOnCameraShakeFinishLogic() {
         if(OnCameraShakeFinish != null) {
             OnCameraShakeFinish();

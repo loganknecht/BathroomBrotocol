@@ -9,7 +9,13 @@ using System.Collections.Generic;
 // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
 // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
 
-// BroDistributionObject firstWave = new BroDistributionObject(0, 5, 1, DistributionType.LinearIn, DistributionSpacing.Uniform, broProbabilities, entranceQueueProbabilities);
+// BroDistributionObject firstWave = new BroDistributionObject(0,
+//                                                             5,
+//                                                             1,
+//                                                             DistributionType.LinearIn,
+//                                                             DistributionSpacing.Uniform,
+//                                                             broProbabilities,
+//                                                             entranceQueueProbabilities);
 // firstWave.broConfigurer.SetReliefType(BroDistribution.AllBros, new ReliefRequire[] { ReliefRequired.Pee, ReliefRequired.Poop })
 //     .SetXMoveSpeed(BroDistribution.AllBros, 1.5, 1.5)
 //     .SetYMoveSpeed(BroDistribution.AllBros , 1.5, 1.5)
