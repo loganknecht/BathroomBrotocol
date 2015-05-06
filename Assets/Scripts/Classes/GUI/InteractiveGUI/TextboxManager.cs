@@ -107,7 +107,7 @@ public class TextboxManager : MonoBehaviour {
     //----------------------------------------------------------------------------
     // GUI STUFF GOES DOWN HERE
     //----------------------------------------------------------------------------
-    public void Hide(float duration = 1f) {
+    public TextboxManager Hide(float duration = 1f) {
         TweenExecutor.Alpha
         .Object(this.gameObject)
         .StartAlpha(1)
@@ -116,10 +116,10 @@ public class TextboxManager : MonoBehaviour {
         .Method(UITweener.Method.Linear)
         .OnFinish(null)
         .Tween();
-        // textboxPanel.alpha = 0;
+        
+        return this;
     }
-    public void Show(float duration = 1f) {
-        // textboxPanel.alpha = 1;
+    public TextboxManager Show(float duration = 1f) {
         TweenExecutor.Alpha
         .Object(this.gameObject)
         .StartAlpha(0)
@@ -128,6 +128,8 @@ public class TextboxManager : MonoBehaviour {
         .Method(UITweener.Method.Linear)
         .OnFinish(null)
         .Tween();
+        
+        return this;
     }
     
     public void MoveToNextTextboxText() {

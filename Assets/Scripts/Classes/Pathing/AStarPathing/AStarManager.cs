@@ -444,6 +444,9 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
         int tileXBeingChecked = -1;
         int tileYBeingChecked = -1;
         
+        int cornerGValueOffset = 1000;
+        int sideGValueOffset = 10;
+        
         if(tileBeingChecked != null) {
             tileXBeingChecked = tileBeingChecked.tileX;
             tileYBeingChecked = tileBeingChecked.tileY;
@@ -460,45 +463,45 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
             if(currentNode.tileX < tileBeingChecked.tileX) {
                 //top left
                 if(currentNode.tileY > tileBeingChecked.tileY) {
-                    gValueOffset = 14;
+                    gValueOffset = cornerGValueOffset;
                 }
                 //bottom left
                 else if(currentNode.tileY < tileBeingChecked.tileY) {
-                    gValueOffset = 14;
+                    gValueOffset = cornerGValueOffset;
                 }
                 //left
                 else {
-                    gValueOffset = 10;
+                    gValueOffset = sideGValueOffset;
                 }
             }
             //right
             else if(currentNode.tileX > tileBeingChecked.tileX) {
                 //top right
                 if(currentNode.tileY > tileBeingChecked.tileY) {
-                    gValueOffset = 14;
+                    gValueOffset = cornerGValueOffset;
                 }
                 //bottom right
                 else if(currentNode.tileY < tileBeingChecked.tileY) {
-                    gValueOffset = 14;
+                    gValueOffset = cornerGValueOffset;
                 }
                 //right
                 else {
-                    gValueOffset = 10;
+                    gValueOffset = sideGValueOffset;
                 }
             }
             else {
                 //top
                 if(currentNode.tileY > tileBeingChecked.tileY) {
-                    gValueOffset = 10;
+                    gValueOffset = sideGValueOffset;
                 }
                 //bottom
                 else if(currentNode.tileY < tileBeingChecked.tileY) {
-                    gValueOffset = 10;
+                    gValueOffset = sideGValueOffset;
                 }
                 //middle
                 else {
                     //not sure when this would happen?
-                    gValueOffset = 0;
+                    // gValueOffset = 0;
                 }
             }
             

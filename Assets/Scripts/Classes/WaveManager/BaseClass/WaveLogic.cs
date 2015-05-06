@@ -17,6 +17,10 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
         PerformDelayTimerLogic();
     }
     
+    public virtual void Finished() {
+        waveLogicFinished = true;
+    }
+    
     public virtual void Initialize() {
         //
     }
@@ -86,6 +90,7 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     
     public virtual void PerformLevelFinishCheck() {
         if(waveLogicFinished) {
+            Debug.Log("Level finished!!!!");
             LevelManager.Instance.TriggerFinishedLevel();
         }
     }
@@ -179,16 +184,4 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public void AddWaveStateToEndOfQueue(GameObject waveStateGameObjectToAdd) {
         waveStatesQueue.AddLast(waveStateGameObjectToAdd);
     }
-    
-// public void StartCompleted() {
-//     currentWaveStateGameObject.GetComponent<WaveState>().StartCompleted();
-// }
-
-// public void RunCompleted() {
-//     currentWaveStateGameObject.GetComponent<WaveState>().RunCompleted();
-// }
-
-// public void FinalCompleted() {
-//     currentWaveStateGameObject.GetComponent<WaveState>().FinalCompleted();
-// }
 }

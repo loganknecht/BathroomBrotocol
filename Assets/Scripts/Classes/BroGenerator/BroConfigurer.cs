@@ -6,13 +6,13 @@ public class BroConfigurer {
     //-------------------------------------------------------------------------
     public BroDistribution broDistributionXMoveSpeed = BroDistribution.AllBros;
     public float defaultXMoveSpeed = float.PositiveInfinity;
-    public float defaultMinXMoveSpeed = 1;
-    public float defaultMaxXMoveSpeed = 1;
+    public float defaultMinXMoveSpeed = 2.5f;
+    public float defaultMaxXMoveSpeed = 2.5f;
     
     public BroDistribution broDistributionYMoveSpeed = BroDistribution.AllBros;
     public float defaultYMoveSpeed = float.PositiveInfinity;
-    public float defaultMinYMoveSpeed = 1;
-    public float defaultMaxYMoveSpeed = 1;
+    public float defaultMinYMoveSpeed = 2.5f;
+    public float defaultMaxYMoveSpeed = 2.5f;
     //-------------------------------------------------------------------------
     public BroDistribution broDistributionReliefType = BroDistribution.RandomBros;
     public ReliefRequired defaultReliefRequired = ReliefRequired.None;

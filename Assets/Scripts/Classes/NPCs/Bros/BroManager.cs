@@ -92,9 +92,17 @@ public class BroManager : MonoBehaviour {
     }
     
     public bool NoBrosInRestroom() {
+        // All need to be true in order to return true
+        return (NoRegularBrosInRestroom()
+                && NoStandoffBrosInRestroom()
+                && NoFightingBrosInRestroom());
+    }
+    
+    public bool NoRegularBrosInRestroom() {
         if(allBros.Count == 0) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -102,7 +110,8 @@ public class BroManager : MonoBehaviour {
     public bool NoStandoffBrosInRestroom() {
         if(allStandoffBros.Count == 0) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -110,7 +119,8 @@ public class BroManager : MonoBehaviour {
     public bool NoFightingBrosInRestroom() {
         if(allFightingBros.Count == 0) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -151,11 +161,12 @@ public class BroManager : MonoBehaviour {
     public void ResetAllBrosIsSelectedState(bool ignoreCurrentlySelectedBro) {
         foreach(GameObject broObject in allBros) {
             if(ignoreCurrentlySelectedBro
-                    && SelectionManager.Instance.currentlySelectedBroGameObject != null) {
+                && SelectionManager.Instance.currentlySelectedBroGameObject != null) {
                 if(broObject.GetInstanceID() != SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
                     broObject.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
                 }
-            } else {
+            }
+            else {
                 broObject.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
             }
         }

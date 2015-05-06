@@ -121,6 +121,23 @@ public class BroGenerator : MonoBehaviour {
     public void Unpause() {
         isPaused = false;
     }
+    
+    public bool HasFinished() {
+        bool foundDistributionPointThatWasNotDistributed = false;
+        foreach(GameObject distributionPointGameObject in distributionPoints) {
+            if(!distributionPointGameObject.GetComponent<DistributionPoint>().hasBeenDistributed) {
+                foundDistributionPointThatWasNotDistributed = true;
+            }
+        }
+        
+        if(foundDistributionPointThatWasNotDistributed) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    
     public void SetDistributionLogic(DistributionObject[] distributionObjects) {
         broGenerationTimer = 0;
         
@@ -177,21 +194,5 @@ public class BroGenerator : MonoBehaviour {
         // if(generationTimerMaxIsStochastic) {
         //   broGenerationTimerMax = Random.Range(minBroGenerationTimerMax, maxBroGenerationTimerMax);
         // }
-    }
-    
-    public bool HasFinishedGenerating() {
-        bool foundDistributionPointThatWasNotDistributed = false;
-        foreach(GameObject distributionPointGameObject in distributionPoints) {
-            if(!distributionPointGameObject.GetComponent<DistributionPoint>().hasBeenDistributed) {
-                foundDistributionPointThatWasNotDistributed = true;
-            }
-        }
-        
-        if(foundDistributionPointThatWasNotDistributed) {
-            return false;
-        }
-        else {
-            return true;
-        }
     }
 }
