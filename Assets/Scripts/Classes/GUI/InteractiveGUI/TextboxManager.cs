@@ -55,17 +55,18 @@ public class TextboxManager : MonoBehaviour {
         //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
         //another call to it, so that you don't need to worry if it exists or not.
         _instance = this;
-    }
-    //END OF SINGLETON CODE CONFIGURATION
-    
-    // Use this for initialization
-    void Start() {
+        
         textboxPanel = this.gameObject.GetComponent<UIPanel>();
         
         textboxText = textboxTextObject.GetComponent<UILabel>();
         
         textboxButtonLogicToPerform = new TextboxButtonPressLogic(MoveToNextTextboxText);
         SetFinishedLogicToDefault();
+    }
+    //END OF SINGLETON CODE CONFIGURATION
+    
+    // Use this for initialization
+    void Start() {
     }
     
     // Update is called once per frame
@@ -108,27 +109,22 @@ public class TextboxManager : MonoBehaviour {
     // GUI STUFF GOES DOWN HERE
     //----------------------------------------------------------------------------
     public TextboxManager Hide(float duration = 1f) {
-        TweenExecutor.Alpha
-        .Object(this.gameObject)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Duration(duration)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null)
-        .Tween();
-        
+        UIPanel panelToModify = this.gameObject.GetComponent<UIPanel>();
+        panelToModify.alpha = 1f;
+        Go.to(panelToModify,
+              duration,
+              new GoTweenConfig()
+              .floatProp("alpha", 0f));
         return this;
     }
+    
     public TextboxManager Show(float duration = 1f) {
-        TweenExecutor.Alpha
-        .Object(this.gameObject)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Duration(duration)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null)
-        .Tween();
-        
+        UIPanel panelToModify = this.gameObject.GetComponent<UIPanel>();
+        panelToModify.alpha = 0f;
+        Go.to(panelToModify,
+              duration,
+              new GoTweenConfig()
+              .floatProp("alpha", 1f));
         return this;
     }
     

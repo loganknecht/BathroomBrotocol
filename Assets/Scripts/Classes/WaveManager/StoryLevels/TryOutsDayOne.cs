@@ -45,12 +45,12 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         
         //----------------------------------------------------------------------
         PerformWaveStates(CreateWaveState("Configure Default Configuration", () => {
-            TextboxManager.Instance.Hide(0);
-            ConfirmationBoxManager.Instance.Hide(0);
+            TextboxManager.Instance.Hide(float.Epsilon);
+            // ConfirmationBoxManager.Instance.Hide(float.Epsilon);
             Completed();
         }));
         //----------------------------------------------------------------------
-        PerformWaveStates(CreateDelayState("Delay", 2f));
+        // PerformWaveStates(CreateDelayState("Delay", 2f));
         //----------------------------------------------------------------------
         PerformWaveStates(CreateWaveState("First Bro Entrance", () => {
             Debug.Log("Generating");
