@@ -119,6 +119,7 @@ public class LevelManager : MonoBehaviour {
         .OnFinish(null);
         return this;
     }
+    
     public LevelManager HidePauseButton() {
         TweenExecutor.Alpha
         .Object(pauseButton)
@@ -141,6 +142,7 @@ public class LevelManager : MonoBehaviour {
         .OnFinish(null);
         return this;
     }
+    
     public LevelManager HideJanitorButton() {
         TweenExecutor.Alpha
         .Object(janitorButton)
@@ -163,6 +165,7 @@ public class LevelManager : MonoBehaviour {
         .OnFinish(null);
         return this;
     }
+    
     public LevelManager HideJanitorOverlay() {
         TweenExecutor.Alpha
         .Object(janitorOverlayGameObject)
@@ -185,48 +188,43 @@ public class LevelManager : MonoBehaviour {
         .OnFinish(null);
         return this;
     }
+    
     public LevelManager HideLevelCompletedPanel() {
-        TweenExecutor.Alpha
-        .Object(levelCompletedPanel)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+        UIPanel panelToModify = levelCompletedPanel.GetComponent<UIPanel>();
+        panelToModify.alpha = 1f;
+        Go.to(panelToModify,
+              1f,
+              new GoTweenConfig()
+              .floatProp("alpha", 0f));
         return this;
     }
     public LevelManager ShowLevelCompletedPanel() {
-        TweenExecutor.Alpha
-        .Object(levelCompletedPanel)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+        UIPanel panelToModify = levelCompletedPanel.GetComponent<UIPanel>();
+        panelToModify.alpha = 0f;
+        Go.to(panelToModify,
+              1f,
+              new GoTweenConfig()
+              .floatProp("alpha", 1f));
+              
         return this;
     }
+    
     public LevelManager HideLevelFailedPanel() {
-        TweenExecutor.Alpha
-        .Object(levelFailedPanel)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+        UIPanel panelToModify = levelFailedPanel.GetComponent<UIPanel>();
+        panelToModify.alpha = 1f;
+        Go.to(panelToModify,
+              1f,
+              new GoTweenConfig()
+              .floatProp("alpha", 0f));
         return this;
     }
     public LevelManager ShowLevelFailedPanel() {
-        TweenExecutor.Alpha
-        .Object(levelFailedPanel)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+        UIPanel panelToModify = levelFailedPanel.GetComponent<UIPanel>();
+        panelToModify.alpha = 0f;
+        Go.to(panelToModify,
+              1f,
+              new GoTweenConfig()
+              .floatProp("alpha", 1f));
         return this;
     }
     

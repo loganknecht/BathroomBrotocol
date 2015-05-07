@@ -72,73 +72,57 @@ public class StartMenuManager : MonoBehaviour {
     }
     
     public void PerformGUISlideOut(EventDelegate.Callback callbackToPerform) {
-        TweenExecutor.Position
-        .Object(menuBackground)
-        .StartPosition(menuBackground.transform.localPosition.x, menuBackground.transform.localPosition.x)
-        .EndPosition(menuBackground.transform.localPosition.x, -1200)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .Style(UITweener.Style.Once)
-        .OnFinish(callbackToPerform)
-        .Tween();
+        Go.to(menuBackground.transform,
+              1f,
+              new GoTweenConfig()
+              .localPosition(new Vector3(0,
+                                         -1200,
+                                         0
+                                        ), true)
+        .onComplete(guiComplete => {
+            callbackToPerform();
+        }));
         
-        TweenExecutor.Position
-        .Object(menuTitle)
-        .StartPosition(menuTitle.transform.localPosition.x, menuTitle.transform.localPosition.y)
-        .EndPosition(menuTitle.transform.localPosition.x, 800)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .Style(UITweener.Style.Once)
-        .OnFinish(null)
-        .Tween();
-        
-        
-        TweenExecutor.Position
-        .Object(newGameButton)
-        .StartPosition(newGameButton.transform.localPosition.x, newGameButton.transform.localPosition.y)
-        .EndPosition(-1000, newGameButton.transform.localPosition.y)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .Style(UITweener.Style.Once)
-        .OnFinish(null)
-        .Tween();
-        
-        TweenExecutor.Position
-        .Object(continueGameButton)
-        .StartPosition(continueGameButton.transform.localPosition.x, continueGameButton.transform.localPosition.y)
-        .EndPosition(1000, continueGameButton.transform.localPosition.y)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .Style(UITweener.Style.Once)
-        .OnFinish(null)
-        .Tween();
-        
-        TweenExecutor.Position
-        .Object(freeplayButton)
-        .StartPosition(freeplayButton.transform.localPosition.x, freeplayButton.transform.localPosition.y)
-        .EndPosition(-1000, freeplayButton.transform.localPosition.y)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .Style(UITweener.Style.Once)
-        .OnFinish(null)
-        .Tween();
-        
-        TweenExecutor.Position
-        .Object(optionsButton)
-        .StartPosition(optionsButton.transform.localPosition.x, optionsButton.transform.localPosition.y)
-        .EndPosition(1000, optionsButton.transform.localPosition.y)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .Style(UITweener.Style.Once)
-        .OnFinish(null)
-        .Tween();
-        
+        Go.to(menuTitle.transform,
+              1f,
+              new GoTweenConfig()
+              .localPosition(new Vector3(800,
+                                         0,
+                                         0
+                                        ), true));
+                                        
+        Go.to(newGameButton.transform,
+              1f,
+              new GoTweenConfig()
+              .localPosition(new Vector3(-1000,
+                                         0,
+                                         0
+                                        ), true));
+                                        
+        Go.to(continueGameButton.transform,
+              1f,
+              new GoTweenConfig()
+              .localPosition(new Vector3(1000,
+                                         0,
+                                         0
+                                        ), true));
+                                        
+        Go.to(freeplayButton.transform,
+              1f,
+              new GoTweenConfig()
+              .localPosition(new Vector3(-1000,
+                                         0,
+                                         0
+                                        ), true));
+                                        
+        Go.to(optionsButton.transform,
+              1f,
+              new GoTweenConfig()
+              .localPosition(new Vector3(1000,
+                                         0,
+                                         0
+                                        ), true));
+                                        
     }
     
     //--------------------------------------------------------------------

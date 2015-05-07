@@ -1,18 +1,18 @@
-﻿using FullInspector;
+﻿// using FullInspector;
 
 using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-[Serializable]
-class PlayerData : BaseBehavior {
+// class PlayerData : BaseBehavior {
+class PlayerData : MonoBehaviour {
     Dictionary<ChallengeLevel, ChallengeLevelData> challengeLevels;
     // Dictionary<StoryLevel, StoryLevelData> storyLevels;
     
-    protected override void Awake() {
-        base.Awake();
-    }
+    // protected override void Awake() {
+    // base.Awake();
+    // }
     public void Start() {
     }
     public void Updated() {
@@ -96,4 +96,4 @@ class PlayerData : BaseBehavior {
         challengeLevels = new Dictionary<ChallengeLevel, ChallengeLevelData>();
         // storyLevels = new Dictionary<StoryLevel, StoryLevelData>();
     }
-} 
+}

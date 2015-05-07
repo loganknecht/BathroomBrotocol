@@ -1,11 +1,12 @@
 ﻿#pragma warning disable 0219
 
-using FullInspector;
+// using FullInspector;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class AStarManager : BaseBehavior<FullSerializerSerializer> {
+// public class AStarManager : BaseBehavior<FullSerializerSerializer> {
+public class AStarManager : MonoBehaviour {
 
     //These should be considered the de facto closed nodes. Reason being is that additional nodes can be added as closed nodes, but these should be considered permanently closed nodes for the sake of having this covered.... it sounded right in my head
     public List<GameObject> permanentClosedNodes = null;
@@ -39,14 +40,17 @@ public class AStarManager : BaseBehavior<FullSerializerSerializer> {
     private AStarManager() {
     }
     
-    protected override void Awake() {
-        base.Awake();
-        
-        //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
-        //the script, which is assumedly attached to some GameObject. This in turn allows the instance
-        //to be assigned when a game object is given this script in the scene view.
-        //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
-        //another call to it, so that you don't need to worry if it exists or not.
+    // protected override void Awake() {
+    //     base.Awake();
+    
+    //     //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
+    //     //the script, which is assumedly attached to some GameObject. This in turn allows the instance
+    //     //to be assigned when a game object is given this script in the scene view.
+    //     //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
+    //     //another call to it, so that you don't need to worry if it exists or not.
+    //     _instance = this;
+    // }
+    public void Awake() {
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION

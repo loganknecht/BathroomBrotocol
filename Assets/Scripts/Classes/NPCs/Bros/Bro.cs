@@ -1,10 +1,11 @@
-﻿using FullInspector;
+﻿// using FullInspector;
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Bro : BaseBehavior {
+// public class Bro : BaseBehavior {
+public class Bro : MonoBehaviour {
     public TargetPathing targetPathingReference = null;
     public Animator animatorReference = null;
     public BathroomFacing bathroomFacing;
@@ -47,9 +48,8 @@ public class Bro : BaseBehavior {
     
     public Color selectionColor = Color.white;
     
-    protected override void Awake() {
-        base.Awake();
-        
+    public virtual void Awake() {
+    
         // base.Start();
         InitializeOccupationDuration();
         InitializeComponents();

@@ -1,4 +1,4 @@
-using FullInspector;
+// using FullInspector;
 
 using UnityEngine;
 using System.Collections;
@@ -7,7 +7,8 @@ using System.Collections.Generic;
 // REQUIREMENTS FOR THE TILE MAP:
 // ALL ROWS MUST BE EQUAL IN WIDTH
 // IF USING THE ROW CONTAINER CONVENIENCE LIST TILES MUST BE IN ORDER
-public class TileMap : BaseBehavior {
+// public class TileMap : BaseBehavior {
+public class TileMap : MonoBehaviour {
     public float singleTileWidth = -1;
     public float singleTileHeight = -1;
     public int tilesWide = 0;
@@ -17,8 +18,10 @@ public class TileMap : BaseBehavior {
     public GameObject[][] tiles;
     public List<GameObject> rowContainers;
     
-    protected override void Awake() {
-        base.Awake();
+    // protected override void Awake() {
+    //     base.Awake();
+    // }
+    public virtual void Awake() {
     }
     
     // Use this for initialization

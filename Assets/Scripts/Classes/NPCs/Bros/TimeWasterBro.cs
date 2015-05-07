@@ -5,34 +5,41 @@ using System.Collections.Generic;
 public class TimeWasterBro : Bro {
     public int numberOfTapsUntilBounce = 5;
     public bool bouncePerformed = false;
-
+    
     public bool hasEntered = false;
-
+    
     public bool randomizeRoamingTime = false;
     public float timeInRoamingSpot = 0f;
     public float timeInRoamingSpotMax = 3f;
     public float minTimeInRoamingSpotMax = 2f;
     public float maxTimeInRoamingSpotMax = 4f;
-
-    protected override void Awake() {
+    
+    // protected override void Awake() {
+    //     base.Awake();
+    //     // type = BroType.TimeWasterBro;
+    
+    //     if(randomizeRoamingTime) {
+    //         timeInRoamingSpotMax = Random.Range(minTimeInRoamingSpotMax, maxTimeInRoamingSpotMax);
+    //     }
+    // }
+    public override void Awake() {
         base.Awake();
         // type = BroType.TimeWasterBro;
-
         if(randomizeRoamingTime) {
             timeInRoamingSpotMax = Random.Range(minTimeInRoamingSpotMax, maxTimeInRoamingSpotMax);
         }
     }
-
+    
     // Use this for initialization
-    public override void Start () {
+    public override void Start() {
         base.Start();
     }
-
+    
     // Update is called once per frame
-    public override void Update () {
+    public override void Update() {
         base.Update();
     }
-
+    
     // This is overriden so that the bro can have selectable logic enabled after the first movement
     // Tappable logic is enabled by setting hasEntered to true.
     // public override void PopMovementNode() {
@@ -46,22 +53,22 @@ public class TimeWasterBro : Bro {
     //     }
     //   }
     // }
-
+    
     public override void OnMouseDown() {
         // Don't call the base because selection manager doesn't need to select this
         // base.OnMouseDown();
         if(hasEntered) {
-          numberOfTapsUntilBounce--;
+            numberOfTapsUntilBounce--;
         }
         PerformTapExitCheck();
     }
-
+    
     public void PerformTapExitCheck() {
         if(numberOfTapsUntilBounce <= 0) {
             PerformBounceTriggeredLogic();
         }
     }
-
+    
     public void PerformBounceTriggeredLogic() {
         if(!bouncePerformed) {
             bouncePerformed = true;
@@ -79,7 +86,7 @@ public class TimeWasterBro : Bro {
             }
         }
     }
-
+    
     public override void PerformRoamingLogic() {
         if(IsAtTargetPosition()) {
             if(timeInRoamingSpot > timeInRoamingSpotMax) {
@@ -93,16 +100,16 @@ public class TimeWasterBro : Bro {
                         foundEmptyTile = true;
                     }
                 }
-
+                
                 // Debug.Log("Start Position X: " + this.gameObject.transform.position.x + " Y: " + this.gameObject.transform.position.y);
                 BathroomTile startTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
                 List<GameObject> movementNodes = AStarManager.Instance.CalculateAStarPath(BathroomTileMap.Instance.gameObject,
                                                                                           new List<GameObject>(),
                                                                                           startTile,
                                                                                           randomBathroomTile.GetComponent<BathroomTile>());
-
+                                                                                          
                 SetTargetObjectAndTargetPosition(null, movementNodes);
-
+                
                 timeInRoamingSpot = 0f;
                 if(randomizeRoamingTime) {
                     timeInRoamingSpotMax = Random.Range(minTimeInRoamingSpotMax, maxTimeInRoamingSpotMax);
@@ -113,10 +120,10 @@ public class TimeWasterBro : Bro {
             }
         }
     }
-
+    
     //This is being checked on arrival before switching to occupying an object
     public override void PerformOnArrivalBrotocolScoreCheck() {
-    // THIS IS NOT USED BECAUSE I DON'T KNOW WHY, HE JUST DOESN'T TARGET ANY OBJECTS, HE WASTES SPACE ETC ETC.
+        // THIS IS NOT USED BECAUSE I DON'T KNOW WHY, HE JUST DOESN'T TARGET ANY OBJECTS, HE WASTES SPACE ETC ETC.
     }
-
+    
 }

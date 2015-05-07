@@ -90,7 +90,6 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     
     public virtual void PerformLevelFinishCheck() {
         if(waveLogicFinished) {
-            Debug.Log("Level finished!!!!");
             LevelManager.Instance.TriggerFinishedLevel();
         }
     }

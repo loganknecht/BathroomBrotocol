@@ -9,45 +9,30 @@ using System.Collections.Generic;
 // Resources/Prefabs/Example/ExampleObject you would use the subdirectory path
 // "Prefabs/Example". This is because it determines the loading string associated
 // with the asset based on that path
-public static class NPCPrefabs {
+public static class AnimationPrefabs {
     public static Dictionary<string, string> paths = null;
     
     public static string resourceBasePath = "Assets/Resources/";
-    public static string[] subDirectoryPaths = new string[] { "Prefabs/NPC/" };
+    public static string[] subDirectoryPaths = new string[] { "Prefabs/Animations/" };
     
-    public static string GetPath(string broPrefabName) {
+    public static string GetPath(string animationName) {
         string returnString = "";
-        paths.TryGetValue(broPrefabName, out returnString);
+        paths.TryGetValue(animationName, out returnString);
         return returnString;
     }
     
     public static string GetBasePath() {
         return resourceBasePath;
     }
+    
     public static string[] GetSubdirectoryPaths() {
         return subDirectoryPaths;
     }
     
     public static void PopulatePathsManually() {
         paths = new Dictionary<string, string>();
-        
-        // Main bros
-        paths["BluetoothBro"] = "Prefabs/NPC/Bro/BluetoothBro01";
-        paths["ChattyBro"] = "Prefabs/NPC/Bro/ChattyBro01";
-        paths["DrunkBro"] = "Prefabs/NPC/Bro/DrunkBro01";
-        paths["GassyBro"] = "Prefabs/NPC/Bro/GassyBro01";
-        paths["GenericBro"] = "Prefabs/NPC/Bro/GenericBro01";
-        paths["RichBro"] = "Prefabs/NPC/Bro/RichBro01";
-        paths["ShyBro"] = "Prefabs/NPC/Bro/ShyBro01";
-        paths["SlobBro"] = "Prefabs/NPC/Bro/SlobBro01";
-        paths["TimeWasterBro"] = "Prefabs/NPC/Bro/StandoffBros";
-        
-        // Special Bros
-        paths["FightingBros"] = "Prefabs/NPC/Bro/FightingBros01";
-        paths["StandoffBros"] = "Prefabs/NPC/Bro/StandoffBros";
-        
-        // Animation Bros
-        paths["OldBathroomBroCzar"] = "Prefabs/NPC/Miscellaneous/OldBathroomBroCzar";
+        paths["LightningCloud"] = "Prefabs/Animations/Clouds/LightningCloud";
+        paths["EntranceSmoke"] = "Prefabs/Animations/Smoke/EntranceSmoke";
     }
     
     // public static void PopulatePathsViaDirectoryIteration() {

@@ -4,29 +4,32 @@ using System.Collections.Generic;
 
 public class SlobBro : Bro {
 
-    protected override void Awake() {
+    // protected override void Awake() {
+    //     base.Awake();
+    //     type = BroType.SlobBro;
+    // }
+    public override void Awake() {
         base.Awake();
-
         type = BroType.SlobBro;
     }
     
     // Use this for initialization
-    public override void Start () {
+    public override void Start() {
         base.Start();
     }
-
+    
     // Update is called once per frame
-    public override void Update () {
+    public override void Update() {
         base.Update();
     }
-
+    
     public override void PerformOccupyingObjectLogic() {
         // base.PerformOccupyingObjectLogic();
         GameObject targetObject = GetTargetObject();
         if(targetObject != null
-           && targetObject.GetComponent<BathroomObject>() != null) {
+            && targetObject.GetComponent<BathroomObject>() != null) {
             BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
-
+            
             if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
@@ -44,7 +47,7 @@ public class SlobBro : Bro {
                 else if(bathObjRef.type == BathroomObjectType.Urinal) {
                     PerformUrinalOccupationFinishedLogic();
                 }
-
+                
                 if(bathObjRef.type != BathroomObjectType.Exit
                     && !bathObjRef.IsBroken()
                     && bathObjRef.state != BathroomObjectState.OutOfOrder) {
@@ -54,16 +57,16 @@ public class SlobBro : Bro {
             else {
                 //disables the collider because the bro resides in the object, but the timer is still going
                 colliderReference.enabled = false;
-
+                
                 occupationTimer += Time.deltaTime;
             }
         }
     }
-
+    
     //This is being checked on arrival before switching to occupying an object
     public override void PerformOnArrivalBrotocolScoreCheck() {
         // bool brotocolWasSatisfied = false;
-
+        
         // // As long as the target object is not null and it's not a bathroom exit
         // if(targetObject != null
         //  && targetObject.GetComponent<BathroomObject>() != null
@@ -82,7 +85,7 @@ public class SlobBro : Bro {
         //     }
         //   }
         // }
-
+        
         // if(brotocolWasSatisfied) {
         //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
         // }

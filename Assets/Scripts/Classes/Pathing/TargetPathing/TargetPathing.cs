@@ -1,10 +1,11 @@
-﻿using FullInspector;
+﻿// using FullInspector;
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class TargetPathing : BaseBehavior {
+// public class TargetPathing : BaseBehavior {
+public class TargetPathing : MonoBehaviour {
     public Facing directionBeingLookedAt = Facing.None;
     
     public Animator animatorReference = null;
@@ -32,9 +33,13 @@ public class TargetPathing : BaseBehavior {
     public delegate void OnPopMovementNode();
     public OnPopMovementNode onPopMovementNodeLogic = null;
     
-    protected override void Awake() {
-        base.Awake();
-        
+    // protected override void Awake() {
+    //     base.Awake();
+    
+    //     movementNodes = new List<GameObject>();
+    //     onArrivalAtTargetPositionLogics = new List<OnArrivalAtTargetPosition>();
+    // }
+    public void Awake() {
         movementNodes = new List<GameObject>();
         onArrivalAtTargetPositionLogics = new List<OnArrivalAtTargetPosition>();
     }

@@ -2,25 +2,28 @@
 using System.Collections;
 
 public class GenericBro : Bro {
-    protected override void Awake() {
+    // protected override void Awake() {
+    //     base.Awake();
+    //     type = BroType.GenericBro;
+    // }
+    public override void Awake() {
         base.Awake();
-
         type = BroType.GenericBro;
     }
     // Use this for initialization
-    public override void Start () {
+    public override void Start() {
         base.Start();
     }
-
+    
     // Update is called once per frame
-    public override void Update () {
+    public override void Update() {
         base.Update();
     }
-
+    
     //This is being checked on arrival before switching to occupying an object
     public override void PerformOnArrivalBrotocolScoreCheck() {
         // bool brotocolWasSatisfied = false;
-
+        
         // // As long as the target object is not null and it's not a bathroom exit
         // if(targetObject != null
         //    && targetObject.GetComponent<BathroomObject>() != null
@@ -39,7 +42,7 @@ public class GenericBro : Bro {
         //         }
         //     }
         // }
-
+        
         // if(brotocolWasSatisfied) {
         //     SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
         // }
