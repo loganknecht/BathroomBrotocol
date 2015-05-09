@@ -50,7 +50,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Completed();
         }));
         //----------------------------------------------------------------------
-        // PerformWaveStates(CreateDelayState("Delay", 2f));
+        PerformWaveStates(CreateDelayState("Delay", 3f));
         //----------------------------------------------------------------------
         PerformWaveStates(CreateWaveState("First Bro Entrance", () => {
             Debug.Log("Generating");
