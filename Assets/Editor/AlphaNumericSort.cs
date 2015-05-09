@@ -2,6 +2,8 @@
 using UnityEngine;
 using System.Collections;
 
+// Grabed from here:
+// http://docs.unity3d.com/ScriptReference/BaseHierarchySort.html
 public class AlphaNumericSort : BaseHierarchySort {
     public override int Compare(GameObject lhs, GameObject rhs) {
         if(lhs == rhs)  {
