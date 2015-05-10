@@ -109,6 +109,7 @@ public class TextboxManager : MonoBehaviour {
     // GUI STUFF GOES DOWN HERE
     //----------------------------------------------------------------------------
     public TextboxManager Hide(float duration = 1f) {
+        duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
         UIPanel panelToModify = this.gameObject.GetComponent<UIPanel>();
         panelToModify.alpha = 1f;
         Go.to(panelToModify,
@@ -119,6 +120,7 @@ public class TextboxManager : MonoBehaviour {
     }
     
     public TextboxManager Show(float duration = 1f) {
+        duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
         UIPanel panelToModify = this.gameObject.GetComponent<UIPanel>();
         panelToModify.alpha = 0f;
         Go.to(panelToModify,

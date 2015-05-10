@@ -106,7 +106,7 @@ public class BathroomObject : MonoBehaviour {
         bool isOutOfOrderAfterRemoval  = (state == BathroomObjectState.OutOfOrder);
         
         if(!wasOutOfOrderBeforeRemoval
-                && isOutOfOrderAfterRemoval) {
+            && isOutOfOrderAfterRemoval) {
             Bro broRef = broGameObjectToRemove.GetComponent<Bro>();
             ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderInBathroomObjectScore(broRef.type, type);
         }
@@ -129,10 +129,11 @@ public class BathroomObject : MonoBehaviour {
     
     public bool IsBroken() {
         if(state == BathroomObjectState.Broken
-                || state == BathroomObjectState.BrokenByPee
-                || state == BathroomObjectState.BrokenByPoop) {
+            || state == BathroomObjectState.BrokenByPee
+            || state == BathroomObjectState.BrokenByPoop) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -153,8 +154,8 @@ public class BathroomObject : MonoBehaviour {
     
     public void PerformMoreThanTwoOccupantsCheck() {
         if(objectsOccupyingBathroomObject.Count >= 2
-                && destroyObjectIfMoreThanTwoOccupants
-                && type != BathroomObjectType.Exit) {
+            && destroyObjectIfMoreThanTwoOccupants
+            && type != BathroomObjectType.Exit) {
             GameObject firstBroFound = null;
             GameObject secondBroFound = null;
             List<GameObject> objectOccupyingBathroomObjectToRemove = new List<GameObject>();
@@ -164,14 +165,15 @@ public class BathroomObject : MonoBehaviour {
                 if(gameObj.GetComponent<Bro>() != null) {
                     if(firstBroFound == null) {
                         firstBroFound = gameObj;
-                    } else {
+                    }
+                    else {
                         secondBroFound = gameObj;
                     }
                 }
                 // TODO!! - Change this logic to send him to the exit.
                 if(i == objectsOccupyingBathroomObject.Count - 1) {
                     if(firstBroFound == null
-                            && secondBroFound == null) {
+                        && secondBroFound == null) {
                         Bro broRef = gameObj.GetComponent<Bro>();
                         broRef.state = BroState.Roaming;
                         broRef.selectableReference.ResetHighlightObjectAndSelectedState();
@@ -179,18 +181,18 @@ public class BathroomObject : MonoBehaviour {
                     }
                 }
                 if(firstBroFound != null
-                        && secondBroFound != null) {
+                    && secondBroFound != null) {
                     state = BathroomObjectState.Broken;
                     
-                    firstBroFound.GetComponent<Renderer>().enabled = false;
-                    firstBroFound.GetComponent<Collider>().enabled = false;
+                    // firstBroFound.GetComponent<SpriteRenderer>().enabled = false;
+                    // firstBroFound.GetComponent<Collider>().enabled = false;
                     firstBroFound.SetActive(false);
                     Bro firstBroFoundReference = firstBroFound.GetComponent<Bro>();
                     firstBroFoundReference.state = BroState.Fighting;
                     firstBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
                     
-                    secondBroFound.GetComponent<Renderer>().enabled = false;
-                    secondBroFound.GetComponent<Collider>().enabled = false;
+                    // secondBroFound.GetComponent<SpriteRenderer>().enabled = false;
+                    // secondBroFound.GetComponent<Collider>().enabled = false;
                     secondBroFound.SetActive(false);
                     Bro secondBroFoundReference = secondBroFound.GetComponent<Bro>();
                     secondBroFoundReference.state = BroState.Fighting;

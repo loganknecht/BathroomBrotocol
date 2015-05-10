@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class LevelManager : MonoBehaviour {
@@ -8,12 +8,14 @@ public class LevelManager : MonoBehaviour {
     //-------------
     public GameObject backgroundImage = null;
     //-------------
-    public GameObject pauseButton = null;
+    public GameObject playerButtonsPanelGameObject = null;
     public bool isPaused = false;
     //-------------
-    public GameObject janitorButton = null;
+    public GameObject janitorButtonGameObject = null;
     //-------------
-    public GameObject pausePanel = null;
+    public GameObject rotationButtonPanelGameObject = null;
+    //-------------
+    public GameObject pausePanelGameObject = null;
     //-------------
     public GameObject levelCompletedPanel = null;
     public GameObject levelFailedPanel = null;
@@ -57,18 +59,12 @@ public class LevelManager : MonoBehaviour {
     
     // Use this for initialization
     void Awake() {
-        //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
-        //the script, which is assumedly attached to some GameObject. This in turn allows the instance
-        //to be assigned when a game object is given this script in the scene view.
-        //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
-        //another call to it, so that you don't need to worry if it exists or not.
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
     
     // Use this for initialization
     void Start() {
-        // TweenExecutor.TweenObjectColor(colorGUIScoreRating, Color.red, Color.green, 0, 10, UITweener.Method.Linear, null);
     }
     
     // Update is called once per frame
@@ -76,11 +72,12 @@ public class LevelManager : MonoBehaviour {
         UpdateScoreComponents();
     }
     
+    // TODO: Move to pause manager?
     public void TogglePause() {
         isPaused = !isPaused;
         
         if(isPaused) {
-            pausePanel.GetComponent<UIPanel>().alpha = 1;
+            pausePanelGameObject.GetComponent<UIPanel>().alpha = 1;
             
             ScoreManager.Instance.Pause();
             BroGenerator.Instance.Pause();
@@ -88,7 +85,7 @@ public class LevelManager : MonoBehaviour {
             SoundManager.Instance.TogglePause(true, AudioType.GreendogIntroAztecTemples);
         }
         else {
-            pausePanel.GetComponent<UIPanel>().alpha = 0;
+            pausePanelGameObject.GetComponent<UIPanel>().alpha = 0;
             
             ScoreManager.Instance.Unpause();
             BroGenerator.Instance.Unpause();
@@ -97,136 +94,105 @@ public class LevelManager : MonoBehaviour {
         }
     }
     
-    public LevelManager HideUI() {
-        TweenExecutor.Alpha
-        .Object(uiRootGameObject)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager HideUI(float duration = 1f) {
+        // TODO: What this do?!
         return this;
     }
-    public LevelManager ShowUI() {
-        TweenExecutor.Alpha
-        .Object(uiRootGameObject)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager ShowUI(float duration = 1f) {
+        // TODO: What this do?!
         return this;
     }
     
-    public LevelManager HidePauseButton() {
-        TweenExecutor.Alpha
-        .Object(pauseButton)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager HidePlayerButtons(float duration = 1f) {
+        HidePanel(playerButtonsPanelGameObject, duration);
         return this;
     }
-    public LevelManager ShowPauseButton() {
-        TweenExecutor.Alpha
-        .Object(pauseButton)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager ShowPlayerButtons(float duration = 1f) {
+        ShowPanel(playerButtonsPanelGameObject, duration);
         return this;
     }
     
-    public LevelManager HideJanitorButton() {
-        TweenExecutor.Alpha
-        .Object(janitorButton)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager HideRotationButtons(float duration = 1f) {
+        HidePanel(rotationButtonPanelGameObject, duration);
         return this;
     }
-    public LevelManager ShowJanitorButton() {
-        TweenExecutor.Alpha
-        .Object(janitorButton)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager ShowRotationButtons(float duration = 1f) {
+        ShowPanel(rotationButtonPanelGameObject, duration);
         return this;
     }
     
-    public LevelManager HideJanitorOverlay() {
-        TweenExecutor.Alpha
-        .Object(janitorOverlayGameObject)
-        .StartAlpha(1)
-        .EndAlpha(0)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager HideJanitorButton(float duration = 1f) {
+        // TODO: REMOVE THIS
         return this;
     }
-    public LevelManager ShowJanitorOverlay() {
-        TweenExecutor.Alpha
-        .Object(janitorOverlayGameObject)
-        .StartAlpha(0)
-        .EndAlpha(1)
-        .Delay(0)
-        .Duration(1)
-        .Method(UITweener.Method.Linear)
-        .OnFinish(null);
+    public LevelManager ShowJanitorButton(float duration = 1f) {
+        // TODO: REMOVE THIS
         return this;
     }
     
-    public LevelManager HideLevelCompletedPanel() {
+    public LevelManager HideJanitorOverlay(float duration = 1f) {
+        duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
         UIPanel panelToModify = levelCompletedPanel.GetComponent<UIPanel>();
         panelToModify.alpha = 1f;
         Go.to(panelToModify,
-              1f,
+              duration,
               new GoTweenConfig()
               .floatProp("alpha", 0f));
         return this;
     }
-    public LevelManager ShowLevelCompletedPanel() {
+    public LevelManager ShowJanitorOverlay(float duration = 1f) {
+        duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
         UIPanel panelToModify = levelCompletedPanel.GetComponent<UIPanel>();
         panelToModify.alpha = 0f;
         Go.to(panelToModify,
-              1f,
+              duration,
               new GoTweenConfig()
               .floatProp("alpha", 1f));
-              
         return this;
     }
     
-    public LevelManager HideLevelFailedPanel() {
-        UIPanel panelToModify = levelFailedPanel.GetComponent<UIPanel>();
+    public LevelManager HideLevelCompletedPanel(float duration = 1f) {
+        HidePanel(levelCompletedPanel, duration);
+        return this;
+    }
+    public LevelManager ShowLevelCompletedPanel(float duration = 1f) {
+        ShowPanel(levelCompletedPanel, duration);
+        return this;
+    }
+    
+    public LevelManager HideLevelFailedPanel(float duration = 1f) {
+        HidePanel(levelFailedPanel, duration);
+        return this;
+    }
+    public LevelManager ShowLevelFailedPanel(float duration = 1f) {
+        ShowPanel(levelFailedPanel, duration);
+        return this;
+    }
+    
+    public LevelManager ShowPanel(GameObject panelGameObject, float duration = 1f) {
+        duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
+        UIPanel panelToModify = panelGameObject.GetComponent<UIPanel>();
+        panelToModify.alpha = 0f;
+        Go.to(panelToModify,
+              duration,
+              new GoTweenConfig()
+              .floatProp("alpha", 1f));
+        return this;
+    }
+    
+    public LevelManager HidePanel(GameObject panelGameObject, float duration = 1f) {
+        duration = Mathf.Clamp(duration, float.Epsilon, float.MaxValue);
+        UIPanel panelToModify = panelGameObject.GetComponent<UIPanel>();
+        // TODO: Move to pause manager?
         panelToModify.alpha = 1f;
         Go.to(panelToModify,
-              1f,
+              duration,
               new GoTweenConfig()
               .floatProp("alpha", 0f));
         return this;
     }
-    public LevelManager ShowLevelFailedPanel() {
-        UIPanel panelToModify = levelFailedPanel.GetComponent<UIPanel>();
-        panelToModify.alpha = 0f;
-        Go.to(panelToModify,
-              1f,
-              new GoTweenConfig()
-              .floatProp("alpha", 1f));
-        return this;
-    }
+    
+    
     
     public void UpdateScoreComponents() {
         if(currentScoreLabel != null

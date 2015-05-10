@@ -49,11 +49,13 @@ public class Bro : MonoBehaviour {
     public Color selectionColor = Color.white;
     
     public virtual void Awake() {
-    
-        // base.Start();
         InitializeOccupationDuration();
         InitializeComponents();
-        
+    }
+    
+    // Use this for initialization
+    public virtual void Start() {
+        // base.Start();
         float newSelectionColor = Random.Range(0, 10000) + (0.618033988749895f * Random.Range(0f, 1f)) % 1;
         selectionColor = CustomColor.HSVToRGB(new Vector3(newSelectionColor, 0.75f, 0.95f));
         // Debug.Log("Color: " + selectionColor.ToString());
@@ -68,10 +70,8 @@ public class Bro : MonoBehaviour {
         if(selectableReference != null) {
             selectableReference.SetColor(selectionColor);
         }
-    }
-    
-    // Use this for initialization
-    public virtual void Start() {
+        
+        isometricDisplayReference.UpdateDisplayPosition();
     }
     
     // Update is called once per frame
@@ -100,7 +100,6 @@ public class Bro : MonoBehaviour {
         if(isometricDisplayReference == null) {
             Debug.LogError("There was an issue with '" + this.gameObject.name + "'. It is missing its 'isometricDisplayReference', it is NULL. Please fix this by assigned it before use.");
         }
-        isometricDisplayReference.UpdateDisplayPosition();
     }
     
     public virtual void InitializeOccupationDuration() {
