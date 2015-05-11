@@ -27,11 +27,6 @@ public class Factory {
     
     // Use this for initialization
     void Awake() {
-        //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
-        //the script, which is assumedly attached to some GameObject. This in turn allows the instance
-        //to be assigned when a game object is given this script in the scene view.
-        //This also allows the pre-configured lazy instantiation to occur when the script is referenced from
-        //another call to it, so that you don't need to worry if it exists or not.
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
@@ -120,6 +115,10 @@ public class Factory {
         newBro.name = newBro.name + " " + debugObjectInstanceNumber;
         debugObjectInstanceNumber++;
         return newBro;
+    }
+    
+    public GameObject GenerateFightingBroGameObject() {
+        return (GameObject)GameObject.Instantiate(Resources.Load(NPCPrefabs.GetPath("FightingBros"))) as GameObject;
     }
     
     public GameObject GenerateBathroomTileBlockerObject(BathroomTileBlockerType typeOfBathroomTileBlockerObjectToGenerate) {

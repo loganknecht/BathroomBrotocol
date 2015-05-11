@@ -152,13 +152,18 @@ public class BathroomObject : MonoBehaviour {
     public void TriggerOutOfOrderState() {
     }
     
+    /// <summary>
+    /// This is an interesting method as it iterates over the list of objects
+    /// and creates fighting bros as it iterates. Once iterated, over it removes
+    /// occupants and sends any odd numbered amount of bros to the bathroom exit
+    /// </summary>
     public void PerformMoreThanTwoOccupantsCheck() {
         if(objectsOccupyingBathroomObject.Count >= 2
             && destroyObjectIfMoreThanTwoOccupants
             && type != BathroomObjectType.Exit) {
             GameObject firstBroFound = null;
             GameObject secondBroFound = null;
-            List<GameObject> objectOccupyingBathroomObjectToRemove = new List<GameObject>();
+            // List<GameObject> objectOccupyingBathroomObjectToRemove = new List<GameObject>();
             for(int i = 0; i < objectsOccupyingBathroomObject.Count; i++) {
                 GameObject gameObj = objectsOccupyingBathroomObject[i];
                 
@@ -170,6 +175,7 @@ public class BathroomObject : MonoBehaviour {
                         secondBroFound = gameObj;
                     }
                 }
+                // if you're at the end of the list and no alt bro exists
                 // TODO!! - Change this logic to send him to the exit.
                 if(i == objectsOccupyingBathroomObject.Count - 1) {
                     if(firstBroFound == null
@@ -178,6 +184,7 @@ public class BathroomObject : MonoBehaviour {
                         broRef.state = BroState.Roaming;
                         broRef.selectableReference.ResetHighlightObjectAndSelectedState();
                         broRef.SetRandomOpenBathroomObjectTarget(BathroomObjectType.Exit);
+                        // objectOccupyingBathroomObjectToRemove.add(gameObj);
                     }
                 }
                 if(firstBroFound != null
@@ -198,7 +205,8 @@ public class BathroomObject : MonoBehaviour {
                     secondBroFoundReference.state = BroState.Fighting;
                     secondBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
                     
-                    GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
+                    // GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
+                    GameObject newFightingBros = Factory.Instance.GenerateFightingBroGameObject();
                     newFightingBros.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newFightingBros.transform.position.z);
                     newFightingBros.GetComponent<FightingBros>().brosFighting.Add(firstBroFound);
                     newFightingBros.GetComponent<FightingBros>().brosFighting.Add(secondBroFound);
@@ -210,8 +218,8 @@ public class BathroomObject : MonoBehaviour {
                                                                                                                                             AStarManager.Instance. GetListCopyOfAllClosedNodes(),
                                                                                                                                             startTile,
                                                                                                                                             targetTile));
-                    objectOccupyingBathroomObjectToRemove.Add(firstBroFound);
-                    objectOccupyingBathroomObjectToRemove.Add(secondBroFound);
+                    // objectOccupyingBathroomObjectToRemove.Add(firstBroFound);
+                    // objectOccupyingBathroomObjectToRemove.Add(secondBroFound);
                     
                     firstBroFound = null;
                     secondBroFound = null;
@@ -221,6 +229,7 @@ public class BathroomObject : MonoBehaviour {
                     ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(secondBroFoundReference.type);
                 }
             }
+            objectsOccupyingBathroomObject.Clear();
         }
     }
 }
