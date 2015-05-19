@@ -1,11 +1,11 @@
-﻿// using FullInspector;
+﻿using FullInspector;
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// public class DebugBroGenerator : BaseBehavior {
-public class DebugBroGenerator : MonoBehaviour {
+public class DebugBroGenerator : BaseBehavior {
+    // public class DebugBroGenerator : MonoBehaviour {
     public int debugEntranceQueue = 0;
     
     public Vector2 debugXMoveSpeed;
@@ -39,8 +39,9 @@ public class DebugBroGenerator : MonoBehaviour {
     public Vector2 debugFartMaxDuration;
     
     // Use this for initialization
-    public void Awake() {
-        // base.Awake();
+    protected override void Awake() {
+        base.Awake();
+        InitializeBathroomObjectDurationDefaults();
     }
     //END OF SINGLETON CODE CONFIGURATION
     
@@ -51,6 +52,37 @@ public class DebugBroGenerator : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         PerformDebugButtonPressLogic();
+    }
+    
+    public void InitializeBathroomObjectDurationDefaults() {
+        BathroomObjectType[] bathroomObjectTypes = (BathroomObjectType[])BathroomObjectType.GetValues(typeof(BathroomObjectType));
+        foreach(BathroomObjectType bathroomObjectType in bathroomObjectTypes) {
+            float minDuration = 2f;
+            float maxDuration = 2f;
+            switch(bathroomObjectType) {
+            case(BathroomObjectType.Exit):
+                minDuration = 0f;
+                maxDuration = 0f;
+                break;
+            case(BathroomObjectType.HandDryer):
+                // Do nothing
+                break;
+            case(BathroomObjectType.Sink):
+                // Do nothing
+                break;
+            case(BathroomObjectType.Stall):
+                // Do nothing
+                break;
+            case(BathroomObjectType.Urinal):
+                // Do nothing
+                break;
+            default:
+                break;
+            }
+            if(bathroomObjectType != BathroomObjectType.None) {
+                debugOccupationDuration[bathroomObjectType] = Random.Range(minDuration, maxDuration);
+            }
+        }
     }
     
     public void PerformDebugButtonPressLogic() {
@@ -98,22 +130,22 @@ public class DebugBroGenerator : MonoBehaviour {
             .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, debugStartRoamingOnArrivalAtBathroomObjectInUse)
             .SetChooseObjectOnRelief(BroDistribution.AllBros, debugChooseObjectOnRelief);
             // Fart Generator if the bro has it (TileBlocker Properties)
-            debugWave.fartGeneratorConfigurer.SetProbability(BroDistribution.AllBros, debugFartGeneratorProbability.x, debugFartGeneratorProbability.y)
-            .SetGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorGenerationFrequency.x, debugFartGeneratorGenerationFrequency.y)
-            .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, debugFartGeneratorGenerationFrequencyIsStochastic)
-            .SetMinGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMinGenerationFrequency.x, debugFartGeneratorMinGenerationFrequency.y)
-            .SetMaxGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMaxGenerationFrequency.x, debugFartGeneratorMaxGenerationFrequency.y);
+            // debugWave.fartGeneratorConfigurer.SetProbability(BroDistribution.AllBros, debugFartGeneratorProbability.x, debugFartGeneratorProbability.y)
+            // .SetGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorGenerationFrequency.x, debugFartGeneratorGenerationFrequency.y)
+            // .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, debugFartGeneratorGenerationFrequencyIsStochastic)
+            // .SetMinGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMinGenerationFrequency.x, debugFartGeneratorMinGenerationFrequency.y)
+            // .SetMaxGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMaxGenerationFrequency.x, debugFartGeneratorMaxGenerationFrequency.y);
             // Fart Properties
-            debugWave.fartGeneratorConfigurer.SetDuration(BroDistribution.AllBros, debugFartDuration.x, debugFartDuration.y)
-            .SetDurationIsStochastic(BroDistribution.AllBros, debugFartDurationIsStochastic)
-            .SetMinDuration(BroDistribution.AllBros, debugFartMinDuration.x, debugFartMinDuration.y)
-            .SetMaxDuration(BroDistribution.AllBros, debugFartMaxDuration.x, debugFartMaxDuration.y);
+            // debugWave.fartGeneratorConfigurer.SetDuration(BroDistribution.AllBros, debugFartDuration.x, debugFartDuration.y)
+            // .SetDurationIsStochastic(BroDistribution.AllBros, debugFartDurationIsStochastic)
+            // .SetMinDuration(BroDistribution.AllBros, debugFartMinDuration.x, debugFartMinDuration.y)
+            // .SetMaxDuration(BroDistribution.AllBros, debugFartMaxDuration.x, debugFartMaxDuration.y);
             // Vomit Generator if the bro has it (TileBlocker Properties)
-            debugWave.vomitGeneratorConfigurer.SetProbability(BroDistribution.AllBros, 1, 1)
-            .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
-            .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
-            .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
-            .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
+            // debugWave.vomitGeneratorConfigurer.SetProbability(BroDistribution.AllBros, 1, 1)
+            // .SetGenerationFrequency(BroDistribution.AllBros, 2, 2)
+            // .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, false)
+            // .SetMinGenerationFrequency(BroDistribution.AllBros, 2, 2)
+            // .SetMaxGenerationFrequency(BroDistribution.AllBros, 2, 2);
             
             BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                 debugWave,

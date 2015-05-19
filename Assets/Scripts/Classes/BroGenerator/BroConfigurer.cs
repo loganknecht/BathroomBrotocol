@@ -2,47 +2,49 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// TODO: Jesus christ this is way too big, convert each property to be some object
+//       that is managed and then modify those instead
 public class BroConfigurer {
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionXMoveSpeed = BroDistribution.AllBros;
+    public BroDistribution xMoveSpeed = BroDistribution.AllBros;
     public float defaultXMoveSpeed = float.PositiveInfinity;
     public float defaultMinXMoveSpeed = 2.5f;
     public float defaultMaxXMoveSpeed = 2.5f;
     
-    public BroDistribution broDistributionYMoveSpeed = BroDistribution.AllBros;
+    public BroDistribution yMoveSpeed = BroDistribution.AllBros;
     public float defaultYMoveSpeed = float.PositiveInfinity;
     public float defaultMinYMoveSpeed = 2.5f;
     public float defaultMaxYMoveSpeed = 2.5f;
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionReliefType = BroDistribution.RandomBros;
+    public BroDistribution reliefType = BroDistribution.RandomBros;
     public ReliefRequired defaultReliefRequired = ReliefRequired.None;
     public ReliefRequired[] defaultReliefRequiredToChooseFrom = new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop };
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionFightProbability = BroDistribution.AllBros;
+    public BroDistribution fightProbability = BroDistribution.AllBros;
     public float defaultBroFightProbability = float.PositiveInfinity;
     public float defaultMinBroFightProbability = 1;
     public float defaultMaxBroFightProbability = 1;
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionModifyBroFightProbabilityUsingScoreRatio = BroDistribution.AllBros;
+    public BroDistribution modifyBroFightProbabilityUsingScoreRatio = BroDistribution.AllBros;
     public bool defaultModifyBroFightProbablityUsingScoreRatio = false;
     //-------------------------------------------------------------------------
-    public Dictionary<BathroomObjectType, BroDistribution> broDistributionBathroomObjectOccupationDuration = null;
+    public Dictionary<BathroomObjectType, BroDistribution> bathroomObjectOccupationDuration = null;
     public Dictionary<BathroomObjectType, float> defaultBathroomObjectOccupationDuration = null;
     public Dictionary<BathroomObjectType, float> defaultMinBathroomObjectOccupationDuration = null;
     public Dictionary<BathroomObjectType, float> defaultMaxBathroomObjectOccupationDuration = null;
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionLineQueueSkipType = BroDistribution.AllBros;
+    public BroDistribution lineQueueSkipType = BroDistribution.AllBros;
     public bool defaultLineQueueSkip = true;
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionChooseObjectOnLineSkip = BroDistribution.AllBros;
+    public BroDistribution chooseObjectOnLineSkip = BroDistribution.AllBros;
     public bool defaultChooseObjectOnLineSkip = true;
     public BathroomObjectType defaultLineSkipBathroomObject = BathroomObjectType.None;
     public BathroomObjectType[] defaultBathroomObjectsToChooseFromOnLineQueueSkip = new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal };
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionStartRoamingOnArrivalAtBathroomObjectInUse = BroDistribution.AllBros;
+    public BroDistribution startRoamingOnArrivalAtBathroomObjectInUse = BroDistribution.AllBros;
     public bool defaultStartRoamingOnArrivalAtBathroomObjectInUse = true;
     //-------------------------------------------------------------------------
-    public BroDistribution broDistributionChooseObjectOnRelief = BroDistribution.AllBros;
+    public BroDistribution chooseObjectOnRelief = BroDistribution.AllBros;
     public bool defaultChooseObjectOnRelief = true;
     public BathroomObjectType defaultOnReliefBathroomObject = BathroomObjectType.None;
     public BathroomObjectType[] defaultBathroomObjectsToChooseFromOnRelief = new BathroomObjectType[] { BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal };
@@ -58,20 +60,40 @@ public class BroConfigurer {
     
     // all occupation duration defaults to 2 seconds, except exits
     public void InitializeOccupationDuration() {
-        broDistributionBathroomObjectOccupationDuration = new Dictionary<BathroomObjectType, BroDistribution>();
+        bathroomObjectOccupationDuration = new Dictionary<BathroomObjectType, BroDistribution>();
         defaultBathroomObjectOccupationDuration = new Dictionary<BathroomObjectType, float>();
         defaultMinBathroomObjectOccupationDuration = new Dictionary<BathroomObjectType, float>();
         defaultMaxBathroomObjectOccupationDuration = new Dictionary<BathroomObjectType, float>();
         
-        InitializeBathroomObjectTypeOccupationDuration(BroDistribution.AllBros, BathroomObjectType.HandDryer, 2, 2);
-        InitializeBathroomObjectTypeOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Exit, 0, 0);
-        InitializeBathroomObjectTypeOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Sink, 2, 2);
-        InitializeBathroomObjectTypeOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Stall, 2, 2);
-        InitializeBathroomObjectTypeOccupationDuration(BroDistribution.AllBros, BathroomObjectType.Urinal, 2, 2);
+        
+        BathroomObjectType[] bathroomObjectTypes = (BathroomObjectType[])BathroomObjectType.GetValues(typeof(BathroomObjectType));
+        foreach(BathroomObjectType bathroomObjectType in bathroomObjectTypes) {
+            float minDuration = 2f;
+            float maxDuration = 2f;
+            switch(bathroomObjectType) {
+            case(BathroomObjectType.Exit):
+                minDuration = 0f;
+                maxDuration = 0f;
+                break;
+            case(BathroomObjectType.HandDryer):
+                break;
+            case(BathroomObjectType.Sink):
+                break;
+            case(BathroomObjectType.Stall):
+                break;
+            case(BathroomObjectType.Urinal):
+                break;
+            default:
+                break;
+            }
+            if(bathroomObjectType != BathroomObjectType.None) {
+                InitializeBathroomObjectTypeOccupationDuration(BroDistribution.AllBros, bathroomObjectType, minDuration, maxDuration);
+            }
+        }
     }
     
-    public void InitializeBathroomObjectTypeOccupationDuration(BroDistribution newBroDistributBathroomObjectionOccupationDuration, BathroomObjectType bathroomObjectType, float newDefaultBathroomObjectTypeMinOccupationDuration, float newDefaultBathroomObjectTypeMaxOccupationDuration) {
-        broDistributionBathroomObjectOccupationDuration[bathroomObjectType] = newBroDistributBathroomObjectionOccupationDuration;
+    public void InitializeBathroomObjectTypeOccupationDuration(BroDistribution newBathroomObjectionOccupationDuration, BathroomObjectType bathroomObjectType, float newDefaultBathroomObjectTypeMinOccupationDuration, float newDefaultBathroomObjectTypeMaxOccupationDuration) {
+        bathroomObjectOccupationDuration[bathroomObjectType] = newBathroomObjectionOccupationDuration;
         defaultBathroomObjectOccupationDuration[bathroomObjectType]  = float.PositiveInfinity;
         defaultMinBathroomObjectOccupationDuration[bathroomObjectType] = newDefaultBathroomObjectTypeMinOccupationDuration;
         defaultMaxBathroomObjectOccupationDuration[bathroomObjectType] = newDefaultBathroomObjectTypeMaxOccupationDuration;
@@ -84,13 +106,13 @@ public class BroConfigurer {
     }
     
     public BroConfigurer SetReliefType(BroDistribution typeOfBroDistribution, params ReliefRequired[] newReliefRequiredToChooseFrom) {
-        broDistributionReliefType = typeOfBroDistribution;
+        reliefType = typeOfBroDistribution;
         defaultReliefRequiredToChooseFrom = newReliefRequiredToChooseFrom;
         return this;
     }
     public BroConfigurer ConfigureReliefType(Bro broRef) {
         // Factory.Instance.SelectRandomReliefType(ReliefRequired.Pee, ReliefRequired.Poop)
-        switch(broDistributionReliefType) {
+        switch(reliefType) {
         case(BroDistribution.NoBros):
             break;
         case(BroDistribution.AllBros):
@@ -116,13 +138,13 @@ public class BroConfigurer {
     }
     
     public BroConfigurer SetXMoveSpeed(BroDistribution typeOfBroDistribution, float newDefaultMinXMoveSpeed, float newDefaultMaxXMoveSpeed) {
-        broDistributionXMoveSpeed = typeOfBroDistribution;
+        xMoveSpeed = typeOfBroDistribution;
         defaultMinXMoveSpeed = newDefaultMinXMoveSpeed;
         defaultMaxXMoveSpeed = newDefaultMaxXMoveSpeed;
         return this;
     }
     public BroConfigurer ConfigureXMoveSpeed(Bro broRef) {
-        switch(broDistributionReliefType) {
+        switch(reliefType) {
         case(BroDistribution.NoBros):
             if(defaultXMoveSpeed == float.PositiveInfinity) {
                 defaultXMoveSpeed = UnityEngine.Random.Range(defaultMinXMoveSpeed, defaultMaxXMoveSpeed);
@@ -148,13 +170,13 @@ public class BroConfigurer {
     }
     
     public BroConfigurer SetYMoveSpeed(BroDistribution typeOfBroDistribution, float newDefaultMinYMoveSpeed, float newDefaultMaxYMoveSpeed) {
-        broDistributionYMoveSpeed = typeOfBroDistribution;
+        yMoveSpeed = typeOfBroDistribution;
         defaultMinYMoveSpeed = newDefaultMinYMoveSpeed;
         defaultMaxYMoveSpeed = newDefaultMaxYMoveSpeed;
         return this;
     }
     public BroConfigurer ConfigureYMoveSpeed(Bro broRef) {
-        switch(broDistributionReliefType) {
+        switch(reliefType) {
         case(BroDistribution.NoBros):
             if(defaultYMoveSpeed == float.PositiveInfinity) {
                 defaultYMoveSpeed = UnityEngine.Random.Range(defaultMinYMoveSpeed, defaultMaxYMoveSpeed);
@@ -178,15 +200,15 @@ public class BroConfigurer {
         
         return this;
     }
-    //---------------------
+//---------------------
     public BroConfigurer SetFightProbability(BroDistribution newBroDistributionFightCheckType, float newDefaultMinBroFightProbability, float newDefaultMaxBroFightProbability) {
-        broDistributionFightProbability = newBroDistributionFightCheckType;
+        fightProbability = newBroDistributionFightCheckType;
         defaultMinBroFightProbability = newDefaultMinBroFightProbability;
         defaultMaxBroFightProbability = newDefaultMaxBroFightProbability;
         return this;
     }
     public BroConfigurer ConfigureFightCheckType(Bro broRef) {
-        switch(broDistributionFightProbability) {
+        switch(fightProbability) {
         case(BroDistribution.NoBros):
             broRef.baseProbabilityOfFightOnCollisionWithBro = 0f;
             break;
@@ -209,12 +231,12 @@ public class BroConfigurer {
     }
     //---------------------
     public BroConfigurer SetModifyFightProbabilityUsingScoreRatio(BroDistribution newBroDistributionModifyBroFightProbabilityUsingScoreRatio, bool newDefaultModifyBroFightProbablityUsingScoreRatio) {
-        broDistributionModifyBroFightProbabilityUsingScoreRatio = newBroDistributionModifyBroFightProbabilityUsingScoreRatio;
+        modifyBroFightProbabilityUsingScoreRatio = newBroDistributionModifyBroFightProbabilityUsingScoreRatio;
         defaultModifyBroFightProbablityUsingScoreRatio = newDefaultModifyBroFightProbablityUsingScoreRatio;
         return this;
     }
     public BroConfigurer ConfigureModifyFightProbabilityUsingScoreRatio(Bro broRef) {
-        switch(broDistributionModifyBroFightProbabilityUsingScoreRatio) {
+        switch(modifyBroFightProbabilityUsingScoreRatio) {
         case(BroDistribution.NoBros):
             broRef.modifyBroFightProbablityUsingScoreRatio = false;
             break;
@@ -240,20 +262,20 @@ public class BroConfigurer {
         return this;
     }
     //---------------------
-    public BroConfigurer SetBathroomObjectOccupationDuration(BroDistribution newBroDistributBathroomObjectionOccupationDuration, BathroomObjectType bathroomObjectType, float newDefaultMinBathroomObjectTypeOccupationDuration, float newMaxDefaultBathroomObjectTypeOccupationDuration) {
-        broDistributionBathroomObjectOccupationDuration[bathroomObjectType] = newBroDistributBathroomObjectionOccupationDuration;
+    public BroConfigurer SetBathroomObjectOccupationDuration(BroDistribution newBathroomObjectionOccupationDuration, BathroomObjectType bathroomObjectType, float newDefaultMinBathroomObjectTypeOccupationDuration, float newMaxDefaultBathroomObjectTypeOccupationDuration) {
+        bathroomObjectOccupationDuration[bathroomObjectType] = newBathroomObjectionOccupationDuration;
         defaultMinBathroomObjectOccupationDuration[bathroomObjectType] = newDefaultMinBathroomObjectTypeOccupationDuration;
         defaultMaxBathroomObjectOccupationDuration[bathroomObjectType] = newMaxDefaultBathroomObjectTypeOccupationDuration;
         return this;
     }
     public BroConfigurer ConfigureBathroomObjectOccupationDuration(Bro broRef, BathroomObjectType bathroomObjectType) {
         // Debug.Log("-----------------------");
-        // Debug.Log(broDistributionBathroomObjectOccupationDuration[bathroomObjectType].ToString());
+        // Debug.Log(bathroomObjectOccupationDuration[bathroomObjectType].ToString());
         // Debug.Log(bathroomObjectType.ToString());
         // Debug.Log(broRef.occupationDuration);
         // Debug.Log(broRef.occupationDuration.ContainsKey(bathroomObjectType));
         
-        switch(broDistributionBathroomObjectOccupationDuration[bathroomObjectType]) {
+        switch(bathroomObjectOccupationDuration[bathroomObjectType]) {
         case(BroDistribution.NoBros):
             broRef.occupationDuration[bathroomObjectType] = 2;
             break;
@@ -277,12 +299,12 @@ public class BroConfigurer {
     }
     //---------------------
     public BroConfigurer SetLineQueueSkipType(BroDistribution newBroDistributionLineQueueSkipType, bool newBroLineQueueSkip) {
-        broDistributionLineQueueSkipType = newBroDistributionLineQueueSkipType;
+        lineQueueSkipType = newBroDistributionLineQueueSkipType;
         defaultLineQueueSkip = newBroLineQueueSkip;
         return this;
     }
     public BroConfigurer ConfigureLineQueueSkipType(Bro broRef) {
-        switch(broDistributionLineQueueSkipType) {
+        switch(lineQueueSkipType) {
         case(BroDistribution.NoBros):
             broRef.skipLineQueue = defaultLineQueueSkip;
             break;
@@ -302,13 +324,13 @@ public class BroConfigurer {
     }
     //---------------------
     public BroConfigurer SetChooseObjectOnLineSkip(BroDistribution newBroDistributionChooseObjectOnLineSkip, bool newBroChooseObjectOnLineSkip) {
-        broDistributionChooseObjectOnLineSkip = newBroDistributionChooseObjectOnLineSkip;
+        chooseObjectOnLineSkip = newBroDistributionChooseObjectOnLineSkip;
         defaultChooseObjectOnLineSkip = newBroChooseObjectOnLineSkip;
         //TO DO SET TYPES OF OBJECTS THAT CAN BE CHOSEN FROM
         return this;
     }
     public BroConfigurer ConfigureChooseObjectOnLineSkip(Bro broRef) {
-        switch(broDistributionChooseObjectOnLineSkip) {
+        switch(chooseObjectOnLineSkip) {
         case(BroDistribution.NoBros):
             // do nothing
             break;
@@ -328,12 +350,12 @@ public class BroConfigurer {
     }
     //---------------------
     public BroConfigurer SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse, bool newBroStartRoamingOnArrivalAtBathroomObjectInUse) {
-        broDistributionStartRoamingOnArrivalAtBathroomObjectInUse = newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse;
+        startRoamingOnArrivalAtBathroomObjectInUse = newBroDistributionStartRoamingOnArrivalAtBathroomObjectInUse;
         defaultStartRoamingOnArrivalAtBathroomObjectInUse = newBroStartRoamingOnArrivalAtBathroomObjectInUse;
         return this;
     }
     public BroConfigurer ConfigureStartRoamingOnArrivalAtBathroomObjectInUse(Bro broRef) {
-        switch(broDistributionStartRoamingOnArrivalAtBathroomObjectInUse) {
+        switch(startRoamingOnArrivalAtBathroomObjectInUse) {
         case(BroDistribution.NoBros):
             // do nothing
             break;
@@ -351,15 +373,15 @@ public class BroConfigurer {
         
         return this;
     }
-    //---------------------
+//---------------------
     public BroConfigurer SetChooseObjectOnRelief(BroDistribution newBroDistributionChooseObjectOnRelief, bool newBroChooseObjectOnRelief) {
-        broDistributionChooseObjectOnRelief = newBroDistributionChooseObjectOnRelief;
+        chooseObjectOnRelief = newBroDistributionChooseObjectOnRelief;
         defaultChooseObjectOnRelief = newBroChooseObjectOnRelief;
         //TO DO SET TYPES OF OBJECTS THAT CAN BE CHOSEN FROM
         return this;
     }
     public BroConfigurer ConfigureChooseObjectOnRelief(Bro broRef) {
-        switch(broDistributionChooseObjectOnRelief) {
+        switch(chooseObjectOnRelief) {
         case(BroDistribution.NoBros):
             // do nothing
             break;

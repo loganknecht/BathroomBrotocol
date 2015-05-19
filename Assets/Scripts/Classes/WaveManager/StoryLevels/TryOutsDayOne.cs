@@ -10,8 +10,6 @@ using System.Collections.Generic;
 // }
 public class TryOutsDayOne : WaveLogic, WaveLogicContract {
 
-    public Bro broCzarReference = null;
-    
     public override void Awake()
     {   base.Awake(); }
     
@@ -22,6 +20,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     }
     
     public override void Initialize() {
+        Bro broCzarReference = null;
         // Debug.Log("initialization");
         SoundManager.Instance.PlayMusic(AudioType.CosmicSpaceHeadSurfing);
         
@@ -215,94 +214,88 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Completed();
         }));
         //----------------------------------------------------------------------
-        PerformWaveStates(CreateWaveState("OBBC Jump Up End", () => {
+        PerformWaveStatesAndWait(CreateWaveState("OBBC Jump Up End", () => {
             TextboxManager.Instance.SetText("Ah, there's your stupid face.",
-                                            " Wait... is this the kind of slob they're trying to pass to me as successor material?");
+                                            "Wait... is this the kind of slob they're trying to pass to me as successor material?",
+                                            "I can't believe this, you're so close to the bottom of the barrel that I can smell wood.")
+            .OnFinish(() => {
+                Completed();
+            });
             Completed();
         }));
+        // //----------------------------------------------------------------------
+        // PerformWaveStates(CreateWaveState("OBBC Confirmation", () => {
+        //     ConfirmationBoxManager.Instance
+        //     .Show()
+        //     .BodyText("Do you really think you've got what it takes to be the Bathroom Bro Czar?")
+        //     .YesButtonText("Pipe down old man, I'm here for your job.")
+        //     .NoButtonText("I can't go home.. Not after what happened...");
+        //     Completed();
+        // }));
+        // //----------------------------------------------------------------------
+        // PerformWaveStates(CreateWaveState("OBBC Confirmation Response", () => {
+        //     if(ConfirmationBoxManager.Instance.WasYesSelected()) {
+        //         GameObject objectToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
+        //         PerformWaveStatesThenReturn(CreateWaveState("OBBC Confirmation Yes", () => {
+        //             // Debug.Log("yes");
+        //             ConfirmationBoxManager.Instance.Hide();
+        //             TextboxManager.Instance.SetText("Oh, yeah bro?");
+        //             Completed();
+        //         }),
+        //         CreateWaveState("End OBBC Yes Response", () => {
+        //             if(TextboxManager.Instance.HasFinished()) {
+        //                 float scaleDuration = 1f;
+        //                 // Vector3 scaleAmount = new Vector3(2f, 2f, 0);
+        //                 Go.to(objectToTween.transform,
+        //                       scaleDuration,
+        //                       new GoTweenConfig()
+        //                       .scale(3)
+        //                 .onComplete(scaleUpComplete => {
+        //                     TextboxManager.Instance
+        //                     .SetText("PROVE IT!")
+        //                     .OnFinish(() => {
+        //                         Go.to(objectToTween.transform,
+        //                               scaleDuration,
+        //                               new GoTweenConfig()
+        //                               .scale(1)
+        //                         .onComplete(scaleDownComplete => {
+        //                             Completed();
+        //                         }));
+        //                     });
+        //                 }));
+        //                 Completed();
+        //             }
+        //         }),
+        //         CreateWaveState("OBBC Scale Up Finish", () => {
+        //             // Waits for the scale up and down to finish
+        //         }));
+        //         Completed();
+        //     }
+        //     else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
+        //         PerformWaveStatesThenReturn(CreateWaveState("OBBC Confirmation No", () => {
+        //             // Debug.Log("yes");
+        //             ConfirmationBoxManager.Instance.Hide();
+        //             TextboxManager.Instance.SetText("Oh. Oh. Hold Sec.",
+        //                                             "Here's a coupon for the I don't care depot.",
+        //                                             "They have some snivelers on sale, they might match you!");
+        //             Completed();
+        //         }),
+        //         CreateWaveState("End OBBC No Response", () => {
+        //             if(TextboxManager.Instance.HasFinished()) {
+        //                 Completed();
+        //             }
+        //         }));
+        //         Completed();
+        //     }
+        // }));
         //----------------------------------------------------------------------
-        PerformWaveStates(CreateWaveState("OBBC Confirmation", () => {
-            if(TextboxManager.Instance.HasFinished()) {
-                ConfirmationBoxManager.Instance
-                .Show()
-                .BodyText("Do you really think you've got what it takes to be the Bathroom Bro Czar?")
-                .YesButtonText("Pipe down old man, I'm here for your job.")
-                .NoButtonText("I can't go home.. Not after what happened...");
-                Completed();
-            }
-        }));
-        //----------------------------------------------------------------------
-        PerformWaveStates(CreateWaveState("OBBC Confirmation Response", () => {
-            if(ConfirmationBoxManager.Instance.WasYesSelected()) {
-                GameObject objectToTween = CinematicHelper.Instance.GetChildGameObject(oldBathroomBroCzar, "Sprites");
-                PerformWaveStatesThenReturn(CreateWaveState("OBBC Confirmation Yes", () => {
-                    // Debug.Log("yes");
-                    ConfirmationBoxManager.Instance.Hide();
-                    TextboxManager.Instance.SetText("Oh, yeah bro?");
-                    Completed();
-                }),
-                CreateWaveState("End OBBC Yes Response", () => {
-                    if(TextboxManager.Instance.HasFinished()) {
-                        float scaleDuration = 1f;
-                        // Vector3 scaleAmount = new Vector3(2f, 2f, 0);
-                        
-                        Go.to(objectToTween.transform,
-                              scaleDuration,
-                              new GoTweenConfig()
-                              .scale(3)
-                        .onComplete(scaleUpComplete => {
-                            TextboxManager.Instance
-                            .SetText("PROVE IT!")
-                            .OnFinish(() => {
-                                Go.to(objectToTween.transform,
-                                      scaleDuration,
-                                      new GoTweenConfig()
-                                      .scale(1)
-                                .onComplete(scaleDownComplete => {
-                                    Completed();
-                                }));
-                            });
-                        }));
-                        Completed();
-                    }
-                }),
-                CreateWaveState("OBBC Scale Up Finish", () => {
-                    // Waits for the scale up and down to finish
-                }));
-                
-                Completed();
-            }
-            else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
-                PerformWaveStatesThenReturn(CreateWaveState("OBBC Confirmation No", () => {
-                    // Debug.Log("yes");
-                    ConfirmationBoxManager.Instance.Hide();
-                    TextboxManager.Instance.SetText("Oh. Oh. Hold Sec.",
-                                                    "Here's a coupon for the I don't care depot.",
-                                                    "They have some snivelers on sale, they might match you!");
-                    Completed();
-                    
-                }),
-                CreateWaveState("End OBBC No Response", () => {
-                    if(TextboxManager.Instance.HasFinished()) {
-                        Completed();
-                    }
-                }));
-                
-                Completed();
-            }
-        }));
-        //----------------------------------------------------------------------
-        PerformWaveStates(CreateWaveState("OBBC Call Bros In", () => {
+        PerformWaveStatesAndWait(CreateWaveState("OBBC Call Bros In", () => {
             TextboxManager.Instance.SetText("Besides, it's not just you I'm picking from. We gotta get your competition in here.",
                                             "THE REST OF YOU BRO-MAGNONS WAITING TO TRY OUT THIS ROUND GET IN HERE!")
             .OnFinish(() => {
                 Completed();
             });
             Completed();
-        }));
-        //----------------------------------------------------------------------
-        PerformWaveStates(CreateWaveState("Wait For Call Bros In", () => {
-            // wait for the player to finish the text
         }));
         //----------------------------------------------------------------------
         PerformWaveStates(CreateWaveState("Bros entering", () => {
@@ -677,37 +670,37 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Completed();
         }));
         //----------------------------------------------------------------------
-        WaveState.WaveStateLogic playerConfirmTheyUnderstand = null;
-        playerConfirmTheyUnderstand = delegate() {
-            TextboxManager.Instance
-            .SetText("By all that is broly, I can't believe you're really the best we've got this round...",
-                     "...",
-                     "This is just the preliminary round. Meaning, don't get too excited ya schlub.")
-            .OnFinish(() => {
-                ConfirmationBoxManager.Instance.Show()
-                .BodyText("So, all you have to prove to me this round is just that you can handle some simple bros.\nYou dig?")
-                .YesButtonText("Yeah, yeah, I got this.")
-                .NoButtonText("Wait what?")
-                .OnSelection(() => {
-                    if(ConfirmationBoxManager.Instance.WasYesSelected()) {
-                        Completed();
-                    }
-                    else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
-                        PerformWaveStatesThenReturn(CreateWaveState("Redo Confirmation.", playerConfirmTheyUnderstand),
-                        CreateWaveState("Redo Confirmation Wait", () => { /* wait */ }));
-                        Completed();
-                    }
-                    ConfirmationBoxManager.Instance
-                    .Reset()
-                    .Hide();
-                });
-            });
-            Completed();
-        };
+        // WaveState.WaveStateLogic playerConfirmTheyUnderstand = null;
+        // playerConfirmTheyUnderstand = delegate() {
+        //     TextboxManager.Instance
+        //     .SetText("By all that is broly, I can't believe you're really the best we've got this round...",
+        //              "...",
+        //              "This is just the preliminary round. Meaning, don't get too excited ya schlub.")
+        //     .OnFinish(() => {
+        //         ConfirmationBoxManager.Instance.Show()
+        //         .BodyText("So, all you have to prove to me this round is just that you can handle some simple bros.\nYou dig?")
+        //         .YesButtonText("Yeah, yeah, I got this.")
+        //         .NoButtonText("Wait what?")
+        //         .OnSelection(() => {
+        //             if(ConfirmationBoxManager.Instance.WasYesSelected()) {
+        //                 Completed();
+        //             }
+        //             else if(ConfirmationBoxManager.Instance.WasNoSelected()) {
+        //                 PerformWaveStatesThenReturn(CreateWaveState("Redo Confirmation.", playerConfirmTheyUnderstand),
+        //                 CreateWaveState("Redo Confirmation Wait", () => { /* wait */ }));
+        //                 Completed();
+        //             }
+        //             ConfirmationBoxManager.Instance
+        //             .Reset()
+        //             .Hide();
+        //         });
+        //     });
+        //     Completed();
+        // };
         
-        PerformWaveStatesAndWait(CreateWaveState("OBBC Response Acknowledgement", playerConfirmTheyUnderstand));
+        // PerformWaveStatesAndWait(CreateWaveState("OBBC Response Acknowledgement", playerConfirmTheyUnderstand));
         // ----------------------------------------------------------------------
-        PerformWaveStatesAndWait(CreateWaveState("Player Confirms They Understand", () => {
+        PerformWaveStatesAndWait(CreateWaveState("Player Confirmed They Understand", () => {
             TextboxManager.Instance
             .SetText("Alright... Alright. Alright!",
                      "Show me what you've got...",
@@ -730,12 +723,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             Completed();
         }));
         //----------------------------------------------------------------------
-        // PerformWaveStates(CreateWaveState("Placeholder", () => {
-        //     Debug.Log("Performing Ready Set Bro!");
-        //     if(Input.GetKeyDown(KeyCode.S)) {
-        //         Completed();
-        //     }
-        // }));
         PerformWaveStatesAndWait(CreateWaveState("Ready Set Bro!", () => {
             LevelManager.Instance.HideJanitorOverlay();
             ReadySetBro.Instance.StartAnimation().OnFinish(() => {
@@ -891,7 +878,7 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
         InitializeWaveStates();
     }
     
-// Update is called once per frame
+    // Update is called once per frame
     public override void Update() {
         base.Update();
     }

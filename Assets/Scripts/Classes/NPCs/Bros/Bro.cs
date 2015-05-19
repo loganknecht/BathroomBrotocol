@@ -108,11 +108,27 @@ public class Bro : MonoBehaviour {
             
             occupationDuration = new Dictionary<BathroomObjectType, float>();
             
-            occupationDuration[BathroomObjectType.Exit] = 0;
-            occupationDuration[BathroomObjectType.HandDryer] = defaultOccupationDuration;
-            occupationDuration[BathroomObjectType.Sink] = defaultOccupationDuration;
-            occupationDuration[BathroomObjectType.Stall] = defaultOccupationDuration;
-            occupationDuration[BathroomObjectType.Urinal] = defaultOccupationDuration;
+            BathroomObjectType[] bathroomObjectTypes = (BathroomObjectType[])BathroomObjectType.GetValues(typeof(BathroomObjectType));
+            foreach(BathroomObjectType bathroomObjectType in bathroomObjectTypes) {
+                switch(bathroomObjectType) {
+                case(BathroomObjectType.Exit):
+                    defaultOccupationDuration = 0f;
+                    break;
+                case(BathroomObjectType.HandDryer):
+                    break;
+                case(BathroomObjectType.Sink):
+                    break;
+                case(BathroomObjectType.Stall):
+                    break;
+                case(BathroomObjectType.Urinal):
+                    break;
+                default:
+                    break;
+                }
+                if(bathroomObjectType != BathroomObjectType.None) {
+                    occupationDuration[bathroomObjectType] = defaultOccupationDuration;
+                }
+            }
         }
     }
     
