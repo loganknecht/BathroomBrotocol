@@ -25,9 +25,9 @@ public class StartMenuManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<StartMenuManager>();
                     if(_instance == null) {
-                    
-                        GameObject startMenuManagerGameObject = new GameObject("StartMenuManagerGameObject");
+                        GameObject startMenuManagerGameObject = new GameObject("StartMenuManager");
                         _instance = (startMenuManagerGameObject.AddComponent<StartMenuManager>()).GetComponent<StartMenuManager>();
                     }
                 }

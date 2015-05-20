@@ -22,8 +22,9 @@ public class CareerMenuManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<CareerMenuManager>();
                     if(_instance == null) {
-                        GameObject careerMenuManagerGameObject = new GameObject("CareerMenuManagerGameObject");
+                        GameObject careerMenuManagerGameObject = new GameObject("CareerMenuManager");
                         _instance = (careerMenuManagerGameObject.AddComponent<CareerMenuManager>()).GetComponent<CareerMenuManager>();
                     }
                 }

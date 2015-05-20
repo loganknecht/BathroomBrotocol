@@ -22,8 +22,9 @@ public class CameraManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<CameraManager>();
                     if(_instance == null) {
-                        GameObject CameraManagerGameObject = new GameObject("CameraManagerGameObject");
+                        GameObject CameraManagerGameObject = new GameObject("CameraManager");
                         _instance = (CameraManagerGameObject.AddComponent<CameraManager>()).GetComponent<CameraManager>();
                     }
                 }

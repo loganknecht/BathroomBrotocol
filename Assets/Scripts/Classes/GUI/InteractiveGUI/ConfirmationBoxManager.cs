@@ -33,8 +33,9 @@ public class ConfirmationBoxManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<ConfirmationBoxManager>();
                     if(_instance == null) {
-                        GameObject ConfirmationBoxManagerManagerGameObject = new GameObject("ConfirmationBoxManagerGameObject");
+                        GameObject ConfirmationBoxManagerManagerGameObject = new GameObject("ConfirmationBoxManager");
                         _instance = (ConfirmationBoxManagerManagerGameObject.AddComponent<ConfirmationBoxManager>()).GetComponent<ConfirmationBoxManager>();
                     }
                 }

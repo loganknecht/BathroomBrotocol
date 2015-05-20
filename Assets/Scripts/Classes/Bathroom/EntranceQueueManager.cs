@@ -25,8 +25,9 @@ public class EntranceQueueManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<EntranceQueueManager>();
                     if(_instance == null) {
-                        GameObject entranceQueueManagerGameObject = new GameObject("EntranceQueueManagerGameObject");
+                        GameObject entranceQueueManagerGameObject = new GameObject("EntranceQueueManager");
                         _instance = (entranceQueueManagerGameObject.AddComponent<EntranceQueueManager>()).GetComponent<EntranceQueueManager>();
                     }
                 }

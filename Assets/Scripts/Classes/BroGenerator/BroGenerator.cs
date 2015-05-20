@@ -80,6 +80,7 @@ public class BroGenerator : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<BroGenerator>();
                     if(_instance == null) {
                         GameObject broManagerGameObject = new GameObject("BroGenerator");
                         _instance = (broManagerGameObject.AddComponent<BroGenerator>()).GetComponent<BroGenerator>();

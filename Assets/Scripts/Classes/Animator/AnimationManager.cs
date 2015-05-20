@@ -18,8 +18,9 @@ public class AnimationManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<AnimationManager>();
                     if(_instance == null) {
-                        GameObject managerGameObject = new GameObject("AnimationManagerGameObject");
+                        GameObject managerGameObject = new GameObject("AnimationManager");
                         _instance = (managerGameObject.AddComponent<AnimationManager>()).GetComponent<AnimationManager>();
                     }
                 }

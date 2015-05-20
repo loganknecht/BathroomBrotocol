@@ -20,8 +20,9 @@ public class ScoreMenuManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<ScoreMenuManager>();
                     if(_instance == null) {
-                        GameObject scoreMenuManagerGameObject = new GameObject("ScoreMenuManagerGameObject");
+                        GameObject scoreMenuManagerGameObject = new GameObject("ScoreMenuManager");
                         _instance = (scoreMenuManagerGameObject.AddComponent<ScoreMenuManager>()).GetComponent<ScoreMenuManager>();
                     }
                 }

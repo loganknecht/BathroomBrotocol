@@ -24,8 +24,9 @@ public class BroManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<BroManager>();
                     if(_instance == null) {
-                        GameObject broManagerGameObject = new GameObject("BroManagerGameObject");
+                        GameObject broManagerGameObject = new GameObject("BroManager");
                         _instance = (broManagerGameObject.AddComponent<BroManager>()).GetComponent<BroManager>();
                     }
                 }

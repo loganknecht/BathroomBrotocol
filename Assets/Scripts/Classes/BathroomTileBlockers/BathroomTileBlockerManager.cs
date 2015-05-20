@@ -4,21 +4,22 @@ using System.Collections.Generic;
 
 public class BathroomTileBlockerManager : MonoBehaviour {
     public List<GameObject> bathroomTileBlockers = new List<GameObject>();
-
+    
     //BEGINNING OF SINGLETON CODE CONFIGURATION
     private static volatile BathroomTileBlockerManager _instance;
     private static object _lock = new object();
-
+    
     //Stops the lock being created ahead of time if it's not necessary
     static BathroomTileBlockerManager() {
     }
-
+    
     public static BathroomTileBlockerManager Instance {
         get {
             if(_instance == null) {
                 lock(_lock) {
-                    if (_instance == null) {
-                        GameObject BathroomTileBlockerManagerGameObject = new GameObject("BathroomTileBlockerManagerGameObject");
+                    _instance = GameObject.FindObjectOfType<BathroomTileBlockerManager>();
+                    if(_instance == null) {
+                        GameObject BathroomTileBlockerManagerGameObject = new GameObject("BathroomTileBlockerManager");
                         _instance = (BathroomTileBlockerManagerGameObject.AddComponent<BathroomTileBlockerManager>()).GetComponent<BathroomTileBlockerManager>();
                     }
                 }
@@ -26,10 +27,10 @@ public class BathroomTileBlockerManager : MonoBehaviour {
             return _instance;
         }
     }
-
+    
     private BathroomTileBlockerManager() {
     }
-
+    
     public void Awake() {
         //There's a lot of magic happening right here. Basically, the THIS keyword is a reference to
         //the script, which is assumedly attached to some GameObject. This in turn allows the instance
@@ -39,15 +40,15 @@ public class BathroomTileBlockerManager : MonoBehaviour {
         _instance = this;
     }
     //END OF SINGLETON CODE CONFIGURATION
-
+    
     // Use this for initialization
     public virtual void Start() {
     }
-
+    
     // Update is called once per frame
     public virtual void Update() {
     }
-
+    
     public void AddBathroomTileBlockerGameObject(GameObject newBathroomTileBlockerGameObject) {
         BathroomTileBlocker newBathroomTileBlocker = newBathroomTileBlockerGameObject.GetComponent<BathroomTileBlocker>();
         if(newBathroomTileBlocker != null) {
@@ -55,39 +56,39 @@ public class BathroomTileBlockerManager : MonoBehaviour {
             if(!bathroomTileBlockers.Contains(newBathroomTileBlockerGameObject)) {
                 bathroomTileBlockers.Add(newBathroomTileBlockerGameObject);
             }
-
+            
             // Adds it to the tile it is located in
             GameObject bathroomTileGameObjectContainingNewObject = null;
             BathroomTile bathroomTileContainingNewObject = null;
-
+            
             // First try to locate the tile that the bathroom tile blocker would be in within the tile maps
             bathroomTileGameObjectContainingNewObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(newBathroomTileBlockerGameObject.transform.position.x, newBathroomTileBlockerGameObject.transform.position.y, false);
-
+            
             // Second try to locate the tile that the bathroom tile blocker would be in within the tile maps
             if(bathroomTileGameObjectContainingNewObject == null) {
                 bathroomTileGameObjectContainingNewObject = EntranceQueueManager.Instance.GetTileGameObjectFromLineQueuesyWorldPosition(newBathroomTileBlockerGameObject.transform.position.x, newBathroomTileBlockerGameObject.transform.position.y, false);
             }
-
+            
             if(bathroomTileGameObjectContainingNewObject != null) {
                 AStarManager.Instance.AddTemporaryClosedNode(bathroomTileGameObjectContainingNewObject);
                 // Debug.Log("adding");
                 bathroomTileContainingNewObject = bathroomTileGameObjectContainingNewObject.GetComponent<BathroomTile>();
                 if(bathroomTileContainingNewObject != null) {
-                  bathroomTileContainingNewObject.AddBathroomTileBlocker(newBathroomTileBlockerGameObject);
-                  newBathroomTileBlocker.SetBathroomTileGameObjectIn(bathroomTileGameObjectContainingNewObject);
+                    bathroomTileContainingNewObject.AddBathroomTileBlocker(newBathroomTileBlockerGameObject);
+                    newBathroomTileBlocker.SetBathroomTileGameObjectIn(bathroomTileGameObjectContainingNewObject);
                 }
             }
         }
         newBathroomTileBlockerGameObject.transform.parent = this.gameObject.transform;
     }
-
-  public void RemoveBathroomTileBlockerGameObject(GameObject bathroomTileBlockerGameObjectToRemove) {
+    
+    public void RemoveBathroomTileBlockerGameObject(GameObject bathroomTileBlockerGameObjectToRemove) {
         if(bathroomTileBlockerGameObjectToRemove.GetComponent<BathroomTileBlocker>()) {
             bathroomTileBlockers.Remove(bathroomTileBlockerGameObjectToRemove);
             bathroomTileBlockerGameObjectToRemove.GetComponent<BathroomTileBlocker>().RemoveFromBathroomTileGameObjectIn();
         }
-  }
-
+    }
+    
     public List<GameObject> GetListOfBathroomTileGameObjectsContainingBathroomTileBlockers() {
         List<GameObject> bathroomTilesContainingBathroomTileBlockers = new List<GameObject>();
         foreach(GameObject bathroomTileBlocker in bathroomTileBlockers) {

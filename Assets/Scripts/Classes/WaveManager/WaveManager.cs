@@ -22,6 +22,7 @@ public class WaveManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<WaveManager>();
                     if(_instance == null) {
                         GameObject waveManagerGameObject = new GameObject("WaveManagerGameObject");
                         _instance = (waveManagerGameObject.AddComponent<WaveManager>()).GetComponent<WaveManager>();

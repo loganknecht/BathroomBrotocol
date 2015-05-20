@@ -29,7 +29,7 @@ public class SoundManager : MonoBehaviour {
                 lock(_lock) {
                     _instance = GameObject.FindObjectOfType<SoundManager>();
                     if(_instance == null) {
-                        GameObject levelManagerGameObject = new GameObject("SoundManagerGameObject");
+                        GameObject levelManagerGameObject = new GameObject("SoundManager");
                         _instance = (levelManagerGameObject.AddComponent<SoundManager>()).GetComponent<SoundManager>();
                     }
                 }

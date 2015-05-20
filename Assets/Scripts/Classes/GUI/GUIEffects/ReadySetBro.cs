@@ -27,8 +27,9 @@ public class ReadySetBro : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<ReadySetBro>();
                     if(_instance == null) {
-                        GameObject ReadySetBroManagerGameObject = new GameObject("ReadySetBroGameObject");
+                        GameObject ReadySetBroManagerGameObject = new GameObject("ReadySetBro");
                         _instance = (ReadySetBroManagerGameObject.AddComponent<ReadySetBro>()).GetComponent<ReadySetBro>();
                     }
                 }

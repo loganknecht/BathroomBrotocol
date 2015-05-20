@@ -43,9 +43,9 @@ public class LevelManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<LevelManager>();
                     if(_instance == null) {
-                    
-                        GameObject levelManagerGameObject = new GameObject("LevelGUIManagerGameObject");
+                        GameObject levelManagerGameObject = new GameObject("LevelManager");
                         _instance = (levelManagerGameObject.AddComponent<LevelManager>()).GetComponent<LevelManager>();
                     }
                 }
