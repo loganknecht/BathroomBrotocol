@@ -22,6 +22,7 @@ public class CinematicHelper : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<CinematicHelper>();
                     if(_instance == null) {
                         GameObject managerGameObject = new GameObject("CinematicHelperGameObject");
                         _instance = (managerGameObject.AddComponent<CinematicHelper>()).GetComponent<CinematicHelper>();

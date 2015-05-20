@@ -19,6 +19,7 @@ public class BathroomObjectManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<BathroomObjectManager>();
                     if(_instance == null) {
                         GameObject bathroomObjectManagerGameObject = new GameObject("BathroomObjectManagerGameObject");
                         _instance = (bathroomObjectManagerGameObject.AddComponent<BathroomObjectManager>()).GetComponent<BathroomObjectManager>();

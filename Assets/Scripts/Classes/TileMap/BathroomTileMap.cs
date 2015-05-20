@@ -16,6 +16,7 @@ public class BathroomTileMap : TileMap {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<BathroomTileMap>();
                     if(_instance == null) {
                         GameObject bathroomTileMapGameObject = new GameObject("BathroomTileMapGameObject");
                         _instance = (bathroomTileMapGameObject.AddComponent<BathroomTileMap>()).GetComponent<BathroomTileMap>();

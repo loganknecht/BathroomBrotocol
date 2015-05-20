@@ -34,6 +34,14 @@ public class TileMap : BaseBehavior {
     public virtual void Update() {
     }
     
+    public virtual void PrintDebug() {
+        Debug.Log("singleTileWidth: " + singleTileWidth);
+        Debug.Log("singleTileHeight: " + singleTileHeight);
+        Debug.Log("tilesWide: " + tilesWide);
+        Debug.Log("tilesHigh: " + tilesHigh);
+        Debug.Log("tileCount: " + tileCount);
+    }
+    
     // TO DO: probably move this over to bathroom tile map
     public void ConfigureRows() {
         foreach(Transform child in this.gameObject.transform) {
@@ -43,18 +51,6 @@ public class TileMap : BaseBehavior {
     
     // TO DO: probably move this over to bathroom tile map
     public void ConfigureTileMap() {
-        // if(singleTileWidth < 0 || singleTileHeight < 0) {
-        //     Debug.LogError("SingleTileWidth and SingleTileHeight of the tile map cannot be negative numbers.");
-        // }
-        
-        // if((rowContainers == null || rowContainers.Count == 0) && (tiles == null || tiles.Length == 0)) {
-        //     Debug.LogError("The the rowContainers list and tiles array has not been initialized or is empty, please fix this otherwise nothing will work!");
-        // }
-        // else if(rowContainers != null && rowContainers.Count > 0 && tiles != null && tiles.Length > 0) {
-        //     Debug.LogError("You cannot configure the tile map using the rowContainers AND the tiles list. You must configure the tile map using only one of these");
-        // }
-        // else {
-        // Perform tiles configuration ONLY IF THERE ARE ONLY TILES IN THE TILE LIST
         if(tiles != null && tiles.Length > 0) {
             // Error checking to make sure that row width is congruent/symmetrical in the tiles array
             int rowWidth = -1;
@@ -114,9 +110,6 @@ public class TileMap : BaseBehavior {
             tilesWide = rowWidth;
             tilesHigh = tiles.Length;
         }
-        // Debug.Log("tiles wide: " + tilesWide);
-        // Debug.Log("tiles high: " + tilesHigh);
-        // }
     }
     
     public void SetTiles(GameObject[][] newTiles) {

@@ -27,6 +27,7 @@ public class AStarManager : MonoBehaviour {
         get {
             if(_instance == null) {
                 lock(_lock) {
+                    _instance = GameObject.FindObjectOfType<AStarManager>();
                     if(_instance == null) {
                         GameObject aStarManagerGameObject = new GameObject("AStarManagerGameObject");
                         _instance = (aStarManagerGameObject.AddComponent<AStarManager>()).GetComponent<AStarManager>();
