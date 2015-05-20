@@ -45,15 +45,11 @@ public class BathroomTileMap : TileMap {
         AnimationPrefabs.PopulatePathsManually();
         NPCPrefabs.PopulatePathsManually();
         
-        if(AStarManager.Instance.permanentClosedNodes == null) {
-            AStarManager.Instance.permanentClosedNodes = new List<GameObject>();
-        }
         ConfigureRows();
         ConfigureTileMap();
         
         BathroomObjectManager.Instance.AddAllBathroomContainerChildren();
-        // BathroomObjectManager.Instance.ConfigureBathroomObjectsWithTileTheyreIn();
-        ConfigureBathroomObjectsWithTileTheyreIn();
+        BathroomObjectManager.Instance.ConfigureBathroomObjectsWithTileTheyreIn();
         
         // Needs to be called after bathroom tile map is configured
         AStarManager.Instance.ConfigureAStarClosedNodes(tiles);
@@ -67,32 +63,6 @@ public class BathroomTileMap : TileMap {
     // Update is called once per frame
     public override void Update() {
         base.Update();
-    }
-    
-    public void ConfigureBathroomObjectsWithTileTheyreIn() {
-        foreach(GameObject bathroomObject in BathroomObjectManager.Instance.allBathroomObjects) {
-            GameObject bathroomTileIn = GetTileGameObjectByWorldPosition(bathroomObject.transform.position.x,
-                                                                         bathroomObject.transform.position.y,
-                                                                         false);
-            if(bathroomTileIn == null) {
-                Debug.LogWarning("There is a bathroom object that is not occupying a bathroom tile");
-                
-                // This is a kludgy fix to give bathroom objects their own tile
-                // to path to. However the bro logic wasn't constructured with
-                // that in mind.
-                GameObject placeholderBathroomTile = new GameObject("PlaceholderBathroomTileIn");
-                BathroomTile placeholderBathroomTileRef = placeholderBathroomTile.AddComponent<BathroomTile>().GetComponent<BathroomTile>();
-                
-                placeholderBathroomTile.transform.parent = bathroomObject.transform;
-                placeholderBathroomTileRef.tileX = -1;
-                placeholderBathroomTileRef.tileY = -1;
-                
-                bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = placeholderBathroomTile;
-            }
-            else {
-                bathroomObject.GetComponent<BathroomObject>().bathroomTileIn = bathroomTileIn;
-            }
-        }
     }
     
     public GameObject SelectRandomOpenTile() {

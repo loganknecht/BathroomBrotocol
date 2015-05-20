@@ -7,6 +7,8 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public GameObject currentWaveStateGameObject = null;
     public float delayTimer = 0f;
     
+    // used to delay initialization later than the Start method
+    public bool hasInitialized = false;
     public bool waveLogicFinished = false;
     
     public virtual void Awake() {}
@@ -14,6 +16,10 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     public virtual void Start() {}
     
     public virtual void Update() {
+        if(!hasInitialized) {
+            hasInitialized = true;
+            Initialize();
+        }
         PerformDelayTimerLogic();
     }
     
@@ -22,7 +28,6 @@ public class WaveLogic : MonoBehaviour, WaveLogicContract {
     }
     
     public virtual void Initialize() {
-        //
     }
     
     public virtual void PerformDelayTimerLogic() {

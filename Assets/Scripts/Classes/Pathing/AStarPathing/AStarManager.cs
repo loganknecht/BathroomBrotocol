@@ -52,6 +52,10 @@ public class AStarManager : MonoBehaviour {
     // }
     public void Awake() {
         _instance = this;
+        
+        if(AStarManager.Instance.permanentClosedNodes == null) {
+            AStarManager.Instance.permanentClosedNodes = new List<GameObject>();
+        }
     }
     //END OF SINGLETON CODE CONFIGURATION
     

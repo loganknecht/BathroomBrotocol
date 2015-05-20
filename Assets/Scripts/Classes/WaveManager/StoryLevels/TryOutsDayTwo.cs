@@ -16,7 +16,6 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
     // Use this for initialization
     public override void Start() {
         base.Start();
-        Initialize();
     }
     
     public override void Initialize() {
