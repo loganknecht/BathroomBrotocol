@@ -46,8 +46,35 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
         PerformWaveStates(CreateWaveState("Configure Default Configuration", () => {
             TextboxManager.Instance.Hide(0f);
             LevelManager.Instance.HidePlayerButtons(0f);
-            LevelManager.Instance.HideRotationButtons(0f);
+            // LevelManager.Instance.HideRotationButtons(0f);
             ConfirmationBoxManager.Instance.Hide(float.Epsilon);
+            Completed();
+        }));
+        //----------------------------------------------------------------------
+        PerformWaveStates(CreateWaveState("Bro Test Wave State", () => {
+            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+            
+            BroDistributionObject firstWave = new BroDistributionObject(0,
+                                                                        1,
+                                                                        1,
+                                                                        DistributionType.LinearIn,
+                                                                        DistributionSpacing.Uniform,
+                                                                        broProbabilities,
+                                                                        entranceQueueProbabilities);
+            firstWave.broConfigurer
+            .SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
+            .SetXMoveSpeed(BroDistribution.AllBros, 2.5f, 2.5f)
+            .SetYMoveSpeed(BroDistribution.AllBros , 2.5f, 2.5f)
+            .SetFightProbability(BroDistribution.AllBros, 0f, 0f)
+            .SetLineQueueSkipType(BroDistribution.AllBros, true)
+            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
+            .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+            
+            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+                firstWave
+            });
             Completed();
         }));
         //----------------------------------------------------------------------

@@ -222,13 +222,13 @@ public class AStarManager : MonoBehaviour {
                 // Debug.Log("Top Row Check");
                 if(currentNodeTileX - 1 >= 0) {
                     // Debug.Log("Performing Top Left A Star Tile Check");
-                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
-                                            tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX - 1].GetComponent<Tile>(),
-                                            endTile.tileX,
-                                            endTile.tileY,
-                                            tilesBeingSearched,
-                                            openNodes,
-                                            closedNodes);
+                    // PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
+                    //                         tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX - 1].GetComponent<Tile>(),
+                    //                         endTile.tileX,
+                    //                         endTile.tileY,
+                    //                         tilesBeingSearched,
+                    //                         openNodes,
+                    //                         closedNodes);
                 }
                 // Debug.Log("----------------------------------------------------");
                 // Debug.Log("Performing Top A Star Tile Check");
@@ -242,13 +242,13 @@ public class AStarManager : MonoBehaviour {
                 if(currentNodeTileX + 1 < tileMapBeingSearched.tilesWide) {
                     // Debug.Log("----------------------------------------------------");
                     // Debug.Log("Performing Top Right A Star Tile Check");
-                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
-                                            tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX + 1].GetComponent<Tile>(),
-                                            endTile.tileX,
-                                            endTile.tileY,
-                                            tilesBeingSearched,
-                                            openNodes,
-                                            closedNodes);
+                    // PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
+                    //                         tilesBeingSearched[currentNodeTileY + 1][currentNodeTileX + 1].GetComponent<Tile>(),
+                    //                         endTile.tileX,
+                    //                         endTile.tileY,
+                    //                         tilesBeingSearched,
+                    //                         openNodes,
+                    //                         closedNodes);
                 }
             }
             if(currentNodeTileX - 1 >= 0) {
@@ -278,13 +278,13 @@ public class AStarManager : MonoBehaviour {
                 if(currentNodeTileX - 1 >= 0) {
                     // Debug.Log("----------------------------------------------------");
                     // Debug.Log("Performing Bottom Left A Star Tile Check");
-                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
-                                            tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX - 1].GetComponent<Tile>(),
-                                            endTile.tileX,
-                                            endTile.tileY,
-                                            tilesBeingSearched,
-                                            openNodes,
-                                            closedNodes);
+                    // PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
+                    //                         tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX - 1].GetComponent<Tile>(),
+                    //                         endTile.tileX,
+                    //                         endTile.tileY,
+                    //                         tilesBeingSearched,
+                    //                         openNodes,
+                    //                         closedNodes);
                 }
                 // Debug.Log("----------------------------------------------------");
                 // Debug.Log("Performing Bottom A Star Tile Check");
@@ -298,13 +298,13 @@ public class AStarManager : MonoBehaviour {
                 if(currentNodeTileX + 1 < tileMapBeingSearched.tilesWide) {
                     // Debug.Log("----------------------------------------------------");
                     // Debug.Log("Performing Bottom Right A Star Tile Check");
-                    PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
-                                            tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX + 1].GetComponent<Tile>(),
-                                            endTile.tileX,
-                                            endTile.tileY,
-                                            tilesBeingSearched,
-                                            openNodes,
-                                            closedNodes);
+                    // PerformAStarCalculation(currentNode.gameObject.GetComponent<BathroomTile>(),
+                    //                         tilesBeingSearched[currentNodeTileY - 1][currentNodeTileX + 1].GetComponent<Tile>(),
+                    //                         endTile.tileX,
+                    //                         endTile.tileY,
+                    //                         tilesBeingSearched,
+                    //                         openNodes,
+                    //                         closedNodes);
                 }
             }
             
@@ -376,10 +376,7 @@ public class AStarManager : MonoBehaviour {
                 // removeDebugTiles.Add(gameObj);
                 Destroy(gameObj);
             }
-            // foreach(GameObject gameObj in removeDebugTiles) {
-            //   // debugLastPathNodes.Remove(gameObj);
-            //   Destroy(gameObj);
-            // }
+            
             debugLastPathNodes.Clear();
             int colorTracker = 0;
             foreach(GameObject gameObj in bathroomTilePath) {
@@ -453,7 +450,7 @@ public class AStarManager : MonoBehaviour {
         int tileXBeingChecked = -1;
         int tileYBeingChecked = -1;
         
-        int cornerGValueOffset = 1000;
+        int cornerGValueOffset = 10;
         int sideGValueOffset = 10;
         
         if(tileBeingChecked != null) {
@@ -548,6 +545,7 @@ public class AStarManager : MonoBehaviour {
                         tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue = currentNode.gameObject.GetComponent<AStarNode>().gValue + gValueOffset;
                     }
                 }
+                // Debug.Log("tileBeingChecked GValue: " + tileBeingChecked.gameObject.GetComponent<AStarNode>().gValue);
             }
             else {
                 // Debug.Log("ENCOUNTERED CLOSED NODE AND SKIPPED IT");
