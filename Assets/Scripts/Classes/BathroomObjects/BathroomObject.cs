@@ -37,7 +37,7 @@ public class BathroomObject : MonoBehaviour {
     }
     
     public virtual void Update() {
-        PerformMoreThanTwoOccupantsCheck();
+        MoreThanTwoOccupantsCheck();
         UpdateAnimator();
     }
     
@@ -108,7 +108,7 @@ public class BathroomObject : MonoBehaviour {
         if(!wasOutOfOrderBeforeRemoval
             && isOutOfOrderAfterRemoval) {
             Bro broRef = broGameObjectToRemove.GetComponent<Bro>();
-            ScoreManager.Instance.GetPlayerScoreTracker().PerformBroCausedOutOfOrderInBathroomObjectScore(broRef.type, type);
+            ScoreManager.Instance.GetPlayerScoreTracker().BroCausedOutOfOrderInBathroomObjectScore(broRef.type, type);
         }
     }
     
@@ -124,7 +124,7 @@ public class BathroomObject : MonoBehaviour {
     
     public void IncrementTimesUsed() {
         timesUsed++;
-        PerformOutOfOrderCheck();
+        OutOfOrderCheck();
     }
     
     public bool IsBroken() {
@@ -138,7 +138,7 @@ public class BathroomObject : MonoBehaviour {
         }
     }
     
-    public void PerformOutOfOrderCheck() {
+    public void OutOfOrderCheck() {
         if(markOutOfOrderWhenOverUsed) {
             if(timesUsed >= timesUsedNeededForOutOfOrder) {
                 if(!IsBroken()) {
@@ -157,7 +157,7 @@ public class BathroomObject : MonoBehaviour {
     /// and creates fighting bros as it iterates. Once iterated, over it removes
     /// occupants and sends any odd numbered amount of bros to the bathroom exit
     /// </summary>
-    public void PerformMoreThanTwoOccupantsCheck() {
+    public void MoreThanTwoOccupantsCheck() {
         if(objectsOccupyingBathroomObject.Count >= 2
             && destroyObjectIfMoreThanTwoOccupants
             && type != BathroomObjectType.Exit) {
@@ -217,9 +217,9 @@ public class BathroomObject : MonoBehaviour {
                     firstBroFound = null;
                     secondBroFound = null;
                     
-                    ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBathroomObjectBrokenByFightingScore(firstBroFoundReference.type, type);
-                    ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(firstBroFoundReference.type);
-                    ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(secondBroFoundReference.type);
+                    ScoreManager.Instance.GetPlayerScoreTracker().BroBathroomObjectBrokenByFightingScore(firstBroFoundReference.type, type);
+                    ScoreManager.Instance.GetPlayerScoreTracker().BroStartedFightScore(firstBroFoundReference.type);
+                    ScoreManager.Instance.GetPlayerScoreTracker().BroStartedFightScore(secondBroFoundReference.type);
                 }
             }
             objectsOccupyingBathroomObject.Clear();

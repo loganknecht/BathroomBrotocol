@@ -120,7 +120,7 @@ public class EntranceQueueManager : MonoBehaviour {
         broReference.state = BroState.InAQueue;
         lineQueueSelected.AddGameObjectToLineQueue(broToAdd);
         
-        broReference.PerformEnteredScore();
+        broReference.broScoreLogic.EnteredScore();
         if(broReference.drawNodeList != null) {
             broReference.drawNodeList.Hide();
         }

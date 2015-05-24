@@ -8,17 +8,17 @@ public class ManagedSortingLayer : MonoBehaviour {
 
     // Public
     public GameObject gameObjectToBaseSortingOn = null;
-    public GameObject gameObjectToMatchSortingLayer; 
+    public GameObject gameObjectToMatchSortingLayer;
     public int sortingLayerOffset = 0;
     public bool debug = false;
     public SortingOrder sortingOrder = SortingOrder.BottomToTop;
-
+    
     // Private
     IsometricDisplay gameObjectIsometricDisplay = null;
     int sortingMagnitudeModifier = 100;
-
+    
     // Use this for initialization
-    void Start () {
+    void Start() {
         if(gameObjectToBaseSortingOn == null) {
             Debug.LogError("The gameObject: '" + gameObject.name + "' does not have the 'gameObjectToBaseSortingOn' set to a value. Please set this to the GameObject that sorting will be based on.");
         }
@@ -26,35 +26,35 @@ public class ManagedSortingLayer : MonoBehaviour {
             gameObjectIsometricDisplay = this.gameObject.GetComponent<IsometricDisplay>();
         }
     }
-
+    
     // Update is called once per frame
-    void Update () {
-        PerformSortingLogic();
+    void Update() {
+        SortingLogic();
     }
-
-    public void PerformSortingLogic() {
+    
+    public void SortingLogic() {
         CalculateSortingLayer();
     }
-
+    
     // The top right corner is the deepest and the bottom left corner is the front most
     public void CalculateSortingLayer() {
         if(sortingOrder == SortingOrder.BottomToTop) {
-            PerformBottomToTopSorting();
+            BottomToTopSorting();
         }
     }
-
+    
     //-------------------------------------------------------------------------
     // This prioritizes hieght such that the lesser the y position is drawn on top
-    public void PerformBottomToTopSorting() {
+    public void BottomToTopSorting() {
         float newSortingOrder = -gameObjectToBaseSortingOn.transform.position.y;
         newSortingOrder -= gameObjectToBaseSortingOn.transform.position.x;
         newSortingOrder *= sortingMagnitudeModifier;
-
+        
         // Add personal offset
         if(gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>() != null) {
             newSortingOrder += gameObjectToMatchSortingLayer.GetComponent<ManagedSortingLayer>().sortingLayerOffset;
         }
-
+        
         gameObjectToMatchSortingLayer.GetComponent<SpriteRenderer>().sortingOrder = (int)newSortingOrder;
     }
 }

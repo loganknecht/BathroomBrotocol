@@ -23,8 +23,8 @@ public class SlobBro : Bro {
         base.Update();
     }
     
-    public override void PerformOccupyingObjectLogic() {
-        // base.PerformOccupyingObjectLogic();
+    public override void OccupyingObjectLogic() {
+        // base.OccupyingObjectLogic();
         GameObject targetObject = GetTargetObject();
         if(targetObject != null
             && targetObject.GetComponent<BathroomObject>() != null) {
@@ -33,19 +33,19 @@ public class SlobBro : Bro {
             if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
-                    PerformExitOccupationFinishedLogic();
+                    ExitOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.HandDryer) {
-                    PerformHandDryerOccupationFinishedLogic();
+                    HandDryerOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.Sink) {
-                    PerformSinkOccupationFinishedLogic();
+                    SinkOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.Stall) {
-                    PerformStallOccupationFinishedLogic();
+                    StallOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.Urinal) {
-                    PerformUrinalOccupationFinishedLogic();
+                    UrinalOccupationFinishedLogic();
                 }
                 
                 if(bathObjRef.type != BathroomObjectType.Exit
@@ -64,31 +64,31 @@ public class SlobBro : Bro {
     }
     
     //This is being checked on arrival before switching to occupying an object
-    public override void PerformOnArrivalBrotocolScoreCheck() {
-        // bool brotocolWasSatisfied = false;
-        
-        // // As long as the target object is not null and it's not a bathroom exit
-        // if(targetObject != null
-        //  && targetObject.GetComponent<BathroomObject>() != null
-        //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-        //   if(!hasRelievedSelf) {
-        //     //This is being checked on arrival before switching to occupying an object
-        //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-        //       // increment correct relief type
-        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolCorrectReliefTypeForTargetObject);
-        //       brotocolWasSatisfied = true;
-        //     }
-        //     if(!CheckIfBroInAdjacentBathroomObjects()) {
-        //       // increment bro alone bonus
-        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolNoAdjacentBro);
-        //       brotocolWasSatisfied = true;
-        //     }
-        //   }
-        // }
-        
-        // if(brotocolWasSatisfied) {
-        //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-        // }
-    }
+    // public override void OnArrivalBrotocolScoreCheck() {
+    // bool brotocolWasSatisfied = false;
+    
+    // // As long as the target object is not null and it's not a bathroom exit
+    // if(targetObject != null
+    //  && targetObject.GetComponent<BathroomObject>() != null
+    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+    //   if(!hasRelievedSelf) {
+    //     //This is being checked on arrival before switching to occupying an object
+    //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+    //       // increment correct relief type
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolCorrectReliefTypeForTargetObject);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+    //       // increment bro alone bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.SlobBroBrotocolNoAdjacentBro);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //   }
+    // }
+    
+    // if(brotocolWasSatisfied) {
+    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+    // }
+    // }
     //=========================================================================
 }

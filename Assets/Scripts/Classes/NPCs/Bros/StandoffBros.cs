@@ -27,14 +27,14 @@ public class StandoffBros : MonoBehaviour {
     // Use this for initialization
     void Start() {
         numberOfTapsNeededToStop = UnityEngine.Random.Range(3, 6);
-        PerformStartedStandoffScore();
+        StartedStandoffScore();
     }
     
     // Update is called once per frame
     void Update() {
         if(!isPaused) {
-            PerformStandoffBroLogic();
-            PerformTapLogic();
+            StandoffBroLogic();
+            TapLogic();
         }
     }
     
@@ -132,7 +132,7 @@ public class StandoffBros : MonoBehaviour {
         }
     }
     
-    public void PerformStandoffBroLogic() {
+    public void StandoffBroLogic() {
         // Debug.Log("bro one z: " + broOne.transform.position.z);
         // Debug.Log("bro two z: " + broTwo.transform.position.z);
         Vector3 newBroOneVelocity = Vector3.zero;
@@ -200,7 +200,7 @@ public class StandoffBros : MonoBehaviour {
         }
     }
     
-    public void PerformTapLogic() {
+    public void TapLogic() {
         if(numberOfTapsNeededToStop <= 0) {
             PlayerStoppedStandoff();
         }
@@ -210,7 +210,7 @@ public class StandoffBros : MonoBehaviour {
     }
     
     public void PlayerStoppedStandoff() {
-        PerformStoppedStandoffScore();
+        StoppedStandoffScore();
         
         Bro broOneReference = broOne.GetComponent<Bro>();
         // broOne.collider.enabled = true;
@@ -292,12 +292,12 @@ public class StandoffBros : MonoBehaviour {
         numberOfTapsNeededToStop--;
     }
     
-    public void PerformStartedStandoffScore() {
-        broOne.GetComponent<Bro>().PerformStartedStandoffScore();
-        broTwo.GetComponent<Bro>().PerformStartedStandoffScore();
+    public void StartedStandoffScore() {
+        broOne.GetComponent<Bro>().broScoreLogic.StartedStandoffScore();
+        broTwo.GetComponent<Bro>().broScoreLogic.StartedStandoffScore();
     }
-    public void PerformStoppedStandoffScore() {
-        broOne.GetComponent<Bro>().PerformStoppedStandoffScore();
-        broTwo.GetComponent<Bro>().PerformStoppedStandoffScore();
+    public void StoppedStandoffScore() {
+        broOne.GetComponent<Bro>().broScoreLogic.StoppedStandoffScore();
+        broTwo.GetComponent<Bro>().broScoreLogic.StoppedStandoffScore();
     }
 }

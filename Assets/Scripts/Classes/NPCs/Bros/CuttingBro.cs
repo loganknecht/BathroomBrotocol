@@ -20,9 +20,9 @@ public class CuttingBro : Bro {
     }
     
     //This is being checked on arrival before switching to occupying an object
-    public override void PerformOnArrivalBrotocolScoreCheck() {
-        // There are no brotocol checks for the cutting bro because it's not fair to the player
-        // on account that they rush wherever they want.
-    }
+    // public override void OnArrivalBrotocolScoreCheck() {
+    // There are no brotocol checks for the cutting bro because it's not fair to the player
+    // on account that they rush wherever they want.
+    // }
     //=========================================================================
 }

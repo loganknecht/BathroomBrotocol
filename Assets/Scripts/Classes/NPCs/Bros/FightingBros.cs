@@ -26,13 +26,13 @@ public class FightingBros : MonoBehaviour {
     public void Start() {
         this.gameObject.transform.eulerAngles = Camera.main.transform.eulerAngles;
         
-        PerformStartedFightScore();
+        StartedFightScore();
     }
     
     // Update is called once per frame
     public void Update() {
         if(!isPaused) {
-            PerformLogic();
+            Logic();
         }
     }
     public void Pause() {
@@ -48,9 +48,9 @@ public class FightingBros : MonoBehaviour {
         }
     }
     
-    public void PerformLogic() {
-        PerformFightingBroArrivalLogic();
-        PerformMaxTapLogic();
+    public void Logic() {
+        FightingBroArrivalLogic();
+        MaxTapLogic();
     }
     
     public void OnArrivalAtMovementNode() {
@@ -73,7 +73,7 @@ public class FightingBros : MonoBehaviour {
     }
     
     // TODO: Fix to use the jagged array access instead
-    public void PerformFightingBroArrivalLogic() {
+    public void FightingBroArrivalLogic() {
         if(targetPathingReference.IsAtTargetPosition()) {
             BathroomTile currentBathroomTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, true).GetComponent<BathroomTile>();
             // BathroomTile nextBathroomTile = BathroomTileMap.Instance.SelectRandomTile().GetComponent<BathroomTile>();
@@ -94,7 +94,7 @@ public class FightingBros : MonoBehaviour {
                             
                             foreach(GameObject broGameObject in brosFighting) {
                                 Bro broReference = broGameObject.GetComponent<Bro>();
-                                ScoreManager.Instance.GetPlayerScoreTracker().PerformBroBathroomObjectBrokenByFightingScore(broReference.type, bathObjRef.type);
+                                ScoreManager.Instance.GetPlayerScoreTracker().BroBathroomObjectBrokenByFightingScore(broReference.type, bathObjRef.type);
                             }
                         }
                     }
@@ -110,10 +110,10 @@ public class FightingBros : MonoBehaviour {
         }
     }
     
-    public void PerformMaxTapLogic() {
+    public void MaxTapLogic() {
         if(currentNumberOfTaps >= numberOfTapsNeededToBreakUp) {
             // goes before logic because it iterates over the bros fighting already
-            PerformStoppedFightScore();
+            StoppedFightScore();
             
             foreach(GameObject broGameObj in brosFighting) {
                 Bro broReference = broGameObj.GetComponent<Bro>();
@@ -151,7 +151,7 @@ public class FightingBros : MonoBehaviour {
                 }
                 ManagedSortingLayer managedSortingLayer = broGameObj.GetComponent<ManagedSortingLayer>();
                 if(managedSortingLayer != null) {
-                    managedSortingLayer.PerformSortingLogic();
+                    managedSortingLayer.SortingLogic();
                 }
             }
             BroManager.Instance.RemoveFightingBro(this.gameObject, true);
@@ -159,14 +159,14 @@ public class FightingBros : MonoBehaviour {
         }
     }
     
-    public void PerformStartedFightScore() {
+    public void StartedFightScore() {
         foreach(GameObject broGameObject in brosFighting) {
-            ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStartedFightScore(broGameObject.GetComponent<Bro>().type);
+            ScoreManager.Instance.GetPlayerScoreTracker().BroStartedFightScore(broGameObject.GetComponent<Bro>().type);
         }
     }
-    public void PerformStoppedFightScore() {
+    public void StoppedFightScore() {
         foreach(GameObject broGameObject in brosFighting) {
-            ScoreManager.Instance.GetPlayerScoreTracker().PerformBroStoppedFightScore(broGameObject.GetComponent<Bro>().type);
+            ScoreManager.Instance.GetPlayerScoreTracker().BroStoppedFightScore(broGameObject.GetComponent<Bro>().type);
         }
     }
     

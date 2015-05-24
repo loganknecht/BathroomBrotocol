@@ -24,7 +24,7 @@ public class ShyBro : Bro {
         base.Update();
     }
     
-    public override void PerformArrivalLogic() {
+    public override void ArrivalLogic() {
         if(transform.position.x == GetTargetPosition().x
             && transform.position.y == GetTargetPosition().y
             && GetMovementNodes().Count == 0) {
@@ -44,7 +44,7 @@ public class ShyBro : Bro {
                 // if(reliefRequired != ReliefRequired.Pee
                 if(reliefRequired == ReliefRequired.Pee && bathObjRef.type == BathroomObjectType.Stall) {
                     //Brotocol score check triggered
-                    PerformOnArrivalBrotocolScoreCheck();
+                    broScoreLogic.OnArrivalBrotocolScoreCheck(GetTargetObject());
                 }
                 else {
                     if(bathObjRef.colliderReference != null) {
@@ -74,7 +74,7 @@ public class ShyBro : Bro {
         }
     }
     
-    public override void PerformOccupyingObjectLogic() {
+    public override void OccupyingObjectLogic() {
         GameObject targetObject = GetTargetObject();
         
         if(targetObject != null
@@ -84,19 +84,19 @@ public class ShyBro : Bro {
             if(occupationTimer > occupationDuration[bathObjRef.type]) {
                 // Debug.Log("occupation finished");
                 if(bathObjRef.type == BathroomObjectType.Exit) {
-                    PerformExitOccupationFinishedLogic();
+                    ExitOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.HandDryer) {
-                    PerformHandDryerOccupationFinishedLogic();
+                    HandDryerOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.Sink) {
-                    PerformSinkOccupationFinishedLogic();
+                    SinkOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.Stall) {
-                    PerformStallOccupationFinishedLogic();
+                    StallOccupationFinishedLogic();
                 }
                 else if(bathObjRef.type == BathroomObjectType.Urinal) {
-                    PerformUrinalOccupationFinishedLogic();
+                    UrinalOccupationFinishedLogic();
                 }
             }
             else {
@@ -119,44 +119,44 @@ public class ShyBro : Bro {
     }
     
     //This is being checked on arrival before switching to occupying an object
-    public override void PerformOnArrivalBrotocolScoreCheck() {
-        // bool brotocolWasSatisfied = false;
-        
-        // // As long as the target object is not null and it's not a bathroom exit
-        // if(targetObject != null
-        //  && targetObject.GetComponent<BathroomObject>() != null
-        //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-        //   if(!hasRelievedSelf) {
-        //     //This is being checked on arrival before switching to occupying an object
-        //     // if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-        //     //   // increment correct relief type
-        //     //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolCorrectReliefTypeForTargetObject);
-        //     // }
-        //     if(!CheckIfBroInAdjacentBathroomObjects()) {
-        //       // increment bro alone bonus
-        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolNoAdjacentBro);
-        //       brotocolWasSatisfied = true;
-        //     }
-        //     if(CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry()) {
-        //       // increment no janitor summoned bonus
-        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolRelievedSelfInCorrectBathroomObjectTypeOnFirstTry);
-        //       brotocolWasSatisfied = true;
-        //     }
-        //   }
-        // }
-        
-        // if(brotocolWasSatisfied) {
-        //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-        // }
-    }
+    // public override void OnArrivalBrotocolScoreCheck() {
+    // bool brotocolWasSatisfied = false;
     
-    public override bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
-        if(!firstArrivalWasWrongObject) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    // // As long as the target object is not null and it's not a bathroom exit
+    // if(targetObject != null
+    //  && targetObject.GetComponent<BathroomObject>() != null
+    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+    //   if(!hasRelievedSelf) {
+    //     //This is being checked on arrival before switching to occupying an object
+    //     // if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+    //     //   // increment correct relief type
+    //     //   ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolCorrectReliefTypeForTargetObject);
+    //     // }
+    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+    //       // increment bro alone bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolNoAdjacentBro);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //     if(CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry()) {
+    //       // increment no janitor summoned bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.ShyBroBrotocolRelievedSelfInCorrectBathroomObjectTypeOnFirstTry);
+    //       brotocolWasSatisfied = true;
+    //     }
+    //   }
+    // }
+    
+    // if(brotocolWasSatisfied) {
+    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
+    // }
+    // }
+    
+    // public override bool CheckIfRelievedSelfInCorrectBathroomObjectTypeOnFirstTry() {
+    // if(!firstArrivalWasWrongObject) {
+    // return true;
+    // }
+    // else {
+    // return false;
+    // }
+    // }
     //=========================================================================
 }

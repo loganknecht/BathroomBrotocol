@@ -60,16 +60,16 @@ public class TimeWasterBro : Bro {
         if(hasEntered) {
             numberOfTapsUntilBounce--;
         }
-        PerformTapExitCheck();
+        TapExitChePerformck();
     }
     
-    public void PerformTapExitCheck() {
+    public void TapExitChePerformck() {
         if(numberOfTapsUntilBounce <= 0) {
-            PerformBounceTriggeredLogic();
+            BounceTriggeredLogPerformic();
         }
     }
     
-    public void PerformBounceTriggeredLogic() {
+    public void BounceTriggeredLogPerformic() {
         if(!bouncePerformed) {
             bouncePerformed = true;
             GameObject exitSelectedGameObject = BathroomObjectManager.Instance.GetRandomBathroomObjectOfSpecificType(BathroomObjectType.Exit);
@@ -87,7 +87,7 @@ public class TimeWasterBro : Bro {
         }
     }
     
-    public override void PerformRoamingLogic() {
+    public override void RoamingLogic() {
         if(IsAtTargetPosition()) {
             if(timeInRoamingSpot > timeInRoamingSpotMax) {
                 bool foundEmptyTile = false;
@@ -122,8 +122,7 @@ public class TimeWasterBro : Bro {
     }
     
     //This is being checked on arrival before switching to occupying an object
-    public override void PerformOnArrivalBrotocolScoreCheck() {
-        // THIS IS NOT USED BECAUSE I DON'T KNOW WHY, HE JUST DOESN'T TARGET ANY OBJECTS, HE WASTES SPACE ETC ETC.
-    }
-    
+    // public override void OnArrivalBrotocolScoreCheck() {
+    // THIS IS NOT USED BECAUSE I DON'T KNOW WHY, HE JUST DOESN'T TARGET ANY OBJECTS, HE WASTES SPACE ETC ETC.
+    // }
 }

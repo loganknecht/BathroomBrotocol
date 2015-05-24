@@ -20,23 +20,23 @@ public class BluetoothBro : Bro {
     }
     
     // This is being checked on arrival before switching to occupying an object
-    public override void PerformOnArrivalBrotocolScoreCheck() {
-        // As long as the target object is not null and it's not a bathroom exit
-        // if(targetObject != null
-        //  && targetObject.GetComponent<BathroomObject>() != null
-        //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-        //   if(!hasRelievedSelf) {
-        //     //This is being checked on arrival before switching to occupying an object
-        //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
-        //       // increment correct relief type
-        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.BluetoothBroBrotocolCorrectReliefTypeForTargetObject);
-        //     }
-        //     if(!CheckIfBroInAdjacentBathroomObjects()) {
-        //       // increment bro alone bonus
-        //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.BluetoothBroBrotocolNoAdjacentBro);
-        //     }
-        //   }
-        // }
-    }
+    // public override void OnArrivalBrotocolScoreCheck() {
+    // As long as the target object is not null and it's not a bathroom exit
+    // if(targetObject != null
+    //  && targetObject.GetComponent<BathroomObject>() != null
+    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
+    //   if(!hasRelievedSelf) {
+    //     //This is being checked on arrival before switching to occupying an object
+    //     if(CheckIfBroHasCorrectReliefTypeForTargetObject()) {
+    //       // increment correct relief type
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.BluetoothBroBrotocolCorrectReliefTypeForTargetObject);
+    //     }
+    //     if(!CheckIfBroInAdjacentBathroomObjects()) {
+    //       // increment bro alone bonus
+    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.BluetoothBroBrotocolNoAdjacentBro);
+    //     }
+    //   }
+    // }
+    // }
     //=========================================================================
 }
