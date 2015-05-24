@@ -182,7 +182,7 @@ public class BathroomObject : MonoBehaviour {
                         && secondBroFound == null) {
                         Bro broRef = gameObj.GetComponent<Bro>();
                         broRef.state = BroState.Roaming;
-                        broRef.selectableReference.ResetHighlightObjectAndSelectedState();
+                        broRef.selectableReference.Reset();
                         broRef.SetRandomOpenBathroomObjectTarget(BathroomObjectType.Exit);
                         // objectOccupyingBathroomObjectToRemove.add(gameObj);
                     }
@@ -191,21 +191,16 @@ public class BathroomObject : MonoBehaviour {
                     && secondBroFound != null) {
                     state = BathroomObjectState.Broken;
                     
-                    // firstBroFound.GetComponent<SpriteRenderer>().enabled = false;
-                    // firstBroFound.GetComponent<Collider>().enabled = false;
                     firstBroFound.SetActive(false);
                     Bro firstBroFoundReference = firstBroFound.GetComponent<Bro>();
                     firstBroFoundReference.state = BroState.Fighting;
-                    firstBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
+                    firstBroFoundReference.selectableReference.Reset();
                     
-                    // secondBroFound.GetComponent<SpriteRenderer>().enabled = false;
-                    // secondBroFound.GetComponent<Collider>().enabled = false;
                     secondBroFound.SetActive(false);
                     Bro secondBroFoundReference = secondBroFound.GetComponent<Bro>();
                     secondBroFoundReference.state = BroState.Fighting;
-                    secondBroFoundReference.selectableReference.ResetHighlightObjectAndSelectedState();
+                    secondBroFoundReference.selectableReference.Reset();
                     
-                    // GameObject newFightingBros = (GameObject)GameObject.Instantiate((Resources.Load("Prefabs/NPC/Bro/FightingBros") as GameObject));
                     GameObject newFightingBros = Factory.Instance.GenerateFightingBroGameObject();
                     newFightingBros.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, newFightingBros.transform.position.z);
                     newFightingBros.GetComponent<FightingBros>().brosFighting.Add(firstBroFound);
@@ -218,9 +213,7 @@ public class BathroomObject : MonoBehaviour {
                                                                                                                                             AStarManager.Instance. GetListCopyOfAllClosedNodes(),
                                                                                                                                             startTile,
                                                                                                                                             targetTile));
-                    // objectOccupyingBathroomObjectToRemove.Add(firstBroFound);
-                    // objectOccupyingBathroomObjectToRemove.Add(secondBroFound);
-                    
+                                                                                                                                            
                     firstBroFound = null;
                     secondBroFound = null;
                     

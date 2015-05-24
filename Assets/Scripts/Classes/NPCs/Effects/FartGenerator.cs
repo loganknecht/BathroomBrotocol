@@ -6,20 +6,20 @@ public class FartGenerator : BathroomTileBlockerGenerator {
     public bool durationIsStochastic = false;
     public float minDuration = 1f;
     public float maxDuration = 5f;
-
+    
     // Use this for initialization
-    public override void Start () {
+    public override void Start() {
         base.Start();
+        
         type = BathroomTileBlockerType.Fart;
-        ResetStochasticVariables();
     }
-
+    
     // Update is called once per frame
-    public override void Update () {
+    public override void Update() {
         base.Update();
     }
-
-    public override void ResetStochasticVariables() {
+    
+    public override void SetRandomGenerationFrequency() {
         if(generationFrequencyIsStochastic) {
             generationFrequency = Random.Range(minGenerationFrequency, maxGenerationFrequency);
         }

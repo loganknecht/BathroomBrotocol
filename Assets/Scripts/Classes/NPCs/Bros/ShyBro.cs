@@ -55,7 +55,7 @@ public class ShyBro : Bro {
                     }
                 }
                 
-                selectableReference.ResetHighlightObjectAndSelectedState();
+                selectableReference.Reset();
                 speechBubbleReference.displaySpeechBubble = false;
                 
                 if(SelectionManager.Instance.currentlySelectedBroGameObject != null

@@ -92,7 +92,7 @@ public class SelectionManager : MonoBehaviour {
                     }
                     broRef.SetTargetObjectAndTargetPosition(currentlySelectedBathroomObject, movementNodes);
                     broRef.selectableReference.isSelected = false;
-                    broRef.selectableReference.ResetHighlightObjectAndSelectedState();
+                    broRef.selectableReference.Reset();
                     
                     broRef.state = BroState.MovingToTargetObject;
                     EntranceQueueManager.Instance.RemoveBroFromEntranceQueues(currentlySelectedBroGameObject);

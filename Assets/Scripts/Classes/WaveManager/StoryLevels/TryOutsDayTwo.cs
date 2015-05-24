@@ -52,33 +52,33 @@ public class TryOutsDayTwo : WaveLogic, WaveLogicContract {
         }));
         //----------------------------------------------------------------------
         PerformWaveStates(CreateWaveState("Bro Test Wave State", () => {
-            Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
-            Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
+            // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
+            // Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
             
-            BroDistributionObject firstWave = new BroDistributionObject(0,
-                                                                        1,
-                                                                        1,
-                                                                        DistributionType.LinearIn,
-                                                                        DistributionSpacing.Uniform,
-                                                                        broProbabilities,
-                                                                        entranceQueueProbabilities);
-            firstWave.broConfigurer
-            .SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
-            .SetXMoveSpeed(BroDistribution.AllBros, 2.5f, 2.5f)
-            .SetYMoveSpeed(BroDistribution.AllBros , 2.5f, 2.5f)
-            .SetFightProbability(BroDistribution.AllBros, 0f, 0f)
-            .SetLineQueueSkipType(BroDistribution.AllBros, true)
-            .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
-            .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
-            .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
+            // BroDistributionObject firstWave = new BroDistributionObject(0,
+            //                                                             1,
+            //                                                             1,
+            //                                                             DistributionType.LinearIn,
+            //                                                             DistributionSpacing.Uniform,
+            //                                                             broProbabilities,
+            //                                                             entranceQueueProbabilities);
+            // firstWave.broConfigurer
+            // .SetReliefType(BroDistribution.AllBros, new ReliefRequired[] { ReliefRequired.Pee, ReliefRequired.Poop })
+            // .SetXMoveSpeed(BroDistribution.AllBros, 2.5f, 2.5f)
+            // .SetYMoveSpeed(BroDistribution.AllBros , 2.5f, 2.5f)
+            // .SetFightProbability(BroDistribution.AllBros, 0f, 0f)
+            // .SetLineQueueSkipType(BroDistribution.AllBros, true)
+            // .SetChooseObjectOnLineSkip(BroDistribution.AllBros, false)
+            // .SetStartRoamingOnArrivalAtBathroomObjectInUse(BroDistribution.AllBros, false)
+            // .SetChooseObjectOnRelief(BroDistribution.AllBros, false);
             
-            BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
-                firstWave
-            });
-            Completed();
+            // BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
+            //     firstWave
+            // });
+            // Completed();
         }));
         //----------------------------------------------------------------------
-        PerformWaveStates(CreateDelayState("Delay", 60f));
+        PerformWaveStates(CreateDelayState("Delay", 240));
         //----------------------------------------------------------------------
         PerformWaveStatesAndWait(CreateWaveState("Cinematic Complete", () => {
             Debug.Log("Cinematic Complete!");

@@ -23,7 +23,6 @@ public class BathroomFacing : MonoBehaviour {
             if(facing != Facing.None) {
                 animatorReference.SetBool(facing.ToString(), true);
             }
-            // animatorReference.SetBool("None", false);
         }
         return animatorReference;
     }

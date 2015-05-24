@@ -164,11 +164,11 @@ public class BroManager : MonoBehaviour {
             if(ignoreCurrentlySelectedBro
                 && SelectionManager.Instance.currentlySelectedBroGameObject != null) {
                 if(broObject.GetInstanceID() != SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-                    broObject.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
+                    broObject.GetComponent<Bro>().selectableReference.Reset();
                 }
             }
             else {
-                broObject.GetComponent<Bro>().selectableReference.ResetHighlightObjectAndSelectedState();
+                broObject.GetComponent<Bro>().selectableReference.Reset();
             }
         }
     }

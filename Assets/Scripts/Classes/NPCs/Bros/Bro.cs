@@ -269,40 +269,6 @@ public class Bro : MonoBehaviour {
         }
     }
     
-    // public override void PopMovementNode() {
-    //     if(movementNodes.Count > 0) {
-    //         //Debug.Log("Arrived at: " + targetPosition.x + ", " + targetPosition.y);
-    //         GameObject currentBroTileGameObject = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x, this.gameObject.transform.position.y, false);
-    //         BathroomTile currentBroTile = null;
-    //         if(currentBroTileGameObject != null) {
-    //             currentBroTile = currentBroTileGameObject.GetComponent<BathroomTile>();
-    //         }
-    
-    //         GameObject nextNode = movementNodes[0];
-    //         BathroomTile nextTile = nextNode.GetComponent<BathroomTile>();
-    
-    //         if((nextTile != null
-    //                 && (nextTile.bathroomTileBlockers.Count == 0 || currentBroTile == nextTile))
-    //             || (state == BroState.MovingToTargetObject
-    //                 && targetObject != null
-    //                 && targetObject.GetComponent<BathroomObject>() != null
-    //                 && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit)) {
-    //             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
-    //             // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
-    //             movementNodes.RemoveAt(0);
-    //             // Destroy(nextNode);
-    //             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
-    //         }
-    //         else {
-    //             movementNodes.Clear();
-    //             state = BroState.Roaming;
-    //         }
-    //     }
-    //     if(movementNodes == null) {
-    //         Debug.Log("movemeNodes is null for " + this.gameObject.name);
-    //     }
-    // }
-    
     // Returns the base probablity of fighting plus the modifier based on the score
     public virtual float GetFightProbability() {
         if(modifyBroFightProbablityUsingScoreRatio) {
@@ -384,33 +350,7 @@ public class Bro : MonoBehaviour {
     
     public virtual void UpdateAnimator() {
         if(animatorReference != null) {
-            //------------------------------------------------------------------
-            // base.UpdateAnimator();
-            //------------------------------------------------------------------
-            
-            // Sets bathroom facing state flags
-            if(state != BroState.Standing
-                && targetPathingReference.directionBeingLookedAt != Facing.None) {
-                bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
-            }
             bathroomFacing.UpdateAnimatorWithFacing(animatorReference);
-            
-            //------------------------------------------------------------------
-            // animatorReference.SetBool(BroState.Fighting.ToString(), false);
-            // animatorReference.SetBool(BroState.InAQueue.ToString(), false);
-            // animatorReference.SetBool(BroState.MovingToTargetObject.ToString(), false);
-            // animatorReference.SetBool(BroState.OccupyingObject.ToString(), false);
-            // animatorReference.SetBool(BroState.Roaming.ToString(), false);
-            // animatorReference.SetBool(BroState.Standing.ToString(), false);
-            // animatorReference.SetBool(BroState.Standoff.ToString(), false);
-            //------------------------------------------------------------------
-            //Sets bro state flags
-            foreach(BroState broState in BroState.GetValues(typeof(BroState))) {
-                animatorReference.SetBool(broState.ToString(), false);
-            }
-            animatorReference.SetBool(state.ToString(), true);
-            
-            animatorReference.SetBool("None", false);
         }
     }
     
@@ -473,7 +413,7 @@ public class Bro : MonoBehaviour {
                             bathObjRef.AddBro(this.gameObject);
                             
                             selectableReference.canBeSelected = false;
-                            selectableReference.ResetHighlightObjectAndSelectedState();
+                            selectableReference.Reset();
                             speechBubbleReference.displaySpeechBubble = false;
                             
                             if(SelectionManager.Instance.currentlySelectedBroGameObject != null
@@ -682,12 +622,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -758,12 +692,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -896,13 +824,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -973,12 +894,6 @@ public class Bro : MonoBehaviour {
         
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -1115,12 +1030,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -1140,12 +1049,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterDriedHands) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         
         colliderReference.enabled = false;
@@ -1188,12 +1091,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         
         colliderReference.enabled = true;
@@ -1214,12 +1111,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterDriedHands) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = false;
         selectableReference.canBeSelected = false;
@@ -1330,12 +1221,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -1354,12 +1239,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterDriedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = false;
@@ -1406,12 +1285,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterWashedHands) {
-        //   SetRandomBathroomObjectTarget(true, BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
@@ -1430,12 +1303,6 @@ public class Bro : MonoBehaviour {
         bathObjRef.state = BathroomObjectState.Broken;
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
-        // if(chooseRandomBathroomObjectAfterDriedHands) {
-        //   SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
-        // }
-        // else {
-        //   state = BroState.Roaming;
-        // }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = false;
@@ -1541,19 +1408,11 @@ public class Bro : MonoBehaviour {
             state = BroState.Roaming;
         }
     }
-    // public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, params BathroomObjectType[] bathroomObjectTypesToTarget) {
-    //     SetRandomBathroomObjectTarget(chooseOpenBathroomObject, AStarManager.Instance.GetListCopyOfAllClosedNodes(), bathroomObjectTypesToTarget);
-    // }
     
     public void SetRandomBathroomObjectTarget(bool chooseOpenBathroomObject, List<GameObject> astarClosedNodesToUse, params BathroomObjectType[] bathroomObjectTypesToTarget) {
         BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.gameObject.transform.position.x,
                                                                                          this.gameObject.transform.position.y,
                                                                                          true).GetComponent<BathroomTile>();
-        // Debug.Log(broTile);
-        
-        // List<GameObject> objects = BathroomObjectManager.Instance.GetAllBathroomObjectsOfSpecificType(bathroomObjectTypesToTarget);
-        // int selectedObject = Random.Range(0, objects.Count);
-        // GameObject randomObject = objects[selectedObject];
         GameObject randomObject = null;
         if(chooseOpenBathroomObject) {
             randomObject = BathroomObjectManager.Instance.GetRandomOpenBathroomObjectOfSpecificType(bathroomObjectTypesToTarget);
@@ -1563,10 +1422,6 @@ public class Bro : MonoBehaviour {
         }
         
         if(randomObject != null) {
-            // BathroomTile randomObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(randomObject.transform.position.x,
-            //                                                                                           randomObject.transform.position.y,
-            //                                                                                           true).GetComponent<BathroomTile>();
-            // BathroomTile randomObjectTile = randomObject.GetComponent<BathroomObject>().GetBathroomTileIn().GetComponent<BathroomTile>();
             BathroomObject bathObjRef = randomObject.GetComponent<BathroomObject>();
             BathroomTile randomObjectTile = bathObjRef.GetBathroomTileIn().GetComponent<BathroomTile>();
             
@@ -1576,8 +1431,6 @@ public class Bro : MonoBehaviour {
                                                                                       randomObjectTile);
             state = BroState.MovingToTargetObject;
             SetTargetObjectAndTargetPosition(randomObject, movementNodes);
-            
-            // Debug.Log("number of movementNodes: " + movementNodes.Count);
         }
         else {
             state = BroState.Roaming;
@@ -1602,15 +1455,11 @@ public class Bro : MonoBehaviour {
         this.gameObject.transform.position = new Vector3(targetPathingReference.targetTile.transform.position.x + tileOffset.x,
                                                          targetPathingReference.targetTile.transform.position.y + tileOffset.y,
                                                          this.gameObject.transform.position.z);
-        // return tileMapToSetPositions;
     }
     
-    public void UpdateAllTilesIsometricDisplay() {
-        // return tilesToUpdate;
-    }
-    //----------------------------------------------------------------------------
-    // Brotocol Score Logic Goes Here
-    //----------------------------------------------------------------------------
+    //=========================================================================
+    // Score Logic
+    //=========================================================================
     //This is being checked on arrival before switching to occupying an object
     public virtual void PerformOnArrivalBrotocolScoreCheck() {
         GameObject targetObject = GetTargetObject();
@@ -1792,7 +1641,7 @@ public class Bro : MonoBehaviour {
         }
     }
     
-    //=========================================================================
+    // This should really be removed to a separate component or something...
     public virtual void PerformEnteredScore() {
         ScoreManager.Instance.GetPlayerScoreTracker().PerformBroEnteredScore(type);
     }
