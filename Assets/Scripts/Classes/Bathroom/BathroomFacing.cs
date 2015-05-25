@@ -13,7 +13,7 @@ public class BathroomFacing : MonoBehaviour {
         return facing;
     }
     
-    public Animator UpdateAnimatorWithFacing(Animator animatorReference) {
+    public void UpdateAnimatorWithFacing(Animator animatorReference) {
         if(animatorReference != null) {
             foreach(Facing bathroomFacing in Facing.GetValues(typeof(Facing))) {
                 if(bathroomFacing != Facing.None) {
@@ -24,6 +24,5 @@ public class BathroomFacing : MonoBehaviour {
                 animatorReference.SetBool(facing.ToString(), true);
             }
         }
-        return animatorReference;
     }
 }

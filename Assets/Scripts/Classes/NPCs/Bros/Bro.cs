@@ -81,6 +81,7 @@ public class Bro : MonoBehaviour {
             SpeechBubbleLogic();
             FightTimerLogic();
             Logic();
+            bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
             UpdateAnimator();
         }
     }
@@ -351,6 +352,15 @@ public class Bro : MonoBehaviour {
     
     public virtual void UpdateAnimator() {
         if(animatorReference != null) {
+            foreach(BroState broState in BroState.GetValues(typeof(BroState))) {
+                if(broState != BroState.None) {
+                    animatorReference.SetBool(broState.ToString(), false);
+                }
+            }
+            if(state != BroState.None) {
+                animatorReference.SetBool(state.ToString(), true);
+            }
+            
             bathroomFacing.UpdateAnimatorWithFacing(animatorReference);
         }
     }
@@ -464,6 +474,7 @@ public class Bro : MonoBehaviour {
             }
         }
     }
+    
     public virtual void MovingToTargetObjectLogic() {
         ArrivalLogic();
     }
@@ -504,17 +515,15 @@ public class Bro : MonoBehaviour {
     //===========================================================================
     public virtual void ReliefLogic(GameObject objectRelievedIn) {
         BathroomObject bathObjRef = objectRelievedIn.GetComponent<BathroomObject>();
+        bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
         hasRelievedSelf = true;
-        
         if(chooseRandomBathroomObjectAfterRelieved) {
             SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
         }
         else {
             state = BroState.Roaming;
         }
-        bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
-        
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
         speechBubbleReference.displaySpeechBubble = true;
@@ -541,13 +550,15 @@ public class Bro : MonoBehaviour {
     //===========================================================================
     public virtual void WashHandsLogic(GameObject objectHandsWashedIn) {
         BathroomObject bathObjRef = objectHandsWashedIn.GetComponent<BathroomObject>();
-        
-        hasWashedHands = true;
-        
-        bathObjRef.state = BathroomObjectState.Broken;
-        
         bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
         
+        hasWashedHands = true;
+        if(chooseRandomBathroomObjectAfterWashedHands) {
+            SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.HandDryer, BathroomObjectType.Sink, BathroomObjectType.Stall, BathroomObjectType.Urinal);
+        }
+        else {
+            state = BroState.Roaming;
+        }
         SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
         colliderReference.enabled = true;
         selectableReference.canBeSelected = true;
