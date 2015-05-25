@@ -81,7 +81,9 @@ public class Bro : MonoBehaviour {
             SpeechBubbleLogic();
             FightTimerLogic();
             Logic();
-            bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
+            if(targetPathingReference.directionBeingLookedAt != Facing.None) {
+                bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
+            }
             UpdateAnimator();
         }
     }
