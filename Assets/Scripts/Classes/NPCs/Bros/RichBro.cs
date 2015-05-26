@@ -2,14 +2,9 @@
 using System.Collections;
 
 public class RichBro : Bro {
-
-    // protected override void Awake() {
-    //     base.Awake();
-    //     type = BroType.RichBro;
-    // }
-    public override void Awake() {
+    protected override void Awake() {
         base.Awake();
-        // type = BroType.RichBro;
+        type = BroType.RichBro;
     }
     
     // Use this for initialization

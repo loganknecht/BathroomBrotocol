@@ -10,8 +10,8 @@ public enum BroType {
     GassyBro,
     GenericBro,
     // Hobro,
-    // RichBro,
+    RichBro,
     ShyBro,
     SlobBro,
-    // TimeWasterBro
+    TimeWasterBro
 }

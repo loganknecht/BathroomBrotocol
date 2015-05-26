@@ -2,14 +2,11 @@
 using System.Collections;
 
 public class GenericBro : Bro {
-    // protected override void Awake() {
-    //     base.Awake();
-    //     type = BroType.GenericBro;
-    // }
-    public override void Awake() {
+    protected override void Awake() {
         base.Awake();
         type = BroType.GenericBro;
     }
+    
     // Use this for initialization
     public override void Start() {
         base.Start();

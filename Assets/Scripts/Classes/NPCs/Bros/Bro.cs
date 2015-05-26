@@ -1,11 +1,11 @@
-﻿// using FullInspector;
+﻿using FullInspector;
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// public class Bro : BaseBehavior {
-public class Bro : MonoBehaviour {
+public class Bro : BaseBehavior {
+// public class Bro : MonoBehaviour {
     public TargetPathing targetPathingReference = null;
     public Animator animatorReference = null;
     public BathroomFacing bathroomFacing;
@@ -49,7 +49,7 @@ public class Bro : MonoBehaviour {
     
     public Color selectionColor = Color.white;
     
-    public virtual void Awake() {
+    protected override void Awake() {
         InitializeOccupationDuration();
         InitializeComponents();
     }
@@ -396,6 +396,8 @@ public class Bro : MonoBehaviour {
         }
     }
     
+    // TODO: Convert this so that it's relying on a function configured and attached to the
+    //       target moving script
     public virtual void ArrivalLogic() {
         if(IsAtTargetPosition()) {
             GameObject targetObject = GetTargetObject();

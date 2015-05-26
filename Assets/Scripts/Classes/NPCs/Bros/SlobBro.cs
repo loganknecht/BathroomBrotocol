@@ -4,11 +4,7 @@ using System.Collections.Generic;
 
 public class SlobBro : Bro {
 
-    // protected override void Awake() {
-    //     base.Awake();
-    //     type = BroType.SlobBro;
-    // }
-    public override void Awake() {
+    protected override void Awake() {
         base.Awake();
         type = BroType.SlobBro;
     }

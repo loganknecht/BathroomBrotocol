@@ -3,11 +3,7 @@ using System.Collections;
 
 public class GassyBro : Bro {
 
-    // protected override void Awake() {
-    //     base.Awake();
-    //     type = BroType.GassyBro;
-    // }
-    public override void Awake() {
+    protected override void Awake() {
         base.Awake();
         type = BroType.GassyBro;
     }

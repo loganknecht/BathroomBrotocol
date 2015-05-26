@@ -8,7 +8,7 @@ public class DrunkBro : Bro {
     public GameObject bathroomTileBlockerGeneratorGameObject = null;
     BathroomTileBlockerGenerator bathroomTileBlockerGenerator = null;
     
-    public override void Awake() {
+    protected override void Awake() {
         base.Awake();
         
         bathroomTileBlockerGenerator = bathroomTileBlockerGeneratorGameObject.GetComponent<BathroomTileBlockerGenerator>();
