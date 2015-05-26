@@ -410,46 +410,35 @@ public class Bro : MonoBehaviour {
                     
                     BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
                     
-                    if(bathObjRef.IsBroken()) {
+                    // if broken
+                    // OR if startRoamingOnArrivalAtBathroomObjectInUse is true and there is another occupant
+                    if(bathObjRef.IsBroken()
+                        || (bathObjRef.objectsOccupyingBathroomObject.Count > 0
+                            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+                            && startRoamingOnArrivalAtBathroomObjectInUse)) {
                         state = BroState.Roaming;
                     }
                     else {
-                        if(bathObjRef.objectsOccupyingBathroomObject.Count > 0
-                            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-                            && startRoamingOnArrivalAtBathroomObjectInUse) {
-                            state = BroState.Roaming;
+                        broScoreLogic.OnArrivalBrotocolScoreCheck(GetTargetObject());
+                        
+                        //Adds bro to occupation list
+                        bathObjRef.AddBro(this.gameObject);
+                        
+                        selectableReference.canBeSelected = false;
+                        selectableReference.Reset();
+                        speechBubbleReference.displaySpeechBubble = false;
+                        
+                        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                            && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                            SelectionManager.Instance.currentlySelectedBroGameObject = null;
                         }
-                        else {
-                            broScoreLogic.OnArrivalBrotocolScoreCheck(GetTargetObject());
-                            
-                            //Adds bro to occupation list
-                            bathObjRef.AddBro(this.gameObject);
-                            
-                            selectableReference.canBeSelected = false;
-                            selectableReference.Reset();
-                            speechBubbleReference.displaySpeechBubble = false;
-                            
-                            if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-                                && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-                                SelectionManager.Instance.currentlySelectedBroGameObject = null;
-                            }
-                            
-                            state = BroState.OccupyingObject;
-                        }
+                        
+                        state = BroState.OccupyingObject;
                     }
                 }
             }
             else {
-                if(targetObject != null
-                    && targetObject.GetComponent<BathroomObject>().type == BathroomObjectType.Exit) {
-                    // Do not roam on move to exit? That's weird though....
-                    // Should be removed by default... so moving to exit
-                    // shouldn't matter?
-                }
-                else {
-                    // Debug.Log("lol starting to roam");
-                    state = BroState.Roaming;
-                }
+                state = BroState.Roaming;
             }
         }
     }

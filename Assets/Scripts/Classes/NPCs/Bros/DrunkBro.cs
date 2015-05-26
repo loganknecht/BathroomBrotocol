@@ -58,117 +58,61 @@ public class DrunkBro : Bro {
             bathroomTileBlockerGenerator.enabled = false;
             ExitBathroom();
         }
-        else {
-            // if(state != BroState.InAQueue
-            //     && state != BroState.Standoff
-            //     && state != BroState.Fighting
-            //     && state != BroState.OccupyingObject) {
-            //     bathroomTileBlockerGenerator.enabled = true;
-            // }
-            // else {
-            //     bathroomTileBlockerGenerator.enabled = false;
-            // }
-        }
-    }
-    //==========================================================================
-    public override void ReliefLogic(GameObject objectRelievedIn) {
-        BathroomObject bathObjRef = objectRelievedIn.GetComponent<BathroomObject>();
-        
-        hasRelievedSelf = true;
-        
-        bathObjRef.RemoveBroAndIncrementUsedCount(this.gameObject);
-        
-        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
-        
-        colliderReference.enabled = false;
-        selectableReference.canBeSelected = false;
-        speechBubbleReference.displaySpeechBubble = true;
-        speechBubbleReference.speechBubbleImage = SpeechBubbleImage.WashHands;
-        reliefRequired = ReliefRequired.WashHands;
-    }
-    // public override void ReliefScore(GameObject objectRelievedIn) {
-    //     BathroomObject bathObjRef = objectRelievedIn.GetComponent<BathroomObject>();
-    
-    //     if(reliefRequired == ReliefRequired.Pee) {
-    //         bathObjRef.state = BathroomObjectState.BrokenByPee;
-    //         broScoreLogic.BrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
-    //     }
-    //     else if(reliefRequired == ReliefRequired.Poop) {
-    //         bathObjRef.state = BathroomObjectState.BrokenByPoop;
-    //         broScoreLogic.BrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
-    //     }
-    //     else if(reliefRequired == ReliefRequired.Vomit) {
-    //         bathObjRef.state = BathroomObjectState.Broken;
-    //         broScoreLogic.BrokeByOutOfOrderUseBathroomObjectScore(bathObjRef.type);
-    //     }
-    // }
-    //===========================================================================
-    public override void ExitOccupationFinishedLogic() {
-        base.ExitOccupationFinishedLogic();
-    }
-    //===========================================================================
-    public override void RelievedInOutOfOrderHandDryer() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-    }
-    public override void RelievedInWorkingHandDryer() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-    }
-    //===========================================================================
-    public override void RelievedInOutOfOrderSink() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-    }
-    public override void RelievedInWorkingSink() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-    }
-//===========================================================================
-    public override void RelievedInOutOfOrderStall() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-        
-        SoundManager.Instance.Play(AudioType.Flush1);
-    }
-    public override void RelievedInWorkingStall() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-        
-        SoundManager.Instance.Play(AudioType.Flush1);
-    }
-    //===========================================================================
-    public override void RelievedInOutOfOrderUrinal() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-        
-        SoundManager.Instance.Play(AudioType.Flush2);
-    }
-    public override void RelievedInWorkingUrinal() {
-        ReliefLogic(GetTargetObject());
-        broScoreLogic.BathroomObjectUsedScore();
-        
-        SoundManager.Instance.Play(AudioType.Flush2);
     }
     //--------------------------------------------------------------------------
-    //This is being checked on arrival before switching to occupying an object
-    // public override void OnArrivalBrotocolScoreCheck() {
-    // bool brotocolWasSatisfied = false;
-    
-    // // As long as the target object is not null and it's not a bathroom exit
-    // if(targetObject != null
-    //  && targetObject.GetComponent<BathroomObject>() != null
-    //  && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit) {
-    //   if(!hasRelievedSelf) {
-    //     if(CheckIfRelievedSelfBeforeTimeOut()) {
-    //       ScoreManager.Instance.IncrementScoreTracker(ScoreType.DrunkBroBrotocolRelievedSelfBeforeTimeOut);
-    //       brotocolWasSatisfied = true;
-    //     }
-    //   }
-    // }
-    
-    // if(brotocolWasSatisfied) {
-    //   SpriteEffectManager.Instance.GenerateSpriteEffectType(SpriteEffectType.BrotocolAchieved, targetObject.transform.position);
-    // }
-    // }
+    public override void ArrivalLogic() {
+        if(IsAtTargetPosition()) {
+            GameObject targetObject = GetTargetObject();
+            if(targetObject != null
+                && targetObject.GetComponent<BathroomObject>() != null) {
+                // Debug.Log("target object is not null");
+                BathroomTile broTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(this.transform.position.x, this.transform.position.y, false).GetComponent<BathroomTile>();
+                BathroomTile targetObjectTile = BathroomTileMap.Instance.GetTileGameObjectByWorldPosition(targetObject.transform.position.x, targetObject.transform.position.y, true).GetComponent<BathroomTile>();
+                
+                if(broTile.tileX == targetObjectTile.tileX
+                    && broTile.tileY == targetObjectTile.tileY) {
+                    
+                    BathroomObject bathObjRef = targetObject.GetComponent<BathroomObject>();
+                    
+                    // if broken
+                    // OR if startRoamingOnArrivalAtBathroomObjectInUse is true and there is another occupant
+                    if(bathObjRef.IsBroken()
+                        || (bathObjRef.objectsOccupyingBathroomObject.Count > 0
+                            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+                            && startRoamingOnArrivalAtBathroomObjectInUse)) {
+                        state = BroState.Roaming;
+                    }
+                    else {
+                        broScoreLogic.OnArrivalBrotocolScoreCheck(GetTargetObject());
+                        
+                        //Adds bro to occupation list
+                        bathObjRef.AddBro(this.gameObject);
+                        
+                        selectableReference.canBeSelected = false;
+                        selectableReference.Reset();
+                        speechBubbleReference.displaySpeechBubble = false;
+                        
+                        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                            && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                            SelectionManager.Instance.currentlySelectedBroGameObject = null;
+                        }
+                        
+                        state = BroState.OccupyingObject;
+                        
+                        //--------------------------------
+                        // Stops the vomit generation from continuing
+                        bathroomTileBlockerGenerator.enabled = false;
+                    }
+                }
+            }
+            else {
+                state = BroState.Roaming;
+            }
+        }
+    }
+    //--------------------------------------------------------------------------
+    public override void ReliefLogic(GameObject objectRelievedIn) {
+        base.ReliefLogic(objectRelievedIn);
+        SetRandomBathroomObjectTarget(true, AStarManager.Instance.GetListCopyOfAllClosedNodes(), BathroomObjectType.Exit);
+    }
 }
