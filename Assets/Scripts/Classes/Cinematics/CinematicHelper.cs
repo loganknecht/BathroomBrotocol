@@ -143,9 +143,9 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     
-//--------------------------------------------------------------------------
-// Target Pathing Logic
-//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Target Pathing Logic
+    //--------------------------------------------------------------------------
     public CinematicHelper TargetObjectAndTargetPosition(GameObject newTargetObject, Vector3 newTargetPathingPosition) {
         TargetPathing targetPathing = currentGameObject.GetComponent<TargetPathing>();
         if(targetPathing != null) {
@@ -157,7 +157,7 @@ public class CinematicHelper : MonoBehaviour {
         currentGameObject.GetComponent<TargetPathing>().SetMoveSpeed(xMoveSpeed, yMoveSpeed);
         return this;
     }
-    public CinematicHelper OnArrivalAtTargetPositionLogic(TargetPathing.OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
+    public CinematicHelper OnArrivalAtTargetPositionLogic(System.Action newOnArrivalAtTargetPositionLogic) {
         currentGameObject.GetComponent<TargetPathing>().AddOnArrivalAtTargetPositionLogic(newOnArrivalAtTargetPositionLogic);
         return this;
     }

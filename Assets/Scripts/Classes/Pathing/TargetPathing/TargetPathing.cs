@@ -22,21 +22,17 @@ public class TargetPathing : BaseBehavior {
     public bool isPaused = false;
     public bool disableMovementLogic = false;
     
-    public delegate void OnArrivalAtMovementNode();
-    public OnArrivalAtMovementNode onArrivalAtMovementNodeLogic = null;
-    
-    public delegate void OnArrivalAtTargetPosition();
-    public List<OnArrivalAtTargetPosition> onArrivalAtTargetPositionLogics = null;
-    public bool performedOnArrivalAtTargetPosition = false;
-    
-    public delegate void OnPopMovementNode();
-    public OnPopMovementNode onPopMovementNodeLogic = null;
+    public CustomEvents<System.Action> onArrivalAtMovementNodeLogic = null;
+    public CustomEvents<System.Action> onArrivalAtTargetPosition = null;
+    public CustomEvents<System.Action> onPopMovementNodeLogic = null;
     
     protected override void Awake() {
         base.Awake();
         
         movementNodes = new List<GameObject>();
-        onArrivalAtTargetPositionLogics = new List<OnArrivalAtTargetPosition>();
+        onArrivalAtMovementNodeLogic = new CustomEvents<System.Action>();
+        onArrivalAtTargetPosition = new CustomEvents<System.Action>();
+        onPopMovementNodeLogic = new CustomEvents<System.Action>();
     }
     
     // Use this for initialization
@@ -115,14 +111,12 @@ public class TargetPathing : BaseBehavior {
             movementNodes = new List<GameObject>();
         }
         movementNodes.AddRange(newMovementNodes);
-        performedOnArrivalAtTargetPosition = false;
         
         return this;
     }
     
     public TargetPathing SetMovementNodes(List<GameObject> newMovementNodes) {
         movementNodes = newMovementNodes;
-        performedOnArrivalAtTargetPosition = false;
         return this;
     }
     
@@ -163,7 +157,6 @@ public class TargetPathing : BaseBehavior {
     }
     
     public virtual TargetPathing SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
-        performedOnArrivalAtTargetPosition = false;
         SetTargetObject(newTargetObject);
         SetMovementNodes(newMovementNodes);
         PopMovementNode();
@@ -178,18 +171,18 @@ public class TargetPathing : BaseBehavior {
         return this;
     }
     
-    public TargetPathing AddOnArrivalAtTargetPositionLogic(OnArrivalAtTargetPosition newOnArrivalAtTargetPositionLogic) {
-        onArrivalAtTargetPositionLogics.Add(new OnArrivalAtTargetPosition(newOnArrivalAtTargetPositionLogic));
+    public TargetPathing AddOnArrivalAtTargetPositionLogic(System.Action newOnArrivalAtTargetPositionLogic, bool loop = false) {
+        onArrivalAtTargetPosition.Add(newOnArrivalAtTargetPositionLogic, loop);
         return this;
     }
     
-    public TargetPathing AddOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode newOnArrivalAtMovementNodeLogic) {
-        onArrivalAtMovementNodeLogic = new OnArrivalAtMovementNode(newOnArrivalAtMovementNodeLogic);
+    public TargetPathing AddOnArrivalAtMovementNodeLogic(System.Action newOnArrivalAtMovementNodeLogic, bool loop = false) {
+        onArrivalAtMovementNodeLogic.Add(newOnArrivalAtMovementNodeLogic, loop);
         return this;
     }
     
-    public TargetPathing AddOnPopMovementNodeLogic(OnPopMovementNode newOnPopMovementNodeLogic) {
-        onPopMovementNodeLogic = new OnPopMovementNode(newOnPopMovementNodeLogic);
+    public TargetPathing AddOnPopMovementNodeLogic(System.Action newOnPopMovementNodeLogic, bool loop = false) {
+        onPopMovementNodeLogic.Add(newOnPopMovementNodeLogic, loop);
         return this;
     }
     
@@ -229,27 +222,15 @@ public class TargetPathing : BaseBehavior {
         
         //performs check to pop new node from the movemeNodes list
         if(IsAtMovementNodePosition()) {
-            if(onArrivalAtMovementNodeLogic != null) {
-                onArrivalAtMovementNodeLogic();
-            }
+            onArrivalAtMovementNodeLogic.Execute();
             
             //Debug.Log("object at position");
             PopMovementNode();
         }
         
         //performs check
-        if(!performedOnArrivalAtTargetPosition
-            && IsAtTargetPosition()) {
-            performedOnArrivalAtTargetPosition = true;
-            if(onArrivalAtTargetPositionLogics.Count > 0) {
-                foreach(OnArrivalAtTargetPosition onArrivalAtTargetPositionLogic in onArrivalAtTargetPositionLogics) {
-                    onArrivalAtTargetPositionLogic();
-                }
-                onArrivalAtTargetPositionLogics.Clear();
-            }
-            // if(onArrivalAtTargetPositionLogic != null) {
-            //     onArrivalAtTargetPositionLogic();
-            // }
+        if(IsAtTargetPosition()) {
+            onArrivalAtTargetPosition.Execute();
         }
     }
     
@@ -264,9 +245,8 @@ public class TargetPathing : BaseBehavior {
             targetPosition = new Vector3(nextNode.transform.position.x, nextNode.transform.position.y, this.transform.position.z);
             // Debug.Log("Set new position to: " + targetPosition.x + ", " + targetPosition.y);
             movementNodes.RemoveAt(0);
-            if(onPopMovementNodeLogic != null) {
-                onPopMovementNodeLogic();
-            }
+            
+            onPopMovementNodeLogic.Execute();
             // Destroy(nextNode);
             // Debug.Log(this.gameObject.name + " has " + movementNodes.Count + " number of movemeNodes");
         }
