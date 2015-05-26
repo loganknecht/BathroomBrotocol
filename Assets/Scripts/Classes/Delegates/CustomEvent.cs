@@ -2,12 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//--------------------------------------------------------------------------
-// Delegate event types go here
-//--------------------------------------------------------------------------
-// public delegate void DelegateEvent();
-// public delegate void DelegateEvent(int x, int y);
-
 public class CustomEvent<T> {
     //--------------------------------------------------------------------------
     public bool loop = false;
@@ -15,22 +9,25 @@ public class CustomEvent<T> {
     public System.Action customDelegate;
     
     //--------------------------------------------------------------------------
-    public static CustomEvent<T> Create(System.Action newOnDelegateEvent, bool loop = false) {
+    public static CustomEvent<T> Create() {
+        // public static CustomEvent<T> Create(System.Action newOnDelegateEvent, bool loop = false) {
+        // newDelegateEvent.SetEvent(newOnDelegateEvent);
+        // newDelegateEvent.SetLoop(loop);
         CustomEvent<T> newDelegateEvent = new CustomEvent<T>();
-        newDelegateEvent.SetEvent(newOnDelegateEvent);
-        newDelegateEvent.SetLoop(loop);
         return newDelegateEvent;
     }
     //--------------------------------------------------------------------------
-    public void SetLoop(bool newLoopState) {
+    public CustomEvent<T> SetLoop(bool newLoopState) {
         loop = newLoopState;
+        return this;
     }
     public bool ShouldLoop() {
         return loop;
     }
     //--------------------------------------------------------------------------
-    public void SetEvent(System.Action newDelegateEvent) {
+    public CustomEvent<T> SetEvent(System.Action newDelegateEvent) {
         customDelegate = newDelegateEvent;
+        return this;
     }
     public System.Action GetEvent() {
         return customDelegate;
@@ -38,12 +35,5 @@ public class CustomEvent<T> {
     //--------------------------------------------------------------------------
     public void Execute() {
         customDelegate();
-        // Execute(customDelegate);
-        // customDelegate();
     }
-    // public void Execute(DelegateEvent customDelegateFunction) {
-    // customDelegateFunction();
-    // new System.Func<T>();
-    // customDelegate();
-    // }
 }

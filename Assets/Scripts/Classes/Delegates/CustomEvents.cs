@@ -10,7 +10,10 @@ public class CustomEvents<T> {
     }
     
     public void Add(System.Action newOnDelegateEvent, bool loop = false) {
-        Add(CustomEvent<T>.Create(newOnDelegateEvent, loop));
+        CustomEvent<T> newEvent = CustomEvent<T>.Create()
+                                  .SetEvent(newOnDelegateEvent)
+                                  .SetLoop(loop);
+        Add(newEvent);
     }
     
     public void Add(CustomEvent<T> newDelegateEvent) {
