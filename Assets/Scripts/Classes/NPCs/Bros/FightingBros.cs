@@ -1,25 +1,21 @@
-﻿// using FullInspector;
+﻿using FullInspector;
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-// public class FightingBros : BaseBehavior {
-public class FightingBros : MonoBehaviour {
+public class FightingBros : BaseBehavior {
+// public class FightingBros : MonoBehaviour {
     public TargetPathing targetPathingReference = null;
     public List<GameObject> brosFighting;
     public int currentNumberOfTaps = 0;
     public int numberOfTapsNeededToBreakUp = 5;
     public bool isPaused = false;
     
-    // protected override void Awake() {
-    // base.Awake();
-    // brosFighting = new List<GameObject>();
-    // targetPathingReference.AddOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode);
-    // }
-    public void Awake() {
+    protected override void Awake() {
+        base.Awake();
         brosFighting = new List<GameObject>();
-        targetPathingReference.AddOnArrivalAtMovementNodeLogic(OnArrivalAtMovementNode);
+        targetPathingReference.OnArrivalAtTargetPositionLogic(OnArrivalAtMovementNode);
     }
     
     // Use this for initialization

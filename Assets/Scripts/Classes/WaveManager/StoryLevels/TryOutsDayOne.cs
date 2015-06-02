@@ -16,7 +16,6 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
     // Use this for initialization
     public override void Start() {
         base.Start();
-        Initialize();
     }
     
     public override void Initialize() {
@@ -134,6 +133,8 @@ public class TryOutsDayOne : WaveLogic, WaveLogicContract {
             
             Completed();
         }));
+        //----------------------------------------------------------------------
+        PerformWaveStatesAndWait(CreateDelayState("Delay", 20f));
         //----------------------------------------------------------------------
         PerformWaveStatesAndWait(CreateWaveState("Behold", () => {
             TextboxManager.Instance

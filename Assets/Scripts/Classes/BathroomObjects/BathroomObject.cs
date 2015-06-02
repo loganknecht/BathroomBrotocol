@@ -72,6 +72,10 @@ public class BathroomObject : MonoBehaviour {
         // Debug.Log("Derp down");
     }
     
+    public GameObject GetBathroomTileIn() {
+        return bathroomTileIn;
+    }
+    
     public void ResetColliderAndSelectableReference() {
         GetComponent<Collider>().enabled = true;
         selectableReference.isSelected = false;
@@ -90,12 +94,12 @@ public class BathroomObject : MonoBehaviour {
         }
     }
     
-    public GameObject GetBathroomTileIn() {
-        return bathroomTileIn;
-    }
-    
     public void RemoveBro(GameObject broGameObjectToRemove) {
         objectsOccupyingBathroomObject.Remove(broGameObjectToRemove);
+    }
+    
+    public bool ContainsBro(GameObject broGameObject) {
+        return objectsOccupyingBathroomObject.Contains(broGameObject);
     }
     
     public void RemoveBroAndIncrementUsedCount(GameObject broGameObjectToRemove) {

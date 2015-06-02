@@ -18,6 +18,16 @@ public class SpeechBubble : MonoBehaviour {
         UpdateAnimator();
     }
     
+    public SpeechBubble Hide() {
+        Display(false);
+        return this;
+    }
+    
+    public SpeechBubble Show() {
+        Display(true);
+        return this;
+    }
+    
     public SpeechBubble Display(bool newDisplaySpeechBubble) {
         displaySpeechBubble = newDisplaySpeechBubble;
         return this;

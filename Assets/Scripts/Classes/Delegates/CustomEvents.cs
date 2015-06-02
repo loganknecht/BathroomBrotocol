@@ -9,6 +9,11 @@ public class CustomEvents<T> {
         allDelegateEvents = new List<CustomEvent<T>>();
     }
     
+    public static CustomEvents<T> Create() {
+        CustomEvents<T> newCustomEvents = new CustomEvents<T>();
+        return newCustomEvents;
+    }
+    
     public void Add(System.Action newOnDelegateEvent, bool loop = false) {
         CustomEvent<T> newEvent = CustomEvent<T>.Create()
                                   .SetEvent(newOnDelegateEvent)

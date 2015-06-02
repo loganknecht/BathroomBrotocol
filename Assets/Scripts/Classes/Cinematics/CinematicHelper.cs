@@ -158,7 +158,7 @@ public class CinematicHelper : MonoBehaviour {
         return this;
     }
     public CinematicHelper OnArrivalAtTargetPositionLogic(System.Action newOnArrivalAtTargetPositionLogic) {
-        currentGameObject.GetComponent<TargetPathing>().AddOnArrivalAtTargetPositionLogic(newOnArrivalAtTargetPositionLogic);
+        currentGameObject.GetComponent<TargetPathing>().OnArrivalAtTargetPositionLogic(newOnArrivalAtTargetPositionLogic);
         return this;
     }
     
@@ -257,7 +257,7 @@ public class CinematicHelper : MonoBehaviour {
         newMovementNodes.AddRange(exitMovementNodes);
         
         targetPathingReference.SetTargetObjectAndTargetPosition(null, newMovementNodes);
-        targetPathingReference.AddOnArrivalAtTargetPositionLogic(() => {
+        targetPathingReference.OnArrivalAtTargetPositionLogic(() => {
             Destroy(currentGameObject);
         });
         

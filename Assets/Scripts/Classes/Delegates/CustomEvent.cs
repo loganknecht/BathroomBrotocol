@@ -7,12 +7,8 @@ public class CustomEvent<T> {
     public bool loop = false;
     
     public System.Action customDelegate;
-    
     //--------------------------------------------------------------------------
     public static CustomEvent<T> Create() {
-        // public static CustomEvent<T> Create(System.Action newOnDelegateEvent, bool loop = false) {
-        // newDelegateEvent.SetEvent(newOnDelegateEvent);
-        // newDelegateEvent.SetLoop(loop);
         CustomEvent<T> newDelegateEvent = new CustomEvent<T>();
         return newDelegateEvent;
     }

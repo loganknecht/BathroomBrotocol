@@ -60,7 +60,7 @@ public class DrunkBro : Bro {
         }
     }
     //--------------------------------------------------------------------------
-    public override void ArrivalLogic() {
+    public override void DefaultArrivalLogic() {
         if(IsAtTargetPosition()) {
             GameObject targetObject = GetTargetObject();
             if(targetObject != null

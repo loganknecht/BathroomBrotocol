@@ -22,17 +22,19 @@ public class TargetPathing : BaseBehavior {
     public bool isPaused = false;
     public bool disableMovementLogic = false;
     
-    public CustomEvents<System.Action> onArrivalAtMovementNodeLogic = null;
+    public bool hasPerformedOnArrivalAtTargetPosition = false;
     public CustomEvents<System.Action> onArrivalAtTargetPosition = null;
+    public CustomEvents<System.Action> onArrivalAtMovementNodeLogic = null;
     public CustomEvents<System.Action> onPopMovementNodeLogic = null;
     
     protected override void Awake() {
         base.Awake();
         
         movementNodes = new List<GameObject>();
-        onArrivalAtMovementNodeLogic = new CustomEvents<System.Action>();
-        onArrivalAtTargetPosition = new CustomEvents<System.Action>();
-        onPopMovementNodeLogic = new CustomEvents<System.Action>();
+        
+        onArrivalAtMovementNodeLogic = CustomEvents<System.Action>.Create();
+        onArrivalAtTargetPosition = CustomEvents<System.Action>.Create();
+        onPopMovementNodeLogic = CustomEvents<System.Action>.Create();
     }
     
     // Use this for initialization
@@ -157,6 +159,7 @@ public class TargetPathing : BaseBehavior {
     }
     
     public virtual TargetPathing SetTargetObjectAndTargetPosition(GameObject newTargetObject, List<GameObject> newMovementNodes) {
+        hasPerformedOnArrivalAtTargetPosition = false;
         SetTargetObject(newTargetObject);
         SetMovementNodes(newMovementNodes);
         PopMovementNode();
@@ -171,17 +174,17 @@ public class TargetPathing : BaseBehavior {
         return this;
     }
     
-    public TargetPathing AddOnArrivalAtTargetPositionLogic(System.Action newOnArrivalAtTargetPositionLogic, bool loop = false) {
+    public TargetPathing OnArrivalAtTargetPositionLogic(System.Action newOnArrivalAtTargetPositionLogic, bool loop = false) {
         onArrivalAtTargetPosition.Add(newOnArrivalAtTargetPositionLogic, loop);
         return this;
     }
     
-    public TargetPathing AddOnArrivalAtMovementNodeLogic(System.Action newOnArrivalAtMovementNodeLogic, bool loop = false) {
+    public TargetPathing OnArrivalAtMovementNodeLogic(System.Action newOnArrivalAtMovementNodeLogic, bool loop = false) {
         onArrivalAtMovementNodeLogic.Add(newOnArrivalAtMovementNodeLogic, loop);
         return this;
     }
     
-    public TargetPathing AddOnPopMovementNodeLogic(System.Action newOnPopMovementNodeLogic, bool loop = false) {
+    public TargetPathing OnPopMovementNodeLogic(System.Action newOnPopMovementNodeLogic, bool loop = false) {
         onPopMovementNodeLogic.Add(newOnPopMovementNodeLogic, loop);
         return this;
     }
@@ -230,7 +233,10 @@ public class TargetPathing : BaseBehavior {
         
         //performs check
         if(IsAtTargetPosition()) {
-            onArrivalAtTargetPosition.Execute();
+            if(!hasPerformedOnArrivalAtTargetPosition) {
+                hasPerformedOnArrivalAtTargetPosition = true;
+                onArrivalAtTargetPosition.Execute();
+            }
         }
     }
     
