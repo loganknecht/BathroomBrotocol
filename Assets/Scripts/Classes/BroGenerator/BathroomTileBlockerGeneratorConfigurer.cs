@@ -26,6 +26,12 @@ public class BathroomTileBlockerGeneratorConfigurer {
     public float defaultMaxGenerationFrequencyMin = 1f;
     public float defaultMaxGenerationFrequencyMax = 5f;
     
+    
+    public BroDistribution broDistributionDefaultAmountToGenerate = BroDistribution.AllBros;
+    public int defaultAmountToGenerate = int.MaxValue;
+    public float defaultAmountToGenerateMin = 1f;
+    public float defaultAmountToGenerateMax = 5f;
+    
     public BathroomTileBlockerGeneratorConfigurer() {
     }
     
@@ -168,6 +174,36 @@ public class BathroomTileBlockerGeneratorConfigurer {
             defaultMaxGenerationFrequency = UnityEngine.Random.Range(defaultMaxGenerationFrequencyMin,
                                                                      defaultMaxGenerationFrequencyMax);
             bathroomTileBlockerGeneratorReference.maxGenerationFrequency = defaultMaxGenerationFrequency;
+            break;
+        default:
+            Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");
+            break;
+        }
+        return this;
+    }
+    //---------------------------------
+    public BathroomTileBlockerGeneratorConfigurer SetAmountToGenerate(BroDistribution broDistribution, float newAmountToGenerateMin, float newAmountToGenerateMax) {
+        broDistributionDefaultAmountToGenerate = broDistribution;
+        defaultAmountToGenerateMin = newAmountToGenerateMin;
+        defaultAmountToGenerateMax = newAmountToGenerateMax;
+        return this;
+    }
+    public BathroomTileBlockerGeneratorConfigurer ConfigureAmountToGenerate(BathroomTileBlockerGenerator bathroomTileBlockerGeneratorReference) {
+        switch(broDistributionDefaultAmountToGenerate) {
+        case(BroDistribution.NoBros):
+            // Do nothing bruh
+            break;
+        case(BroDistribution.AllBros):
+            if(defaultAmountToGenerate == float.PositiveInfinity) {
+                defaultAmountToGenerate = (int)UnityEngine.Random.Range(defaultAmountToGenerateMin,
+                                                                        defaultAmountToGenerateMax);
+            }
+            bathroomTileBlockerGeneratorReference.amountToGenerate = defaultAmountToGenerate;
+            break;
+        case(BroDistribution.RandomBros):
+            defaultAmountToGenerate = (int)UnityEngine.Random.Range(defaultAmountToGenerateMin,
+                                                                    defaultAmountToGenerateMax);
+            bathroomTileBlockerGeneratorReference.amountToGenerate = defaultAmountToGenerate;
             break;
         default:
             Debug.Log("An error occurred in trying to configure a bro generator's generated bro attribute");

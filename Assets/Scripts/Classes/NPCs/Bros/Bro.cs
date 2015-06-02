@@ -77,10 +77,7 @@ public class Bro : BaseBehavior {
             SpeechBubbleLogic();
             FightTimerLogic();
             Logic();
-            if(targetPathingReference.directionBeingLookedAt != Facing.None) {
-                bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
-            }
-            UpdateAnimator();
+            UpdateAnimator(targetPathingReference, animatorReference);
         }
     }
     
@@ -347,7 +344,10 @@ public class Bro : BaseBehavior {
         }
     }
     
-    public virtual void UpdateAnimator() {
+    public virtual void UpdateAnimator(TargetPathing targetPathingReference, Animator animatorReference) {
+        if(targetPathingReference.directionBeingLookedAt != Facing.None) {
+            bathroomFacing.facing = targetPathingReference.directionBeingLookedAt;
+        }
         if(animatorReference != null) {
             foreach(BroState broState in BroState.GetValues(typeof(BroState))) {
                 if(broState != BroState.None) {
@@ -409,32 +409,30 @@ public class Bro : BaseBehavior {
                     && broTile.tileY == targetObjectTile.tileY) {
                     // if broken
                     // OR if startRoamingOnArrivalAtBathroomObjectInUse is true and there is another occupant
-                    if(bathObjRef != null) {
-                        if(bathObjRef.IsBroken()
-                            || (bathObjRef.objectsOccupyingBathroomObject.Count > 0
-                                && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
-                                && startRoamingOnArrivalAtBathroomObjectInUse)) {
-                            state = BroState.Roaming;
+                    if(bathObjRef.IsBroken()
+                        || (bathObjRef.objectsOccupyingBathroomObject.Count > 0
+                            && targetObject.GetComponent<BathroomObject>().type != BathroomObjectType.Exit
+                            && startRoamingOnArrivalAtBathroomObjectInUse)) {
+                        state = BroState.Roaming;
+                    }
+                    else {
+                        // broScoreLogic.OnArrivalBrotocolScoreCheck(GetTargetObject());
+                        
+                        //Adds bro to occupation list
+                        bathObjRef.AddBro(this.gameObject);
+                        // Debug.Log("Adding bro to bathroom object: " + targetObject.name);
+                        
+                        selectableReference.canBeSelected = false;
+                        selectableReference.Reset();
+                        speechBubbleReference.Hide();
+                        
+                        if(SelectionManager.Instance.currentlySelectedBroGameObject != null
+                            && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
+                            SelectionManager.Instance.currentlySelectedBroGameObject = null;
                         }
-                        else {
-                            // broScoreLogic.OnArrivalBrotocolScoreCheck(GetTargetObject());
-                            
-                            //Adds bro to occupation list
-                            bathObjRef.AddBro(this.gameObject);
-                            // Debug.Log("Adding bro to bathroom object: " + targetObject.name);
-                            
-                            selectableReference.canBeSelected = false;
-                            selectableReference.Reset();
-                            speechBubbleReference.Hide();
-                            
-                            if(SelectionManager.Instance.currentlySelectedBroGameObject != null
-                                && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
-                                SelectionManager.Instance.currentlySelectedBroGameObject = null;
-                            }
-                            
-                            state = BroState.OccupyingObject;
-                            // targetPathingReference.disableMovementLogic = true;
-                        }
+                        
+                        state = BroState.OccupyingObject;
+                        // targetPathingReference.disableMovementLogic = true;
                     }
                 }
             }

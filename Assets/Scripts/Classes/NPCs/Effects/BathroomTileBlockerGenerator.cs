@@ -42,7 +42,7 @@ public class BathroomTileBlockerGenerator : MonoBehaviour {
     public virtual void PerformGenerationLogic() {
         if(!HasFinished()) {
             if(generationTimer > generationFrequency) {
-                Debug.Log("Generating.");
+                // Debug.Log("Generating.");
                 generationTimer = 0f;
                 // Does a probability roll to see if the tile blocker should be generated
                 float probabilityRolled = Random.value;

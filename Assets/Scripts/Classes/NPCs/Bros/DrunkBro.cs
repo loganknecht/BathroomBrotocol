@@ -27,7 +27,7 @@ public class DrunkBro : Bro {
             FightTimerLogic();
             Logic();
             VomitFinishedCheck();
-            UpdateAnimator();
+            UpdateAnimator(targetPathingReference, animatorReference);
         }
     }
     
@@ -51,6 +51,7 @@ public class DrunkBro : Bro {
         if(bathroomTileBlockerGenerator != null
             && bathroomTileBlockerGenerator.HasFinished()
             && !vomitingFinished) {
+            Debug.Log("lol");
             vomitingFinished = true;
             hasRelievedSelf = true;
             selectableReference.Reset();
@@ -90,7 +91,7 @@ public class DrunkBro : Bro {
                         
                         selectableReference.canBeSelected = false;
                         selectableReference.Reset();
-                        speechBubbleReference.displaySpeechBubble = false;
+                        speechBubbleReference.Hide();
                         
                         if(SelectionManager.Instance.currentlySelectedBroGameObject != null
                             && this.gameObject.GetInstanceID() == SelectionManager.Instance.currentlySelectedBroGameObject.GetInstanceID()) {
