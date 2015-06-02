@@ -26,7 +26,6 @@ public class BathroomTileBlockerGeneratorConfigurer {
     public float defaultMaxGenerationFrequencyMin = 1f;
     public float defaultMaxGenerationFrequencyMax = 5f;
     
-    
     public BroDistribution broDistributionDefaultAmountToGenerate = BroDistribution.AllBros;
     public int defaultAmountToGenerate = int.MaxValue;
     public float defaultAmountToGenerateMin = 1f;
