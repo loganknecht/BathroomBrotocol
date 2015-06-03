@@ -32,4 +32,9 @@ public class VomitGeneratorConfigurer : BathroomTileBlockerGeneratorConfigurer {
         base.SetMaxGenerationFrequency(broDistribution, newMaxGenerationFrequencyMin, newMaxGenerationFrequencyMax);
         return this;
     }
+    
+    public new VomitGeneratorConfigurer SetAmountToGenerate(BroDistribution broDistribution, float newAmountToGenerateMin, float newAmountToGenerateMax) {
+        base.SetAmountToGenerate(broDistribution, newAmountToGenerateMin, newAmountToGenerateMax);
+        return this;
+    }
 }

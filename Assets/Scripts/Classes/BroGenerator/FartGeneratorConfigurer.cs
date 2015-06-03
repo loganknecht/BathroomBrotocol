@@ -50,6 +50,11 @@ public class FartGeneratorConfigurer : BathroomTileBlockerGeneratorConfigurer {
         base.SetMaxGenerationFrequency(broDistribution, newMaxGenerationFrequencyMin, newMaxGenerationFrequencyMax);
         return this;
     }
+    
+    public new FartGeneratorConfigurer SetAmountToGenerate(BroDistribution broDistribution, float newAmountToGenerateMin, float newAmountToGenerateMax) {
+        base.SetAmountToGenerate(broDistribution, newAmountToGenerateMin, newAmountToGenerateMax);
+        return this;
+    }
     //---------------------------------
     // Move to fart distribution generator
     public FartGeneratorConfigurer SetDuration(BroDistribution broDistribution, float newDefaultDurationMin, float newDefaultDurationMax) {

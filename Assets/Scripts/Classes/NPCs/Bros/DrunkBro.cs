@@ -51,7 +51,6 @@ public class DrunkBro : Bro {
         if(bathroomTileBlockerGenerator != null
             && bathroomTileBlockerGenerator.HasFinished()
             && !vomitingFinished) {
-            Debug.Log("lol");
             vomitingFinished = true;
             hasRelievedSelf = true;
             selectableReference.Reset();

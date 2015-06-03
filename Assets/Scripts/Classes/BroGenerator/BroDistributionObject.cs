@@ -104,21 +104,12 @@ public class BroDistributionObject : DistributionObject {
             int selectedEntrance = CalculateProbabilityValue<int>(entranceQueueProbabilities);
             
             GameObject broToGenerate = Factory.Instance.GenerateBroGameObject(CalculateProbabilityValue<BroType>(broProbabilities));
-            // Shouldn't be used, remove by segmenting generation to be respective of each bro
-            // Bro broRefToGenerate = broToGenerate.GetComponent<Bro>();
             
             broToGenerate.transform.parent = BroManager.Instance.transform;
             broToGenerate.SetActive(false);
             ConfigureBro(broToGenerate);
             ConfigureFartGenerator(broToGenerate);
-            
-            // Replace with drunk bro generator
-            // if(broRefToGenerate.type == BroType.DrunkBro) {
-            //     broRefToGenerate.speechBubbleReference.displaySpeechBubble = false;
-            // }
-            
-            // Pretty sure this isn't needed anymore, bros should be rotated to match the camera on entrance in the restroom
-            // CameraManager.Instance.rotateCameraReference.RotateBroGameObject(broToGenerate);
+            ConfigureVomitGenerator(broToGenerate);
             
             GameObject newDistributionPoint = new GameObject("BroDistributionPoint");
             newDistributionPoint.transform.parent = BroGenerator.Instance.transform;
@@ -167,7 +158,8 @@ public class BroDistributionObject : DistributionObject {
             .ConfigureGenerationFrequency(fartGeneratorReference)
             .ConfigureGenerationFrequencyIsStochastic(fartGeneratorReference)
             .ConfigureMinGenerationFrequency(fartGeneratorReference)
-            .ConfigureMaxGenerationFrequency(fartGeneratorReference);
+            .ConfigureMaxGenerationFrequency(fartGeneratorReference)
+            .ConfigureAmountToGenerate(fartGeneratorReference);
             // Fart Generator Properties
             fartGeneratorConfigurer.ConfigureDuration(fartGeneratorReference)
             .ConfigureDurationIsStochastic(fartGeneratorReference)
@@ -185,7 +177,8 @@ public class BroDistributionObject : DistributionObject {
             .ConfigureGenerationFrequency(vomitGeneratorReference)
             .ConfigureGenerationFrequencyIsStochastic(vomitGeneratorReference)
             .ConfigureMinGenerationFrequency(vomitGeneratorReference)
-            .ConfigureMaxGenerationFrequency(vomitGeneratorReference);
+            .ConfigureMaxGenerationFrequency(vomitGeneratorReference)
+            .ConfigureAmountToGenerate(vomitGeneratorReference);
             // Vomit Generator Properties
         }
         return broToGenerate;

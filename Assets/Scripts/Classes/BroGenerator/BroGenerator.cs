@@ -146,9 +146,9 @@ public class BroGenerator : MonoBehaviour {
         foreach(GameObject gameObj in distributionPoints) {
             Destroy(gameObj);
         }
+        
         distributionPoints = new List<GameObject>();
         foreach(BroDistributionObject broDistributionObject in distributionObjects) {
-        
             List<GameObject> broDistributionPointsToAdd = null;
             broDistributionPointsToAdd = broDistributionObject.CalculateDistributionPoints();
             
@@ -165,7 +165,6 @@ public class BroGenerator : MonoBehaviour {
             if(!gameObj.GetComponent<BroDistributionPoint>().hasBeenDistributed) {
                 if(gameObj.GetComponent<BroDistributionPoint>().distributionTime < broGenerationTimer) {
                     gameObj.GetComponent<BroDistributionPoint>().hasBeenDistributed = true;
-                    // PerformBroDistribution(gameObj.GetComponent<BroDistributionPoint>().broTypeToDistribute, gameObj.GetComponent<BroDistributionPoint>().selectedEntrance);
                     PerformBroDistribution(gameObj.GetComponent<BroDistributionPoint>().broToDistribute, gameObj.GetComponent<BroDistributionPoint>().selectedEntrance);
                 }
             }

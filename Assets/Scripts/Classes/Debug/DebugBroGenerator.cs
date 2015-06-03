@@ -32,7 +32,7 @@ public class DebugBroGenerator : BaseBehavior {
     public bool debugVomitGeneratorGenerationFrequencyIsStochastic = false;
     public Vector2 debugVomitGeneratorMinGenerationFrequency = new Vector2(3, 3);
     public Vector2 debugVomitGeneratorMaxGenerationFrequency = new Vector2(3, 3);
-    public Vector2 debugVomitGeneratorAmountToGenerate = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+    public Vector2 debugVomitGeneratorAmountToGenerate = new Vector2(1f, 1f);
     // Fart Generator (Fart Properties)
     public Vector2 debugFartGeneratorProbability = new Vector2(1f, 1f);
     public Vector2 debugFartGeneratorGenerationFrequency = new Vector2(3f, 3f);
@@ -115,28 +115,6 @@ public class DebugBroGenerator : BaseBehavior {
         if(Input.GetKeyDown(KeyCode.Q)) {
             Debug.Log("Generating bro!");
             
-            // GameObject broGameObject = Factory.Instance.GenerateBroGameObject(debugBroType);
-            // int lastLineQueueTileIndex = lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects.Count - 1;
-            // broGameObject.transform.position = new Vector3(lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.x,
-            //                                                lineQueues[debugEntranceQueue].GetComponent<LineQueue>().queueTileObjects[lastLineQueueTileIndex].transform.position.y,
-            //                                                broGameObject.transform.position.z);
-            // Bro broReference = broGameObject.GetComponent<Bro>();
-            // broReference.reliefRequired = debugReliefRequired;
-            // broReference.baseProbabilityOfFightOnCollisionWithBro = debugFightProbability;
-            // broReference.modifyBroFightProbablityUsingScoreRatio = debugModifyBroFightProbablityUsingScoreRatio;
-            // broReference.occupationDuration = debugOccupationDuration;
-            // broReference.skipLineQueue = debugSkipLineQueue;
-            // broReference.chooseRandomBathroomObjectOnSkipLineQueue = debugChooseObjectOnLineSkip;
-            // broReference.startRoamingOnArrivalAtBathroomObjectInUse = debugStartRoamingOnArrivalAtBathroomObjectInUse;
-            // broReference.chooseRandomBathroomObjectAfterRelieved = debugChooseObjectOnRelief;
-            // broReference.hasRelievedSelf = debugHasRelievedSelf;
-            // broReference.hasWashedHands = debugHasWashedHands;
-            // broReference.hasDriedHands = debugHasDriedHands;
-            // AddBroToEntranceQueue(broGameObject, debugEntranceQueue);
-            //-------------------------------------------------------------------------------------------------------------------
-            // Alt generation
-            //-------------------------------------------------------------------------------------------------------------------
-            // Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { BroType.GenericBro, 1f } };
             Dictionary<BroType, float> broProbabilities = new Dictionary<BroType, float>() { { debugBroType, 1f } };
             Dictionary<int, float> entranceQueueProbabilities = new Dictionary<int, float>() { { 0, 1f } };
             
@@ -163,6 +141,8 @@ public class DebugBroGenerator : BaseBehavior {
             .SetGenerationFrequencyIsStochastic(BroDistribution.AllBros, debugFartGeneratorGenerationFrequencyIsStochastic)
             .SetMinGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMinGenerationFrequency.x, debugFartGeneratorMinGenerationFrequency.y)
             .SetMaxGenerationFrequency(BroDistribution.AllBros, debugFartGeneratorMaxGenerationFrequency.x, debugFartGeneratorMaxGenerationFrequency.y)
+            .SetAmountToGenerate(BroDistribution.AllBros, debugFartGeneratorAmountToGenerate.x, debugFartGeneratorAmountToGenerate.y)
+            //--------
             .SetDuration(BroDistribution.AllBros, debugFartDuration.x, debugFartDuration.y)
             .SetDurationIsStochastic(BroDistribution.AllBros, debugFartDurationIsStochastic)
             .SetMinDuration(BroDistribution.AllBros, debugFartMinDuration.x, debugFartMinDuration.y)
@@ -175,7 +155,6 @@ public class DebugBroGenerator : BaseBehavior {
             .SetMinGenerationFrequency(BroDistribution.AllBros, debugVomitGeneratorMinGenerationFrequency.x, debugVomitGeneratorMinGenerationFrequency.y)
             .SetMaxGenerationFrequency(BroDistribution.AllBros, debugVomitGeneratorMaxGenerationFrequency.x, debugVomitGeneratorMaxGenerationFrequency.y)
             .SetAmountToGenerate(BroDistribution.AllBros, debugVomitGeneratorAmountToGenerate.x, debugVomitGeneratorAmountToGenerate.y);
-            // debugVomitGeneratorAmountToGenerate
             
             BroGenerator.Instance.SetDistributionLogic(new BroDistributionObject[] {
                 debugWave,
